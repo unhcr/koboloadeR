@@ -4,7 +4,7 @@
 \alias{kobo_datasets}
 \title{Lists the Datasets Available}
 \usage{
-kobo_datasets(user = NULL, api = "kobo")
+kobo_datasets(user = NULL, api = "unhcr")
 }
 \arguments{
 \item{user}{Optional. A single string indicating the username and password

@@ -4,7 +4,7 @@
 \alias{kobo_data_downloader}
 \title{Retrieve the Data from a Specified Dataset}
 \usage{
-kobo_data_downloader(formid, user = NULL, api = "kobo", check = TRUE)
+kobo_data_downloader(formid, user = NULL, api = "unhcr", check = TRUE)
 }
 \arguments{
 \item{formid}{The ID of the form to be accessed (as a character string).}
@@ -15,7 +15,7 @@ length 2, with the first value being the "username", and the second being
 the "password".}
 
 \item{api}{The URL at which the API can be accessed.
-Defaults to "kobo", which loads the KoBo Toolbox API.}
+Defaults to "unhcr", which loads the UNHCR KoBo Toolbox API.}
 
 \item{check}{Logical. Should the function first check to see whether the
 data is available offline.}
@@ -31,7 +31,7 @@ Retrieves the data submitted to a specified dataset.
 \examples{
 \dontrun{
 kobo_data_downloader("15051")
-kobo_data_downloader("31511", api = "kobohr")
+kobo_data_downloader("31511", api = "unhcr")
 }
 
 }

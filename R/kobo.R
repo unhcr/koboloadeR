@@ -20,7 +20,7 @@
 #'
 #' @export kobo_datasets
 #'
-kobo_datasets <- function(user = NULL, api = "kobo") {
+kobo_datasets <- function(user = NULL, api = "unhcr") {
   URL <- sprintf(fmt = "%sdata.csv", host(api))
   x <- get_me(user, URL)
   cat("\n\n")
@@ -48,7 +48,7 @@ NULL
 #'
 #' @export kobo_submission_count
 #'
-kobo_submission_count <- function(formid, user = NULL, api = "kobo") {
+kobo_submission_count <- function(formid, user = NULL, api = "unhcr") {
   URL <- "%sstats/submissions/%s.csv?group=dummydatagroupingvar"
   URL <- sprintf(fmt = URL, host(api), formid)
   x <- get_me(user, URL)
@@ -68,7 +68,7 @@ NULL
 #' length 2, with the first value being the "username", and the second being
 #' the "password".
 #' @param api The URL at which the API can be accessed.
-#' Defaults to "kobo", which loads the KoBo Toolbox API.
+#' Defaults to "unhcr", which loads the UNHCR KoBo Toolbox API.
 #' @param check Logical. Should the function first check to see whether the
 #' data is available offline.
 #' @return A "data.table" with the full dataset. If data is already found on
@@ -78,11 +78,11 @@ NULL
 #' @examples
 #' \dontrun{
 #' kobo_data_downloader("15051")
-#' kobo_data_downloader("31511", api = "kobohr")
+#' kobo_data_downloader("31511", api = "unhcr")
 #' }
 #'
 #' @export kobo_data_downloader
-kobo_data_downloader <- function(formid, user = NULL, api = "kobo", check = TRUE) {
+kobo_data_downloader <- function(formid, user = NULL, api = "unhcr", check = TRUE) {
   locfile <- sprintf(fmt = "data_%s", formid)
 
   if (isTRUE(check)) {

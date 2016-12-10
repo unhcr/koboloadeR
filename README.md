@@ -12,7 +12,9 @@ In this early version of the package, `koboloadeR` will only available on GitHub
 
 ```
 source("http://news.mrdwab.com/install_github.R")
-install_github("mrdwab/koboloadeR")
+install.packages(devtools)
+library(devtools)
+install_github("Edouard-Legoupil/koboloadeR")
 ```
 
 (This version of `install_github` via [@jtilly](https://github.com/jtilly/install_github).)

@@ -4,7 +4,7 @@
 \alias{kobo_submission_count}
 \title{Retrieve the Number of Submissions in a Specified Dataset}
 \usage{
-kobo_submission_count(formid, user = NULL, api = "kobo")
+kobo_submission_count(formid, user = NULL, api = "unhcr")
 }
 \arguments{
 \item{formid}{The ID of the form to be accessed (as a character string).}

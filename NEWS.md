@@ -1,5 +1,14 @@
 # NEWS
 
+## koboloadeR 0.1.3
+
+Adding a `kobo_projectinit` function to set the data anlysis project folders, write the config file and add some analysis scripts.
+
+Adding a `kobo_dico` function to get & parse the form and build a data dictionnary. The dictionnary is used to automatically generate graphs and maps.
+
+Added UNHCR Kobotoolbox server API and put it per default
+
+
 ## koboloadeR 0.1.2
 
 Testing `read_csv` wrapped in `setDT` to see whether it resolves issue #4.

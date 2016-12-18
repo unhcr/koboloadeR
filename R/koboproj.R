@@ -1,7 +1,8 @@
 #' @name kobo_datasets2
 #' @rdname kobo_datasets2
-#' @title Lists the Datasets Available including count of submission.
-#'
+#' @title Lists the Datasets Available including count of submission.  
+#' - description    id  -    id_string - title   -   url 
+
 #'
 #' @param user Optional. A single string indicating the username and password
 #' (in the form of \code{"username:password"}), or a character vector or list,
@@ -20,10 +21,20 @@
 #'
 #' @export kobo_datasets2
 #'
-kobo_datasets2 <- function(user = NULL, api = "unhcr") {
-
-  #data <- kobo_datasets(user = NULL, api = "unhcr")
-  #count <- kobo_submission_count(formid, user, api)
+kobo_datasets2 <- function(user = NULL, api ) {
+  
+  formlist <- kobo_datasets(user , api)
+  formlist <- formlist[ ,c("id",  "id_string")]
+  formlist$count <- ""
+  formlist$count <- as.integer(formlist$count)
+  formlist <- as.data.frame(formlist)
+  for(i in 1:nrow(formlist))
+  { 
+    formidi <- as.integer(formlist[ i, 1])
+    count <- kobo_submission_count(formid=formidi, user, api)
+    if(length(count)==1) {formlist[i ,3] <- count} else { i <- i+1}
+  }
+  return(formlist)
 }
 NULL
 

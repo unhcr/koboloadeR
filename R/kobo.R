@@ -21,7 +21,7 @@
 #' @export kobo_datasets
 #'
 kobo_datasets <- function(user = NULL, api = "unhcr") {
-  URL <- sprintf(fmt = "%sdata.csv", host(api))
+  URL <- sprintf(fmt = "%sdata.csv", kobo_host(api))
   x <- get_me(user, URL)
   cat("\n\n")
   f_csv(x)
@@ -50,7 +50,7 @@ NULL
 #'
 kobo_submission_count <- function(formid, user = NULL, api = "unhcr") {
   URL <- "%sstats/submissions/%s.csv?group=dummydatagroupingvar"
-  URL <- sprintf(fmt = URL, host(api), formid)
+  URL <- sprintf(fmt = URL, kobo_host(api), formid)
   x <- get_me(user, URL)
   cat("\n\n")
   f_csv(x)$count
@@ -106,7 +106,7 @@ kobo_data_downloader <- function(formid, user = NULL, api = "unhcr", check = TRU
 
   if (isTRUE(redownload)) {
     message("Downloading remote file.")
-    URL <- sprintf(fmt = '%sdata/%s.csv', host(api), formid)
+    URL <- sprintf(fmt = '%sdata/%s.csv', kobo_host(api), formid)
 
     x <- get_me(user, URL)
     cat("\n\n")

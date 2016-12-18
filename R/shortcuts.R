@@ -10,13 +10,21 @@ NULL
 #' @import readr
 NULL
 
-
 #' @import RCurl
 NULL
-
 
 #' @import DT
 NULL
 
-f_csv <- function(x) setDT(read_csv(content(x, "raw")))[]
+#' @import plyr
+NULL
+
+#' @import dplyr
+NULL
+
+#' @import tidyr
+NULL
+
+#' @import readxl
+NULL
 

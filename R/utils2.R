@@ -1,3 +1,22 @@
+#' @name f_csv
+#' @rdname f_csv
+#' @title Helper function to format an object into a df
+#'
+#'
+#' @param object
+#'
+#' @return Formatted number.
+#'
+#' @author Someone
+#'
+#' @examples
+#' f_csv()
+#'
+#' @export f_csv
+#'
+f_csv <- function(x) setDT(read_csv(content(x, "raw")))[]
+
+
 
 #' @name format_si
 #' @rdname format_si

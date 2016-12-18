@@ -1,6 +1,9 @@
+#' @name kobo_host
+#' @rdname kobo_host
+#' @title A helper function to conveniently switch different APIs.
+#'
 #' Specifies the Host URL of the API to Use
 #'
-#' A helper function to conveniently switch different APIs.
 #'
 #' @param instring Either "kobo", "kobohr", "ona", or a custom (full) URL.
 #' @return A single string with the URL to use.
@@ -16,10 +19,10 @@
 #' @examples
 #'
 #' \dontrun{
-#' host("unhcr")
-#' host("ttps://kobocat.unhcr.org/api/v1/")
+#' kobo_host("unhcr")
+#' kobo_host("ttps://kobocat.unhcr.org/api/v1/")
 #' }
-host <- function(instring) {
+kobo_host <- function(instring) {
   if (instring %in% c("kobo", "kobohr", "ona","unhcr")) {
     switch(instring,
            kobo = "https://kc.kobotoolbox.org/api/v1/",

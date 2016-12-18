@@ -15,7 +15,11 @@ Depends:
     httr,
     bit64,
     readr,
-    DT
+    DT,
+    plyr,
+    dplyr,
+    tidyr,
+    readxl
 Suggests:
     shiny
 URL: https://github.com/Edouard-Legoupil/koboloadeR

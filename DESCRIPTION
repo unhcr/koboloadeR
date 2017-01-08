@@ -19,7 +19,9 @@ Depends:
     plyr,
     dplyr,
     tidyr,
-    readxl
+    readxl,
+    ggplot2,
+    reshape2
 Suggests:
     shiny
 URL: https://github.com/Edouard-Legoupil/koboloadeR

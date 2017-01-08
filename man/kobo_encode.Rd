@@ -7,9 +7,9 @@
 kobo_encode(datalabel, dico)
 }
 \arguments{
-\item{dico}{( generated from kobo_dico)}
+\item{datalabel}{Dataframe to relabel}
 
-\item{data}{.}
+\item{dico}{Data dictionnary generated from kobo_dico}
 }
 \value{
 A "data.table" with the full data.label. To be used for graphs generation.

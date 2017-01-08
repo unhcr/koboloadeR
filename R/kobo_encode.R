@@ -5,8 +5,8 @@
 #' @description  Insert the full label in data frame based on dictionnary
 #'
 #'
-#' @param data .
-#' @param dico ( generated from kobo_dico)
+#' @param datalabel Dataframe to relabel
+#' @param dico Data dictionnary generated from kobo_dico
 #'
 #'
 #' @return A "data.table" with the full data.label. To be used for graphs generation.
@@ -69,3 +69,4 @@ kobo_encode <- function(datalabel, dico) {
     #}
   return(datalabel)
 }
+NULL

@@ -28,3 +28,4 @@ NULL
 #' @import readxl
 NULL
 
+f_csv <- function(x) setDT(read_csv(content(x, "raw")))[]

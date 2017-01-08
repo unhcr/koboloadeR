@@ -1,6 +1,8 @@
 #' @name kobo_label
 #' @rdname kobo_label
-#' @title  Insert the full label in data frame based on dictionnary
+#' @title  Label Variable
+#'
+#' @description    Insert the full label in data frame based on dictionnary
 #'
 #'
 #' @param data .
@@ -20,17 +22,14 @@
 #' kobo_label(data, dico)
 #' }
 #'
-#' @export data 
+#' @export data
 kobo_label <- function(datalabel, dico) {
   ### First we provide attribute label to variable name
-  #datalabel <- data.single
-  #i <- 3
+  #datalabel <- data.selectmulti
   data.label <- as.data.frame(names(datalabel))
   names(data.label)[1] <- "fullname"
   data.label <- join (x=data.label, y=dico, by="fullname", type="left" )
   for (i in 1:nrow(datalabel)) { attributes(datalabel)$variable.labels[ i] <- as.character(data.label[ i, c("label")]) }
-  
-  ## Now we can also re-encode the records themself
-  return(datalabel) 
-  
+
+  return(datalabel)
 }

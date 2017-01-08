@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{pwd_parse}
 \alias{pwd_parse}
-\title{Helper Function to Parse a String to be Used as a Username/Password Combination}
+\title{Parse Kobo Password}
 \usage{
 pwd_parse(...)
 }
@@ -12,6 +12,8 @@ username and password that should be used. If it is a single string, it
 should be in the form of "username:password".}
 }
 \description{
+Helper Function to Parse a String to be Used as a Username/Password Combination
+
 Converts a string of length 1 or of length 2 into a list that can then be
 passed on to the \code{authenticate} function from the "httr" package.
 }

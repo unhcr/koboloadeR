@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils2.R
 \name{psum}
 \alias{psum}
-\title{Helper function that will sum values even if we have NA}
+\title{Sum with NA}
 \usage{
 psum(..., na.rm = FALSE)
 }
@@ -11,6 +11,9 @@ psum(..., na.rm = FALSE)
 }
 \value{
 Integer or numeric.
+}
+\description{
+Helper function that will sum values even if we have NA
 }
 \examples{
 psum()

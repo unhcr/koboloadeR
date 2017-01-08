@@ -4,7 +4,13 @@
 
 Adding a `kobo_projectinit` function to set the data anlysis project folders, write the config file and add some analysis scripts.
 
-Adding a `kobo_dico` function to get & parse the form and build a data dictionnary. The dictionnary is used to automatically generate graphs and maps.
+Adding a `kobo_dico` function to parse the form and build a data dictionnary. The dictionnary is used to automatically generate graphs and maps. A inked functions is `kobo_label` that allows to recreate labels easily using the dictionnary.
+
+Adding a `kobo_form` function to get the form from the api. This includes 2 subfunctions: `kobo_dataset2` to have a better view of used forms & `kobo_forminfo` in order to get the form creater user name and pull it correctly from the API.
+
+Adding a `kobo_label` function to add labels to variable
+
+Adding a `kobo_encode` function to re-encode variables as per dictionnary
 
 Added UNHCR Kobotoolbox server API and put it per default
 

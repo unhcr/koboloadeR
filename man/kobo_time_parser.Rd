@@ -2,22 +2,12 @@
 % Please edit documentation in R/utils.R
 \name{kobo_time_parser}
 \alias{kobo_time_parser}
-\alias{kobo_time_parser_UTC}
 \title{Parses Dates from KoBo Into a More Usable Format}
 \usage{
-kobo_time_parser_UTC(instring)
-
 kobo_time_parser(instring, timezone = Sys.timezone())
 }
-\arguments{
-\item{instring}{A date/time format coming from KoBo.}
-
-\item{timezone}{A valid timezone, available in the list available
-from \code{\link[base:OlsonNames]{OlsonNames}}.}
-}
 \value{
-The \code{kobo_time_parser_UTC} function returns a POSIXct object,
-while the \code{kobo_time_parser} function returns a formatted character
+The \code{kobo_time_parser} function returns a formatted character
 string that can be easily parsed as a date/time object.
 }
 \description{
@@ -26,9 +16,6 @@ like the following: "2015-08-27T13:28:29.000+06:30". These functions
 process these date/times into more usable formats.
 }
 \examples{
-TIME <- "2015-08-27T13:28:29.000+06:30"
-kobo_time_parser_UTC(TIME)
-
 kobo_time_parser(TIME)
 kobo_time_parser(TIME, timezone = "Asia/Rangoon")
 kobo_time_parser(TIME, timezone = "America/Los_Angeles")

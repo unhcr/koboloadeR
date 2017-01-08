@@ -1,6 +1,6 @@
 Package: koboloadeR
 Type: Package
-Title: Retrieve Data Using the KoBo Toolbox API
+Title: Retrieve Data Using the KoBo Toolbox API & Automatise data exploration
 Version: 0.1.3
 Authors@R: person("Edouard", "Legoupil", email = "edouard.legoupil@gmail.com",
   role = c("aut", "cre"))

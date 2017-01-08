@@ -1,41 +1,8 @@
-#' @name kobo_host
-#' @rdname kobo_host
-#' @title A helper function to conveniently switch different APIs.
+#' @name get_me
+#' @rdname get_me
+#' @title  Authentify in Kobo Server
 #'
-#' Specifies the Host URL of the API to Use
-#'
-#'
-#' @param instring Either "kobo", "kobohr", "ona", or a custom (full) URL.
-#' @return A single string with the URL to use.
-#' @note API URLs are made available for KoBo Toolbox ("kobo",
-#' \url{https://kc.kobotoolbox.org/api/v1/}), KoBo Humanitarian Response
-#' ("kobohr", \url{https://kc.humanitarianresponse.info/api/v1/}), Ona
-#' ("ona", \url{https://ona.io/api/v1/}) and Unhcr ("unhcr", \url{https://kobocat.unhcr.org/api/v1/}) . For your own installation, or other
-#' installations using the same API but accessed at a different URL,
-#' enter the full URL.
-#' @author Ananda Mahto
-#' @note This function is not intended to be called directly.
-#' It is used in other functions.
-#' @examples
-#'
-#' \dontrun{
-#' kobo_host("unhcr")
-#' kobo_host("ttps://kobocat.unhcr.org/api/v1/")
-#' }
-kobo_host <- function(instring) {
-  if (instring %in% c("kobo", "kobohr", "ona","unhcr")) {
-    switch(instring,
-           kobo = "https://kc.kobotoolbox.org/api/v1/",
-           kobohr = "https://kc.humanitarianresponse.info/api/v1/",
-           ona = "https://ona.io/api/v1/",
-           unhcr = "https://kobocat.unhcr.org/api/v1/")
-  } else {
-    instring
-  }
-}
-NULL
-
-#' Helper Function for GET, Depending on Whether Authentication is Required
+#' @description Helper Function for GET, Depending on Whether Authentication is Required
 #'
 #' Adds basic level authentication if provided.
 #'
@@ -55,7 +22,11 @@ get_me <- function(user, URL) {
 }
 NULL
 
-#' Helper Function to Parse a String to be Used as a Username/Password Combination
+#' @name pwd_parse
+#' @rdname pwd_parse
+#' @title  Parse Kobo Password
+#'
+#' @description Helper Function to Parse a String to be Used as a Username/Password Combination
 #'
 #' Converts a string of length 1 or of length 2 into a list that can then be
 #' passed on to the \code{authenticate} function from the "httr" package.
@@ -93,8 +64,8 @@ pwd_parse <- function(...) {
 }
 NULL
 
-#' @name kobo_time_parser
-#' @rdname kobo_time_parser
+#' @name kobo_time_parser_UTC
+#' @rdname kobo_time_parser_UTC
 #' @title Parses Dates from KoBo Into a More Usable Format
 #'
 #' @description The date/time values in KoBo usually get stored in a format
@@ -108,9 +79,6 @@ NULL
 #' while the \code{kobo_time_parser} function returns a formatted character
 #' string that can be easily parsed as a date/time object.
 #' @author Ananda Mahto
-NULL
-
-#' @rdname kobo_time_parser
 #' @examples
 #' TIME <- "2015-08-27T13:28:29.000+06:30"
 #' kobo_time_parser_UTC(TIME)
@@ -124,7 +92,17 @@ kobo_time_parser_UTC <- function(instring) {
 }
 NULL
 
+#' @name kobo_time_parser
 #' @rdname kobo_time_parser
+#' @title Parses Dates from KoBo Into a More Usable Format
+#'
+#' @description The date/time values in KoBo usually get stored in a format
+#' like the following: "2015-08-27T13:28:29.000+06:30". These functions
+#' process these date/times into more usable formats.
+#'
+#' @return The \code{kobo_time_parser} function returns a formatted character
+#' string that can be easily parsed as a date/time object.
+#' @author Ananda Mahto
 #' @examples
 #' kobo_time_parser(TIME)
 #' kobo_time_parser(TIME, timezone = "Asia/Rangoon")

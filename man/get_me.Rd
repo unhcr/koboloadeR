@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{get_me}
 \alias{get_me}
-\title{Helper Function for GET, Depending on Whether Authentication is Required}
+\title{Authentify in Kobo Server}
 \usage{
 get_me(user, URL)
 }
@@ -12,6 +12,8 @@ get_me(user, URL)
 \item{URL}{The URL to be passed to curl}
 }
 \description{
+Helper Function for GET, Depending on Whether Authentication is Required
+
 Adds basic level authentication if provided.
 }
 \note{

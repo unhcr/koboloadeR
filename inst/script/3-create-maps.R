@@ -1,5 +1,113 @@
-## testing a plot of coordinates
-plot(datasp$lat, datasp$long )
+## https://timogrossenbacher.ch/2016/12/beautiful-thematic-maps-with-ggplot2-only/
+
+theme_map <- function(...) {
+  theme_minimal() +
+    theme(
+      text = element_text(family = "Ubuntu Regular", color = "#22211d"),
+      axis.line = element_blank(),
+      axis.text.x = element_blank(),
+      axis.text.y = element_blank(),
+      axis.ticks = element_blank(),
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      # panel.grid.minor = element_line(color = "#ebebe5", size = 0.2),
+      panel.grid.major = element_line(color = "#ebebe5", size = 0.2),
+      panel.grid.minor = element_blank(),
+      plot.background = element_rect(fill = "#f5f5f2", color = NA), 
+      panel.background = element_rect(fill = "#f5f5f2", color = NA), 
+      legend.background = element_rect(fill = "#f5f5f2", color = NA),
+      panel.border = element_blank(),
+      ...
+    )
+}
+
+
+
+###############################################################
+### Getting a map background
+##############################################################
+## Jordan bounding box NE 33.374828, 39.301128 ; SW 29.184090, 34.960232
+#bounding <- bbox(datsp)
+jordanbox <- c(34.8, 29.1, 39.5, 33.5) 
+
+
+### Bounding can also be done in the ggplot2 object through the following
+
+#  scale_x_continuous(limits = c(34.8, 39.5)) +
+#  scale_y_continuous(limits = c(29.1, 33.5)) +
+
+
+## Center on north 32.2607107,36.5205146,9
+
+
+require("ggmap")
+googleterrain <- get_map(location = c(lon =37.22, lat = 31.32),
+                         color = "color", source = "google",maptype = "terrain", zoom = 7)
+googleeterrain <- ggmap(googleterrain)
+
+googleroad <- get_map(location = jordanbox, color = "bw", source = "google",maptype = "road", zoom = 7)
+googleeroad <- ggmap(googleroad)
+
+northroad <- get_map(location = c(lon =36.12, lat = 32.26),  color = "bw", source = "google",maptype = "road", zoom = 9)
+northeroad <- ggmap(northroad)
+
+
+###############################################################
+### Hebin Map Overlay in gplot2 -- Plotting Family Size
+##############################################################
+test <- data[!is.na(data$hexagrid), ]
+rm(map.familysize.all)
+map.familysize.all <- googleeroad
+map.familysize.all <- map.familysize.all +
+  stat_summary_hex(aes(x= long,  y= lat, z = HHG.HHG1q3), 
+                   data=data[!is.na(data$hexagrid), ] ,
+                   fun = sum,
+                   bins=50,
+                   alpha = 9/10) +
+  theme_map() + 
+  coord_cartesian() +
+  #scale_x_continuous(limits = c(34.8, 39.5)) +
+  #scale_y_continuous(limits = c(29.1, 33.5)) ++ 
+  scale_fill_gradient(low = "#ffffcc", high = "#ff4444",
+                      name = "Concentration",
+                      guide = guide_legend( direction = "horizontal", label.position = "bottom",
+                                            keyheight = unit(2, units = "mm"),  keywidth = unit(length(labels)*10, units = "mm"),
+                                            title.position = 'top',  title.hjust = 0.5, label.hjust = 1, nrow = 1, byrow = T, reverse = T )) +
+  theme( legend.position = c(0.5, 0.03), legend.text.align = 0, legend.background = element_rect(fill = alpha('white', 0.0)),
+         legend.text = element_text(size = 7, hjust = 0, color = "#4e4d47"), plot.title = element_text(hjust = 0.5, color = "#4e4d47"),
+         plot.subtitle = element_text(hjust = 0.5, color = "#4e4d47", margin = margin(b = -0.1, t = -0.1, l = 2, unit = "cm"), debug = F),
+         legend.title = element_text(size = 8), plot.margin = unit(c(.5,.5,.2,.5), "cm"), panel.spacing = unit(c(-.1,0.2,.2,0.2), "cm"),
+         panel.border = element_blank(), plot.caption = element_text(size = 6, hjust = 0.92, margin = margin(t = 0.2, b = 0, unit = "cm"), color = "#939184")) +
+  labs(title = "Refugee Population", subtitle = "Estimates in 2017", caption = "UNHCR Jordan, Homevisit, 2016", x = NULL, y = NULL) 
+  
+  
+ggsave("out/map-familysize-all.png", map.familysize.all, width=8, height=6,units="in", dpi=300)
+rm(map.familysize.all)
+
+#########################################3
+## map hexagrid_f
+rm(map.familysize.all2)
+map.familysize.all2 <- northeroad
+map.familysize.all2 <- map.familysize.all2 +
+  geom_polygon(data=hexagrid_f, aes(x = long, y = lat, group = group, fill = num),  alpha = 9/10) +
+  theme_map() + 
+  #coord_cartesian() +
+  #scale_x_continuous(limits = c(34.8, 39.5)) +
+  #scale_y_continuous(limits = c(29.1, 33.5)) ++ 
+  scale_fill_gradient(low = "#ffffcc", high = "#ff4444",
+                      name = "Concentration",
+                      guide = guide_legend( direction = "horizontal", label.position = "bottom",
+                                            keyheight = unit(2, units = "mm"),  keywidth = unit(length(labels)*10, units = "mm"),
+                                            title.position = 'top',  title.hjust = 0.5, label.hjust = 1, nrow = 1, byrow = T, reverse = T )) +
+  theme( legend.position = c(0.5, 0.03), legend.text.align = 0, legend.background = element_rect(fill = alpha('white', 0.0)),
+         legend.text = element_text(size = 7, hjust = 0, color = "#4e4d47"), plot.title = element_text(hjust = 0.5, color = "#4e4d47"),
+         plot.subtitle = element_text(hjust = 0.5, color = "#4e4d47", margin = margin(b = -0.1, t = -0.1, l = 2, unit = "cm"), debug = F),
+         legend.title = element_text(size = 8), plot.margin = unit(c(.5,.5,.2,.5), "cm"), panel.spacing = unit(c(-.1,0.2,.2,0.2), "cm"),
+         panel.border = element_blank(), plot.caption = element_text(size = 6, hjust = 0.92, margin = margin(t = 0.2, b = 0, unit = "cm"), color = "#939184")) +
+  labs(title = "Surveyed Refugees", subtitle = "2016", caption = "UNHCR Jordan, Homevisit, 2016", x = NULL, y = NULL) 
+
+
+ggsave("out/map-familysize-all2.png", map.familysize.all2, width=8, height=6,units="in", dpi=300)
 
 ###Maps!!
 

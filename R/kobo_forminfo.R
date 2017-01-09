@@ -29,6 +29,7 @@
 #'
 #' @export kobo_forminfo
 #'
+
 kobo_forminfo <- function(formid, user = NULL, api = api) {
 
   locfile <- sprintf(fmt = "forminfo_%s", formid)

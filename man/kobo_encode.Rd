@@ -4,10 +4,10 @@
 \alias{kobo_encode}
 \title{Encode variable}
 \usage{
-kobo_encode(datalabel, dico)
+kobo_encode(data, dico)
 }
 \arguments{
-\item{datalabel}{Dataframe to relabel}
+\item{data}{Dataframe to relabel}
 
 \item{dico}{Data dictionnary generated from kobo_dico}
 }

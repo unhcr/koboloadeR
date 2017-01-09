@@ -172,7 +172,6 @@ kobo_dico <- function(form) {
   }
 
   ## a few colummns to adjust to match questions & choices
-
   survey$labelchoice <- survey$label
   survey$order <- ""
   survey$weight <- ""
@@ -194,8 +193,12 @@ kobo_dico <- function(form) {
   names(choices)[names(choices)=="label"] <- "labelchoice"
   #rm(choices)
   choices <- join(x=choices, y=survey, by="listname", type="left")
-  choices$type <- with(choices, ifelse(grepl("select_one", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  choices$type), paste0("select_one_d"),choices$type))
-  choices$type <- with(choices, ifelse(grepl("select_multiple_d", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  choices$type), paste0("select_multiple"),choices$type))
+  
+  choices$type <- with(choices, ifelse(grepl("select_one", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  choices$type),
+                                       paste0("select_one_d"),choices$type))
+  
+  choices$type <- with(choices, ifelse(grepl("select_multiple_d", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  choices$type),
+                                       paste0("select_multiple"),choices$type))
 
   names(choices)[7] <- "nameq"
   names(choices)[8] <- "labelq"
@@ -231,7 +234,7 @@ kobo_dico <- function(form) {
   dico$fullname <- trim(dico$fullname)
   dico$listname <- trim(dico$listname)
 
-  write.csv (dico, paste0("data/dico_",form,".csv"))
+  write.csv(dico, paste0("data/dico_",form,".csv"), row.names=FALSE, na = "")
 
  # f_csv(dico)
 #  return(dico)

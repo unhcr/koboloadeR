@@ -22,7 +22,9 @@
 #' kobo_bar_one(data, dico)
 #' }
 #'
-#' @export data
+#' @export plots
+#'
+
 kobo_bar_one <- function(data, dico) {
 
     ## get list of all nominal variables
@@ -60,6 +62,8 @@ kobo_bar_one <- function(data, dico) {
       theme(plot.title=element_text(face="bold", size=9),
             plot.background = element_rect(fill = "transparent",colour = NA))
     ggsave(filename=paste("out/bar_onefreq_",variablename,".png",sep=""), plot=plotfreq, width=8, height=10,units="in", dpi=300)
+    
+    cat(paste0("Generated graph for question: ", title , "\n"))
 
     rm(variablename, freq)
   }

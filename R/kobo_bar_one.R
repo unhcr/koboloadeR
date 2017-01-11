@@ -43,8 +43,14 @@ kobo_bar_one <- function(data, dico) {
     # i <-2
     variablename <- names(data.single)[i]
     title <- attributes(data.single)$variable.labels[i]
+    
+    ##### Set up factor level order -- 
+    
+    ## variable ordinal or not 
+    
+    
 
-    ## Proportion table used to order the levels of the factor
+    ## if veriable is not ordinal, Proportion table used to order the levels of the factor
     frequ <- table (data.single[ , i])
     data.single[ , i] <- factor(data.single[ , i], levels=names(frequ[order(frequ, decreasing = TRUE)]))
 
@@ -55,13 +61,14 @@ kobo_bar_one <- function(data, dico) {
       #facet_wrap(~subgov, ncol=4) +
       guides(fill=FALSE) +
       ylab("Frequency") +
+      scale_y_continuous(labels=percent)+
       xlab("") +
       coord_flip() +
       # coord_fixed() + ##used to maintain the adspect ratio of the plot when it needs to be saved
       ggtitle(title)+
       theme(plot.title=element_text(face="bold", size=9),
             plot.background = element_rect(fill = "transparent",colour = NA))
-    ggsave(filename=paste("out/bar_onefreq_",variablename,".png",sep=""), plot=plotfreq, width=8, height=10,units="in", dpi=300)
+    ggsave(filename=paste("out/bar_onefreq_",variablename,".png",sep=""), plot=plotfreq, width=10, height=10,units="in", dpi=300)
     
     cat(paste0("Generated graph for question: ", title , "\n"))
 

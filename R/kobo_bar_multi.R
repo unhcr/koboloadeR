@@ -14,7 +14,7 @@
 #' @author Edouard Legoupil
 #'
 #' @examples
-#' kobo_bar_one()
+#' kobo_bar_multi()
 #'
 #' @export kobo_bar_multi
 #' @examples
@@ -48,7 +48,7 @@ kobo_bar_multi <- function(data, dico) {
 
 
   for (i in 1:nrow(listmulti) ) {
-    # i <- 5
+    # i <- 1
     listloop <- as.character(listmulti[i,1])
     listlabel <-  as.character(listmulti[i,2])
     
@@ -58,9 +58,9 @@ kobo_bar_multi <- function(data, dico) {
     
     ## Check that those variable are in the dataset
     selectdf2 <- dico[dico$type=="select_multiple" & dico$listname==listloop , c("fullname","listname","label","name")]
-    selectdf2 <- join(x=selectdf2, y=check, by="fullname",  type="left")
-    selectdf2 <- selectdf[!is.na(selectdf$id), ]
-    selectmultilist <- as.character(selectdf2[, c("fullname")])
+    selectdf3 <- join(x=selectdf2, y=check, by="fullname",  type="left")
+    selectdf3 <- selectdf3[!is.na(selectdf3$id), ]
+    selectmultilist <- as.character(selectdf3[, c("fullname")])
 
     ## Reshape answers
     data.selectmultilist <- data.selectmulti[ selectmultilist ]
@@ -75,6 +75,7 @@ kobo_bar_multi <- function(data, dico) {
     ggplot(castdata, aes(x=Var1, y=freqper)) +
       geom_bar(fill="#2a87c8",colour="#2a87c8",stat = "identity") +
       xlab("") + ylab("")+
+      scale_y_continuous(labels=percent)+
       coord_flip()+
       ggtitle(listlabel)+
       theme(plot.title=element_text(face="bold", size=9),

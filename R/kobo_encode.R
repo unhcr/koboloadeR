@@ -42,7 +42,7 @@ kobo_encode <- function(data, dico) {
   check <- as.data.frame(names(data))
   names(check)[1] <- "fullname"
   check$id <- row.names(check)
-  selectdf <- join(y=check, x=selectdf, type="left")
+  selectdf <- join(y=check, x=selectdf, by="fullname", type="left")
   selectdf <- selectdf[!is.na(selectdf$id), ]
   #names(selectdf)[1] <- "selectvar"
 

@@ -18,7 +18,7 @@ Save in the out folder one bar plot per select_one variable
 Automatically generate bar chart for each of the select_multiple question in the dataset. ggplot2 is used.
 }
 \examples{
-kobo_bar_one()
+kobo_bar_multi()
 
 }
 \author{

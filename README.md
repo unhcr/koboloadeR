@@ -1,6 +1,14 @@
 # koboloadeR
 
-The `koboloadeR` package is a simple R connection to the [KoBo API (v1)](https://kc.kobotoolbox.org/api/v1/) for the [KoBo Toolbox](http://www.kobotoolbox.org/) project. It also provides a Shiny data viewer accessible using:
+The `koboloadeR` package allows:
+
+* connection to the [KoBo API (v1)](https://kc.kobotoolbox.org/api/v1/) for the [KoBo Toolbox](http://www.kobotoolbox.org/) project. 
+
+* compute a data dictionnary based on xlsform. It implies ot have a few additionnal column in the xlsform in order to better define how data shoudl be analysid (cf infra)
+
+* generate automatically a series of charts & maps based on the data dictionnary
+
+* give access to a Shiny data viewer accessible using:
 
 ```
 kobo_apps("data_viewer")
@@ -8,7 +16,7 @@ kobo_apps("data_viewer")
 
 ## Installation
 
-In this early version of the package, `koboloadeR` will only available on GitHub. It can be installed using:
+`koboloadeR` is available on GitHub. It can be installed using:
 
 ```
 source("http://news.mrdwab.com/install_github.R")
@@ -18,6 +26,17 @@ install_github("Edouard-Legoupil/koboloadeR")
 ```
 
 (This version of `install_github` via [@jtilly](https://github.com/jtilly/install_github).)
+
+
+## Walkthrough
+
+ 1. Install the package
+ 2. Start a project within Rstudio
+ 3. Launch the `kobo_projectinit` functions in order to organise your project. It also starts a series of question to set up a configuration file to access a kobo server.
+ 4. Grapb your data with `kobo_data_downloader`
+ 5. Get your form with `kobo_form`
+ 6. Create your dictionnary with `kobo_dico`
+ 7. Generate your graphs with `kobo_bar_one`, `kobo_bar_multi`, `kobo_histo`, `kobo_trend`
 
 ## Functions
 

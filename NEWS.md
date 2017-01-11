@@ -2,17 +2,27 @@
 
 ## koboloadeR 0.1.3
 
-Adding a `kobo_projectinit` function to set the data anlysis project folders, write the config file and add some analysis scripts.
+Forked from [https://github.com/mrdwab/koboloadeR](https://github.com/mrdwab/koboloadeR)
 
-Adding a `kobo_dico` function to parse the form and build a data dictionnary. The dictionnary is used to automatically generate graphs and maps. A inked functions is `kobo_label` that allows to recreate labels easily using the dictionnary.
+* Adding a `kobo_projectinit` function to set the data anlysis project folders, write the config file and add some analysis scripts.
 
-Adding a `kobo_form` function to get the form from the api. This includes 2 subfunctions: `kobo_dataset2` to have a better view of used forms & `kobo_forminfo` in order to get the form creater user name and pull it correctly from the API.
+* Adding a `kobo_form` function to get the form from the api. This includes 2 subfunctions: `kobo_dataset2` to have a better view of used forms & `kobo_forminfo` in order to get the form creater user name and pull it correctly from the API.
 
-Adding a `kobo_label` function to add labels to variable
+* Adding a `kobo_dico` function to parse the form and build a data dictionnary. The dictionnary is used to automatically generate graphs and maps. A inked functions is `kobo_label` that allows to recreate labels easily using the dictionnary.
 
-Adding a `kobo_encode` function to re-encode variables as per dictionnary
+* Adding a `kobo_label` function to add labels to variable using dictionnary
 
-Added UNHCR Kobotoolbox server API and put it per default
+* Adding a `kobo_encode` function to re-encode variables as per dictionnary
+
+* Adding a `kobo_bar_one` function to generate bar chart - frequency for all `select_one` questions
+
+* Adding a `kobo_bar_multi` function to generate bar chart - frequency for all `select_omultiple` questions
+
+* Adding a `kobo_histo` function to generate histogramme for all `integer` questions
+
+* Adding a `kobo_trend` function to generate histogramme for all `select_one` and `select_multiple` questions based 
+
+* Added UNHCR Kobotoolbox server API and put it per default
 
 
 ## koboloadeR 0.1.2

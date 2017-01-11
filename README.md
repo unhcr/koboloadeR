@@ -4,11 +4,11 @@ The `koboloadeR` package allows:
 
 * connection to the [KoBo API (v1)](https://kc.kobotoolbox.org/api/v1/) for the [KoBo Toolbox](http://www.kobotoolbox.org/) project. 
 
-* compute a data dictionnary based on xlsform. It implies ot have a few additionnal column in the xlsform in order to better define how data shoudl be analysid (cf infra)
+* compute a data dictionnary based on [xlsform](http://xlsform.org). It implies ot have a few additionnal column in the xlsform in order to better define how data shoudl be analysid (cf infra)
 
-* generate automatically a series of charts & maps based on the data dictionnary
+* automatic generation of a series of charts & maps based on the data dictionnary
 
-* give access to a Shiny data viewer accessible using:
+* access to a Shiny data viewer accessible using:
 
 ```
 kobo_apps("data_viewer")
@@ -19,7 +19,7 @@ kobo_apps("data_viewer")
 `koboloadeR` is available on GitHub. It can be installed using:
 
 ```
-source("http://news.mrdwab.com/install_github.R")
+source("https://raw.githubusercontent.com/Edouard-Legoupil/koboloadeR/master/inst/script/install_github.R")
 install.packages(devtools)
 library(devtools)
 install_github("Edouard-Legoupil/koboloadeR")
@@ -28,15 +28,43 @@ install_github("Edouard-Legoupil/koboloadeR")
 (This version of `install_github` via [@jtilly](https://github.com/jtilly/install_github).)
 
 
-## Walkthrough
+## Walk Through
 
  1. Install the package
  2. Start a project within Rstudio
  3. Launch the `kobo_projectinit` functions in order to organise your project. It also starts a series of question to set up a configuration file to access a kobo server.
- 4. Grapb your data with `kobo_data_downloader`
+ 4. Grab your data with `kobo_data_downloader`
  5. Get your form with `kobo_form`
  6. Create your dictionnary with `kobo_dico`
  7. Generate your graphs with `kobo_bar_one`, `kobo_bar_multi`, `kobo_histo`, `kobo_trend`
+
+
+## Data Analysis Plan within your `xlsfrom`
+
+`Xlsform` is a convenient format to build advance form using any spreadsheet software such as [Libreoffice](https://www.libreoffice.org/download/libreoffice-fresh/) or MsExcel. 
+
+In order to build an an analysis plan within the form, the following columns needs to be added:
+
+### In the `survey` worksheet:
+
+Column | Description
+------|--------------
+`variable`| used to flag `ordinal` variables
+`disaggregation`| used to flag variables used for  `facet` or `correlate`
+`indicator`| used to map the question with an indicator
+`indicatorlevel`| used to map the question with an indicator
+`Indicatorexternal`| used to reference an external dataset to be used to calculate the indicators. Could be for instance a population dataset.
+`indicatorcalculation`| used to reference the calculation method to be used for the indicator
+`indicatornomalisation`| used to reference the normalisation method to be used for the indicator
+`indicatorgroup`| used to reference the the group the indicator should be associated to
+
+
+### In the `choices` worksheet:
+
+Column | Description
+------|--------------
+`order`| used to define order for ordinal variables
+`weight`| used to define weight for each answers in case it's used for some specific indicator calculation
 
 ## Functions
 

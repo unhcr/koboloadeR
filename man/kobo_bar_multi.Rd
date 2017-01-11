@@ -11,9 +11,6 @@ kobo_bar_multi(data, dico)
 
 \item{dico}{( generated from kobo_dico)}
 }
-\value{
-Save in the out folder one bar plot per select_one variable
-}
 \description{
 Automatically generate bar chart for each of the select_multiple question in the dataset. ggplot2 is used.
 }

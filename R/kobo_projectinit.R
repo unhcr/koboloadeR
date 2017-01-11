@@ -11,13 +11,14 @@
 #' @examples
 #' kobo_projectinit()
 #'
-#' @export kobo_projectinit
+
+
 kobo_projectinit <- function() {
   mainDir <- getwd()
-  
-  
+
+
   cat("We will first create various standard folders and copy some analysis script\n")
-  
+
   subDir <- "perso"
   if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
     cat("Perso exists in mainDir and is a directory\n")
@@ -28,7 +29,7 @@ kobo_projectinit <- function() {
     cat("Config directory does not exist in your project directory - creating now! ")
     dir.create(file.path(mainDir, subDir))
   }
-  
+
   if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
     # By this point, the directory either existed or has been successfully created
     setwd(file.path(mainDir, subDir))
@@ -42,8 +43,8 @@ kobo_projectinit <- function() {
     writeLines(c("### This folder is where your user name, password and config are stored"), fileConn)
     close(fileConn)
   }
-  
-  
+
+
   subDir <- "code"
   if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
     cat("Code exists in mainDir and is a directory")
@@ -54,7 +55,7 @@ kobo_projectinit <- function() {
     cat("Code directory does not exist in your project directory - creating now!\n ")
     dir.create(file.path(mainDir, subDir))
   }
-  
+
   if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
     # By this point, the directory either existed or has been successfully created
     setwd(file.path(mainDir, subDir))
@@ -88,10 +89,10 @@ kobo_projectinit <- function() {
   if (!file.exists(destfile)) {
     file.copy(paste(.libPaths(),"/koboloadeR/script/3-compute-indicators.R",sep=""), destfile)
   }
-  
-  
+
+
   subDir <- "data"
-  
+
   if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
     cat("Data exists in mainDir and is a directory\n")
   } else if (file.exists(paste(mainDir, subDir, sep = "/", collapse = "/"))) {
@@ -101,7 +102,7 @@ kobo_projectinit <- function() {
     cat("Data directory does not exist in your project directory - creating now! \n")
     dir.create(file.path(mainDir, subDir))
   }
-  
+
   if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
     # By this point, the directory either existed or has been successfully created
     setwd(file.path(mainDir, subDir))
@@ -118,8 +119,8 @@ kobo_projectinit <- function() {
                  "This project is only to keep track of your analysis workflow"), fileConn)
     close(fileConn)
   }
-  
-  
+
+
   subDir <- "out"
   if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
     cat("Out directory exists in your project directory and is a directory.\n")
@@ -130,7 +131,7 @@ kobo_projectinit <- function() {
     cat("Out directory does not exist in your project directory - creating now!\n ")
     dir.create(file.path(mainDir, subDir))
   }
-  
+
   if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
     # By this point, the directory either existed or has been successfully created
     setwd(file.path(mainDir, subDir))
@@ -145,11 +146,11 @@ kobo_projectinit <- function() {
                  "# BE CAREFUL: DO NOT SHARE PROTECTION SENSITIVE DATA ON GITHUB!"), fileConn)
     close(fileConn)
   }
-  
+
 
   ## Now we can create the configuration file for the project
   cat("Now we can create the configuration file for the project.\n")
-  
+
   apichoose <- readline("Select the server you want to use - Enter 1 for UNHCR server, 2 for OCHA server, 3 for HHI server and 4 for ONA server: ")
   username <- readline("Provide your username for the server you selected: ")
   password <- readline("Provide your password for the server you selected: ")
@@ -177,7 +178,7 @@ kobo_projectinit <- function() {
 
   str(kobo_data_downloader(formid, user, api, check = TRUE))
 
-  
+
   destfile="./perso/username.R"
   if (!file.exists(destfile)) {
     fileConn<-file(destfile)
@@ -187,7 +188,7 @@ kobo_projectinit <- function() {
                  "formid <- formid"), fileConn)
     close(fileConn)
   }
-  
+
 
 
   ## End of it...

@@ -22,6 +22,8 @@
 #' }
 #'
 #' @export kobo_dico
+#'
+
 kobo_dico <- function(form) {
 
   #kobo_form(formid, user = user, api = api)
@@ -193,10 +195,10 @@ kobo_dico <- function(form) {
   names(choices)[names(choices)=="label"] <- "labelchoice"
   #rm(choices)
   choices <- join(x=choices, y=survey, by="listname", type="left")
-  
+
   choices$type <- with(choices, ifelse(grepl("select_one", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  choices$type),
                                        paste0("select_one_d"),choices$type))
-  
+
   choices$type <- with(choices, ifelse(grepl("select_multiple_d", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  choices$type),
                                        paste0("select_multiple"),choices$type))
 

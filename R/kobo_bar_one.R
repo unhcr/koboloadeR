@@ -9,7 +9,6 @@
 #' @param dico ( generated from kobo_dico)
 #'
 #'
-#' @return Save in the out folder one bar plot per select_one variable
 #'
 #' @author Edouard Legoupil
 #'
@@ -22,7 +21,6 @@
 #' kobo_bar_one(data, dico)
 #' }
 #'
-#' @export plots
 #'
 
 kobo_bar_one <- function(data, dico) {
@@ -43,12 +41,12 @@ kobo_bar_one <- function(data, dico) {
     # i <-2
     variablename <- names(data.single)[i]
     title <- attributes(data.single)$variable.labels[i]
-    
-    ##### Set up factor level order -- 
-    
-    ## variable ordinal or not 
-    
-    
+
+    ##### Set up factor level order --
+
+    ## variable ordinal or not
+
+
 
     ## if veriable is not ordinal, Proportion table used to order the levels of the factor
     frequ <- table (data.single[ , i])
@@ -69,7 +67,7 @@ kobo_bar_one <- function(data, dico) {
       theme(plot.title=element_text(face="bold", size=9),
             plot.background = element_rect(fill = "transparent",colour = NA))
     ggsave(filename=paste("out/bar_onefreq_",variablename,".png",sep=""), plot=plotfreq, width=10, height=10,units="in", dpi=300)
-    
+
     cat(paste0("Generated graph for question: ", title , "\n"))
 
     rm(variablename, freq)

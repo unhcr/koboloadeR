@@ -11,9 +11,6 @@ kobo_histo(data, dico)
 
 \item{dico}{( generated from kobo_dico)}
 }
-\value{
-Save in the out folder one bar plot per select_one variable
-}
 \description{
 Automatically generate histogrammes for each of the integer questions in the dataset. ggplot2 is used.
 }

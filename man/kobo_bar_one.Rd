@@ -11,9 +11,6 @@ kobo_bar_one(data, dico)
 
 \item{dico}{( generated from kobo_dico)}
 }
-\value{
-Save in the out folder one bar plot per select_one variable
-}
 \description{
 Automatically generate bar chart for each of the select_one question in the dataset. ggplot2 is used.
 }

@@ -15,9 +15,6 @@ kobo_trend(data, date, dico)
 
 \item{duration}{number of days in the past}
 }
-\value{
-Save in the out folder one plot per nominal or ordinal variable
-}
 \description{
 Automatically generate histogramm & density plots for all nominal & ordinal variables based on dates. ggplot2 is used.
 }

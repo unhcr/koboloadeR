@@ -22,8 +22,7 @@
 #' kobo_encode(data, dico)
 #' }
 #'
-#' @export data
-#' 
+#'
 
 
 kobo_encode <- function(data, dico) {
@@ -37,7 +36,7 @@ kobo_encode <- function(data, dico) {
 
   ## List of select one and select multiple variable to re-encode ## "select_one",
   selectdf <- as.data.frame(dico[dico$type %in% c("select_multiple", "select_one_d"), c("fullname","name","listname","type")])
-  
+
   ### Verify that those variable are actually in the original dataframe
   check <- as.data.frame(names(data))
   names(check)[1] <- "fullname"

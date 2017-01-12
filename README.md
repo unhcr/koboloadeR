@@ -31,7 +31,7 @@ install_github("Edouard-Legoupil/koboloadeR")
  4. Grab your data with `kobo_data_downloader`
  5. Get your form with `kobo_form`
  6. Create your dictionnary with `kobo_dico`
- 7. Generate your graphs with `kobo_bar_one`, `kobo_bar_multi`, `kobo_histo`, `kobo_trend`
+ 7. Generate your graphs with `kobo_bar_one`, `kobo_bar_multi`, `kobo_histo`, `kobo_trend`, `kobo_bar_one_facet`, `kobo_correlate` (see below for explanation)
 
 
 ## Data Analysis Plan within your `xlsfrom`
@@ -66,7 +66,7 @@ Column | Description
 `weight`| used to define weight for each answers in case it's used for some specific indicator calculation
 `recategorise`| used to recategorise quickly choices for a question
 
-## Functions
+## Core Functions
 
 The package contains the following core functions:
 
@@ -76,7 +76,21 @@ Function | Description
 `kobo_submission_count`|Lists the number of submissions for a particular data collection project. A single integer. This function is mostly for use within the `kobo_data_downloader` function.
 `kobo_data_downloader`|Downloads a specified dataset via the KoBo API. Returns a `data.table` of the entire dataset requested.
 
-For all of the above functions, the default is to use the KoBo Toolbox API URLs. However, it should be possible to specify the API URL to use if you have a custom installation of the toolbox.
+For all of the above functions, the default is to use the UNHCR KoBo Toolbox API URLs. However, it should be possible to specify the API URL to use if you have a custom installation of the toolbox.
+
+## Chart Generation functions
+
+* Adding a `kobo_bar_one` function to generate bar chart - frequency for all `select_one` questions
+
+* Adding a `kobo_bar_multi` function to generate bar chart - frequency for all `select_multiple` questions
+
+* Adding a `kobo_histo` function to generate histogramme for all `integer` questions
+
+* Adding a `kobo_trend` function to generate histogramme for all `select_one` and `select_multiple` questions based 
+
+* Adding a `kobo_bar_one_facet` function to generate bar chart for all `select_one` questions facetted on questions tagged as `facet` in the data analysis plan 
+
+* Adding a `kobo_correlate` function to generate dot plot for all `integer` questions correlated with integer questions tagged as `correlate` in the data analysis plan 
 
 ## Shiny Apps
 

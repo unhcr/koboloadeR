@@ -16,11 +16,15 @@ Forked from [https://github.com/mrdwab/koboloadeR](https://github.com/mrdwab/kob
 
 * Adding a `kobo_bar_one` function to generate bar chart - frequency for all `select_one` questions
 
-* Adding a `kobo_bar_multi` function to generate bar chart - frequency for all `select_omultiple` questions
+* Adding a `kobo_bar_multi` function to generate bar chart - frequency for all `select_multiple` questions
 
 * Adding a `kobo_histo` function to generate histogramme for all `integer` questions
 
 * Adding a `kobo_trend` function to generate histogramme for all `select_one` and `select_multiple` questions based 
+
+* Adding a `kobo_bar_one_facet` function to generate bar chart for all `select_one` questions facetted on questions tagged as `facet` in the data analysis plan 
+
+* Adding a `kobo_correlate` function to generate dot plot for all `integer` questions correlated with integer questions tagged as `correlate` in the data analysis plan 
 
 * Added UNHCR Kobotoolbox server API and put it per default
 

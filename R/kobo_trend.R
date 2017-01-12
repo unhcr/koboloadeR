@@ -27,11 +27,19 @@
 
 kobo_trend <- function(data, date, dico) {
 
-  ##########################################################################################
-  ####################
-  #duration <- 550
-  #date <- "date"
-  #selectallt <- as.data.frame(dico[dico$type %in% c("select_multiple","select_one_d"), c("fullname","listname","label","name")])
+  mainDir <- "out"
+  subDir <- "trend"
+  if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
+    cat("trend directory exists in out directory and is a directory.\n")
+  } else if (file.exists(paste(mainDir, subDir, sep = "/", collapse = "/"))) {
+    cat("trend directory exists in your out directory.\n")
+    # you will probably want to handle this separately
+  } else {
+    cat("trend directory does not exist in your out directory - creating now!\n ")
+    dir.create(file.path(mainDir, subDir))
+  }
+  
+  
   selectallt <- as.data.frame(dico[dico$type %in% c("select_one"), c("fullname","listname","label","name")])
   ### Verify that those variable are actually in the original dataframe
   check <- as.data.frame(names(data))
@@ -82,7 +90,7 @@ kobo_trend <- function(data, date, dico) {
             plot.background = element_rect(fill = "transparent",colour = NA),
             legend.title = element_blank(),
             legend.position="bottom")
-    ggsave(filename=paste("out/trend_",variablename,".png",sep=""), width=10, height=8,units="in", dpi=300)
+    ggsave(filename=paste("out/trend/trend_",variablename,".png",sep=""), width=10, height=8,units="in", dpi=300)
     cat(paste0("Generated Trend graph for question: ", title , "\n"))
 
   }

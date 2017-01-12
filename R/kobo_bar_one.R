@@ -24,9 +24,33 @@
 #'
 
 kobo_bar_one <- function(data, dico) {
+  
+  mainDir <- "out"
+  subDir <- "bar_one"
+  if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
+    cat("bar_one directory exists in out directory and is a directory.\n")
+  } else if (file.exists(paste(mainDir, subDir, sep = "/", collapse = "/"))) {
+    cat("bar_one directory exists in your out directory.\n")
+    # you will probably want to handle this separately
+  } else {
+    cat("bar_one directory does not exist in your out directory - creating now!\n ")
+    dir.create(file.path(mainDir, subDir))
+  }
+  
 
     ## get list of all nominal variables
     selectone <- as.character(dico[dico$type=="select_one", c("fullname")])
+    
+    ## Check that those variable are in the dataset
+    selectdf <- dico[dico$type=="select_one" , c("fullname","listname","label","name","variable","disaggregation")]
+    check <- as.data.frame(names(data))
+    names(check)[1] <- "fullname"
+    check$id <- row.names(check)
+    selectdf <- join(x=selectdf, y=check, by="fullname",  type="left")
+    selectdf <- selectdf[!is.na(selectdf3$id), ]
+    selectone <- as.character(selectdf[, c("fullname")])
+    
+    
     selectonet <- as.data.frame(selectone)
 
 
@@ -48,7 +72,7 @@ kobo_bar_one <- function(data, dico) {
 
 
 
-    ## if veriable is not ordinal, Proportion table used to order the levels of the factor
+    ## if variable is not ordinal, Proportion table used to order the levels of the factor
     frequ <- table (data.single[ , i])
     data.single[ , i] <- factor(data.single[ , i], levels=names(frequ[order(frequ, decreasing = TRUE)]))
 
@@ -66,7 +90,7 @@ kobo_bar_one <- function(data, dico) {
       ggtitle(title)+
       theme(plot.title=element_text(face="bold", size=9),
             plot.background = element_rect(fill = "transparent",colour = NA))
-    ggsave(filename=paste("out/bar_onefreq_",variablename,".png",sep=""), plot=plotfreq, width=10, height=10,units="in", dpi=300)
+    ggsave(filename=paste("out/bar_one/bar_onefreq_",variablename,".png",sep=""), plot=plotfreq, width=10, height=10,units="in", dpi=300)
 
     cat(paste0("Generated bar chart for question: ", title , "\n"))
 

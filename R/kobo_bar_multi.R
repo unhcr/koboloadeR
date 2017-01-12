@@ -25,7 +25,20 @@
 
 kobo_bar_multi <- function(data, dico) {
 
-  selectdf <- dico[dico$type=="select_multiple", c("fullname","listname","label","name")]
+  mainDir <- "out"
+  subDir <- "bar_multi"
+  if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
+    cat("bar_multi directory exists in out directory and is a directory.\n")
+  } else if (file.exists(paste(mainDir, subDir, sep = "/", collapse = "/"))) {
+    cat("bar_multi directory exists in your out directory.\n")
+    # you will probably want to handle this separately
+  } else {
+    cat("bar_multi directory does not exist in your out directory - creating now!\n ")
+    dir.create(file.path(mainDir, subDir))
+  }
+  
+  
+  selectdf <- dico[dico$type=="select_multiple", c("fullname","listname","label","name","variable","disaggregation")]
 
   ### Verify that those variable are actually in the original dataframe
   check <- as.data.frame(names(data))
@@ -39,7 +52,7 @@ kobo_bar_multi <- function(data, dico) {
   data.selectmulti  <- kobo_label(data.selectmulti, dico)
 
 
-  listmulti <- dico[dico$type=="select_multiple_d", c("listname","label","name","fullname")]
+  listmulti <- dico[dico$type=="select_multiple_d", c("listname","label","name","fullname","variable","disaggregation")]
   selectdf1 <- as.data.frame(unique(selectdf$listname))
   names(selectdf1)[1] <- "listname"
   listmulti <- join(x=listmulti, y=selectdf1, by="listname", type="left")
@@ -55,10 +68,10 @@ kobo_bar_multi <- function(data, dico) {
     selectmultilist <- as.character(dico[dico$type=="select_multiple" & dico$listname==listloop , c("fullname")])
 
     ## Check that those variable are in the dataset
-    selectdf2 <- dico[dico$type=="select_multiple" & dico$listname==listloop , c("fullname","listname","label","name")]
-    selectdf3 <- join(x=selectdf2, y=check, by="fullname",  type="left")
-    selectdf3 <- selectdf3[!is.na(selectdf3$id), ]
-    selectmultilist <- as.character(selectdf3[, c("fullname")])
+    selectdf2 <- dico[dico$type=="select_multiple" & dico$listname==listloop , c("fullname","listname","label","name","variable","disaggregation")]
+    selectdf2 <- join(x=selectdf2, y=check, by="fullname",  type="left")
+    selectdf2 <- selectdf2[!is.na(selectdf3$id), ]
+    selectmultilist <- as.character(selectdf2[, c("fullname")])
 
     ## Reshape answers
     data.selectmultilist <- data.selectmulti[ selectmultilist ]
@@ -78,7 +91,7 @@ kobo_bar_multi <- function(data, dico) {
       ggtitle(listlabel)+
       theme(plot.title=element_text(face="bold", size=9),
             plot.background = element_rect(fill = "transparent",colour = NA))
-    ggsave(filename=paste("out/bar_multifreq_",listloop,".png",sep=""), width=8, height=10,units="in", dpi=300)
+    ggsave(filename=paste("out/bar_multi/bar_multifreq_",listloop,".png",sep=""), width=8, height=10,units="in", dpi=300)
 
     cat(paste0("Generated bar chart for question: ", listlabel , "\n"))
 

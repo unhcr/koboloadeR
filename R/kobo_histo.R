@@ -25,6 +25,20 @@
 
 kobo_histo <- function(data, dico) {
 
+  
+  mainDir <- "out"
+  subDir <- "histo"
+  if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
+    cat("histo directory exists in out directory and is a directory.\n")
+  } else if (file.exists(paste(mainDir, subDir, sep = "/", collapse = "/"))) {
+    cat("histo directory exists in your out directory.\n")
+    # you will probably want to handle this separately
+  } else {
+    cat("histo directory does not exist in your out directory - creating now!\n ")
+    dir.create(file.path(mainDir, subDir))
+  }
+  
+  
   selectdf <- dico[dico$type=="integer", c("fullname","listname","label","name")]
 
   ### Verify that those variable are actually in the original dataframe
@@ -54,7 +68,7 @@ kobo_histo <- function(data, dico) {
       labs(x="", y="Count")+
       theme(plot.title=element_text(face="bold", size=9),
             plot.background = element_rect(fill = "transparent",colour = NA))
-    ggsave(filename=paste("out/histo_",variablename,".png",sep=""), width=10, height=10,units="in", dpi=300)
+    ggsave(filename=paste("out/histo/histo_",variablename,".png",sep=""), width=10, height=10,units="in", dpi=300)
 
     # trendline on histogram by adding geom_density
       ggplot(data=data.integer, aes(data.integer[ , i])) +
@@ -64,7 +78,7 @@ kobo_histo <- function(data, dico) {
       labs(x="", y="Frequency")+
         theme(plot.title=element_text(face="bold", size=9),
               plot.background = element_rect(fill = "transparent",colour = NA))
-      ggsave(filename=paste("out/histodensity_",variablename,".png",sep=""), width=10, height=10,units="in", dpi=300)
+      ggsave(filename=paste("out/histo/histodensity_",variablename,".png",sep=""), width=10, height=10,units="in", dpi=300)
 
     cat(paste0("Generated histogramme for question: ", title , "\n"))
   }

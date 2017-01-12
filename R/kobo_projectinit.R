@@ -21,12 +21,12 @@ kobo_projectinit <- function() {
 
   subDir <- "perso"
   if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
-    cat("Perso exists in mainDir and is a directory\n")
+    cat("Perso exists in mainDir and is a directory.\n")
   } else if (file.exists(paste(mainDir, subDir, sep = "/", collapse = "/"))) {
-    cat("Perso directory exists in your project directory but is a file")
+    cat("perso directory exists in your project directory but is a file.\n")
     # you will probably want to handle this separately
   } else {
-    cat("Config directory does not exist in your project directory - creating now! ")
+    cat("perso directory does not exist in your project directory - creating now!\n ")
     dir.create(file.path(mainDir, subDir))
   }
 
@@ -47,9 +47,9 @@ kobo_projectinit <- function() {
 
   subDir <- "code"
   if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
-    cat("Code exists in mainDir and is a directory")
+    cat("Code exists in mainDir and is a directory.\n")
   } else if (file.exists(paste(mainDir, subDir, sep = "/", collapse = "/"))) {
-    cat("Code directory exists in your project directory but is a file")
+    cat("Code directory exists in your project directory but is a file.\n")
     # you will probably want to handle this separately
   } else {
     cat("Code directory does not exist in your project directory - creating now!\n ")
@@ -87,9 +87,9 @@ kobo_projectinit <- function() {
   subDir <- "data"
 
   if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
-    cat("Data exists in mainDir and is a directory\n")
+    cat("Data exists in mainDir and is a directory.\n")
   } else if (file.exists(paste(mainDir, subDir, sep = "/", collapse = "/"))) {
-    cat("Data directory exists in your project directory but is a file")
+    cat("Data directory exists in your project directory but is a file.\n")
     # you will probably want to handle this separately
   } else {
     cat("Data directory does not exist in your project directory - creating now! \n")
@@ -118,7 +118,7 @@ kobo_projectinit <- function() {
   if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
     cat("Out directory exists in your project directory and is a directory.\n")
   } else if (file.exists(paste(mainDir, subDir, sep = "/", collapse = "/"))) {
-    cat("Ouput exists in your project directory but is a file\n")
+    cat("Ouput exists in your project directory but is a file.\n")
     # you will probably want to handle this separately
   } else {
     cat("Out directory does not exist in your project directory - creating now!\n ")

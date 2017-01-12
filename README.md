@@ -14,23 +14,18 @@ The `koboloadeR` package allows:
 kobo_apps("data_viewer")
 ```
 
-## Installation
 
-`koboloadeR` is available on GitHub. It can be installed using:
+## Walk Through
 
+ 1. Install the package
 ```
 source("https://raw.githubusercontent.com/Edouard-Legoupil/koboloadeR/master/inst/script/install_github.R")
 install.packages(devtools)
 library(devtools)
 install_github("Edouard-Legoupil/koboloadeR")
 ```
-
 (This version of `install_github` via [@jtilly](https://github.com/jtilly/install_github).)
 
-
-## Walk Through
-
- 1. Install the package
  2. Start a project within Rstudio
  3. Launch the `kobo_projectinit` functions in order to organise your project. It also starts a series of question to set up a configuration file to access a kobo server.
  4. Grab your data with `kobo_data_downloader`
@@ -43,20 +38,24 @@ install_github("Edouard-Legoupil/koboloadeR")
 
 `Xlsform` is a convenient format to build advance form using any spreadsheet software such as [Libreoffice](https://www.libreoffice.org/download/libreoffice-fresh/) or MsExcel. 
 
-In order to build an an analysis plan within the form, the following columns needs to be added:
+In order to build an an analysis plan within the form, the columns described in the tables below needs to be added. Note that if the column are not present, the script will create dummy ones. It's always possible to add your analysis plan to an existing form and relaunch `kobo_dico` in order to regenerate the correct analysis plan.
+
+Note that for charting purpose, it's recommanded that labels for questions & choices should not exceed 70 characters. It's possible again to re-edit directly your xlsform and regenerate a new `dico`.
 
 ### In the `survey` worksheet:
 
 Column | Description
 ------|--------------
+`repeatsummarize`| used to summarize repeat questions 
 `variable`| used to flag `ordinal` variables
 `disaggregation`| used to flag variables used for  `facet` or `correlate`
 `indicator`| used to map the question with an indicator
-`indicatorlevel`| used to map the question with an indicator
-`Indicatorexternal`| used to reference an external dataset to be used to calculate the indicators. Could be for instance a population dataset.
-`indicatorcalculation`| used to reference the calculation method to be used for the indicator
-`indicatornomalisation`| used to reference the normalisation method to be used for the indicator
 `indicatorgroup`| used to reference the the group the indicator should be associated to
+`indicatortype`| define wether the indicator is  `Measurement`: variable used to quantify other indicators, `Disaggregation`: variable that describes certain groups, `Predictor`: Indicator that describes the cause of a situation, `Outcome`: Indicator that describes the consequence of a situation or `Judgment`: indicator that translates a subjective assessment
+`indicatorlevel`| used to define the geographic aggregation to be used for indicator calculation
+`Indicatorexternal`| used to reference an external dataset to be used to calculate the indicators. Could be for instance a population dataset.
+`indicatorcalculation`| used to reference the calculation method to be used for the indicator: `Percentage`, `Sum`, `Max/Min`, `Average`, `Score`, `Denominator`, `Numerator`, `Numerator.external` (i.e. linked to an external value)
+`indicatornomalisation`| used to reference the normalisation method to be used for the indicator
 
 
 ### In the `choices` worksheet:
@@ -65,6 +64,7 @@ Column | Description
 ------|--------------
 `order`| used to define order for ordinal variables
 `weight`| used to define weight for each answers in case it's used for some specific indicator calculation
+`recategorise`| used to recategorise quickly choices for a question
 
 ## Functions
 

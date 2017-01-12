@@ -2,7 +2,7 @@
 #' @rdname kobo_trend
 #' @title  Generate histogramm plots based on dates
 #'
-#' @description  Automatically generate histogramm & density plots for all nominal & ordinal variables based on dates. ggplot2 is used.
+#' @description  Automatically generate histogramm for all nominal & ordinal variables based on dates. ggplot2 is used.
 #'
 #'
 #' @param data kobodatset to use

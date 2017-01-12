@@ -66,7 +66,7 @@ kobo_histo <- function(data, dico) {
               plot.background = element_rect(fill = "transparent",colour = NA))
       ggsave(filename=paste("out/histodensity_",variablename,".png",sep=""), width=10, height=10,units="in", dpi=300)
 
-    cat(paste0("Generated graph for question: ", title , "\n"))
+    cat(paste0("Generated histogramme for question: ", title , "\n"))
   }
 }
 NULL

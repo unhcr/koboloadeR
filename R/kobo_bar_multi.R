@@ -80,7 +80,7 @@ kobo_bar_multi <- function(data, dico) {
             plot.background = element_rect(fill = "transparent",colour = NA))
     ggsave(filename=paste("out/bar_multifreq_",listloop,".png",sep=""), width=8, height=10,units="in", dpi=300)
 
-    cat(paste0("Generated graph for question: ", listlabel , "\n"))
+    cat(paste0("Generated bar chart for question: ", listlabel , "\n"))
 
   }
 

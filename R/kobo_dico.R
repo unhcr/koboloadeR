@@ -37,10 +37,83 @@ kobo_dico <- function(form) {
 
   ## Rename the variable label
   names(survey)[names(survey)=="label::English"] <- "label"
+  
+  if("repeatsummarize" %in% colnames(survey))
+  {
+    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `repeatsummarize` in your survey worksheet.\n");
+  } else 
+  {cat("Checking Data Analysis Plan within your xlsform -  No column `repeatsummarize` in your survey worksheet. Creating dummy one.\n");
+    survey$repeatsummarize <- ""}
+  
+  if("variable" %in% colnames(survey))
+  {
+    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `variable` in your survey worksheet.\n");
+  } else 
+  {cat("Checking Data Analysis Plan within your xlsform -  No column `variable` in your survey worksheet. Creating dummy one.\n");
+    survey$variable <- ""}
 
+  if("disaggregation" %in% colnames(survey))
+  {
+    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `disaggregation` in your survey worksheet.\n");
+  } else 
+  {cat("Checking Data Analysis Plan within your xlsform -  No column `disaggregation` in your survey worksheet. Creating dummy one.\n");
+    survey$disaggregation <- ""}
+  
+  if("indicator" %in% colnames(survey))
+  {
+    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicator` in your survey worksheet.\n");
+  } else 
+  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicator` in your survey worksheet. Creating dummy one.\n");
+    survey$indicator <- ""}
+  
+  if("indicatorgroup" %in% colnames(survey))
+  {
+    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicatorgroup` in your survey worksheet.\n");
+  } else 
+  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicatorgroup` in your survey worksheet. Creating dummy one.\n");
+    survey$indicatorgroup <- ""}
+  
+  if("indicatortype" %in% colnames(survey))
+  {
+    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicatortype` in your survey worksheet.\n");
+  } else 
+  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicatortype` in your survey worksheet. Creating dummy one.\n");
+    survey$indicatortype <- ""}
+  
+  if("indicatorlevel" %in% colnames(survey))
+  {
+    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicatorlevel` in your survey worksheet.\n");
+  } else 
+  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicatorlevel` in your survey worksheet. Creating dummy one.\n");
+    survey$indicatorlevel <- ""}
+  
+  if("dataexternal" %in% colnames(survey))
+  {
+    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `dataexternal` in your survey worksheet.\n");
+  } else 
+  {cat("Checking Data Analysis Plan within your xlsform -  No column `dataexternal` in your survey worksheet. Creating dummy one.\n");
+    survey$dataexternal <- ""}
+  
+  if("indicatorcalculation" %in% colnames(survey))
+  {
+    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicatorcalculation` in your survey worksheet.\n");
+  } else 
+  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicatorcalculation` in your survey worksheet. Creating dummy one.\n");
+    survey$indicatorcalculation <- ""}
+  
+  if("indicatornormalisation" %in% colnames(survey))
+  {
+    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicatornormalisation` in your survey worksheet.\n");
+  } else 
+  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicatornormalisation` in your survey worksheet. Creating dummy one.\n");
+    survey$indicatornormalisation <- ""}
+  
+  
   ## Avoid columns without names
   survey <- survey[ ,c("type",   "name" ,  "label",
-                       "indicator","select", "Comment", "indicatordirect", "indicatorgroup" ## This indicator reference
+                       "repeatsummarize","variable","disaggregation","indicator","indicatorgroup","indicatortype",
+                       "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation"
+                       #"indicator","select", "Comment", "indicatordirect", "indicatorgroup" ## This indicator reference
                        # "label::English",
                        #"label::Arabic" ,"hint::Arabic",
                        # "hint::English", "relevant",  "required", "constraint",   "constraint_message::Arabic",
@@ -177,6 +250,7 @@ kobo_dico <- function(form) {
   survey$labelchoice <- survey$label
   survey$order <- ""
   survey$weight <- ""
+  survey$recategorise <- ""
 
 
 
@@ -207,6 +281,29 @@ kobo_dico <- function(form) {
   choices$labelfull <- paste0(choices$labelq, sep = ": ", choices$labelchoice)
   choices$namefull <- paste0(choices$fullname, sep = ".", choices$name)
 
+  
+  
+  if("order" %in% colnames(choices))
+  {
+    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `order` in your survey worksheet.\n");
+  } else 
+  {cat("Checking Data Analysis Plan within your xlsform -  No column `order` in your survey worksheet. Creating dummy one.\n");
+    choices$order <- ""}
+  
+  if("weight" %in% colnames(choices))
+  {
+    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `weight` in your survey worksheet.\n");
+  } else 
+  {cat("Checking Data Analysis Plan within your xlsform -  No column `weight` in your survey worksheet. Creating dummy one.\n");
+    choices$weight <- ""}
+  
+  if("recategorise" %in% colnames(choices))
+  {
+    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `recategorise` in your survey worksheet.\n");
+  } else 
+  {cat("Checking Data Analysis Plan within your xlsform -  No column `recategorise` in your survey worksheet. Creating dummy one.\n");
+    choices$recategorise <- ""}
+  
   #############################################################################################################
   #### Now Row bing questions & choices
   #
@@ -214,14 +311,18 @@ kobo_dico <- function(form) {
     ## not kept: "nameq"     "labelq"   ,"fullname", "label",
     #names(survey) - "type" "name",  "fullname", "label",  "listname", "qrepeat"m  "qlevel",   "qgroup"
   choices2 <- choices[,c("type", "name", "namefull",  "labelfull", "listname", "qrepeat", "qlevel", "qgroup", "labelchoice",
-                          "indicator","select", "Comment", "indicatordirect", "indicatorgroup","order", "weight")]
+                         "repeatsummarize","variable","disaggregation","indicator","indicatorgroup","indicatortype",
+                         "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation",
+                         "order", "weight", "recategorise")]
 
   names(choices2)[names(choices2)=="namefull"] <- "fullname"
   names(choices2)[names(choices2)=="labelfull"] <- "label"
 
 
   survey2 <-    survey[,c("type", "name",  "fullname", "label",  "listname", "qrepeat",  "qlevel",   "qgroup", "labelchoice",
-                          "indicator","select", "Comment", "indicatordirect", "indicatorgroup","order", "weight")]
+                          "repeatsummarize","variable","disaggregation","indicator","indicatorgroup","indicatortype",
+                          "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation",
+                          "order", "weight", "recategorise")]
 
   ### Check -- normally there should not be duplicate
   #choices3 <- choices2[!duplicated(choices2$fullname), ]

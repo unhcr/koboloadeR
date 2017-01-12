@@ -64,7 +64,7 @@ kobo_encode <- function(data, dico) {
     data[, fullname][data[, fullname]==variablecode] <- labelchoice
     #View(data[i])
     } else {
-      cat(paste0("The following variable has no answers to recode in the dataset: ",fullname,"\n")) }
+      cat(paste0("The following variable has no answers to recode in the dataset: ",fullname, "\n")) }
     rm(fullname, variablename, variablelistname,variablelevel)
   }
 

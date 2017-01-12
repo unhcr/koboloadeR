@@ -10,7 +10,7 @@ kobo_projectinit()
 A structure of directory and scripts in order to set up quickly a project.
 }
 \description{
-Create analysis project structure & related analysis scripts
+Create analysis project structure
 }
 \examples{
 kobo_projectinit()

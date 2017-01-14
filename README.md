@@ -31,7 +31,7 @@ install_github("Edouard-Legoupil/koboloadeR")
  4. Grab your data with `kobo_data_downloader`
  5. Get your form with `kobo_form`
  6. Create your dictionnary with `kobo_dico`
- 7. Generate your graphs with `kobo_bar_one`, `kobo_bar_multi`, `kobo_histo`, `kobo_trend`, `kobo_bar_one_facet`, `kobo_correlate` (see below for explanation)
+ 7. Generate your graphs with `kobo_bar_one`, `kobo_bar_multi`, `kobo_histo`, `kobo_trend`, `kobo_bar_one_facet`, `kobo_correlate`, `kobo_boxplot_facet` (see below for explanation)
 
 
 ## Data Analysis Plan within your `xlsfrom`
@@ -91,6 +91,8 @@ For all of the above functions, the default is to use the UNHCR KoBo Toolbox API
 * Adding a `kobo_bar_one_facet` function to generate bar chart for all `select_one` questions facetted on questions tagged as `facet` in the data analysis plan 
 
 * Adding a `kobo_correlate` function to generate dot plot for all `integer` questions correlated with integer questions tagged as `correlate` in the data analysis plan 
+
+* Adding a `kobo_boxplot_facet` function to generate box plot for all `integer` questions faceted with categorical questions tagged as `facet` in the data analysis plan 
 
 ## Shiny Apps
 

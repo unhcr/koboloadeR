@@ -71,7 +71,7 @@ kobo_bar_multi <- function(data, dico) {
     ## Check that those variable are in the dataset
     selectdf2 <- dico[dico$type=="select_multiple" & dico$listname==listloop , c("fullname","listname","label","name","variable","disaggregation")]
     selectdf2 <- join(x=selectdf2, y=check, by="fullname",  type="left")
-    selectdf2 <- selectdf2[!is.na(selectdf3$id), ]
+    selectdf2 <- selectdf2[!is.na(selectdf2$id), ]
     selectmultilist <- as.character(selectdf2[, c("fullname")])
 
     ## Reshape answers

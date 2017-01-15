@@ -47,7 +47,7 @@ kobo_bar_one <- function(data, dico) {
     names(check)[1] <- "fullname"
     check$id <- row.names(check)
     selectdf <- join(x=selectdf, y=check, by="fullname",  type="left")
-    selectdf <- selectdf[!is.na(selectdf3$id), ]
+    selectdf <- selectdf[!is.na(selectdf$id), ]
     selectone <- as.character(selectdf[, c("fullname")])
     
     
@@ -57,12 +57,13 @@ kobo_bar_one <- function(data, dico) {
     data.single <- data [ selectone ]
     ## Remove variable where we get only NA
     data.single <- data.single[,colSums(is.na(data.single))<nrow(data.single)]
+    data.single <- kobo_encode(data.single, dico)
     data.single <- kobo_label(data.single, dico)
 
 
   ### Now let's create proportion graphs -- bar chart
   for (i in 1:nrow(selectonet) ) {
-    # i <-2
+    # i <-77
     variablename <- names(data.single)[i]
     title <- attributes(data.single)$variable.labels[i]
 

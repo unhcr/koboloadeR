@@ -264,24 +264,6 @@ kobo_dico <- function(form) {
   ## Remove trailing space
   choices$listname <- trim(choices$listname)
   choices$label <- trim(choices$label)
-
-  choices <- choices[,c("listname",   "name" ,  "label", "order", "weight")]
-  names(choices)[names(choices)=="label"] <- "labelchoice"
-  #rm(choices)
-  choices <- join(x=choices, y=survey, by="listname", type="left")
-
-  choices$type <- with(choices, ifelse(grepl("select_one", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  choices$type),
-                                       paste0("select_one_d"),choices$type))
-
-  choices$type <- with(choices, ifelse(grepl("select_multiple_d", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  choices$type),
-                                       paste0("select_multiple"),choices$type))
-
-  names(choices)[7] <- "nameq"
-  names(choices)[8] <- "labelq"
-  choices$labelfull <- paste0(choices$labelq, sep = ": ", choices$labelchoice)
-  choices$namefull <- paste0(choices$fullname, sep = ".", choices$name)
-
-  
   
   if("order" %in% colnames(choices))
   {
@@ -303,6 +285,24 @@ kobo_dico <- function(form) {
   } else 
   {cat("Checking Data Analysis Plan within your xlsform -  No column `recategorise` in your survey worksheet. Creating dummy one.\n");
     choices$recategorise <- ""}
+
+  choices <- choices[,c("listname",   "name" ,  "label", "order", "weight","recategorise")]
+  names(choices)[names(choices)=="label"] <- "labelchoice"
+  #rm(choices)
+  choices <- join(x=choices, y=survey, by="listname", type="left")
+
+  choices$type <- with(choices, ifelse(grepl("select_one", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  choices$type),
+                                       paste0("select_one_d"),choices$type))
+
+  choices$type <- with(choices, ifelse(grepl("select_multiple_d", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  choices$type),
+                                       paste0("select_multiple"),choices$type))
+  
+
+  names(choices)[8] <- "nameq"
+  names(choices)[9] <- "labelq"
+  choices$labelfull <- paste0(choices$labelq, sep = ": ", choices$labelchoice)
+  choices$namefull <- paste0(choices$fullname, sep = ".", choices$name)
+
   
   #############################################################################################################
   #### Now Row bing questions & choices
@@ -310,7 +310,7 @@ kobo_dico <- function(form) {
     #names(choices) -"type", "name", "namefull",  "labelfull", "listname", "qrepeat", "qlevel", "qgroup"
     ## not kept: "nameq"     "labelq"   ,"fullname", "label",
     #names(survey) - "type" "name",  "fullname", "label",  "listname", "qrepeat"m  "qlevel",   "qgroup"
-  choices2 <- choices[,c("type", "name", "namefull",  "labelfull", "listname", "qrepeat", "qlevel", "qgroup", "labelchoice",
+  choices2 <- choices[ ,c("type", "name", "namefull",  "labelfull", "listname", "qrepeat", "qlevel", "qgroup", "labelchoice",
                          "repeatsummarize","variable","disaggregation","indicator","indicatorgroup","indicatortype",
                          "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation",
                          "order", "weight", "recategorise")]

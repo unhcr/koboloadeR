@@ -16,6 +16,7 @@
 #' kobo_bar_multi()
 #'
 #' @export kobo_bar_multi
+#'
 #' @examples
 #' \dontrun{
 #' kobo_bar_multi(data, dico)
@@ -36,8 +37,8 @@ kobo_bar_multi <- function(data, dico) {
     cat("bar_multi directory does not exist in your out directory - creating now!\n ")
     dir.create(file.path(mainDir, subDir))
   }
-  
-  
+
+
   selectdf <- dico[dico$type=="select_multiple", c("fullname","listname","label","name","variable","disaggregation")]
 
   ### Verify that those variable are actually in the original dataframe

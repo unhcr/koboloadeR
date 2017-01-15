@@ -20,6 +20,7 @@
 #'
 #' @export kobo_submission_count
 #'
+
 kobo_submission_count <- function(formid, user = NULL, api = "unhcr") {
   URL <- "%sstats/submissions/%s.csv?group=dummydatagroupingvar"
   URL <- sprintf(fmt = URL, kobo_host(api), formid)

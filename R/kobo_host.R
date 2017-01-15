@@ -24,6 +24,8 @@
 #' kobo_host("unhcr")
 #' kobo_host("ttps://kobocat.unhcr.org/api/v1/")
 #' }
+#'
+
 kobo_host <- function(instring) {
   if (instring %in% c("kobo", "kobohr", "ona","unhcr")) {
     switch(instring,

@@ -2,9 +2,11 @@
 #' @rdname kobo_projectinit
 #' @title  Analysis project initiation
 #'
-#' @description    Create analysis project structure 
+#' @description    Create analysis project structure
 #'
 #' @return A structure of directory and scripts in order to set up quickly a project.
+#'
+#' @export kobo_projectinit
 #'
 #' @author Edouard Legoupil
 #'
@@ -81,7 +83,7 @@ kobo_projectinit <- function() {
   if (!file.exists(destfile)) {
     file.copy(paste(.libPaths(),"/koboloadeR/script/2-create-graph.R",sep=""), destfile)
   }
- 
+
 
 
   subDir <- "data"

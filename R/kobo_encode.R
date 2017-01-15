@@ -17,6 +17,7 @@
 #' kobo_encode()
 #'
 #' @export kobo_encode
+#'
 #' @examples
 #' \dontrun{
 #' kobo_encode(data, dico)

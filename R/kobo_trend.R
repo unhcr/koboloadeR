@@ -10,14 +10,13 @@
 #' @param duration number of days in the past
 #' @param dico ( generated from kobo_dico)
 #'
-#'
-#'
 #' @author Edouard Legoupil
 #'
 #' @examples
 #' kobo_bar_trend()
 #'
 #' @export kobo_trend
+#'
 #' @examples
 #' \dontrun{
 #' kobo_trend(data, date, dico)
@@ -38,8 +37,8 @@ kobo_trend <- function(data, date, dico) {
     cat("trend directory does not exist in your out directory - creating now!\n ")
     dir.create(file.path(mainDir, subDir))
   }
-  
-  
+
+
   selectallt <- as.data.frame(dico[dico$type %in% c("select_one"), c("fullname","listname","label","name")])
   ### Verify that those variable are actually in the original dataframe
   check <- as.data.frame(names(data))

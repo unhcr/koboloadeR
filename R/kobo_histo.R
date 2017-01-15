@@ -4,11 +4,8 @@
 #'
 #' @description  Automatically generate histogrammes for each of the integer questions in the dataset. ggplot2 is used.
 #'
-#'
 #' @param data kobodatset to use
 #' @param dico ( generated from kobo_dico)
-#'
-#'
 #'
 #' @author Edouard Legoupil
 #'
@@ -16,6 +13,7 @@
 #' kobo_histo()
 #'
 #' @export kobo_histo
+#'
 #' @examples
 #' \dontrun{
 #' kobo_histo(data, dico)
@@ -25,7 +23,7 @@
 
 kobo_histo <- function(data, dico) {
 
-  
+
   mainDir <- "out"
   subDir <- "histo"
   if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
@@ -37,8 +35,8 @@ kobo_histo <- function(data, dico) {
     cat("histo directory does not exist in your out directory - creating now!\n ")
     dir.create(file.path(mainDir, subDir))
   }
-  
-  
+
+
   selectdf <- dico[dico$type=="integer", c("fullname","listname","label","name")]
 
   ### Verify that those variable are actually in the original dataframe

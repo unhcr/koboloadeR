@@ -22,7 +22,9 @@
 #' kobo_label(data, dico)
 #' }
 #'
-#' @export data
+#' @export kobo_label
+#'
+
 kobo_label <- function(datalabel, dico) {
   ### First we provide attribute label to variable name
   #datalabel <- data.selectmulti

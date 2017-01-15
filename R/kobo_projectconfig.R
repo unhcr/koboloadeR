@@ -8,6 +8,8 @@
 #'
 #' @author Edouard Legoupil
 #'
+#' @export kobo_projectconfig
+#'
 #' @examples
 #' kobo_projectconfig()
 #'
@@ -17,7 +19,7 @@ kobo_projectconfig <- function() {
   mainDir <- getwd()
 
 
- 
+
   ## Now we can create the configuration file for the project
   cat("Now we can create the configuration file for the project.\n")
 

@@ -22,6 +22,8 @@
 #' }
 #'
 #' @export kobo_apps
+#'
+
 kobo_apps <- function(app) {
   validExamples <- list.files(system.file("shiny_examples", package = "koboloadeR"))
   validExamplesMsg <- paste0(

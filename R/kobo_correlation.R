@@ -16,6 +16,7 @@
 #' kobo_correlation()
 #'
 #' @export kobo_correlation
+#'
 #' @examples
 #' \dontrun{
 #' kobo_correlation(data,  dico)
@@ -78,7 +79,7 @@ kobo_correlation <- function(data,  dico) {
                 # j <-7
                 variablename <- as.character(selectintegert[j,1])
                 variablelabel <- as.character(dico[dico$fullname==variablename,c("label")])
-                
+
                 ## print sutff
                 cat(paste(i," correl ",correllabel," - ",correlname," \n"  ))
                 cat(paste(j," variable ",variablelabel," - ",variablename," \n"))
@@ -89,7 +90,7 @@ kobo_correlation <- function(data,  dico) {
                         ## and now the graph
                           data.integer[ , i] <- as.integer(data.integer[ , i])
                           data.integer[ , j] <- as.integer(data.integer[ , j])
-                          
+
                             ggplot(data.integer, aes(x=data.integer[ , i], y=data.integer[ , j])) +
                               geom_count(aes(size = ..prop.., group = 1)) +
                               scale_size_area(max_size = 10)+

@@ -71,17 +71,28 @@ kobo_projectinit <- function() {
     writeLines(c("### This folder is where analysis scripts are saved"), fileConn)
     close(fileConn)
   }
+  
+  ## Need to test if we have multiple .libPaths()
+  
+  path <- as.data.frame(.libPaths())
+  if (nrow(path)==1) {path_correct <- as.character(path[1,1])
+  } else{ cat("You have multiple library path! \n")
+     if( dir.exists(file.path(path[1,1],"/koboloadeR")) ){
+       path_correct <- as.character(path[1,1])
+     } else{ path_correct <- as.character(path[2,1])}
+    }
+  
   destfile="./code/0-packages.R"
   if (!file.exists(destfile)) {
-    file.copy(paste(.libPaths(),"/koboloadeR/script/0-packages.R",sep=""), destfile)
+    file.copy(paste(path_correct,"/koboloadeR/script/0-packages.R",sep=""), destfile)
   }
   destfile="./code/1-loaddata.R"
   if (!file.exists(destfile)) {
-    file.copy(paste(.libPaths(),"/koboloadeR/script/1-loaddata.R",sep=""), destfile)
+    file.copy(paste(path_correct,"/koboloadeR/script/1-loaddata.R",sep=""), destfile)
   }
   destfile="./code/2-create-graph.R"
   if (!file.exists(destfile)) {
-    file.copy(paste(.libPaths(),"/koboloadeR/script/2-create-graph.R",sep=""), destfile)
+    file.copy(paste(path_correct,"/koboloadeR/script/2-create-graph.R",sep=""), destfile)
   }
 
 

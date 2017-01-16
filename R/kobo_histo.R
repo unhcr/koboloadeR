@@ -45,7 +45,11 @@ kobo_histo <- function(data, dico) {
   check$id <- row.names(check)
   selectdf <- join(x=selectdf, y=check, by="fullname",  type="left")
   selectdf <- selectdf[!is.na(selectdf$id), ]
-
+  
+  if (nrow(selectdf)==0){
+    cat("There's no integer variables. \n")
+  } else{ 
+    
   selectinteger <- as.character(selectdf[, c("fullname")])
   data.integer <- data [selectinteger  ]
   data.integer  <- kobo_label(data.integer, dico)
@@ -79,6 +83,7 @@ kobo_histo <- function(data, dico) {
       ggsave(filename=paste("out/histo/histodensity_",variablename,".png",sep=""), width=10, height=10,units="in", dpi=300)
 
     cat(paste0("Generated histogramme for question: ", title , "\n"))
+  }
   }
 }
 NULL

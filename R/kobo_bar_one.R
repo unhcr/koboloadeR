@@ -56,7 +56,7 @@ kobo_bar_one <- function(data, dico) {
 
     data.single <- data [ selectone ]
     ## Remove variable where we get only NA
-    data.single <- data.single[,colSums(is.na(data.single))<nrow(data.single)]
+    #data.single <- data.single[,colSums(is.na(data.single))<nrow(data.single)]
     data.single <- kobo_encode(data.single, dico)
     data.single <- kobo_label(data.single, dico)
 
@@ -70,8 +70,6 @@ kobo_bar_one <- function(data, dico) {
     ##### Set up factor level order --
 
     ## variable ordinal or not
-
-
 
     ## if variable is not ordinal, Proportion table used to order the levels of the factor
     frequ <- table (data.single[ , i])

@@ -47,6 +47,10 @@ kobo_bar_multi <- function(data, dico) {
   check$id <- row.names(check)
   selectdf <- join(x=selectdf, y=check, by="fullname",  type="left")
   selectdf <- selectdf[!is.na(selectdf$id), ]
+  
+  if (nrow(selectdf)==0){
+    cat("There's no disagreggated select_multiple variables. \n")
+  } else{ 
 
   selectmulti <- as.character(selectdf[, c("fullname")])
   data.selectmulti <- data [selectmulti ]
@@ -98,7 +102,7 @@ kobo_bar_multi <- function(data, dico) {
 
   }
 
-
+  }
 
 }
 NULL

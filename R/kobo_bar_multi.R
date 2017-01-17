@@ -81,10 +81,21 @@ kobo_bar_multi <- function(data, dico) {
     ## Reshape answers
     data.selectmultilist <- data.selectmulti[ selectmultilist ]
     data.selectmultilist$id <- rownames(data.selectmultilist)
+    
+    totalanswer <- nrow(data.selectmultilist)
+    ## subsetting to those who replied
+    
+    data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!="Not replied", ]
+    
+    percentreponse <- paste(round((nrow(data.selectmultilist)/totalanswer)*100,digits=1),"%",sep="")
+
+    
     meltdata <- melt(data.selectmultilist,id="id")
 
     castdata <- as.data.frame(table(meltdata[c("value")])) #,  useNA = "ifany"
     castdata$freqper <- castdata$Freq/nrow(data.selectmultilist)
+    
+    castdata <- castdata[castdata$Var1!="Not selected", ]
     #castdata <- dcast(meltdata, value~variable, fun.aggregate = length)
     castdata$Var1 <-factor(castdata$Var1, levels=castdata[order(castdata$freqper), "Var1"])
 
@@ -93,7 +104,7 @@ kobo_bar_multi <- function(data, dico) {
       xlab("") + ylab("")+
       scale_y_continuous(labels=percent)+
       coord_flip()+
-      ggtitle(listlabel)+
+      ggtitle(listlabel, subtitle = paste0("Response rate to this question is",percentreponse," of the total."))+
       theme(plot.title=element_text(face="bold", size=9),
             plot.background = element_rect(fill = "transparent",colour = NA))
     ggsave(filename=paste("out/bar_multi/bar_multifreq_",listloop,".png",sep=""), width=8, height=10,units="in", dpi=300)

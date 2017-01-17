@@ -336,6 +336,15 @@ kobo_dico <- function(form) {
   ## Remove trailing space
   dico$fullname <- trim(dico$fullname)
   dico$listname <- trim(dico$listname)
+  
+  
+  ## A few fix on the dico 
+  dico <- dico[ !is.na(dico$name), ]
+  dico <- dico[ !is.na(dico$type), ]
+  
+  ## Exclude repeat questions -- still need more work
+  dico <- dico[ is.na(dico$qrepeat), ]
+  cat("Note that the function does not handled yet the REPEAT questions.\n");
 
   write.csv(dico, paste0("data/dico_",form,".csv"), row.names=FALSE, na = "")
 

@@ -170,8 +170,8 @@ rm(packages)
 # loads packages into memory
 library(stringr)
 library(stringi)
-library(lattice)
-library(rattle)
+#library(lattice)
+#library(rattle)
 library(car)
 library(plyr)
 library(ggplot2) ## The grammar of graphics!

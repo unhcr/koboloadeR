@@ -35,9 +35,10 @@ kobo_encode <- function(data, dico) {
   data.label <- join (x=data.label, y=dico, by="fullname", type="left" )
   ## Now we can also re-encode the records themself
 
-  
+  #################################################################################################
   ###### Case 1: Re-encoding  when we have select_multiple 
   ## List of select one and select multiple variable to re-encode ## "select_one",
+  
   selectdf <- as.data.frame(dico[dico$type %in% c( "select_multiple"), c("fullname","name","listname","type")])
   ### Verify that those variable are actually in the original dataframe
   check <- as.data.frame(names(data))
@@ -51,24 +52,31 @@ kobo_encode <- function(data, dico) {
   } else{ 
       #names(selectdf)[1] <- "selectvar"
     
-      for (i in 1:nrow(selectdf)) {
+      for (i in 1:nrow(selectdf3)) {
         #i <-228
         #i <-1
-        #i <-195
+        #i <-64
         #cat(i)
-        fullname <- as.character(selectdf [ i,1])
-        variablename <- as.character(selectdf [ i,2])
-        variablelistname <- as.character(selectdf [ i,3])
+        fullname <- as.character(selectdf3 [ i,1])
+        variablename <- as.character(selectdf3 [ i,2])
+        variablelistname <- as.character(selectdf3 [ i,3])
         
-        variablelevel <- as.data.frame(levels(as.factor(data[ ,fullname])))
-        names(variablelevel)[1] <- "namecoded"
-        variablecode <- as.character(levels(as.factor(variablelevel$namecoded)))
+        #variablelevel <- as.data.frame(levels(as.factor(data[ ,fullname])))
+        #names(variablelevel)[1] <- "namecoded"
+        #variablecode <- as.character(levels(as.factor(variablelevel$namecoded)))
     
         if (nrow(variablelevel)>0) {
-        variablelevel <- cbind(variablelevel,fullname,variablename,variablelistname)
-        variablelevel <- join (x=variablelevel, y=dico, by="fullname", type="left" )
+        #variablelevel <- cbind(variablelevel,fullname,variablename,variablelistname)
+        #variablelevel <- join (x=variablelevel, y=dico, by="fullname", type="left" )
         labelchoice <- as.character(dico[dico$fullname==fullname, c("labelchoice")])
-        data[ , fullname][data[ , fullname]==variablecode] <- labelchoice
+        #data[ , fullname][data[ , fullname]==variablecode] <- labelchoice
+        data[ , fullname][is.na(data[ , fullname])] <- "Not replied"
+        data[ , fullname][data[ , fullname]=="0"] <- "Not selected"
+        data[ , fullname][data[ , fullname]=="FALSE"] <- "Not selected"
+        data[ , fullname][data[ , fullname]=="1"] <- labelchoice
+        data[ , fullname][data[ , fullname]=="TRUE"] <- labelchoice
+        
+        cat(paste0("Recode variable", fullname," for: ",labelchoice, "\n"))
         #View(data[i])
         } else { cat(paste0("The following variable has no answers to recode in the dataset: ",fullname, "\n")) }
         
@@ -91,14 +99,14 @@ kobo_encode <- function(data, dico) {
   } else{
     #names(selectdf)[1] <- "selectvar"
     
-    for (i in 1:nrow(selectdf)) {
+    for (i in 1:nrow(selectdf3)) {
       #i <-228
       #i <-1
       #i <-195
       #cat(i)
-      fullname <- as.character(selectdf [ i,1])
-      variablename <- as.character(selectdf [ i,2])
-      variablelistname <- as.character(selectdf [ i,3])
+      fullname <- as.character(selectdf3 [ i,1])
+      variablename <- as.character(selectdf3 [ i,2])
+      variablelistname <- as.character(selectdf3 [ i,3])
       
       variablelevel <- as.data.frame(levels(as.factor(data[ ,fullname])))
       names(variablelevel)[1] <- "namecoded"
@@ -129,33 +137,34 @@ kobo_encode <- function(data, dico) {
   #names(selectdf)[1] <- "selectvar"
   
   if(nrow(selectdf3)==0) {
-    cat("There's no  select_one variables to re-encoded \n") 
+    cat("There's no  select_one variables to re-encode \n") 
   } else {
-    #names(selectdf)[1] <- "selectvar"
-    
-      cat("There's a few  select_one variables to re-encoded \n") 
-  #  for (i in 1:nrow(selectdf)) {
-  #    #i <-228
-  #    #i <-1
-  #    #i <-195
-  #    #cat(i)
-  #    fullname <- as.character(selectdf [ i,1])
-  #    variablename <- as.character(selectdf [ i,2])
-  #    variablelistname <- as.character(selectdf [ i,3])
-  #    
-  #    variablelevel <- as.data.frame(levels(as.factor(data[ ,fullname])))
-  #    names(variablelevel)[1] <- "namecoded"
-  #    #variablecode <- as.character(levels(as.factor(variablelevel$namecoded)))
-  #    if (nrow(variablelevel)>0) {
-  #      variablelevel <- cbind(variablelevel,fullname,variablename,variablelistname)
-  #      variablelevel <- join (x=variablelevel, y=dico, by="fullname", type="left" )
-  #      labelchoice <- as.character(dico[dico$fullname==fullname, c("labelchoice")])
-  #      data[ , fullname][data[ , fullname]==variablecode] <- labelchoice
-  #      #View(data[i])
-  #    } else { cat(paste0("The following variable has no answers to recode in the dataset: ",fullname, "\n")) }
-  #    
-   #   rm(fullname, variablename, variablelistname,variablelevel)
-  #  }
+      cat(paste0("There's ",nrow(selectdf3)," select_one variables to encode \n")) 
+
+     for (i in 1:nrow(selectdf3)) {
+
+      fullname <- as.character(selectdf3 [ i,1])
+      variablename <- as.character(selectdf3 [ i,2])
+      variablelistname <- as.character(selectdf3 [ i,3])
+      
+      variablelevel <- dico[ dico$listname==variablelistname & dico$type=="select_one_d", c("name","labelchoice")]
+      
+      if (nrow(variablelevel)>0) {
+        rm(df)
+        df <- as.data.frame(data[ , fullname])
+        names(df)[1] <- "name"
+        df$name <- as.character(df$name)
+        df <- join(df,variablelevel, by="name")
+        data[ , fullname] <- as.character(data[ , fullname])
+        data[ , fullname] <- df$labelchoice
+        data[ , fullname] <- as.factor(data[ , fullname])
+        #View(data[i])
+        cat(paste0("Recode variable", fullname," \n"))
+        
+      } else { cat(paste0("The following variable has no answers to recode in the dataset: ",fullname, "\n")) }
+      
+     rm(fullname, variablename, variablelistname,variablelevel)
+    }
   } 
   ###### Case 4: Re-encoding  when we have select_select_multiple
   ## List of select one and select multiple variable to re-encode ## "select_one",

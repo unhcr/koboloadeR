@@ -6,34 +6,33 @@ rm(list = ls())
 source("code/0-packages.R")
 library(koboloadeR)
 
+## kobo_projectinit()
+
 ############################################################
 #                                                          #
-#                   Key Informant Data                     #
+#   Position your form & your data in the data folder  
 #                                                          #
 ############################################################
 
 rm(data)
 
-data <- read.csv("data/data.csv", sep=";", encoding="UTF-8", na.strings="n/a")
+data.or <- read.csv("data/data.csv", sep=";", encoding="UTF-8", na.strings="n/a")
 rm(form_temp)
 form <- "form.xls"
 
-kobo_dico(form)
 
 ##########################################################################################
-## Load dictionnary
-dico <- read.csv("data/dico_form.xls.csv", encoding="UTF-8", na.strings="")
+## Generate & Load dictionnary
+kobo_dico(form)
+dico <- read.csv(paste("data/dico_",form,".csv",sep=""), encoding="UTF-8", na.strings="")
 
 
-dico <- dico[ !is.na(dico$name), ]
 
-## Exclude repeat questions -- still need more work
-dico <- dico[ is.na(dico$qrepeat), ]
 
 #################################################################################
 ##### Re-encode correctly the dataset
 
-data <- kobo_encode(data, dico)
+data <- kobo_encode(data.or, dico)
 data <- kobo_label(data, dico)
 #########################################################################################
 ## Produce graphs of all select_one questions

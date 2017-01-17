@@ -27,10 +27,17 @@ install_github("Edouard-Legoupil/koboloadeR")
 (This version of `install_github` via [@jtilly](https://github.com/jtilly/install_github).)
 
  2. Start a project within Rstudio
+ 
  3. Launch the `kobo_projectinit` functions in order to organise your project. It also starts a series of question to set up a configuration file to access a kobo server.
- 4. Grab your data with `kobo_data_downloader`
- 5. Get your form with `kobo_form`
+ 
+ 4. Either: 
+   *  Grab your data with `kobo_data_downloader` & Get your form with `kobo_form`
+   * or simply copy your data in `csv` format and your xlsform in `xls` format in the `data` folder that was created during the project initiation
+ 
+ 5. Open the `1-loaddata.R` script in the code folder, replace the name of the dataset and the name of the form.
+ 
  6. Create your dictionnary with `kobo_dico`
+ 
  7. Generate your graphs with `kobo_bar_one`, `kobo_bar_multi`, `kobo_histo`, `kobo_trend`, `kobo_bar_one_facet`, `kobo_correlate`, `kobo_boxplot_facet` (see below for explanation)
 
 

@@ -23,9 +23,6 @@
 #' kobo_encode(data, dico)
 #' }
 #'
-#'
-
-
 kobo_encode <- function(data, dico) {
   ### First we provide attribute label to variable name
   #data1 <- data
@@ -53,32 +50,33 @@ kobo_encode <- function(data, dico) {
       #names(selectdf)[1] <- "selectvar"
     
       for (i in 1:nrow(selectdf3)) {
-        #i <-228
-        #i <-1
-        #i <-64
-        #cat(i)
         fullname <- as.character(selectdf3 [ i,1])
         variablename <- as.character(selectdf3 [ i,2])
         variablelistname <- as.character(selectdf3 [ i,3])
         
-        #variablelevel <- as.data.frame(levels(as.factor(data[ ,fullname])))
-        #names(variablelevel)[1] <- "namecoded"
-        #variablecode <- as.character(levels(as.factor(variablelevel$namecoded)))
-    
-        if (nrow(variablelevel)>0) {
-        #variablelevel <- cbind(variablelevel,fullname,variablename,variablelistname)
-        #variablelevel <- join (x=variablelevel, y=dico, by="fullname", type="left" )
+        variablelevel <- as.data.frame(levels(as.factor(data[ ,fullname])))
+        names(variablelevel)[1] <- "namecoded"
         labelchoice <- as.character(dico[dico$fullname==fullname, c("labelchoice")])
-        #data[ , fullname][data[ , fullname]==variablecode] <- labelchoice
-        data[ , fullname][is.na(data[ , fullname])] <- "Not replied"
-        data[ , fullname][data[ , fullname]=="0"] <- "Not selected"
-        data[ , fullname][data[ , fullname]=="FALSE"] <- "Not selected"
-        data[ , fullname][data[ , fullname]=="1"] <- labelchoice
-        data[ , fullname][data[ , fullname]=="TRUE"] <- labelchoice
-        
-        cat(paste0("Recode variable", fullname," for: ",labelchoice, "\n"))
-        #View(data[i])
-        } else { cat(paste0("The following variable has no answers to recode in the dataset: ",fullname, "\n")) }
+        if (nrow(variablelevel)>0) {
+          if (nrow(variablelevel)>1) {
+
+          data[ , fullname][is.na(data[ , fullname])] <- "Not replied"
+          data[ , fullname][data[ , fullname]=="0"] <- "Not selected"
+          data[ , fullname][data[ , fullname]=="FALSE"] <- "Not selected"
+          data[ , fullname][data[ , fullname]=="1"] <- labelchoice
+          data[ , fullname][data[ , fullname]=="TRUE"] <- labelchoice        
+          
+          } else{
+          data[ , fullname][is.na(data[ , fullname])] <- ""
+          data[ , fullname][data[ , fullname]=="0"] <- ""
+          data[ , fullname][data[ , fullname]=="FALSE"] <- ""
+          data[ , fullname][data[ , fullname]=="1"] <- labelchoice
+          data[ , fullname][data[ , fullname]=="TRUE"] <- labelchoice  
+          }
+
+        cat(paste0("Recode disagreggated select_multiple variable", fullname," for: ",labelchoice, "\n"))
+       
+        } else{ cat(paste0("The following variable has no answers to recode in the dataset: ",fullname, "\n")) }
         
         rm(fullname, variablename, variablelistname,variablelevel)
       }
@@ -117,8 +115,11 @@ kobo_encode <- function(data, dico) {
         variablelevel <- join (x=variablelevel, y=dico, by="fullname", type="left" )
         labelchoice <- as.character(dico[dico$fullname==fullname, c("labelchoice")])
         data[ , fullname][data[ , fullname]==variablecode] <- labelchoice
+        
+        cat(paste0("Recode disaggregated select_one variable", fullname," for: ",labelchoice, "\n"))
+        
         #View(data[i])
-      } else { cat(paste0("The following variable has no answers to recode in the dataset: ",fullname, "\n")) }
+      } else { cat(paste0("The following disaggregated select_one variable has no answers to recode in the dataset: ",fullname, "\n")) }
       
       rm(fullname, variablename, variablelistname,variablelevel)
     }
@@ -142,15 +143,16 @@ kobo_encode <- function(data, dico) {
       cat(paste0("There's ",nrow(selectdf3)," select_one variables to encode \n")) 
 
      for (i in 1:nrow(selectdf3)) {
-
+      # i <- 1
       fullname <- as.character(selectdf3 [ i,1])
       variablename <- as.character(selectdf3 [ i,2])
       variablelistname <- as.character(selectdf3 [ i,3])
       
       variablelevel <- dico[ dico$listname==variablelistname & dico$type=="select_one_d", c("name","labelchoice")]
+      variablelevel <- unique(variablelevel[ c("name","labelchoice")])
       
       if (nrow(variablelevel)>0) {
-        rm(df)
+        #rm(df)
         df <- as.data.frame(data[ , fullname])
         names(df)[1] <- "name"
         df$name <- as.character(df$name)

@@ -1,12 +1,12 @@
 # koboloadeR
 
-The `koboloadeR` package allows:
+The `koboloadeR` package allows to:
 
-* connection to the [KoBo API (v1)](https://kc.kobotoolbox.org/api/v1/) for the [KoBo Toolbox](http://www.kobotoolbox.org/) project. 
+* connect to the [KoBo API (v1)](https://kc.kobotoolbox.org/api/v1/) for the [KoBo Toolbox](http://www.kobotoolbox.org/) project. 
 
 * compute a data dictionnary based on [xlsform](http://xlsform.org). It implies ot have a few additionnal column in the xlsform in order to better define how data shoudl be analysid (cf infra). as it based on a standard, this part and the following should work for any [xlsform compatible server](http://xlsform.org/#xlsform-tools) such as [OpenDataKit](https://opendatakit.org/) or [ONA](https://ona.io/home/)
 
-* automatic generation of a series of charts & maps based on the data dictionnary
+* generate automatically of a series of charts & maps based on the data dictionnary
 
 * access to a Shiny data viewer accessible using:
 

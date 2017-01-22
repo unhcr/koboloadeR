@@ -13,6 +13,8 @@ kobo_consolidateone(data, dico)
 }
 \value{
 A "data.table" with additional select_one variable.
+
+data
 }
 \description{
 Merge disagregated select_one variable

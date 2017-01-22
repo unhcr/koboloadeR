@@ -42,17 +42,19 @@ kobo_bar_one <- function(data, dico) {
     selectone <- as.character(dico[dico$type=="select_one", c("fullname")])
     
     ## Check that those variable are in the dataset
-    selectdf <- dico[dico$type=="select_one" , c("fullname","listname","label","name","variable","disaggregation")]
+    selectdf <- dico[dico$type=="select_one" , c("fullname","listname","label","name","variable","disaggregation","qrepeat")]
     check <- as.data.frame(names(data))
     names(check)[1] <- "fullname"
     check$id <- row.names(check)
-    selectdf <- join(x=selectdf, y=check, by="fullname",  type="left")
-    selectdf <- selectdf[!is.na(selectdf$id), ]
-    selectone <- as.character(selectdf[, c("fullname")])
+    selectdf2 <- join(x=selectdf, y=check, by="fullname",  type="left")
+    selectdf3 <- selectdf2[!is.na(selectdf2$id), ]
+    selectone <- as.character(selectdf3[, c("fullname")])
     
     
     selectonet <- as.data.frame(selectone)
-
+    
+    if ( nrow(selectonet)==0){cat("There's no select_one variable in your dataset.\n") 
+    } else{
 
     data.single <- data [ selectone ]
     ## Remove variable where we get only NA
@@ -94,6 +96,7 @@ kobo_bar_one <- function(data, dico) {
     cat(paste0("Generated bar chart for question: ", title , "\n"))
 
     rm(variablename, freq)
+    }
   }
 
 }

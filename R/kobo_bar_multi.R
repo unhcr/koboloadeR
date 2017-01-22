@@ -55,16 +55,17 @@ kobo_bar_multi <- function(data, dico) {
   selectmulti <- as.character(selectdf[, c("fullname")])
   data.selectmulti <- data [selectmulti ]
   data.selectmulti  <- kobo_label(data.selectmulti, dico)
+  data.selectmulti <- kobo_encode(data.selectmulti, dico)
 
 
-  listmulti <- dico[dico$type=="select_multiple_d", c("listname","label","name","fullname","variable","disaggregation")]
+  listmulti <- dico[dico$type=="select_multiple_d", c("listname","label","name","fullname","variable","disaggregation","qrepeat")]
   selectdf1 <- as.data.frame(unique(selectdf$listname))
   names(selectdf1)[1] <- "listname"
   listmulti <- join(x=listmulti, y=selectdf1, by="listname", type="left")
 
 
   for (i in 1:nrow(listmulti) ) {
-    # i <- 1
+    # i <- 6
     listloop <- as.character(listmulti[i,1])
     listlabel <-  as.character(listmulti[i,2])
 
@@ -73,9 +74,13 @@ kobo_bar_multi <- function(data, dico) {
     selectmultilist <- as.character(dico[dico$type=="select_multiple" & dico$listname==listloop , c("fullname")])
 
     ## Check that those variable are in the dataset
-    selectdf2 <- dico[dico$type=="select_multiple" & dico$listname==listloop , c("fullname","listname","label","name","variable","disaggregation")]
-    selectdf2 <- join(x=selectdf2, y=check, by="fullname",  type="left")
+    selectdf <- dico[dico$type=="select_multiple" & dico$listname==listloop , c("fullname","listname","label","name","variable","disaggregation")]
+    selectdf2 <- join(x=selectdf, y=check, by="fullname",  type="left")
     selectdf2 <- selectdf2[!is.na(selectdf2$id), ]
+    
+    if (nrow(selectdf2)==0){ cat("passing \n")
+      } else {
+    
     selectmultilist <- as.character(selectdf2[, c("fullname")])
 
     ## Reshape answers
@@ -98,6 +103,9 @@ kobo_bar_multi <- function(data, dico) {
     castdata <- castdata[castdata$Var1!="Not selected", ]
     #castdata <- dcast(meltdata, value~variable, fun.aggregate = length)
     castdata$Var1 <-factor(castdata$Var1, levels=castdata[order(castdata$freqper), "Var1"])
+    
+    #levels(castdata$Var1) 
+    castdata <- castdata[castdata$Var1!="", ]
 
     ggplot(castdata, aes(x=Var1, y=freqper)) +
       geom_bar(fill="#2a87c8",colour="#2a87c8",stat = "identity") +
@@ -111,6 +119,7 @@ kobo_bar_multi <- function(data, dico) {
 
     cat(paste0("Generated bar chart for question: ", listlabel , "\n"))
 
+      }
   }
 
   }

@@ -40,7 +40,8 @@ kobo_bar_multi <- function(data, dico) {
 
 
   selectdf <- dico[dico$type=="select_multiple", c("fullname","listname","label","name","variable","disaggregation")]
-
+  
+  
   ### Verify that those variable are actually in the original dataframe
   check <- as.data.frame(names(data))
   names(check)[1] <- "fullname"
@@ -55,7 +56,6 @@ kobo_bar_multi <- function(data, dico) {
   selectmulti <- as.character(selectdf[, c("fullname")])
   data.selectmulti <- data [selectmulti ]
   data.selectmulti  <- kobo_label(data.selectmulti, dico)
-  data.selectmulti <- kobo_encode(data.selectmulti, dico)
 
 
   listmulti <- dico[dico$type=="select_multiple_d", c("listname","label","name","fullname","variable","disaggregation","qrepeat")]
@@ -112,7 +112,7 @@ kobo_bar_multi <- function(data, dico) {
       xlab("") + ylab("")+
       scale_y_continuous(labels=percent)+
       coord_flip()+
-      ggtitle(listlabel, subtitle = paste0("Response rate to this question is",percentreponse," of the total."))+
+      ggtitle(listlabel, subtitle = paste0("select_multiple question: Response rate to this question is",percentreponse," of the total."))+
       theme(plot.title=element_text(face="bold", size=9),
             plot.background = element_rect(fill = "transparent",colour = NA))
     ggsave(filename=paste("out/bar_multi/bar_multifreq_",listloop,".png",sep=""), width=8, height=10,units="in", dpi=300)

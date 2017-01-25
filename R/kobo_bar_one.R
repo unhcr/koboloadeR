@@ -42,7 +42,8 @@ kobo_bar_one <- function(data, dico) {
     selectone <- as.character(dico[dico$type=="select_one", c("fullname")])
     
     ## Check that those variable are in the dataset
-    selectdf <- dico[dico$type=="select_one" , c("fullname","listname","label","name","variable","disaggregation","qrepeat")]
+    selectdf <- dico[dico$type=="select_one"  , c("fullname","listname","label","name","variable","disaggregation","qrepeat")]
+    
     check <- as.data.frame(names(data))
     names(check)[1] <- "fullname"
     check$id <- row.names(check)
@@ -59,9 +60,10 @@ kobo_bar_one <- function(data, dico) {
     data.single <- data [ selectone ]
     ## Remove variable where we get only NA
     #data.single <- data.single[,colSums(is.na(data.single))<nrow(data.single)]
-    data.single <- kobo_encode(data.single, dico)
+    
     data.single <- kobo_label(data.single, dico)
 
+    
 
   ### Now let's create proportion graphs -- bar chart
   for (i in 1:nrow(selectonet) ) {
@@ -77,6 +79,8 @@ kobo_bar_one <- function(data, dico) {
     frequ <- table (data.single[ , i])
     data.single[ , i] <- factor(data.single[ , i], levels=names(frequ[order(frequ, decreasing = TRUE)]))
 
+    levels(data.single[ , i])
+    
     ## and now the graph
     plotfreq <- ggplot(data.single, aes(data.single[ , i])) +
       geom_bar(aes(y = ..count.. / sapply(PANEL, FUN=function(x) sum(count[PANEL == x]))),
@@ -88,7 +92,7 @@ kobo_bar_one <- function(data, dico) {
       xlab("") +
       coord_flip() +
       # coord_fixed() + ##used to maintain the adspect ratio of the plot when it needs to be saved
-      ggtitle(title)+
+      ggtitle(title, subtitle = "select_one question")+
       theme(plot.title=element_text(face="bold", size=9),
             plot.background = element_rect(fill = "transparent",colour = NA))
     ggsave(filename=paste("out/bar_one/bar_onefreq_",variablename,".png",sep=""), plot=plotfreq, width=10, height=10,units="in", dpi=300)

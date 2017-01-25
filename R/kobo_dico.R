@@ -397,8 +397,16 @@ kobo_dico <- function(form) {
   
   ## Exclude repeat questions -- still need more work
   #levels(as.factor(dico$qrepeat))
+  ## Changing type for flatenned repeat questions
   
-  dico$type[dico$qrepeat=="repeat" & dico$type %in% c("select_one_d", "select_multiple")] <- "integer"
+  dico$type[dico$qrepeat=="repeat" & dico$type %in% c("integer")] <- "integerlist"
+  dico$type[dico$qrepeat=="repeat" & dico$type %in% c("text")] <- "textlist"
+  dico$type[dico$qrepeat=="repeat" & dico$type %in% c("select_one")] <- "select_onelist"
+  
+  dico$type[dico$qrepeat=="repeat" & dico$type %in% c("select_one_d")] <- "integer"
+  dico$type[dico$qrepeat=="repeat" & dico$type %in% c("select_multiple")] <- "integer"
+  
+  #dico[dico$qrepeat=="repeat" & dico$type %in% c("select_multiple")]
   
   #if(dico$qrepeat=="repeat" && dico$type %in% c("select_one_d", "select_multiple")) {dico$type <- "integer"
   #                               cat("Note that select_one & select_multiple questions within REPEAT part are converted to integer (results are summed up).\n")

@@ -40,18 +40,18 @@ kobo_bar_multi <- function(data, dico) {
 
 
   selectdf <- dico[dico$type=="select_multiple", c("fullname","listname","label","name","variable","disaggregation")]
-  
-  
+
+
   ### Verify that those variable are actually in the original dataframe
   check <- as.data.frame(names(data))
   names(check)[1] <- "fullname"
   check$id <- row.names(check)
   selectdf <- join(x=selectdf, y=check, by="fullname",  type="left")
   selectdf <- selectdf[!is.na(selectdf$id), ]
-  
+
   if (nrow(selectdf)==0){
     cat("There's no disagreggated select_multiple variables. \n")
-  } else{ 
+  } else{
 
   selectmulti <- as.character(selectdf[, c("fullname")])
   data.selectmulti <- data [selectmulti ]
@@ -77,34 +77,34 @@ kobo_bar_multi <- function(data, dico) {
     selectdf <- dico[dico$type=="select_multiple" & dico$listname==listloop , c("fullname","listname","label","name","variable","disaggregation")]
     selectdf2 <- join(x=selectdf, y=check, by="fullname",  type="left")
     selectdf2 <- selectdf2[!is.na(selectdf2$id), ]
-    
+
     if (nrow(selectdf2)==0){ cat("passing \n")
       } else {
-    
+
     selectmultilist <- as.character(selectdf2[, c("fullname")])
 
     ## Reshape answers
     data.selectmultilist <- data.selectmulti[ selectmultilist ]
     data.selectmultilist$id <- rownames(data.selectmultilist)
-    
+
     totalanswer <- nrow(data.selectmultilist)
     ## subsetting to those who replied
-    
+
     data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!="Not replied", ]
-    
+
     percentreponse <- paste(round((nrow(data.selectmultilist)/totalanswer)*100,digits=1),"%",sep="")
 
-    
+
     meltdata <- melt(data.selectmultilist,id="id")
 
     castdata <- as.data.frame(table(meltdata[c("value")])) #,  useNA = "ifany"
     castdata$freqper <- castdata$Freq/nrow(data.selectmultilist)
-    
+
     castdata <- castdata[castdata$Var1!="Not selected", ]
     #castdata <- dcast(meltdata, value~variable, fun.aggregate = length)
     castdata$Var1 <-factor(castdata$Var1, levels=castdata[order(castdata$freqper), "Var1"])
-    
-    #levels(castdata$Var1) 
+
+    #levels(castdata$Var1)
     castdata <- castdata[castdata$Var1!="", ]
 
     ggplot(castdata, aes(x=Var1, y=freqper)) +
@@ -112,7 +112,7 @@ kobo_bar_multi <- function(data, dico) {
       xlab("") + ylab("")+
       scale_y_continuous(labels=percent)+
       coord_flip()+
-      ggtitle(listlabel, subtitle = paste0("select_multiple question: Response rate to this question is",percentreponse," of the total."))+
+      ggtitle(listlabel, subtitle = paste0("select_multiple question: Response rate to this question is ",percentreponse," of the total."))+
       theme(plot.title=element_text(face="bold", size=9),
             plot.background = element_rect(fill = "transparent",colour = NA))
     ggsave(filename=paste("out/bar_multi/bar_multifreq_",listloop,".png",sep=""), width=8, height=10,units="in", dpi=300)

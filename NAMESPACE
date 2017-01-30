@@ -3,6 +3,7 @@
 export(format_si)
 export(kobo_apps)
 export(kobo_bar_multi)
+export(kobo_bar_multi_facet)
 export(kobo_bar_one)
 export(kobo_bar_one_facet)
 export(kobo_boxplot_facet)

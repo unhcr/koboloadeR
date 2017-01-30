@@ -2,7 +2,7 @@
 % Please edit documentation in R/kobo_bar_multi_facet.R
 \name{kobo_bar_multi_facet}
 \alias{kobo_bar_multi_facet}
-\title{Generate histogramm plots based on dates}
+\title{Generate frequency bar chart for select_multiple variable}
 \usage{
 kobo_bar_multi_facet(data, dico)
 }
@@ -12,7 +12,7 @@ kobo_bar_multi_facet(data, dico)
 \item{dico}{( generated from kobo_dico)}
 }
 \description{
-Automatically generate maps for all nominal & ordinal variables based on dates. ggplot2 is used.
+Automatically generate faceted chart for select multiple variables. ggplot2 is used.
 }
 \examples{
 kobo_bar_multi_facet()

@@ -29,11 +29,11 @@ library("koboloadeR")
 
  2. Start a project within Rstudio
  
- 3. Launch the functions
+ 3. Launch the initialisation function: 
 ```
 kobo_projectinit()
 ```
- in order to organise your project. It also starts a series of question to set up a configuration file to access a kobo server.
+ in order to organise your project. It also starts a series of question to set up a configuration file to access a kobo server. You can now go in the `code` folder and source the `0-packages.R` script in order to install a curated list of packages.
  
  4. Either:  
  

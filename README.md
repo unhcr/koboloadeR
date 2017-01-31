@@ -21,16 +21,22 @@ kobo_apps("data_viewer")
 ```
 source("https://raw.githubusercontent.com/Edouard-Legoupil/koboloadeR/master/inst/script/install_github.R")
 install.packages(devtools)
-library(devtools)
+library("devtools")
 install_github("Edouard-Legoupil/koboloadeR")
+library("koboloadeR")
 ```
 (This version of `install_github` via [@jtilly](https://github.com/jtilly/install_github).)
 
  2. Start a project within Rstudio
  
- 3. Launch the `kobo_projectinit` functions in order to organise your project. It also starts a series of question to set up a configuration file to access a kobo server.
+ 3. Launch the functions
+```
+kobo_projectinit()
+```
+ in order to organise your project. It also starts a series of question to set up a configuration file to access a kobo server.
  
- 4. Either: 
+ 4. Either:  
+ 
    *  Grab your data with `kobo_data_downloader` & Get your form with `kobo_form`
    * or simply copy your data in `csv` format and your xlsform in `xls` format in the `data` folder that was created during the project initiation
  

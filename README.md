@@ -35,6 +35,10 @@ kobo_projectinit()
 ```
  in order to organise your project. It also starts a series of question to set up a configuration file to access a kobo server. You can now go in the `code` folder and source the `0-packages.R` script in order to install a curated list of packages.
  
+```
+ source("code/0-packages.R")
+```
+ 
  4. Either:  
  
    *  Grab your data with `kobo_data_downloader` & Get your form with `kobo_form`

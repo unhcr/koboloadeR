@@ -20,7 +20,7 @@ kobo_apps("data_viewer")
  1. Install the package
 ```
 source("https://raw.githubusercontent.com/Edouard-Legoupil/koboloadeR/master/inst/script/install_github.R")
-install.packages(devtools)
+install.packages("devtools")
 library("devtools")
 install_github("Edouard-Legoupil/koboloadeR")
 library("koboloadeR")

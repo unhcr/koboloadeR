@@ -112,7 +112,8 @@ kobo_bar_multi <- function(data, dico) {
       xlab("") + ylab("")+
       scale_y_continuous(labels=percent)+
       coord_flip()+
-      ggtitle(listlabel, subtitle = paste0("select_multiple question: Response rate to this question is ",percentreponse," of the total."))+
+      ggtitle(listlabel, 
+              subtitle = paste0("Select_multiple question: Response rate to this question is ",percentreponse," of the total."))+
       theme(plot.title=element_text(face="bold", size=9),
             plot.background = element_rect(fill = "transparent",colour = NA))
     ggsave(filename=paste("out/bar_multi/bar_multifreq_",listloop,".png",sep=""), width=8, height=10,units="in", dpi=300)

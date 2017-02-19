@@ -53,6 +53,9 @@ kobo_histo <- function(data, dico) {
 
   selectinteger <- as.character(selectdf[, c("fullname")])
   data.integer <- data [selectinteger  ]
+  
+  ## force to data frame 
+  data.integer <- as.data.frame(data.integer)
   data.integer  <- kobo_label(data.integer, dico)
 
         for (i in 1:nrow(selectdf) ) {
@@ -68,6 +71,8 @@ kobo_histo <- function(data, dico) {
             geom_histogram(fill="#2a87c8",colour="white", binwidth = 1) +
             ggtitle(title)+
             labs(x="", y="Count")+
+            #scale_x_discrete() +
+            scale_x_continuous(breaks= pretty_breaks()) +
             theme(plot.title=element_text(face="bold", size=9),
                   plot.background = element_rect(fill = "transparent",colour = NA))
           ggsave(filename=paste("out/histo/histo_",variablename,".png",sep=""), width=10, height=10,units="in", dpi=300)

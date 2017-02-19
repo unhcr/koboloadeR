@@ -66,24 +66,29 @@ kobo_bar_one_facet <- function(data,  dico) {
 
       ## subset data with selectone
       data.single <- data [ selectone ]
+      
+      ## force to data frame 
+      data.single <- as.data.frame(data.single)
       ## Remove variable where we get only NA
      # data.single <- data.single[,colSums(is.na(data.single))<nrow(data.single)]
       data.single <- kobo_label(data.single, dico)
 
       ## loop around the list of variables to facet
       for (j in 1:nrow(selectfacett) ) {
-        # j <- 2
+        # j <- 1
         facetname <- as.character(selectfacett[j,1])
         facetlabel <- as.character(dico[dico$fullname==facetname,c("label")])
         ### Now let's create proportion graphs -- bar chart
         for (i in 1:nrow(selectonet) ) {
-            # i <-2
+            # i <-23
             variablename <- names(data.single)[i]
             title <- attributes(data.single)$variable.labels[i]
                ### testing that the variable to map is not the same than the variable to facet!
                if(facetname==variablename){
                        cat("")
                         } else {
+                          
+                        #  str(data.single)
                         frequ <- table (data.single[ , i])
                         data.single[ , i] <- factor(data.single[ , i], levels=names(frequ[order(frequ, decreasing = TRUE)]))
 
@@ -103,7 +108,7 @@ kobo_bar_one_facet <- function(data,  dico) {
                               theme(plot.title=element_text(face="bold", size=9),
                                     plot.background = element_rect(fill = "transparent",colour = NA))
                             ggsave(filename=paste("out/facet_one/bar_onefreq_",variablename,"_facet_",facetname,".png",sep=""), width=10, height=10,units="in", dpi=300)
-                            cat(paste0("Generated bar chart for question: ",i, " ", title ," - with facet on - ",j, " ",facetlabel,"\n"))
+                            cat(paste0("Generated bar chart for question: ",i, " ", title ," - with facet on - ",j, " ",facetlabel, "saved as image: ", variablename,"_facet_",facetname,"\n"))
                            rm(variablename, freq)
                         }
                         ### End testing

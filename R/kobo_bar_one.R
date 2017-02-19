@@ -61,13 +61,18 @@ kobo_bar_one <- function(data, dico) {
     ## Remove variable where we get only NA
     #data.single <- data.single[,colSums(is.na(data.single))<nrow(data.single)]
     
+    ## force to data frame 
+    data.single <- as.data.frame(data.single)
+    
+    #str(data.single)
+    
     data.single <- kobo_label(data.single, dico)
 
     
 
   ### Now let's create proportion graphs -- bar chart
   for (i in 1:nrow(selectonet) ) {
-    # i <-77
+    # i <-1
     variablename <- names(data.single)[i]
     title <- attributes(data.single)$variable.labels[i]
 
@@ -76,13 +81,27 @@ kobo_bar_one <- function(data, dico) {
     ## variable ordinal or not
 
     ## if variable is not ordinal, Proportion table used to order the levels of the factor
+    
     frequ <- table (data.single[ , i])
+    
+    
+    #frequ <- as.data.frame(table(data.single[ , i]))
+    #frequ <- as.data.frame(table(data.single[[i]]))
+    
     data.single[ , i] <- factor(data.single[ , i], levels=names(frequ[order(frequ, decreasing = TRUE)]))
+    
+    totalanswer <- nrow(data.single)
+    ## subsetting to those who replied
+    
+    data.single1 <- data.single[ !(is.na(data.single[ ,i])), ]
+    
+    percentreponse <- paste(round((nrow(data.single1)/totalanswer)*100,digits=1),"%",sep="")
+    
 
-    levels(data.single[ , i])
+    #levels(data.single[ , i])
     
     ## and now the graph
-    plotfreq <- ggplot(data.single, aes(data.single[ , i])) +
+    plotfreq <- ggplot(data.single1, aes(data.single1[ , i])) +
       geom_bar(aes(y = ..count.. / sapply(PANEL, FUN=function(x) sum(count[PANEL == x]))),
                fill="#2a87c8",colour="#2a87c8") +
       #facet_wrap(~subgov, ncol=4) +
@@ -92,7 +111,9 @@ kobo_bar_one <- function(data, dico) {
       xlab("") +
       coord_flip() +
       # coord_fixed() + ##used to maintain the adspect ratio of the plot when it needs to be saved
-      ggtitle(title, subtitle = "select_one question")+
+      ggtitle(title,  
+              subtitle = paste0("Select_one question: Response rate to this question is ",percentreponse," of the total."))+
+      
       theme(plot.title=element_text(face="bold", size=9),
             plot.background = element_rect(fill = "transparent",colour = NA))
     ggsave(filename=paste("out/bar_one/bar_onefreq_",variablename,".png",sep=""), plot=plotfreq, width=10, height=10,units="in", dpi=300)

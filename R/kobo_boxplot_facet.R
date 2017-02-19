@@ -99,8 +99,11 @@ kobo_boxplot_facet <- function(data,  dico) {
             xlab("") +
             ylab("") +
             coord_flip()+
-            geom_smooth(method=lm) +  # Add a loess smoothed fit curve with confidence region
-            ggtitle(paste("boxplot for ", variablelabel,sep=""), subtitle=facetlabel)+
+            scale_y_continuous(breaks= pretty_breaks()) +
+            #geom_smooth(method=lm) +  # Add a loess smoothed fit curve with confidence region
+            ggtitle(paste("Boxplot for question: ", variablelabel,sep=""),
+                    subtitle = paste("Facetted by question: ",facetlabel,sep=""))+
+            
             theme(plot.title=element_text(face="bold", size=9),
                   plot.background = element_rect(fill = "transparent",colour = NA))
           ggsave(filename=paste("out/boxplot/boxplot_",facetname,"_correl_",variablename,".png",sep=""), width=10, height=10,units="in", dpi=300)

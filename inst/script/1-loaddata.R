@@ -34,14 +34,10 @@ data.or <- read.csv("data/data.csv", sep=";", encoding="UTF-8", na.strings="n/a"
 ## Load form
 rm(form)
 form <- "form.xls"
-
-
-##########################################################################################
 ## Generate & Load dictionnary
 kobo_dico(form)
 dico <- read.csv(paste("data/dico_",form,".csv",sep=""), encoding="UTF-8", na.strings="")
-
-
+rm(form)
 
 
 #################################################################################
@@ -62,10 +58,7 @@ kobo_bar_multi(data,dico)
 ## Produce histogramme for all numeric variable
 kobo_histo(data,dico)
 
-#########################################################################################
-## Produce graphs based on date
 
-kobo_trend(data,"date",dico)
 
 ########################################################################################
 ### Produce faceted chart select_one
@@ -82,6 +75,10 @@ kobo_correlation(data,  dico)
 ### Produce boxplot
 kobo_boxplot_facet(data,  dico)
 
+#########################################################################################
+## Produce graphs based on date
+
+kobo_trend(data,"date",dico)
 
 #################################################################################
 ## Generating maps

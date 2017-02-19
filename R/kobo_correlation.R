@@ -63,6 +63,9 @@ kobo_correlation <- function(data,  dico) {
 
       ## subset data with selectone
       data.integer <- data [ selectinteger ]
+      ## force to data frame 
+      data.integer <- as.data.frame(data.integer)
+      
       ## Remove variable where we get only NA
       data.integer <- data.integer[,colSums(is.na(data.integer))<nrow(data.integer)]
       data.integer <- kobo_label(data.integer, dico)

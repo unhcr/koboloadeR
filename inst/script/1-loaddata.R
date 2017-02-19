@@ -17,7 +17,22 @@ library(koboloadeR)
 rm(data)
 
 data.or <- read.csv("data/data.csv", sep=";", encoding="UTF-8", na.strings="n/a")
-rm(form_temp)
+
+#names(data.or)
+### Need to replace slash by point in the variable name
+## get variable name from data
+#datalabel <- as.data.frame( names(data.or))
+#names(datalabel)[1] <- "nameor"
+#datalabel$nameor <- as.character(datalabel$nameor)
+
+## new variables name without /
+#datalabel$namenew <- str_replace_all(datalabel$nameor, "/", ".")
+## let's recode the variable of the dataset using short label - column 3 of my reviewed labels
+#names(data.or) <- datalabel[, 2]
+
+##############################################
+## Load form
+rm(form)
 form <- "form.xls"
 
 

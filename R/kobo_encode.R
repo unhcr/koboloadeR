@@ -50,11 +50,15 @@ kobo_encode <- function(data, dico) {
       #names(selectdf)[1] <- "selectvar"
     
       for (i in 1:nrow(selectdf3)) {
+        # i <-1
         fullname <- as.character(selectdf3 [ i,1])
         variablename <- as.character(selectdf3 [ i,2])
         variablelistname <- as.character(selectdf3 [ i,3])
         
-        variablelevel <- as.data.frame(levels(as.factor(data[ ,fullname])))
+       # variablelevel <- as.data.frame(levels(as.factor(data[ ,fullname])))
+        
+        variablelevel <- as.data.frame(levels(as.factor(data[[fullname]])))
+        
         names(variablelevel)[1] <- "namecoded"
         labelchoice <- as.character(dico[dico$fullname==fullname, c("labelchoice")])
         if (nrow(variablelevel)>0) {
@@ -159,7 +163,8 @@ kobo_encode <- function(data, dico) {
         df <- join(df,variablelevel, by="name")
         data[ , fullname] <- as.character(data[ , fullname])
         data[ , fullname] <- df$labelchoice
-        data[ , fullname] <- as.factor(data[ , fullname])
+        #data[ , fullname] <- as.factor(data[ , fullname])
+        data[ , fullname] <- as.factor(data[[fullname]])
         #View(data[i])
         cat(paste0("Recode variable", fullname," \n"))
         

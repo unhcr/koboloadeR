@@ -27,7 +27,7 @@
 
 kobo_label <- function(datalabel, dico) {
   ### First we provide attribute label to variable name
-  #datalabel <- data.single
+  #datalabel <- data.or
   data.label <- as.data.frame(names(datalabel))
   names(data.label)[1] <- "fullname"
   data.label <- join (x=data.label, y=dico, by="fullname", type="left" )

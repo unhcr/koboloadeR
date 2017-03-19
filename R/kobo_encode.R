@@ -50,7 +50,7 @@ kobo_encode <- function(data, dico) {
       #names(selectdf)[1] <- "selectvar"
     
       for (i in 1:nrow(selectdf3)) {
-        # i <-1
+        # i <- 98
         fullname <- as.character(selectdf3 [ i,1])
         variablename <- as.character(selectdf3 [ i,2])
         variablelistname <- as.character(selectdf3 [ i,3])
@@ -67,18 +67,22 @@ kobo_encode <- function(data, dico) {
           data[ , fullname][is.na(data[ , fullname])] <- "Not replied"
           data[ , fullname][data[ , fullname]=="0"] <- "Not selected"
           data[ , fullname][data[ , fullname]=="FALSE"] <- "Not selected"
+          data[ , fullname][data[ , fullname]=="False"] <- "Not selected"
           data[ , fullname][data[ , fullname]=="1"] <- labelchoice
-          data[ , fullname][data[ , fullname]=="TRUE"] <- labelchoice        
+          data[ , fullname][data[ , fullname]=="TRUE"] <- labelchoice  
+          data[ , fullname][data[ , fullname]=="True"] <- labelchoice        
           
           } else{
           data[ , fullname][is.na(data[ , fullname])] <- ""
           data[ , fullname][data[ , fullname]=="0"] <- ""
           data[ , fullname][data[ , fullname]=="FALSE"] <- ""
+          data[ , fullname][data[ , fullname]=="False"] <- ""
           data[ , fullname][data[ , fullname]=="1"] <- labelchoice
-          data[ , fullname][data[ , fullname]=="TRUE"] <- labelchoice  
+          data[ , fullname][data[ , fullname]=="TRUE"] <- labelchoice 
+          data[ , fullname][data[ , fullname]=="True"] <- labelchoice  
           }
 
-        cat(paste0("Recode disagreggated select_multiple variable", fullname," for: ",labelchoice, "\n"))
+        cat(paste0(i, "- Recode disagreggated select_multiple variable ", fullname," for: ",labelchoice, "\n"))
        
         } else{ cat(paste0("The following variable has no answers to recode in the dataset: ",fullname, "\n")) }
         
@@ -120,7 +124,7 @@ kobo_encode <- function(data, dico) {
         labelchoice <- as.character(dico[dico$fullname==fullname, c("labelchoice")])
         data[ , fullname][data[ , fullname]==variablecode] <- labelchoice
         
-        cat(paste0("Recode disaggregated select_one variable", fullname," for: ",labelchoice, "\n"))
+        cat(paste0("Recode disaggregated select_one variable: ", fullname," for: ",labelchoice, "\n"))
         
         #View(data[i])
       } else { cat(paste0("The following disaggregated select_one variable has no answers to recode in the dataset: ",fullname, "\n")) }

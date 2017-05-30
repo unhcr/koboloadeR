@@ -17,8 +17,12 @@ Automatically generate faceted chart for select multiple variables. ggplot2 is u
 \examples{
 kobo_bar_multi_facet()
 
+\dontrun{
+kobo_bar_multi_facet(data,  dico)
+}
+
+
 }
 \author{
 Edouard Legoupil
 }
-

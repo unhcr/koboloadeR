@@ -105,6 +105,7 @@ kobo_bar_one <- function(data, dico) {
       geom_bar(aes(y = ..count.. / sapply(PANEL, FUN=function(x) sum(count[PANEL == x]))),
                fill="#2a87c8",colour="#2a87c8") +
       #facet_wrap(~subgov, ncol=4) +
+	  #    geom_text(aes(label = ..count.. / sapply(PANEL, FUN=function(x) sum(count[PANEL == x])))), hjust = 1.1, color = "#FFFFFF") +
       guides(fill=FALSE) +
       ylab("Frequency") +
       scale_y_continuous(labels=percent)+

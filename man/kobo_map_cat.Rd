@@ -25,8 +25,12 @@ Automatically generate maps for all nominal & ordinal variables based on dates. 
 \examples{
 kobo_map_cat()
 
+\dontrun{
+kobo_map_cat(data,xmax,xmin,ymax,ymin, dico)
+}
+
+
 }
 \author{
 Edouard Legoupil
 }
-

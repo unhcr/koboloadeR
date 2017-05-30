@@ -19,4 +19,3 @@ kobo_projectconfig()
 \author{
 Edouard Legoupil
 }
-

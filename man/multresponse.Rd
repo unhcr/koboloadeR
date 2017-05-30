@@ -19,4 +19,3 @@ multresponse(x)
 \author{
 Someone
 }
-

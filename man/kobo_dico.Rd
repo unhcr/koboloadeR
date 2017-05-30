@@ -19,8 +19,11 @@ Produce a data dictionnary based on the xlsform for the project
 \examples{
 kobo_dico()
 
+\dontrun{
+kobo_dico("myform.xls")
+}
+
 }
 \author{
 Edouard Legoupil
 }
-

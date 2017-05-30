@@ -30,4 +30,3 @@ kobo_datasets2()
 \author{
 Edouard Legoupil
 }
-

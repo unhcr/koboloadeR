@@ -31,4 +31,3 @@ kobo_submission_count("31511", api = "kobohr")
 \author{
 Ananda Mahto
 }
-

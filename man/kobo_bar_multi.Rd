@@ -17,8 +17,12 @@ Automatically generate bar chart for each of the select_multiple question in the
 \examples{
 kobo_bar_multi()
 
+\dontrun{
+kobo_bar_multi(data, dico)
+}
+
+
 }
 \author{
 Edouard Legoupil
 }
-

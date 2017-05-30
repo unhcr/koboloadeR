@@ -21,4 +21,3 @@ round2(x, n)
 \author{
 Someone
 }
-

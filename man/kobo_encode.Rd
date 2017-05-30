@@ -20,8 +20,11 @@ Insert the full label in data frame based on dictionnary
 \examples{
 kobo_encode()
 
+\dontrun{
+kobo_encode(data, dico)
+}
+
 }
 \author{
 Edouard Legoupil
 }
-

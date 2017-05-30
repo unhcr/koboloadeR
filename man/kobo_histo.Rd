@@ -17,8 +17,12 @@ Automatically generate histogrammes for each of the integer questions in the dat
 \examples{
 kobo_histo()
 
+\dontrun{
+kobo_histo(data, dico)
+}
+
+
 }
 \author{
 Edouard Legoupil
 }
-

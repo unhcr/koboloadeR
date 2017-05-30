@@ -24,6 +24,7 @@ A launcher for the Shiny apps available in the koboloadeR package.
  \item \code{"data_viewer"}
 }
 }
+
 \examples{
 
 \dontrun{
@@ -35,4 +36,3 @@ kobo_apps("data_viewer")
 \author{
 Ananda Mahto
 }
-

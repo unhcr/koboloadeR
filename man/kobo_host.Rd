@@ -39,4 +39,3 @@ kobo_host("ttps://kobocat.unhcr.org/api/v1/")
 \author{
 Ananda Mahto
 }
-

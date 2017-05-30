@@ -8,6 +8,7 @@ packages <- c(
   ### Packages for Premodeling Stage
 
   ## Data Manipulation
+  "purrr",
   "lubridate","date","gdata","zoo", ## playing with date
   "ggseas", ## seasonal adjustemnt with GGplot2
   "dplyr",  "data.table", "doBy","tidyr", ## Data manipulation
@@ -145,6 +146,7 @@ packages <- c(
   "rJava", "XLConnect", ## Read and write excel files
   "readxl", ## Read Excel files
   
+  "downloader",
   "httr", "rjson","jsonlite", ## get data from API
   "XML", "xml2", ## Manipulation of xml  
   

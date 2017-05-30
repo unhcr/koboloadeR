@@ -50,7 +50,7 @@ kobo_encode <- function(data, dico) {
       #names(selectdf)[1] <- "selectvar"
     
       for (i in 1:nrow(selectdf3)) {
-        # i <- 98
+        # i <- 105
         fullname <- as.character(selectdf3 [ i,1])
         variablename <- as.character(selectdf3 [ i,2])
         variablelistname <- as.character(selectdf3 [ i,3])

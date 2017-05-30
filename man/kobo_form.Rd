@@ -26,8 +26,12 @@ Download form from the platform
 \examples{
 kobo_form()
 
+\dontrun{
+kobo_form("15051")
+kobo_form("31511", user = userpwd, api = "unhcr")
+}
+
 }
 \author{
 Edouard Legoupil
 }
-

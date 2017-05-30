@@ -65,7 +65,7 @@ kobo_bar_multi <- function(data, dico) {
 
 
   for (i in 1:nrow(listmulti) ) {
-    # i <- 6
+    # i <- 7
     listloop <- as.character(listmulti[i,1])
     listlabel <-  as.character(listmulti[i,2])
 
@@ -97,6 +97,8 @@ kobo_bar_multi <- function(data, dico) {
 
     meltdata <- melt(data.selectmultilist,id="id")
 
+    #prop.table(table(meltdata$variable, meltdata$value),2)
+
     castdata <- as.data.frame(table(meltdata[c("value")])) #,  useNA = "ifany"
     castdata$freqper <- castdata$Freq/nrow(data.selectmultilist)
 
@@ -112,7 +114,7 @@ kobo_bar_multi <- function(data, dico) {
       xlab("") + ylab("")+
       scale_y_continuous(labels=percent)+
       coord_flip()+
-      ggtitle(listlabel, 
+      ggtitle(listlabel,
               subtitle = paste0("Select_multiple question: Response rate to this question is ",percentreponse," of the total."))+
       theme(plot.title=element_text(face="bold", size=9),
             plot.background = element_rect(fill = "transparent",colour = NA))

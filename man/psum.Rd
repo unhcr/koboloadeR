@@ -22,4 +22,3 @@ psum()
 \author{
 Someone
 }
-

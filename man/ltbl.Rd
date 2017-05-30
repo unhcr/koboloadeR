@@ -23,4 +23,3 @@ ltbl(x,y,z)
 \author{
 Someone
 }
-

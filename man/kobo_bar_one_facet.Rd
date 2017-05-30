@@ -17,8 +17,12 @@ Automatically generate faceted chart for select one variable.. ggplot2 is used.
 \examples{
 kobo_bar_one_facet()
 
+\dontrun{
+kobo_bar_one_facet(data,  dico)
+}
+
+
 }
 \author{
 Edouard Legoupil
 }
-

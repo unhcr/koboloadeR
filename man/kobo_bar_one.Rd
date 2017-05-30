@@ -17,8 +17,12 @@ Automatically generate bar chart for each of the select_one question in the data
 \examples{
 kobo_bar_one()
 
+\dontrun{
+kobo_bar_one(data, dico)
+}
+
+
 }
 \author{
 Edouard Legoupil
 }
-

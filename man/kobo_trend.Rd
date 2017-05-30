@@ -21,8 +21,12 @@ Automatically generate histogramm for all nominal & ordinal variables based on d
 \examples{
 kobo_bar_trend()
 
+\dontrun{
+kobo_trend(data, date, dico)
+}
+
+
 }
 \author{
 Edouard Legoupil
 }
-

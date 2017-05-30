@@ -17,8 +17,12 @@ Automatically generate maps for all nominal & ordinal variables based on dates. 
 \examples{
 kobo_correlation()
 
+\dontrun{
+kobo_correlation(data,  dico)
+}
+
+
 }
 \author{
 Edouard Legoupil
 }
-

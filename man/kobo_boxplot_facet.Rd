@@ -17,8 +17,12 @@ Automatically generate boxplot. ggplot2 is used.
 \examples{
 kobo_boxplot_facet()
 
+\dontrun{
+kobo_boxplot_facet(data,  dico)
+}
+
+
 }
 \author{
 Edouard Legoupil
 }
-

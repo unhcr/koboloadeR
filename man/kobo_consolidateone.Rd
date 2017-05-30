@@ -22,8 +22,11 @@ Merge disagregated select_one variable
 \examples{
 kobo_consolidateone()
 
+\dontrun{
+kobo_consolidateone("myform.xls")
+}
+
 }
 \author{
 Edouard Legoupil
 }
-

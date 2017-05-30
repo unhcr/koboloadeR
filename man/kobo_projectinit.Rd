@@ -19,4 +19,3 @@ kobo_projectinit()
 \author{
 Edouard Legoupil
 }
-

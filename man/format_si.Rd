@@ -33,4 +33,3 @@ format_si()
 \author{
 Someone
 }
-

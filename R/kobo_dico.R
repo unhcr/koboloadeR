@@ -135,7 +135,7 @@ kobo_dico <- function(form) {
 
   ## handle case where we have "or_other"
   survey$listname <- with(survey, ifelse(grepl("or_other", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  survey$listname) ,
-                                         paste0( substr(survey$listname , 1, (nchar(survey$listname)-8 )),survey$listname)))
+                                         paste0( substr(survey$listname , 1, (nchar(survey$listname)-8 ))),survey$listname))
 
   survey$type <- with(survey, ifelse(grepl("select_one", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  survey$type), paste0("select_one"),survey$type))
 

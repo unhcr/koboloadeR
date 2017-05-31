@@ -1,0 +1,76 @@
+
+
+```{r setup, include=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+mainDir <- getwd()
+
+setwd(mainDir)
+
+data.or <- read.csv("data/data.csv", sep=";", encoding="UTF-8", na.strings="n/a")
+
+data.or <- kobo_arrange_variablename(data.or)
+
+
+## Load form
+rm(form)
+form <- "form.xls"
+## Generate & Load dictionnary
+kobo_dico(form)
+surveyname <- kobo_surveyname(form)
+dico <- read.csv(paste("data/dico_",form,".csv",sep=""), encoding="UTF-8", na.strings="")
+rm(form)
+
+
+#################################################################################
+##### Re-encode correctly the dataset
+
+data <- kobo_encode(data.or, dico)
+data <- kobo_label(data, dico)
+
+surveyname <- kobo_surveyname(form)
+
+```
+
+---
+title: "Title \n Preliminary exploration of results - draft not for distribution - "
+author: "Prepared by UNHCR DOiA"
+date: "Amman, `r Sys.Date()`"
+output: 
+  word_document: 
+    fig_caption: yes
+    fig_height: 5
+    fig_width: 8
+    toc: yes
+    toc_depth: 2
+---
+
+***
+***
+# Executive summary and main findings
+
+***
+# Background Introduction
+
+# Plotting Select_one questions
+
+
+
+```{r bar_one, echo=FALSE, warning=FALSE, cache=FALSE, fig.width=7, fig.height=2}
+
+#########################################################################################
+## Produce graphs of all select_one questions
+kobo_bar_one_print(data,dico)
+
+
+```
+
+# Plotting Select_multiple questions
+
+```{r bar_multi, echo=FALSE, warning=FALSE, cache=FALSE, fig.width=7, fig.height=2}
+
+
+
+#########################################################################################
+## Produce graphs of all select_multiple questions
+kobo_bar_multi_print(data,dico)
+
+```

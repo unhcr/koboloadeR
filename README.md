@@ -44,6 +44,9 @@ kobo_projectinit()
    *  Grab your data with `kobo_data_downloader` & Get your form with `kobo_form`
    * or simply copy your data in `csv` format and your xlsform in `xls` format in the `data` folder that was created during the project initiation
  
+ use the following options to extract data
+![alt text](https://raw.githubusercontent.com/Edouard-Legoupil/koboloadeR/master/inst/script/exportformat.png)
+ 
  5. Open the `1-loaddata.R` script in the code folder, replace the name of the dataset and the name of the form.
  
  6. Create your dictionnary with `kobo_dico`

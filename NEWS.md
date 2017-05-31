@@ -1,4 +1,11 @@
 # NEWS
+## koboloadeR 0.1.4
+
+ * Added a template for report generation in word as well as specific version of chart loop to be inserted in the report
+ 
+ * Add a function to split select_multiple - used within kobo_encode
+ 
+ * Fixed `kobo_projectinit` path to copy files
 
 ## koboloadeR 0.1.3
 

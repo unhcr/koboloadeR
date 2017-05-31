@@ -39,7 +39,7 @@ kobo_projectinit <- function() {
     cat("")
     # Handle this error as appropriate
   }
-  destfile="./perso/README.md"
+  destfile=paste0(mainDir,"/perso/README.md")
   if (!file.exists(destfile)) {
     fileConn<-file(destfile)
     writeLines(c("### This folder is where your user name, password and config are stored"), fileConn)
@@ -65,15 +65,15 @@ kobo_projectinit <- function() {
     cat("")
     # Handle this error as appropriate
   }
-  destfile="./code/README.md"
+  destfile=paste0(mainDir,"/code/README.md")
   if (!file.exists(destfile)) {
     fileConn<-file(destfile)
     writeLines(c("### This folder is where analysis scripts are saved"), fileConn)
     close(fileConn)
   }
-  
+
   ## Need to test if we have multiple .libPaths()
-  
+
   path <- as.data.frame(.libPaths())
   if (nrow(path)==1) {path_correct <- as.character(path[1,1])
   } else{ cat("You have multiple library path! \n")
@@ -81,18 +81,30 @@ kobo_projectinit <- function() {
        path_correct <- as.character(path[1,1])
      } else{ path_correct <- as.character(path[2,1])}
     }
-  
-  destfile="./code/0-packages.R"
+
+  destfile=paste0(mainDir,"/code/0-packages.R")
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/0-packages.R",sep=""), destfile)
   }
-  destfile="./code/1-loaddata.R"
+  destfile=paste0(mainDir,"/code/1-loaddata.R")
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/1-loaddata.R",sep=""), destfile)
   }
-  destfile="./code/2-create-graph.R"
+  destfile=paste0(mainDir,"/code/2-create-graph.R")
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/2-create-graph.R",sep=""), destfile)
+  }
+  destfile=paste0(mainDir,"/code/report.Rmd")
+  if (!file.exists(destfile)) {
+    file.copy(paste(path_correct,"/koboloadeR/script/report.Rmd",sep=""), destfile)
+  }
+  destfile=paste0(mainDir,"/code/style-unhcr-portrait.docx")
+  if (!file.exists(destfile)) {
+    file.copy(paste(path_correct,"/koboloadeR/script/style-unhcr-portrait.docx",sep=""), destfile)
+  }
+  destfile=paste0(mainDir,"/code/style-unhcr-landscape.docx")
+  if (!file.exists(destfile)) {
+    file.copy(paste(path_correct,"/koboloadeR/script/style-unhcr-landscape.docx",sep=""), destfile)
   }
 
 
@@ -116,7 +128,7 @@ kobo_projectinit <- function() {
     cat("")
     # Handle this error as appropriate
   }
-  destfile="./data/README.md"
+  destfile=paste0(mainDir,"/data/README.md")
   if (!file.exists(destfile)) {
     fileConn<-file(destfile)
     writeLines(c("### This folder is the one where are stored data in CSV format, the form in XLS format and geodata in SHP format",
@@ -145,7 +157,7 @@ kobo_projectinit <- function() {
     cat("")
     # Handle this error as appropriate
   }
-  destfile="./out/README.md"
+  destfile=paste0(mainDir,"/out/README.md")
   if (!file.exists(destfile)) {
     fileConn<-file(destfile)
     writeLines(c("### This folder is where the analysis output will be generated",

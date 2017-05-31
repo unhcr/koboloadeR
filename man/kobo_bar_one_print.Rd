@@ -12,7 +12,7 @@ kobo_bar_one_print(data, dico)
 \item{dico}{( generated from kobo_dico)}
 }
 \description{
-Automatically generate bar chart for each of the select_one question in the dataset. ggplot2 is used.
+Automatically generate bar chart for each of the select_one question in the dataset. Used in report
 }
 \examples{
 kobo_bar_one_print()

@@ -2,7 +2,7 @@
 #' @rdname kobo_bar_multi_print
 #' @title  Generate bar Chart - frequency - for select_multiple questions
 #'
-#' @description  Automatically generate bar chart for each of the select_multiple question in the dataset. ggplot2 is used.
+#' @description  Automatically generate bar chart for each of the select_multiple question in the dataset. used in report
 #'
 #'
 #' @param data kobodatset to use
@@ -25,18 +25,6 @@
 #'
 
 kobo_bar_multi_print <- function(data, dico) {
-
-  mainDir <- "out"
-  subDir <- "bar_multi"
-  if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
-    cat("bar_multi directory exists in out directory and is a directory.\n")
-  } else if (file.exists(paste(mainDir, subDir, sep = "/", collapse = "/"))) {
-    cat("bar_multi directory exists in your out directory.\n")
-    # you will probably want to handle this separately
-  } else {
-    cat("bar_multi directory does not exist in your out directory - creating now!\n ")
-    dir.create(file.path(mainDir, subDir))
-  }
 
 
   selectdf <- dico[dico$type=="select_multiple", c("fullname","listname","label","name","variable","disaggregation")]

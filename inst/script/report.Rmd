@@ -2,22 +2,29 @@
 
 ```{r setup, include=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
 mainDir <- getwd()
+mainDirroot <- substring(mainDir, 0 , nchar(mainDir)- 5)
 
-setwd(mainDir)
 
-data.or <- read.csv("data/data.csv", sep=";", encoding="UTF-8", na.strings="n/a")
+
+## Load all required packages
+source(paste0(mainDir,"/0-packages.R"))
+library(koboloadeR)
+
+## Provide below the name of the datafile - shoudl be a csv file
+datafilename <- "data"
+
+data.or <- read.csv(paste0(mainDirroot,"/data/",datafilename,".csv"), sep=";", encoding="UTF-8", na.strings="n/a")
 
 data.or <- kobo_arrange_variablename(data.or)
 
 
 ## Load form
-rm(form)
+## It is assumed that the dictionnary was already generated!
+
+## Provide below the name of the form in xsl form - format should be xls not xlsx
+
 form <- "form.xls"
-## Generate & Load dictionnary
-kobo_dico(form)
-surveyname <- kobo_surveyname(form)
-dico <- read.csv(paste("data/dico_",form,".csv",sep=""), encoding="UTF-8", na.strings="")
-rm(form)
+dico <- read.csv(paste(mainDirroot,"data/dico_",form,".csv",sep=""), encoding="UTF-8", na.strings="")
 
 
 #################################################################################

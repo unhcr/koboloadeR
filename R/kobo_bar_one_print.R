@@ -109,6 +109,8 @@ kobo_bar_one_print <- function(data, dico) {
 
    # cat(paste0("Generated bar chart for question: ", title , "\n"))
     print(plot)
+    cat("\n")
+    cat("\n")
     rm(variablename, freq)
     }
   }

@@ -74,3 +74,23 @@ kobo_bar_one_print(data,dico)
 kobo_bar_multi_print(data,dico)
 
 ```
+
+
+# Plotting numeric questions
+
+```{r histogram, echo=FALSE, warning=FALSE, cache=FALSE, fig.width=7, fig.height=6}
+#########################################################################################
+## Produce histogramme for all numeric variable
+#kobo_histo_print(data,dico)
+
+```
+
+# Plotting facetted analysis
+
+```{r facet, echo=FALSE, warning=FALSE, cache=FALSE, fig.width=7, fig.height=8}
+
+########################################################################################
+### Produce faceted chart select_one
+
+kobo_bar_one_facet_print(data,dico)
+```

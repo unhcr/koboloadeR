@@ -110,6 +110,9 @@ kobo_bar_multi_print <- function(data, dico) {
 
     #cat(paste0("Generated bar chart for question: ", listlabel , "\n"))
     print(plot)
+    cat("\n")
+    cat("\n")
+
       }
   }
 

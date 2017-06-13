@@ -1,11 +1,11 @@
-#' @name kobo_encode
-#' @rdname kobo_encode
+#' @name kobo_encode_repeat
+#' @rdname kobo_encode_repeat
 #' @title  Encode variable
 #'
-#' @description  Insert the full label in data frame based on dictionnary
+#' @description  Insert the full label in data frame based on dictionnary - used when data is exported through briefcase because of repeated element in the dataset. In the this case, merge is done on name instead of fullname.
 #'
 #'
-#' @param data Dataframe to relabel
+#' @param data Dataframe to re-label
 #' @param dico Data dictionnary generated from kobo_dico
 #'
 #'
@@ -14,22 +14,22 @@
 #' @author Edouard Legoupil
 #'
 #' @examples
-#' kobo_encode()
+#' kobo_encode_repeat()
 #'
-#' @export kobo_encode
+#' @export kobo_encode_repeat
 #'
 #' @examples
 #' \dontrun{
-#' kobo_encode(data, dico)
+#' kobo_encode_repeat(data, dico)
 #' }
 #'
-kobo_encode <- function(data, dico) {
+kobo_encode_repeat <- function(data, dico) {
   ### First we provide attribute label to variable name
   #data1 <- data
   #data <- data
   data.label <- as.data.frame(names(data))
-  names(data.label)[1] <- "fullname"
-  data.label <- join (x=data.label, y=dico, by="fullname", type="left" )
+  names(data.label)[1] <- "name"
+  data.label <- join (x=data.label, y=dico, by="name", type="left" )
   ## Now we can also re-encode the records themself
 
   #################################################################################################

@@ -60,7 +60,7 @@ kobo_histo <- function(data, dico) {
 
         for (i in 1:nrow(selectdf) ) {
         #  for (i in 1:2 ) {
-          # i <- 1
+          # i <- 10
           variablename <- names(data.integer)[i]
           title <- attributes(data.integer)$variable.labels[i]
 
@@ -75,8 +75,9 @@ kobo_histo <- function(data, dico) {
             scale_x_continuous(breaks= pretty_breaks()) +
             theme(plot.title=element_text(face="bold", size=9),
                   plot.background = element_rect(fill = "transparent",colour = NA))
+          cat(paste0(i, " - Generated histogramme for question: ", title , "\n"))
           ggsave(plot, filename=paste("out/histo/histo_",variablename,".png",sep=""), width=10, height=10,units="in", dpi=300)
-          cat(paste0("Generated histogramme for question: ", title , "\n"))
+
           }
 
         for (i in 1:nrow(selectdf) ) {
@@ -99,7 +100,7 @@ kobo_histo <- function(data, dico) {
                     plot.background = element_rect(fill = "transparent",colour = NA))
             ggsave(filename=paste("out/histo/histodensity_",variablename,".png",sep=""), width=10, height=10,units="in", dpi=300)
 
-            cat(paste0("Generated histogramme for question: ", title , "\n"))
+            cat(paste0(i, "- Generated desnity graphs for question: ", title , "\n"))
           }
   }
 }

@@ -60,7 +60,7 @@ kobo_bar_one_print <- function(data, dico) {
 
   ### Now let's create proportion graphs -- bar chart
   for (i in 1:nrow(selectonet) ) {
-    # i <-1
+    # i <-6
     variablename <- names(data.single)[i]
     title <- attributes(data.single)$variable.labels[i]
 
@@ -73,7 +73,7 @@ kobo_bar_one_print <- function(data, dico) {
     frequ <- table (data.single[ , i])
 
 
-    #frequ <- as.data.frame(table(data.single[ , i]))
+    frequ1 <- as.data.frame(table(data.single[ , i]))
     #frequ <- as.data.frame(table(data.single[[i]]))
 
     data.single[ , i] <- factor(data.single[ , i], levels=names(frequ[order(frequ, decreasing = TRUE)]))

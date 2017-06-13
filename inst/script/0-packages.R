@@ -44,6 +44,7 @@ packages <- c(
   "extrafont", ##" load additional font
   "hexbin", ## Hexagrid viz
   "xkcd", ## Style from the xkcd comics
+  "likert", "tidyverse", "sjPlot",
   "scatterplot3d",
   "corrplot", # Visualiation of correlation Matrix
   "igraph", #network analysis and visualisation
@@ -51,7 +52,7 @@ packages <- c(
   "factoextra", ## Visualize the Results of Multivariate Data Analyses
 
   ##### Packages for Mapping
-  "rgdal","rgeos","sp","maptools", ## standard Geo manipulation packages
+  "sp","maptools","rgdal","rgeos", ## standard Geo manipulation packages
   "ggmap", ## get background from webmapping API
   "raster","cartography", ## packages used for the maps --
   "classInt",  ## used for univariate classification
@@ -116,6 +117,9 @@ packages <- c(
   ### Packages for Survey data management
   "sampling", ## Survey Sampling
   "survey",  ##Analysis of Complex Survey Samples
+  "srvyr",
+  "samplesize4surveys",
+  "svglite",
 
   ##################################################################
   ### Other Packages
@@ -152,8 +156,10 @@ packages <- c(
   "devtools", # package used to load packages hosted in github --
 
   "gmailr", # Access gmail api
- "RGtk2",
-  "rattle" ## GUI for data mining
+  "rattle", ## GUI for data mining
+
+  ## used to generate reports
+  "knitr", "pander", "xtable", "rmarkdown"
 )
 
 ## identify packages not installed yet
@@ -163,41 +169,61 @@ if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
 
 rm(packages)
 
+#source("https://raw.githubusercontent.com/Edouard-Legoupil/koboloadeR/master/inst/script/install_github.R")
+#install.packages("devtools")
+library("devtools")
+## setInternet2(TRUE)
+#install_github("Edouard-Legoupil/koboloadeR")
+## https://github.com/Edouard-Legoupil/koboloadeR/archive/master.zip
+library("koboloadeR")
 
+#Sys.getenv("R_LIBS_USER")
+
+#remove.packages("tibble")
+#install.packages("tibble")
 
 #gpclibPermit()
-
+#library("sjPlot")
 # loads packages into memory
-library(stringr)
-library(stringi)
-#library(lattice)
-#library(rattle)
-library(car)
-library(plyr)
-library(ggplot2) ## The grammar of graphics!
-library(extrafont) ## Additional fonts
-library(ggthemes) ## Additional themes for gplot2
-library(zoo) ## Manage reformatting of date
-library(reshape2) ## Restructure data between wide and long format before plotting them - melt and cast
-#library(maptools) ## Create maps
-#library(rgdal) ## Open geographic files
-#library(rgeos)
-library(ggmap) ## get background map from google map
-library(sp) ## Spatial library
-#library(raster) ## Managing raster dataset
-library(RColorBrewer) ## Color palette
-library(classInt) ## Classififcation
-library(hexbin) ## Hexa binning
-library(lubridate)
-library(date)
-library(gdata)
-library(gridExtra)
-library(scales)
-#library(formatR)
-#library(RGtk2)
-#library(gWidgetsRGtk2)
-library(readxl)
-library(plyr)
-#library(xlsx)
-library(FactoMineR)
+library("stringr")
+#ylibrary("stringi")
+#library("lattice")
+#library("rattle")
+library("car")
+library("plyr")
+library("ggplot2") ## The grammar of graphics!
+library("extrafont") ## Additional fonts
+library("ggthemes") ## Additional themes for gplot2
+library("zoo") ## Manage reformatting of date
+library("reshape2") ## Restructure data between wide and long format before plotting them - melt and cast
+library("maptools") ## Create maps
+#library("rgdal") ## Open geographic files
+library("likert")
+library("tidyverse")
+#library("rgeos")
+#library("ggmap") ## get background map from google map
+#library("sp") ## Spatial library
+#library("raster") ## Managing raster dataset
+library("RColorBrewer") ## Color palette
+library("classInt") ## Classififcation
+library("hexbin") ## Hexa binning
+library("lubridate")
+library("date")
+library("gdata")
+library("gridExtra")
+library("scales")
+#library("formatR")
+#library("RGtk2")
+#library("gWidgetsRGtk2")
+library("readxl")
+library("plyr")
+#library("xlsx")
+#library("FactoMineR")
 
+library("srvyr")
+
+
+library("xtable")
+library("knitr")
+library("pander")
+library("rmarkdown")

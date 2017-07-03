@@ -59,60 +59,68 @@ kobo_dico <- function(form) {
   {cat("Checking Data Analysis Plan within your xlsform -  No column `disaggregation` in your survey worksheet. Creating dummy one.\n");
     survey$disaggregation <- ""}
 
-  if("indicator" %in% colnames(survey))
+  if("report" %in% colnames(survey))
   {
-    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicator` in your survey worksheet.\n");
+    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `report` in your survey worksheet.\n");
   } else
-  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicator` in your survey worksheet. Creating dummy one.\n");
-    survey$indicator <- ""}
+  {cat("Checking Data Analysis Plan within your xlsform -  No column `report` in your survey worksheet. Creating dummy one.\n");
+    survey$report <- ""}
 
-  if("indicatorgroup" %in% colnames(survey))
-  {
-    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicatorgroup` in your survey worksheet.\n");
-  } else
-  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicatorgroup` in your survey worksheet. Creating dummy one.\n");
-    survey$indicatorgroup <- ""}
+#  if("indicator" %in% colnames(survey))
+#  {
+#    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicator` in your survey worksheet.\n");
+#  } else
+#  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicator` in your survey worksheet. Creating dummy one.\n");
+#    survey$indicator <- ""}
 
-  if("indicatortype" %in% colnames(survey))
-  {
-    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicatortype` in your survey worksheet.\n");
-  } else
-  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicatortype` in your survey worksheet. Creating dummy one.\n");
-    survey$indicatortype <- ""}
+#  if("indicatorgroup" %in% colnames(survey))
+#  {
+#    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicatorgroup` in your survey worksheet.\n");
+#  } else
+#  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicatorgroup` in your survey worksheet. Creating dummy one.\n");
+#    survey$indicatorgroup <- ""}
 
-  if("indicatorlevel" %in% colnames(survey))
-  {
-    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicatorlevel` in your survey worksheet.\n");
-  } else
-  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicatorlevel` in your survey worksheet. Creating dummy one.\n");
-    survey$indicatorlevel <- ""}
+#  if("indicatortype" %in% colnames(survey))
+#  {
+#    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicatortype` in your survey worksheet.\n");
+#  } else
+#  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicatortype` in your survey worksheet. Creating dummy one.\n");
+#    survey$indicatortype <- ""}
 
-  if("dataexternal" %in% colnames(survey))
-  {
-    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `dataexternal` in your survey worksheet.\n");
-  } else
-  {cat("Checking Data Analysis Plan within your xlsform -  No column `dataexternal` in your survey worksheet. Creating dummy one.\n");
-    survey$dataexternal <- ""}
+#  if("indicatorlevel" %in% colnames(survey))
+#  {
+#    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicatorlevel` in your survey worksheet.\n");
+#  } else
+#  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicatorlevel` in your survey worksheet. Creating dummy one.\n");
+#    survey$indicatorlevel <- ""}
 
-  if("indicatorcalculation" %in% colnames(survey))
-  {
-    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicatorcalculation` in your survey worksheet.\n");
-  } else
-  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicatorcalculation` in your survey worksheet. Creating dummy one.\n");
-    survey$indicatorcalculation <- ""}
+#  if("dataexternal" %in% colnames(survey))
+#  {
+#    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `dataexternal` in your survey worksheet.\n");
+#  } else
+#  {cat("Checking Data Analysis Plan within your xlsform -  No column `dataexternal` in your survey worksheet. Creating dummy one.\n");
+#    survey$dataexternal <- ""}
 
-  if("indicatornormalisation" %in% colnames(survey))
-  {
-    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicatornormalisation` in your survey worksheet.\n");
-  } else
-  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicatornormalisation` in your survey worksheet. Creating dummy one.\n");
-    survey$indicatornormalisation <- ""}
+#  if("indicatorcalculation" %in% colnames(survey))
+#  {
+#    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicatorcalculation` in your survey worksheet.\n");
+#  } else
+#  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicatorcalculation` in your survey worksheet. Creating dummy one.\n");
+#    survey$indicatorcalculation <- ""}
+
+ # if("indicatornormalisation" %in% colnames(survey))
+#  {
+#    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicatornormalisation` in your survey worksheet.\n");
+#  } else
+#  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicatornormalisation` in your survey worksheet. Creating dummy one.\n");
+#    survey$indicatornormalisation <- ""}
 
 
   ## Avoid columns without names
   survey <- survey[ ,c("type",   "name" ,  "label",
-                       "repeatsummarize","variable","disaggregation","indicator","indicatorgroup","indicatortype",
-                       "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation"
+                       "repeatsummarize","variable","disaggregation", "report"
+                      # "indicator","indicatorgroup","indicatortype",
+                      # "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation"
                        #"indicator","select", "Comment", "indicatordirect", "indicatorgroup" ## This indicator reference
                        # "label::English",
                        #"label::Arabic" ,"hint::Arabic",
@@ -252,43 +260,59 @@ kobo_dico <- function(form) {
   survey$qgroup <- ""
   for(i in 2:nrow(survey))
   {
-    if(survey[ i, c("qlevel")]=="level1" && survey[ i, c("type")] =="begin group" )    {survey[ i, c("qgroup")] <-survey[ i, c("name")]}
-    else if(survey[ i, c("qlevel")]=="level1" && survey[ i, c("type")] =="begin_group" )    {survey[ i, c("qgroup")] <-survey[ i, c("name")]}
+    #i <- 159
+    if(survey[ i, c("qlevel")]=="level1" && survey[ i, c("type")] =="begin group" )    {survey[ i, c("qgroup")] <-survey[ i, c("name")]
+    } else if(survey[ i, c("qlevel")]=="level1" && survey[ i, c("type")] =="begin_group" )    {survey[ i, c("qgroup")] <-survey[ i, c("name")]
 
-    else if(survey[ i, c("qlevel")]=="level1" && survey[ i, c("type")] =="begin repeat" )    {survey[ i, c("qgroup")] <-survey[ i, c("name")]}
-    else if(survey[ i, c("qlevel")]=="level1" && survey[ i, c("type")] =="begin_repeat" )    {survey[ i, c("qgroup")] <-survey[ i, c("name")]}
+    } else if(survey[ i, c("qlevel")]=="level1" && survey[ i, c("type")] =="begin repeat" )    { survey[ i, c("qgroup")] <-survey[ i, c("name")]
+    } else if(survey[ i, c("qlevel")]=="level1" && survey[ i, c("type")] =="begin_repeat" )    { survey[ i, c("qgroup")] <-survey[ i, c("name")]
 
-    else if(survey[ i, c("qlevel")]=="level1" && survey[ i, c("type")] =="end group" ) {survey[ i, c("qgroup")] <-substr(survey[ i-1, c("qgroup")] ,0, regexpr(".", survey[ i-1, c("qgroup")] , ignore.case=FALSE, fixed=TRUE)-1)}
-    else if(survey[ i, c("qlevel")]=="level1" && survey[ i, c("type")] =="end_group" ) {survey[ i, c("qgroup")] <-substr(survey[ i-1, c("qgroup")] ,0, regexpr(".", survey[ i-1, c("qgroup")] , ignore.case=FALSE, fixed=TRUE)-1)}
+    } else if(survey[ i, c("qlevel")]=="level1" && survey[ i, c("type")] =="end group" ) { survey[ i, c("qgroup")] <-substr(survey[ i-1, c("qgroup")] ,0, regexpr(".", survey[ i-1, c("qgroup")] , ignore.case=FALSE, fixed=TRUE)-1)
+    } else if(survey[ i, c("qlevel")]=="level1" && survey[ i, c("type")] =="end_group" ) { survey[ i, c("qgroup")] <-substr(survey[ i-1, c("qgroup")] ,0, regexpr(".", survey[ i-1, c("qgroup")] , ignore.case=FALSE, fixed=TRUE)-1)
 
-    else if(survey[ i, c("qlevel")]=="level1" && survey[ i, c("type")] =="end repeat" ) {survey[ i, c("qgroup")] <-substr(survey[ i-1, c("qgroup")] ,0, regexpr(".", survey[ i-1, c("qgroup")] , ignore.case=FALSE, fixed=TRUE)-1)}
-    else if(survey[ i, c("qlevel")]=="level1" && survey[ i, c("type")] =="end_repeat" ) {survey[ i, c("qgroup")] <-substr(survey[ i-1, c("qgroup")] ,0, regexpr(".", survey[ i-1, c("qgroup")] , ignore.case=FALSE, fixed=TRUE)-1)}
+    } else if(survey[ i, c("qlevel")]=="level1" && survey[ i, c("type")] =="end repeat" ) { survey[ i, c("qgroup")] <-substr(survey[ i-1, c("qgroup")] ,0, regexpr(".", survey[ i-1, c("qgroup")] , ignore.case=FALSE, fixed=TRUE)-1)
+    } else if(survey[ i, c("qlevel")]=="level1" && survey[ i, c("type")] =="end_repeat" ) { survey[ i, c("qgroup")] <-substr(survey[ i-1, c("qgroup")] ,0, regexpr(".", survey[ i-1, c("qgroup")] , ignore.case=FALSE, fixed=TRUE)-1)
+
+    } else if( survey[ i, c("qlevel")]=="level2" && survey[ i-1, c("qlevel")]=="level1") { survey[ i, c("qgroup")] <-paste(survey[ i-1, c("qgroup")], survey[ i, c("name")],sep=".")
+    } else if( survey[ i, c("qlevel")]=="level2" && survey[ i-1, c("qlevel")]=="level2") { survey[ i, c("qgroup")] <-survey[ i-1, c("qgroup")]
+    } else if( survey[ i, c("qlevel")]=="level2" && survey[ i-1, c("qlevel")]=="level3") { level2i <- substr(survey[ i-1, c("qgroup")] ,regexpr(".", survey[ i-1, c("qgroup")] , ignore.case=FALSE, fixed=TRUE)+1,200 )
+                                                                                           survey[ i, c("qgroup")] <- paste( substr(survey[ i-1, c("qgroup")] ,0, regexpr(".", survey[ i-1, c("qgroup")] , ignore.case=FALSE, fixed=TRUE)-1),
+                                                                                                                             substr(level2i, 0, regexpr(".", level2i , ignore.case=FALSE, fixed=TRUE)-1),
+                                                                                                                             sep=".")
+
+    } else if(survey[ i, c("qlevel")]=="level3" && survey[ i-1, c("qlevel")]=="level2") { survey[ i, c("qgroup")] <-paste(survey[ i-1, c("qgroup")], survey[ i, c("name")],sep=".")
+    } else if(survey[ i, c("qlevel")]=="level3" && survey[ i-1, c("qlevel")]=="level3") { survey[ i, c("qgroup")] <-survey[ i-1, c("qgroup")]
+    } else if(survey[ i, c("qlevel")]=="level3" && survey[ i-1, c("qlevel")]=="level4") { level3i <- substr(survey[ i-1, c("qgroup")] ,0, regexpr(".", survey[ i-1, c("qgroup")] , ignore.case=FALSE, fixed=TRUE)-1)
+                                                                                          level3ii <- substr(survey[ i-1, c("qgroup")] , regexpr(".", survey[ i-1, c("qgroup")], ignore.case=FALSE, fixed=TRUE)+1 ,500)
+                                                                                          level3iii <-  substr(level3ii , regexpr(".", level3ii, ignore.case=FALSE, fixed=TRUE)+1 ,500)
+                                                                                          survey[ i, c("qgroup")] <- paste( substr(survey[ i-1, c("qgroup")] ,0, regexpr(".", survey[ i-1, c("qgroup")] , ignore.case=FALSE, fixed=TRUE)-1),
+                                                                                                                            substr(level3ii, 0, regexpr(".", level3ii , ignore.case=FALSE, fixed=TRUE)-1) ,
+                                                                                                                            substr(level3iii, 0, regexpr(".", level3iii , ignore.case=FALSE, fixed=TRUE)-1) ,
+                                                                                                                            sep=".")
+
+    } else if( survey[ i, c("qlevel")]=="level4" && survey[ i-1, c("qlevel")]=="level3") { survey[ i, c("qgroup")] <-paste(survey[ i-1, c("qgroup")], survey[ i, c("name")],sep=".")
+    } else if( survey[ i, c("qlevel")]=="level4" && survey[ i-1, c("qlevel")]=="level4") { survey[ i, c("qgroup")] <-survey[ i-1, c("qgroup")]
+    } else if( survey[ i, c("qlevel")]=="level4" && survey[ i-1, c("qlevel")]=="level5") { level4i <- substr(survey[ i-1, c("qgroup")] ,0, regexpr(".", survey[ i-1, c("qgroup")] , ignore.case=FALSE, fixed=TRUE)-1)
+                                                                                           level4ii <- substr(survey[ i-1, c("qgroup")] , regexpr(".", survey[ i-1, c("qgroup")], ignore.case=FALSE, fixed=TRUE)+1 ,500)
+                                                                                           level4iii <-  substr(level4ii , regexpr(".", level4ii, ignore.case=FALSE, fixed=TRUE)+1 ,500)
+                                                                                           level4iiii <-  substr(level4iii , regexpr(".", level4iii, ignore.case=FALSE, fixed=TRUE)+1 ,500)
+                                                                                           survey[ i, c("qgroup")] <- paste( substr(survey[ i-1, c("qgroup")] ,0, regexpr(".", survey[ i-1, c("qgroup")] , ignore.case=FALSE, fixed=TRUE)-1),
+                                                                                                                              substr(level4ii, 0, regexpr(".", level4ii , ignore.case=FALSE, fixed=TRUE)-1) ,
+                                                                                                                              substr(level4iii, 0, regexpr(".", level4iii , ignore.case=FALSE, fixed=TRUE)-1) ,
+                                                                                                                              substr(level4iiii, 0, regexpr(".", level4iiii , ignore.case=FALSE, fixed=TRUE)-1) ,
+                                                                                                                              sep=".")
 
 
-    else if( survey[ i, c("qlevel")]=="level2" && survey[ i-1, c("qlevel")]=="level1") {survey[ i, c("qgroup")] <-paste(survey[ i-1, c("qgroup")], survey[ i, c("name")],sep=".")}
+    } else if( survey[ i, c("qlevel")]=="level5" && survey[ i-1, c("qlevel")]=="level4") { survey[ i, c("qgroup")] <-paste(survey[ i-1, c("qgroup")], survey[ i, c("name")],sep=".")
+    } else if( survey[ i, c("qlevel")]=="level5" && survey[ i-1, c("qlevel")]=="level5") { survey[ i, c("qgroup")] <-survey[ i-1, c("qgroup")]
 
-    else if( survey[ i, c("qlevel")]=="level2" && survey[ i-1, c("qlevel")]=="level2") {survey[ i, c("qgroup")] <-survey[ i-1, c("qgroup")]}
+    } else  {survey[ i, c("qgroup")]  <- survey[ i-1, c("qgroup")]}
 
-    else if( survey[ i, c("qlevel")]=="level2" && survey[ i-1, c("qlevel")]=="level3") {rm(level2i)
-                                                                                        level2i <- substr(survey[ i-1, c("qgroup")] ,regexpr(".", survey[ i-1, c("qgroup")] , ignore.case=FALSE, fixed=TRUE)+1,200 )
-                                                                                        survey[ i, c("qgroup")] <- paste( substr(survey[ i-1, c("qgroup")] ,0, regexpr(".", survey[ i-1, c("qgroup")] , ignore.case=FALSE, fixed=TRUE)-1),
-                                                                                          substr(level2i,0, regexpr(".", level2i , ignore.case=FALSE, fixed=TRUE)-1), sep=".")}
+    #survey[ 105, c("qlevel")]
+    #survey[ 106, c("qlevel")]
 
-    else if( survey[ i, c("qlevel")]=="level3" && survey[ i-1, c("qlevel")]=="level2") {survey[ i, c("qgroup")] <-paste(survey[ i-1, c("qgroup")], survey[ i, c("name")],sep=".")}
-    else if( survey[ i, c("qlevel")]=="level3" && survey[ i-1, c("qlevel")]=="level3") {survey[ i, c("qgroup")] <-survey[ i-1, c("qgroup")]}
-    else if( survey[ i, c("qlevel")]=="level3" && survey[ i-1, c("qlevel")]=="level4") {
-                                                                                        level3i <- substr(survey[ i-1, c("qgroup")] ,0, regexpr(".", survey[ i-1, c("qgroup")] , ignore.case=FALSE, fixed=TRUE)-1)
-                                                                                        survey[ i, c("qgroup")] <- substr(level3i,0, regexpr(".", level3i , ignore.case=FALSE, fixed=TRUE)-1)}
+    #cat(paste("pasted", as.character(survey[ i, c("qgroup")])))
 
-    else if( survey[ i, c("qlevel")]=="level4" && survey[ i-1, c("qlevel")]=="level3") {survey[ i, c("qgroup")] <-paste(survey[ i-1, c("qgroup")], survey[ i, c("name")],sep=".")}
-    else if( survey[ i, c("qlevel")]=="level4" && survey[ i-1, c("qlevel")]=="level4") {survey[ i, c("qgroup")] <-survey[ i-1, c("qgroup")]}
-    else if( survey[ i, c("qlevel")]=="level4" && survey[ i-1, c("qlevel")]=="level5") {level4i <- substr(survey[ i-1, c("qgroup")] ,0, regexpr(".", survey[ i-1, c("qgroup")] , ignore.case=FALSE, fixed=TRUE)-1)
-                                                                                        survey[ i, c("qgroup")] <- substr(level4i,0, regexpr(".", level4i , ignore.case=FALSE, fixed=TRUE)-1)}
-
-    else if( survey[ i, c("qlevel")]=="level5" && survey[ i-1, c("qlevel")]=="level4") {survey[ i, c("qgroup")] <-paste(survey[ i-1, c("qgroup")], survey[ i, c("name")],sep=".")}
-    else if( survey[ i, c("qlevel")]=="level5" && survey[ i-1, c("qlevel")]=="level5") {survey[ i, c("qgroup")] <-survey[ i-1, c("qgroup")]}
-
-    else  {survey[ i, c("qgroup")]  <- survey[ i-1, c("qgroup")]}
   }
 
 
@@ -377,8 +401,8 @@ kobo_dico <- function(form) {
     ## not kept: "nameq"     "labelq"   ,"fullname", "label",
     #names(survey) - "type" "name",  "fullname", "label",  "listname", "qrepeat"m  "qlevel",   "qgroup"
   choices2 <- choices[ ,c("type", "name", "namefull",  "labelfull", "listname", "qrepeat", "qlevel", "qgroup", "labelchoice",
-                         "repeatsummarize","variable","disaggregation","indicator","indicatorgroup","indicatortype",
-                         "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation",
+                         "repeatsummarize","variable","disaggregation", "report",
+                         #"indicator","indicatorgroup","indicatortype", "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation",
                          "order", "weight","score", "recategorise")]
 
 
@@ -387,8 +411,8 @@ kobo_dico <- function(form) {
 
 
   survey2 <-    survey[,c("type", "name",  "fullname", "label",  "listname", "qrepeat",  "qlevel",   "qgroup", "labelchoice",
-                          "repeatsummarize","variable","disaggregation","indicator","indicatorgroup","indicatortype",
-                          "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation",
+                          "repeatsummarize","variable","disaggregation", "report",
+                          #"indicator","indicatorgroup","indicatortype", "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation",
                           "order", "weight","score", "recategorise")]
 
   ### Check -- normally there should not be duplicate
@@ -396,6 +420,9 @@ kobo_dico <- function(form) {
 
   # names(choices2)
   # names(survey2)
+
+  survey2$formpart <- "questions"
+  choices2$formpart <- "answers"
 
   dico <- rbind(survey2,choices2)
 
@@ -413,12 +440,12 @@ kobo_dico <- function(form) {
   #levels(as.factor(dico$qrepeat))
   ## Changing type for flatenned repeat questions
 
-  dico$type[dico$qrepeat=="repeat" & dico$type %in% c("integer")] <- "integerlist"
-  dico$type[dico$qrepeat=="repeat" & dico$type %in% c("text")] <- "textlist"
-  dico$type[dico$qrepeat=="repeat" & dico$type %in% c("select_one")] <- "select_onelist"
+  #dico$type[dico$qrepeat=="repeat" & dico$type %in% c("integer")] <- "integerlist"
+  #dico$type[dico$qrepeat=="repeat" & dico$type %in% c("text")] <- "textlist"
+  #dico$type[dico$qrepeat=="repeat" & dico$type %in% c("select_one")] <- "select_onelist"
 
-  dico$type[dico$qrepeat=="repeat" & dico$type %in% c("select_one_d")] <- "integer"
-  dico$type[dico$qrepeat=="repeat" & dico$type %in% c("select_multiple")] <- "integer"
+  #dico$type[dico$qrepeat=="repeat" & dico$type %in% c("select_one_d")] <- "integer"
+  #dico$type[dico$qrepeat=="repeat" & dico$type %in% c("select_multiple")] <- "integer"
 
   #dico[dico$qrepeat=="repeat" & dico$type %in% c("select_multiple")]
 

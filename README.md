@@ -8,6 +8,8 @@ The `koboloadeR` package allows to:
 
 * generate automatically of a series of charts & maps based on the data dictionnary
 
+* generate automatically of a series of charts & maps based on a formatted data analysis plan
+
 * access to a Shiny data viewer accessible using:
 
 ```
@@ -69,13 +71,8 @@ Column | Description
 `repeatsummarize`| used to summarize repeat questions 
 `variable`| used to flag `ordinal` variables
 `disaggregation`| used to flag variables used for  `facet` or `correlate`
-`indicator`| used to map the question with an indicator
-`indicatorgroup`| used to reference the the group the indicator should be associated to
-`indicatortype`| define wether the indicator is  `Measurement`: variable used to quantify other indicators, `Disaggregation`: variable that describes certain groups, `Predictor`: Indicator that describes the cause of a situation, `Outcome`: Indicator that describes the consequence of a situation or `Judgment`: indicator that translates a subjective assessment
-`indicatorlevel`| used to define the geographic aggregation to be used for indicator calculation
-`Indicatorexternal`| used to reference an external dataset to be used to calculate the indicators. Could be for instance a population dataset.
-`indicatorcalculation`| used to reference the calculation method to be used for the indicator: `Percentage`, `Sum`, `Max/Min`, `Average`, `Score`, `Denominator`, `Numerator`, `Numerator.external` (i.e. linked to an external value)
-`indicatornomalisation`| used to reference the normalisation method to be used for the indicator
+`report`| used to flag variables to be kept for the report
+
 
 
 ### In the `choices` worksheet:
@@ -85,6 +82,18 @@ Column | Description
 `order`| used to define order for ordinal variables
 `weight`| used to define weight for each answers in case it's used for some specific indicator calculation
 `recategorise`| used to recategorise quickly choices for a question
+
+### In a separate `analysis-plan` worksheet:
+
+Column | Description
+------|--------------
+`indicator`| used to map the question with an indicator
+`indicatorgroup`| used to reference the the group the indicator should be associated to
+`indicatortype`| define wether the indicator is  `Measurement`: variable used to quantify other indicators, `Disaggregation`: variable that describes certain groups, `Predictor`: Indicator that describes the cause of a situation, `Outcome`: Indicator that describes the consequence of a situation or `Judgment`: indicator that translates a subjective assessment
+`indicatorlevel`| used to define the geographic aggregation to be used for indicator calculation
+`Indicatorexternal`| used to reference an external dataset to be used to calculate the indicators. Could be for instance a population dataset.
+`indicatorcalculation`| used to reference the calculation method to be used for the indicator: `Percentage`, `Sum`, `Max/Min`, `Average`, `Score`, `Denominator`, `Numerator`, `Numerator.external` (i.e. linked to an external value)
+`indicatornomalisation`| used to reference the normalisation method to be used for the indicator
 
 ## Core Functions
 

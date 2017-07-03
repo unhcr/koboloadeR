@@ -41,7 +41,7 @@ kobo_encode_repeat <- function(data, dico) {
   check <- as.data.frame(names(data))
   names(check)[1] <- "fullname"
   check$id <- row.names(check)
-  selectdf2 <- join(y=check, x=selectdf, by="fullname", type="left")
+  selectdf2 <- join(y=check, x=selectdf, by="name", type="left")
   selectdf3 <- selectdf[!is.na(selectdf2$id), ]
 
   if(nrow(selectdf3)==0){
@@ -98,7 +98,7 @@ kobo_encode_repeat <- function(data, dico) {
   check <- as.data.frame(names(data))
   names(check)[1] <- "fullname"
   check$id <- row.names(check)
-  selectdf2 <- join(y=check, x=selectdf, by="fullname", type="left")
+  selectdf2 <- join(y=check, x=selectdf, by="name", type="left")
   selectdf3 <- selectdf[!is.na(selectdf2$id), ]
 
   if(nrow(selectdf3)==0) {
@@ -142,7 +142,7 @@ kobo_encode_repeat <- function(data, dico) {
   check <- as.data.frame(names(data))
   names(check)[1] <- "fullname"
   check$id <- row.names(check)
-  selectdf2 <- join(y=check, x=selectdf, by="fullname", type="left")
+  selectdf2 <- join(y=check, x=selectdf, by="name", type="left")
   selectdf3 <- selectdf[!is.na(selectdf2$id), ]
   #names(selectdf)[1] <- "selectvar"
 
@@ -185,7 +185,7 @@ kobo_encode_repeat <- function(data, dico) {
   check <- as.data.frame(names(data))
   names(check)[1] <- "fullname"
   check$id <- row.names(check)
-  selectdf2 <- join(y=check, x=selectdf, by="fullname", type="left")
+  selectdf2 <- join(y=check, x=selectdf, by="name", type="left")
   selectdf3 <- selectdf[!is.na(selectdf2$id), ]
   #names(selectdf)[1] <- "selectvar"
 

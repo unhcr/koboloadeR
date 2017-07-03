@@ -31,6 +31,8 @@ kobo_arrange_variablename <- function(data) {
   datalabel$namenew <- str_replace_all(datalabel$nameor, ":", ".")
   ## new variables name without /
   datalabel$namenew <- str_replace_all(datalabel$namenew, "/", ".")
+  ## new variables name without /
+  datalabel$namenew <- str_replace_all(datalabel$namenew, "-", ".")
 
   ## let's recode the variable of the dataset using short label - column 3 of my reviewed labels
   names(data) <- datalabel[, 2]

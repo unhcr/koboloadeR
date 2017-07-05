@@ -4,10 +4,10 @@
 \alias{kobo_arrange_variablename}
 \title{Replace / or : in variable name in order to use the dictionnary}
 \usage{
-kobo_arrange_variablename(data)
+kobo_arrange_variablename(datavariable)
 }
 \arguments{
-\item{data}{}
+\item{datavariable}{}
 }
 \description{
 The character to be replaced - coudl be a "/" or a ":"

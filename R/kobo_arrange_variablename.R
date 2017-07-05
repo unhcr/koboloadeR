@@ -4,7 +4,7 @@
 #'
 #' @description  The character to be replaced - coudl be a "/" or a ":"
 #'
-#' @param data
+#' @param datavariable
 #'
 #' @author Edouard Legoupil
 #'
@@ -19,11 +19,11 @@
 #'
 #'
 
-kobo_arrange_variablename <- function(data) {
+kobo_arrange_variablename <- function(datavariable) {
 
   ### Need to replace slash by point in the variable name
   ## get variable name from data
-  datalabel <- as.data.frame( names(data))
+  datalabel <- as.data.frame( names(datavariable))
   names(datalabel)[1] <- "nameor"
   datalabel$nameor <- as.character(datalabel$nameor)
 

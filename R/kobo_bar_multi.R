@@ -6,8 +6,7 @@
 #'
 #'
 #' @param data kobodatset to use
-#' @param dico ( generated from kobo_dico)
-#'
+#' @param dico Generated from kobo_dico function
 #'
 #'
 #' @author Edouard Legoupil

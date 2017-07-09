@@ -9,7 +9,7 @@ kobo_bar_multi(data, dico)
 \arguments{
 \item{data}{kobodatset to use}
 
-\item{dico}{( generated from kobo_dico)}
+\item{dico}{Generated from kobo_dico function}
 }
 \description{
 Automatically generate bar chart for each of the select_multiple question in the dataset. ggplot2 is used.

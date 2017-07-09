@@ -7,9 +7,9 @@
 kobo_split_multiple(data, dico)
 }
 \arguments{
-\item{data}{.}
+\item{data}{Dataframe with selectmultiple column to split}
 
-\item{dico}{( generated from kobo_dico)}
+\item{dico}{Data dictionnary generated from kobo_dico}
 }
 \value{
 data A "data.table" with the full splitted select_multiple.
@@ -23,7 +23,6 @@ kobo_split_multiple()
 \dontrun{
 kobo_split_multiple(data, dico)
 }
-
 
 }
 \author{

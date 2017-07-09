@@ -5,8 +5,8 @@
 #' @description  To be used when extracting from ODK that does not offers splitting capacity
 #'
 #'
-#' @param data .
-#' @param dico ( generated from kobo_dico)
+#' @param data Dataframe with selectmultiple column to split
+#' @param dico Data dictionnary generated from kobo_dico
 #'
 #' @return data A "data.table" with the full splitted select_multiple.
 #'
@@ -22,36 +22,41 @@
 #' kobo_split_multiple(data, dico)
 #' }
 #'
-#'
-
 kobo_split_multiple <- function(data, dico) {
 
   ## list fields that have select multiple in the dico - select_multiple_d
   selectdf <- dico[dico$type=="select_multiple_d", c("fullname","listname","label","name","variable","disaggregation")]
   #rm(datalabel)
+  # data <- household
   datalabeldf <- as.data.frame( names(data))
   names(datalabeldf )[1] <- "fullname"
   datalabeldf$fullname <- as.character(datalabeldf$fullname)
   datalabeldf$id <- row.names(datalabeldf)
-  datalabeldf <- join(datalabeldf,selectdf,by="fullname",type="right")
+  datalabeldf <- join(x=datalabeldf,y=selectdf,by="fullname",type="right")
+  ## Eliminate record from the wrong frame -i.e. id is NULL -
+  datalabeldf <- datalabeldf[ !(is.na(datalabeldf$id)), ]
 
   ## Check if those select_multiple_d have corresponding select_multiple
 
   ## Now create the unique select_multiple and append to the dataframe
   for (i in 1:nrow(datalabeldf) ) {
-    # i <- 7
+    # i <- 2
     fullname <- as.character(datalabeldf[i,1])
-    cat(paste0(i, "Splitting variable ", fullname))
     id <-  as.integer(as.character(datalabeldf[i,2]))
+    cat(paste0(i, " - Splitting variable ", fullname, " in column: ", id))
 
-    data[ , id] <- as.character(data[ , id])
+
+    #data[ , id] <- as.character(data[ , id])
     ## Account non answered
-    data[data[ , id]=='', id] <- "zNotAnswered"
+    #data[data[ , id]=='', id] <- "zNotAnswered"
+    data[is.na(data[ , id]), id] <- "zNotAnswered"
     #levels(as.factor(data[ , id]))
-    #list <- as.data.frame(data[ , id])
+    #levels(data[ , id]))
+    list <- as.data.frame(data[ , id])
 
     ## thanks to: https://stackoverflow.com/questions/44232180/list-to-dataframe
-    tosplitlist <- strsplit(data[ , id], " ")
+    tosplitlist <- strsplit(as.character(data[ , id]), " ")
+    cat("spliting now!")
     tosplitlist <- setNames(tosplitlist, seq_along(tosplitlist))
     tosplitlist <- stack(tosplitlist)
     tosplitframe <- dcast(tosplitlist, ind ~ values, fun.aggregate = length)
@@ -59,7 +64,7 @@ kobo_split_multiple <- function(data, dico) {
     drops <- c("ind", "zNotAnswered")
     tosplitframe <- tosplitframe[ , !(names(tosplitframe) %in% drops)]
 
-  #Rename the variable to match with dictionnary
+    ## Rename the variable to match with dictionnary
     datalabelframe <- as.data.frame( names(tosplitframe))
     names(datalabelframe )[1] <- "nameor"
     datalabelframe $nameor <- as.character(datalabelframe $nameor)
@@ -76,9 +81,10 @@ kobo_split_multiple <- function(data, dico) {
     cat(paste0("After binding Number of columns: ", ncol(data), "\n"))
     rm(tosplitframe,tosplitlist,datalabelframe)
   }
-rm(selectdf,datalabeldf)
-return(data)
 
+  #rm(selectdf,datalabeldf)
+
+  return(data)
 }
 NULL
 

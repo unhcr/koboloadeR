@@ -29,6 +29,7 @@ kobo_split_multiple <- function(data, dico) {
   #rm(datalabel)
   # data <- household
   datalabeldf <- as.data.frame( names(data))
+  data <- as.data.frame(data)
   names(datalabeldf )[1] <- "fullname"
   datalabeldf$fullname <- as.character(datalabeldf$fullname)
   datalabeldf$id <- row.names(datalabeldf)
@@ -40,23 +41,22 @@ kobo_split_multiple <- function(data, dico) {
 
   ## Now create the unique select_multiple and append to the dataframe
   for (i in 1:nrow(datalabeldf) ) {
-    # i <- 2
+    # i <- 1
     fullname <- as.character(datalabeldf[i,1])
     id <-  as.integer(as.character(datalabeldf[i,2]))
-    cat(paste0(i, " - Splitting variable ", fullname, " in column: ", id))
+    cat(paste0(i, " - Splitting variable ", fullname, " in column: ", id, "\n"))
 
-
-    #data[ , id] <- as.character(data[ , id])
+    data[ , id] <- as.character(data[ , id])
     ## Account non answered
     #data[data[ , id]=='', id] <- "zNotAnswered"
     data[is.na(data[ , id]), id] <- "zNotAnswered"
     #levels(as.factor(data[ , id]))
-    #levels(data[ , id]))
+    #levels(data[ , id])
     list <- as.data.frame(data[ , id])
 
     ## thanks to: https://stackoverflow.com/questions/44232180/list-to-dataframe
     tosplitlist <- strsplit(as.character(data[ , id]), " ")
-    cat("spliting now!")
+    cat("Spliting now!\n")
     tosplitlist <- setNames(tosplitlist, seq_along(tosplitlist))
     tosplitlist <- stack(tosplitlist)
     tosplitframe <- dcast(tosplitlist, ind ~ values, fun.aggregate = length)
@@ -67,7 +67,7 @@ kobo_split_multiple <- function(data, dico) {
     ## Rename the variable to match with dictionnary
     datalabelframe <- as.data.frame( names(tosplitframe))
     names(datalabelframe )[1] <- "nameor"
-    datalabelframe $nameor <- as.character(datalabelframe $nameor)
+    datalabelframe$nameor <- as.character(datalabelframe $nameor)
 
     ## new variables name without /
     datalabelframe$namenew <- paste(fullname, datalabelframe$nameor, sep=".")

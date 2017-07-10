@@ -171,10 +171,13 @@ rm(packages)
 
 #remove.packages("tibble")
 #install.packages("tibble")
-
+library(knitr)
 library(kableExtra)
 library(koRpus)
 library(tables)
+library(rmarkdown)
+
+library(ggrepel)
 
 #gpclibPermit()
 

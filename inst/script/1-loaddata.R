@@ -51,5 +51,11 @@ rm(form)
 #################################################################################
 ##### Re-encode correctly the dataset
 
-data <- kobo_encode(data.or, dico)
-data <- kobo_label(data, dico)
+## Check to split select_multiple if data is extracted from ODK
+data <- kobo_split_multiple(data.or, dico)
+## Re-encoding data now based on the dictionnary -- the xlsform dictionnary can be adjusted this script re-runned till satisfaction
+data <- kobo_encode(data, dico)
+## household is the default root data componnents to be used -- in order to deal with nested dataset
+household <- kobo_label(data, dico)
+## We now save a back up in the data folder to be used for the Rmd
+write.csv(household,"data/household.csv")

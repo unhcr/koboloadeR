@@ -65,7 +65,7 @@ for(i in 1:nrow(chapters))
 
   cat("```{r setup, include=FALSE, echo=FALSE, warning=FALSE, message=FALSE}", file=chapter.name , sep="\n", append=TRUE)
   cat("mainDir <- getwd()", file=chapter.name , sep="\n", append=TRUE)
-  cat("mainDirroot <- substring(mainDir, 0 , nchar(mainDir)- 12)", file=chapter.name , sep="\n", append=TRUE)
+  cat("mainDirroot <- substring(mainDir, 0 , nchar(mainDir)- 5)", file=chapter.name , sep="\n", append=TRUE)
   cat("## Load all required packages", file=chapter.name , sep="\n", append=TRUE)
   cat("source(paste0(mainDirroot,\"/code/0-packages.R\"))", file=chapter.name , sep="\n", append=TRUE)
   cat("library(koboloadeR)", file=chapter.name , sep="\n", append=TRUE)
@@ -74,13 +74,13 @@ for(i in 1:nrow(chapters))
   cat("dico <- read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding=\"UTF-8\", na.strings=\"\")", file=chapter.name , sep="\n", append=TRUE)
 
   cat("household <- read.csv(paste0(mainDirroot,\"/data/household.csv\"), encoding=\"UTF-8\", na.strings=\"NA\")", file=chapter.name , sep="\n", append=TRUE)
-  cat("case_number_details <- read.csv(paste0(mainDirroot,\"/data/case_number_details.csv\"), encoding=\"UTF-8\", na.strings=\"NA\")", file=chapter.name , sep="\n", append=TRUE)
-  cat("individual_biodata <- read.csv(paste0(mainDirroot,\"/data/individual_biodata.csv\"), encoding=\"UTF-8\", na.strings=\"NA\")", file=chapter.name , sep="\n", append=TRUE)
+  #cat("case_number_details <- read.csv(paste0(mainDirroot,\"/data/case_number_details.csv\"), encoding=\"UTF-8\", na.strings=\"NA\")", file=chapter.name , sep="\n", append=TRUE)
+  #cat("individual_biodata <- read.csv(paste0(mainDirroot,\"/data/individual_biodata.csv\"), encoding=\"UTF-8\", na.strings=\"NA\")", file=chapter.name , sep="\n", append=TRUE)
 
   cat("## label Variables", file=chapter.name , sep="\n", append=TRUE)
   cat("household <- kobo_label(household , dico)", file=chapter.name , sep="\n", append=TRUE)
-  cat("case_number_details <- kobo_label(case_number_details , dico)", file=chapter.name , sep="\n", append=TRUE)
-  cat("individual_biodata <- kobo_label(individual_biodata , dico)", file=chapter.name , sep="\n", append=TRUE)
+  #cat("case_number_details <- kobo_label(case_number_details , dico)", file=chapter.name , sep="\n", append=TRUE)
+  #cat("individual_biodata <- kobo_label(individual_biodata , dico)", file=chapter.name , sep="\n", append=TRUE)
 
   cat(paste0("\n```\n", sep = '\n'), file=chapter.name, append=TRUE)
 

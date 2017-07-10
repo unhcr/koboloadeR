@@ -181,20 +181,12 @@ kobo_dico <- function(form) {
   for(i in 2:nrow(survey))
   {
     #Check based on repeat type
-         if(survey[ i, c("type")] =="begin repeat"  && survey[ i-1, c("qrepeat")]=="")                  {survey[ i, c("qrepeat")]  <- "repeatnest1"}
-    else if(survey[ i, c("type")] =="begin repeat"  && survey[ i-1, c("qrepeat")]=="repeatnest1")       {survey[ i, c("qrepeat")]  <-  "repeatnest2"}
-    else if(survey[ i, c("type")] !="end repeat"    && survey[ i-1, c("qrepeat")]=="repeatnest1")       {survey[ i, c("qrepeat")]  <-  "repeatnest1"}
-    else if(survey[ i, c("type")] !="end repeat"    && survey[ i-1, c("qrepeat")]=="repeatnest2")       {survey[ i, c("qrepeat")]  <-  "repeatnest2"}
-    else if(survey[ i, c("type")] =="end repeat"    && survey[ i-1, c("qrepeat")]=="repeatnest1" )      {survey[ i, c("qrepeat")]  <-  ""}
-    else if(survey[ i, c("type")] =="end repeat"    && survey[ i-1, c("qrepeat")]=="repeatnest2" )      {survey[ i, c("qrepeat")]  <-  "repeatnest1"}
-
-    ## Sometimes it seems that we get an underscore for type
-    else if(survey[ i, c("type")] =="begin_repeat"  && survey[ i-1, c("qrepeat")]=="")                  {survey[ i, c("qrepeat")]  <- "repeatnest1"}
-    else if(survey[ i, c("type")] =="begin_repeat"  && survey[ i-1, c("qrepeat")]=="repeatnest1")       {survey[ i, c("qrepeat")]  <-  "repeatnest2"}
-    else if(survey[ i, c("type")] !="end_repeat"    && survey[ i-1, c("qrepeat")]=="repeatnest1")       {survey[ i, c("qrepeat")]  <-  "repeatnest1"}
-    else if(survey[ i, c("type")] !="end_repeat"    && survey[ i-1, c("qrepeat")]=="repeatnest2")       {survey[ i, c("qrepeat")]  <-  "repeatnest2"}
-    else if(survey[ i, c("type")] =="end_repeat"    && survey[ i-1, c("qrepeat")]=="repeatnest1" )      {survey[ i, c("qrepeat")]  <-  ""}
-    else if(survey[ i, c("type")] =="end_repeat"    && survey[ i-1, c("qrepeat")]=="repeatnest2" )      {survey[ i, c("qrepeat")]  <-  "repeatnest1"}
+         if(survey[ i, c("type")] %in% c("begin repeat","begin_repeat") && survey[ i-1, c("qrepeat")]=="")                  {survey[ i, c("qrepeat")]  <- "repeatnest1"}
+    else if(survey[ i, c("type")] %in% c("begin repeat","begin_repeat") && survey[ i-1, c("qrepeat")]=="repeatnest1")       {survey[ i, c("qrepeat")]  <-  "repeatnest2"}
+    else if(!(survey[ i, c("type")] %in% c("end repeat","end_repeat"))  && survey[ i-1, c("qrepeat")]=="repeatnest1")       {survey[ i, c("qrepeat")]  <-  "repeatnest1"}
+    else if(!(survey[ i, c("type")] %in% c("end repeat","end_repeat"))  && survey[ i-1, c("qrepeat")]=="repeatnest2")       {survey[ i, c("qrepeat")]  <-  "repeatnest2"}
+    else if(survey[ i, c("type")] %in% c("end repeat","end_repeat")     && survey[ i-1, c("qrepeat")]=="repeatnest1" )      {survey[ i, c("qrepeat")]  <-  ""}
+    else if(survey[ i, c("type")] %in% c("end repeat","end_repeat")     && survey[ i-1, c("qrepeat")]=="repeatnest2" )      {survey[ i, c("qrepeat")]  <-  "repeatnest1"}
 
     else   {survey[ i, c("qrepeat")]  <-  ""}
   }

@@ -31,7 +31,7 @@ kobo_label <- function(datalabel, dico) {
   data.label <- as.data.frame(names(datalabel))
   names(data.label)[1] <- "fullname"
   data.label <- join (x=data.label, y=dico, by="fullname", type="left" )
-  for (i in 1:nrow(datalabel)) { attributes(datalabel)$variable.labels[ i] <- as.character(data.label[ i, c("label")]) }
+  for (i in 1:nrow(data.label)) { attributes(datalabel)$variable.labels[ i] <- as.character(data.label[ i, c("label")]) }
 
   return(datalabel)
 }

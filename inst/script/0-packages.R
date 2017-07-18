@@ -154,10 +154,10 @@ packages <- c(
   "devtools", # package used to load packages hosted in github --
 
   "gmailr", # Access gmail api
-   "RGtk2",
+  "RGtk2",
   "rattle", ## GUI for data mining
-   ## used to generate reports
-   "knitr", "pander", "xtable", "rmarkdown", "kableExtra","koRpus", "tables"
+  ## used to generate reports
+  "knitr", "pander", "xtable", "rmarkdown", "kableExtra","koRpus", "tables"
 )
 
 ## identify packages not installed yet
@@ -171,47 +171,53 @@ rm(packages)
 
 #remove.packages("tibble")
 #install.packages("tibble")
-library(knitr)
-library(kableExtra)
-library(koRpus)
-library(tables)
-library(rmarkdown)
+library("knitr")
+library("kableExtra")
+library("koRpus")
+library("tables")
+library("rmarkdown")
 
-library(ggrepel)
+library("survey")
+library("ggrepel")
 
 #gpclibPermit()
 
 # loads packages into memory
-library(stringr)
-library(stringi)
-#library(lattice)
-#library(rattle)
-library(car)
-library(plyr)
-library(ggplot2) ## The grammar of graphics!
-library(extrafont) ## Additional fonts
-library(ggthemes) ## Additional themes for gplot2
-library(zoo) ## Manage reformatting of date
-library(reshape2) ## Restructure data between wide and long format before plotting them - melt and cast
-#library(maptools) ## Create maps
-#library(rgdal) ## Open geographic files
-#library(rgeos)
-library(ggmap) ## get background map from google map
-library(sp) ## Spatial library
-#library(raster) ## Managing raster dataset
-library(RColorBrewer) ## Color palette
-library(classInt) ## Classififcation
-library(hexbin) ## Hexa binning
-library(lubridate)
-library(date)
-library(gdata)
-library(gridExtra)
-library(scales)
-#library(formatR)
-#library(RGtk2)
-#library(gWidgetsRGtk2)
-library(readxl)
-library(plyr)
-#library(xlsx)
-library(FactoMineR)
+library("stringr")
+library("stringi")
+#library("lattice")
+#library("rattle")
+library("car")
+library("plyr")
+library("ggplot2") ## The grammar of graphics!
+library("extrafont") ## Additional fonts
+library("ggthemes") ## Additional themes for gplot2
+library("zoo") ## Manage reformatting of date
+library("reshape2") ## Restructure data between wide and long format before plotting them - melt and cast
+#library("maptools") ## Create maps
+#library("rgdal") ## Open geographic files
+#library("rgeos")
+library("ggmap") ## get background map from google map
+library("sp") ## Spatial library
+#library("raster") ## Managing raster dataset
+library("RColorBrewer") ## Color palette
+library("classInt") ## Classififcation
+library("hexbin") ## Hexa binning
+library("lubridate")
+library("date")
+library("gdata")
+library("gridExtra")
+library("scales")
+#library("formatR")
+#library("RGtk2")
+#library("gWidgetsRGtk2")
+library("readxl")
+library("plyr")
+#library("xlsx")
+library("FactoMineR")
+
+library("corrplot")
+library("graphics")
+# install.packages("vcd")
+library("vcd")
 

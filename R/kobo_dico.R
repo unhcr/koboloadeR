@@ -142,7 +142,7 @@ kobo_dico <- function(form) {
 
   ## Avoid columns without names
   survey <- survey[ ,c("type",   "name" ,  "label",
-                       "repeatsummarize","variable","disaggregation",  "chapter", "sensitive","anonymise","correlate",
+                       "repeatsummarize","variable","disaggregation",  "chapter", "sensitive","anonymise","correlate"
                       # "indicator","indicatorgroup","indicatortype",
                       # "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation"
                        #"indicator","select", "Comment", "indicatordirect", "indicatorgroup" ## This indicator reference
@@ -412,9 +412,8 @@ kobo_dico <- function(form) {
     #names(choices) -"type", "name", "namefull",  "labelfull", "listname", "qrepeat", "qlevel", "qgroup"
     ## not kept: "nameq"     "labelq"   ,"fullname", "label",
     #names(survey) - "type" "name",  "fullname", "label",  "listname", "qrepeat"m  "qlevel",   "qgroup"
-  choices2 <- choices[ ,c("type", "name", "namefull",  "labelfull", "listname", "qrepeat","qrepeatlabel",  "qlevel", "qgroup", "labelchoice",
-                         "repeatsummarize","variable","disaggregation",
-                         "sensitive","anonymise","correlate", "chapter",
+  choices2 <- choices[ ,c("type", "name", "namefull",  "labelfull", "chapter","disaggregation","correlate", "sensitive","anonymise", "listname", "qrepeat","qrepeatlabel",  "qlevel", "qgroup", "labelchoice",
+                         "repeatsummarize","variable",
                          #"indicator","indicatorgroup","indicatortype", "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation",
                          "order", "weight","score", "recategorise")]
 
@@ -423,9 +422,9 @@ kobo_dico <- function(form) {
   names(choices2)[names(choices2)=="labelfull"] <- "label"
 
 
-  survey2 <-    survey[,c("type", "name",  "fullname", "label",  "listname", "qrepeat","qrepeatlabel",  "qlevel",   "qgroup", "labelchoice",
-                          "repeatsummarize","variable","disaggregation",
-                          "sensitive","anonymise","correlate", "chapter",
+  survey2 <-    survey[,c("type", "name",  "fullname", "label", "chapter", "disaggregation","correlate",  "sensitive","anonymise","listname", "qrepeat","qrepeatlabel",  "qlevel",   "qgroup", "labelchoice",
+                          "repeatsummarize","variable",
+
                           #"indicator","indicatorgroup","indicatortype", "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation",
                           "order", "weight","score", "recategorise")]
 

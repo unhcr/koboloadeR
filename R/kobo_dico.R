@@ -37,6 +37,7 @@ kobo_dico <- function(form) {
   ## Rename the variable label
   names(survey)[names(survey)=="label::English"] <- "label"
   cat("Checking now for additional information within your xlsform. Note that you can insert them in the xls and re-run the function! \n \n ")
+
   if("disaggregation" %in% colnames(survey))
   {
   cat("1- Good: You have a column `disaggregation` in your survey worksheet.\n");
@@ -44,19 +45,36 @@ kobo_dico <- function(form) {
   {cat("1- No column `disaggregation` in your survey worksheet. Creating a dummy one for the moment...\n");
     survey$disaggregation <- ""}
 
-  if("report" %in% colnames(survey))
+
+  if("correlate" %in% colnames(survey))
   {
-    cat("2- Good: You have a column `report` in your survey worksheet.\n");
+    cat("2- Good: You have a column `correlate` in your survey worksheet. This will be used to define the variables that should be checked for correlation between each others.\n");
   } else
-  {cat("2- No column `report` in your survey worksheet. Creating a dummy one for the moment...\n");
-    survey$report <- ""}
+  {cat("2- No column `correlate` in your survey worksheet. Creating a dummy one for the moment...\n");
+    survey$correlate <- ""}
 
   if("chapter" %in% colnames(survey))
   {
-    cat("3- Good: You have a column `chapter` in your survey worksheet.\n");
+    cat("3- Good: You have a column `chapter` in your survey worksheet. This will be used to breakdown the generated report\n");
   } else
-  {cat("3- No column `chapter` in your survey worksheet. Creating a dummy one for the moment...\n");
+  {cat("3- No column `chapter` in your survey worksheet. Creating a dummy one for the moment ...\n");
     survey$chapter <- ""}
+
+  if("sensitive" %in% colnames(survey))
+  {
+    cat("2- Good: You have a column `sensitive` in your survey worksheet. This will be used to distingusih potentially sensitive questions\n");
+  } else
+  {cat("2- No column `sensitive` in your survey worksheet. Creating a dummy one for the moment filled as `non-sensitive`. Other option is to record as `sensitive`...\n");
+    survey$sensitive <- "non-sensitive"}
+
+
+  if("anonymise" %in% colnames(survey))
+  {
+    cat("2- Good: You have a column `anonymise` in your survey worksheet. This will be used to anonymise the dataset.\n");
+  } else
+  {cat("2- No column `anonymise` in your survey worksheet. Creating a dummy one for the moment filled as `non-anonymised`. Other options to record are `Remove`, `Reference`, `Mask`, `Generalise` (see readme file) ...\n");
+    survey$anonymise <- "non-anonymised"}
+
 
   if("repeatsummarize" %in% colnames(survey))
   {
@@ -124,7 +142,7 @@ kobo_dico <- function(form) {
 
   ## Avoid columns without names
   survey <- survey[ ,c("type",   "name" ,  "label",
-                       "repeatsummarize","variable","disaggregation", "report", "chapter"
+                       "repeatsummarize","variable","disaggregation",  "chapter", "sensitive","anonymise","correlate",
                       # "indicator","indicatorgroup","indicatortype",
                       # "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation"
                        #"indicator","select", "Comment", "indicatordirect", "indicatorgroup" ## This indicator reference
@@ -396,7 +414,7 @@ kobo_dico <- function(form) {
     #names(survey) - "type" "name",  "fullname", "label",  "listname", "qrepeat"m  "qlevel",   "qgroup"
   choices2 <- choices[ ,c("type", "name", "namefull",  "labelfull", "listname", "qrepeat","qrepeatlabel",  "qlevel", "qgroup", "labelchoice",
                          "repeatsummarize","variable","disaggregation",
-                         "report", "chapter",
+                         "sensitive","anonymise","correlate", "chapter",
                          #"indicator","indicatorgroup","indicatortype", "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation",
                          "order", "weight","score", "recategorise")]
 
@@ -406,7 +424,7 @@ kobo_dico <- function(form) {
 
 
   survey2 <-    survey[,c("type", "name",  "fullname", "label",  "listname", "qrepeat","qrepeatlabel",  "qlevel",   "qgroup", "labelchoice",
-                          "repeatsummarize","variable","disaggregation", "report", "chapter",
+                          "repeatsummarize","variable","disaggregation", "sensitive","anonymise","correlate", "chapter",
                           #"indicator","indicatorgroup","indicatortype", "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation",
                           "order", "weight","score", "recategorise")]
 

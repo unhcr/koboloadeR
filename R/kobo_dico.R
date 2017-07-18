@@ -424,7 +424,8 @@ kobo_dico <- function(form) {
 
 
   survey2 <-    survey[,c("type", "name",  "fullname", "label",  "listname", "qrepeat","qrepeatlabel",  "qlevel",   "qgroup", "labelchoice",
-                          "repeatsummarize","variable","disaggregation", "sensitive","anonymise","correlate", "chapter",
+                          "repeatsummarize","variable","disaggregation",
+                          "sensitive","anonymise","correlate", "chapter",
                           #"indicator","indicatorgroup","indicatortype", "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation",
                           "order", "weight","score", "recategorise")]
 

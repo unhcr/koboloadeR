@@ -49,7 +49,7 @@ for(i in 1:nrow(chapters))
   # i <-3
   chaptersname <- as.character(chapters[ i , 1])
   cat(paste(i, " - Render chapter for ",as.character(chapters[ i , 1]),"\n" ))
-  chapter.name <- paste("code/report/",i,"-", chaptersname, "-chapter.Rmd", sep="")
+  chapter.name <- paste("code/",i,"-", chaptersname, "-chapter.Rmd", sep="")
 
   ## Get the
 
@@ -91,7 +91,8 @@ for(i in 1:nrow(chapters))
 #  cat("individual_biodata <- kobo_label(individual_biodata , dico)", file=chapter.name , sep="\n", append=TRUE)
 
   cat("## Create weighted survey object", file=chapter.name , sep="\n", append=TRUE)
-  cat("household.survey <- svydesign(ids = ~ section1.location.district ,  data = household,  weights = ~Normalized.Weight ,  fpc = ~fpc )", file=chapter.name , sep="\n", append=TRUE)
+  ## Below is an unweighted survey design - you may adjust as necessary!
+  cat("household.survey <- svydesign(ids = ~ 1 ,  data = household,   )", file=chapter.name , sep="\n", append=TRUE)
 #  cat("case_number_details.survey <- svydesign(ids = ~ section1.location.district ,  data = case_number_details ,  weights = ~Normalized.Weight ,  fpc = ~fpc )", file=chapter.name , sep="\n", append=TRUE)
 #  cat("individual_biodata.survey <- svydesign(ids = ~ section1.location.district ,  data = individual_biodata ,  weights = ~Normalized.Weight ,  fpc = ~fpc )", file=chapter.name , sep="\n", append=TRUE)
 
@@ -243,7 +244,7 @@ for(i in 1:nrow(chapters))
           else if ( figheight>=11) {figheight<-"10"}
 
           ## Open chunk
-          cat(paste0("\n```{r ", questions.name,h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight,", size=\"small\"}\n"), file=chapter.name, append=TRUE)
+          cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight,", size=\"small\"}\n"), file=chapter.name, append=TRUE)
 
           cat(paste("\n", h, " - Check dependency: ", disag.label, "for question: ", questions.label,"\n" ))
 
@@ -447,7 +448,7 @@ for(i in 1:nrow(chapters))
   cat(paste("# Indicators from data analysis plan"),file=chapter.name ,sep="\n", append=TRUE)
 
   # Write the reference to the chapter in the main report file
-  #cat(paste0("\n```{r child = '",i,"-", as.character(chapters[ i , 1]), "-chapter.Rmd", "'}\n```\n"), sep = '\n',file="code/report/report-tabulation.Rmd",append=TRUE)
+  #cat(paste0("\n```{r child = '",i,"-", as.character(chapters[ i , 1]), "-chapter.Rmd", "'}\n```\n"), sep = '\n',file="code/report-tabulation.Rmd",append=TRUE)
   # End chapter
 }
 
@@ -466,7 +467,7 @@ cat(" Render now reports... \n")
 for(i in 1:nrow(chapters)) {
   chaptersname <- as.character(chapters[ i , 1])
   cat(paste(i, " - Render word output report for ",chaptersname))
-  render(paste0("code/report/",i,"-", chaptersname, "-chapter.Rmd", sep="")) }
+  render(paste0("code/",i,"-", chaptersname, "-chapter.Rmd", sep="")) }
 
 #rmarkdown::render('report-tabulation.Rmd')
 

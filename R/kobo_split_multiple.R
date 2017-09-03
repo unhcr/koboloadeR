@@ -28,6 +28,7 @@ kobo_split_multiple <- function(data, dico) {
   selectdf <- dico[dico$type=="select_multiple_d", c("fullname","listname","label","name","variable","disaggregation")]
   #rm(datalabel)
   # data <- household
+  # data <- data.or
   datalabeldf <- as.data.frame( names(data))
   data <- as.data.frame(data)
   names(datalabeldf )[1] <- "fullname"
@@ -41,15 +42,18 @@ kobo_split_multiple <- function(data, dico) {
 
   ## Now create the unique select_multiple and append to the dataframe
   for (i in 1:nrow(datalabeldf) ) {
-    # i <- 1
+    # i <- 2
     fullname <- as.character(datalabeldf[i,1])
     id <-  as.integer(as.character(datalabeldf[i,2]))
     cat(paste0(i, " - Splitting variable ", fullname, " in column: ", id, "\n"))
 
     data[ , id] <- as.character(data[ , id])
-    ## Account non answered
-    #data[data[ , id]=='', id] <- "zNotAnswered"
+
+    ## Account non answered - could be recognised either as null or na...
+    data[data[ , id]=='', id] <- "zNotAnswered"
     data[is.na(data[ , id]), id] <- "zNotAnswered"
+
+
     #levels(as.factor(data[ , id]))
     #levels(data[ , id])
     list <- as.data.frame(data[ , id])
@@ -58,8 +62,8 @@ kobo_split_multiple <- function(data, dico) {
     tosplitlist <- strsplit(as.character(data[ , id]), " ")
     cat("Spliting now!\n")
     tosplitlist <- setNames(tosplitlist, seq_along(tosplitlist))
-    tosplitlist <- stack(tosplitlist)
-    tosplitframe <- dcast(tosplitlist, ind ~ values, fun.aggregate = length)
+    tosplitlist2 <- stack(tosplitlist)
+    tosplitframe <- dcast(tosplitlist2, ind ~ values, fun.aggregate = length)
     for (h in 2:ncol(tosplitframe) ) { tosplitframe[tosplitframe$zNotAnswered==1, h] <- "Not replied"}
     drops <- c("ind", "zNotAnswered")
     tosplitframe <- tosplitframe[ , !(names(tosplitframe) %in% drops)]
@@ -75,7 +79,7 @@ kobo_split_multiple <- function(data, dico) {
     names(tosplitframe) <- datalabelframe[, 2]
 
     ## Bind to original data
-    cat(paste0("Number of columns: ", ncol(data), "\n"))
+    cat(paste0("Number of columns: ", ncol(data), ", number of additional splitted variables:",ncol(tosplitframe), "\n"))
     data <- cbind(data, tosplitframe )
 
     cat(paste0("After binding Number of columns: ", ncol(data), "\n"))

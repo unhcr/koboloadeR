@@ -10,7 +10,7 @@ kobo_projectconfig()
 A file with all elements to get your data & form.
 }
 \description{
-Write a small configuration file to access your kobo project
+Write all necessary configuration files for your project
 }
 \examples{
 kobo_projectconfig()

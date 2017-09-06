@@ -42,7 +42,7 @@ kobo_split_multiple <- function(data, dico) {
 
   ## Now create the unique select_multiple and append to the dataframe
   for (i in 1:nrow(datalabeldf) ) {
-    # i <- 2
+    # i <- 3
     fullname <- as.character(datalabeldf[i,1])
     id <-  as.integer(as.character(datalabeldf[i,2]))
     cat(paste0(i, " - Splitting variable ", fullname, " in column: ", id, "\n"))
@@ -50,7 +50,10 @@ kobo_split_multiple <- function(data, dico) {
     data[ , id] <- as.character(data[ , id])
 
     ## Account non answered - could be recognised either as null or na...
-    data[data[ , id]=='', id] <- "zNotAnswered"
+
+   # nrow(data[data[ , id]=='', id])
+
+  #  data[data[ , id]=='', id] <- "zNotAnswered"
     data[is.na(data[ , id]), id] <- "zNotAnswered"
 
 
@@ -63,7 +66,7 @@ kobo_split_multiple <- function(data, dico) {
     cat("Spliting now!\n")
     tosplitlist <- setNames(tosplitlist, seq_along(tosplitlist))
     tosplitlist2 <- stack(tosplitlist)
-    tosplitframe <- dcast(tosplitlist2, ind ~ values, fun.aggregate = length)
+    tosplitframe <- dcast(tosplitlist2, ind ~ values, value.var="ind", fun.aggregate = length)
     for (h in 2:ncol(tosplitframe) ) { tosplitframe[tosplitframe$zNotAnswered==1, h] <- "Not replied"}
     drops <- c("ind", "zNotAnswered")
     tosplitframe <- tosplitframe[ , !(names(tosplitframe) %in% drops)]

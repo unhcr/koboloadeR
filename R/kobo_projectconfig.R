@@ -77,17 +77,21 @@ kobo_projectconfig <- function() {
   formfile <- readline("insert the name of the form file: if empty - we use form.xls \n")
 
   cat(" \n")
-  cat("  3.- Do you have sample weight? \n")
-  usedweight <- readline("Type yes - or leave empty of no weight ")
+  cat("  3.- What sampling do you have? \n")
+  usedweight <- readline("No sampling(type 1) , Cluster sample (type 2), Stratified sample (type 3), Respondent Driven Sample sample (type 4)? ")
+  if (runproject=='Y') {
+      source("./code/runproject.R")
+    } else {
+      cat("You can now go to /code/runproject.R in order to run the project.\n")
+    }
+
 
   cat(" \n")
   cat("  4.- Do you have data cleaning log? \n")
-  usedweight <- readline("Type yes - or leave empty of no datacleaning log ")
-
-
+  usedlog<- readline("Type yes - or leave empty of no datacleaning log ")
   cat(" \n")
   cat("  4.- Do you have indicators definition? \n")
-  usedweight <- readline("Type yes - or leave empty of no in ")
+  usedindic <- readline("Type yes - or leave empty of no in ")
   cat(" \n")
   cat(" \n")
   cat(" \n")
@@ -196,7 +200,6 @@ kobo_projectconfig <- function() {
   print(kobo_datasets(user, api))
 
   formid <- readline("Select the formid your want to pull from the list above: ")
-
   str(kobo_data_downloader(formid, user, api, check = TRUE))
 
 
@@ -209,8 +212,6 @@ kobo_projectconfig <- function() {
                  "formid <- formid"), fileConn)
     close(fileConn)
   }
-
-
 
   ## End of it...
 

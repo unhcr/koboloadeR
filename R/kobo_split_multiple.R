@@ -38,6 +38,12 @@ kobo_split_multiple <- function(data, dico) {
   ## Eliminate record from the wrong frame -i.e. id is NULL -
   datalabeldf <- datalabeldf[ !(is.na(datalabeldf$id)), ]
 
+  ## Stop here if no select_multiple to split
+  if ( nrow(datalabeldf)==0 ){
+    cat("no Select multiple variable in your dataset!")
+    return(data)
+  } else {
+
   ## Check if those select_multiple_d have corresponding select_multiple
 
   ## Now create the unique select_multiple and append to the dataframe
@@ -92,6 +98,7 @@ kobo_split_multiple <- function(data, dico) {
   #rm(selectdf,datalabeldf)
 
   return(data)
+  }
 }
 NULL
 

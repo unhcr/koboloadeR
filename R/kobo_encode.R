@@ -46,6 +46,9 @@ kobo_encode <- function(data, dico) {
 
   if(nrow(selectdf3)==0){
     cat("There's no disagreggated select_multiple variables to re-encoded \n")
+    cat("No match for Select multiple variable in your dataset!  \n")
+    cat(" You may double check that the form and the data are matching \n")
+    cat("Double check as well that you did download the data with the correct header (i.e. full path with point delimiters) \n")
   } else{
       #names(selectdf)[1] <- "selectvar"
 
@@ -103,6 +106,9 @@ kobo_encode <- function(data, dico) {
 
   if(nrow(selectdf3)==0) {
     cat("There's no disaggregated select_one variable to re-encoded \n")
+    cat("i.e. No match for Select one variables in your dataset!  \n")
+    cat(" You may double check that the form and the data are matching \n")
+    cat("Double check as well that you did download the data with the correct header (i.e. full path with point delimiters) \n")
   } else{
     #names(selectdf)[1] <- "selectvar"
 
@@ -148,6 +154,9 @@ kobo_encode <- function(data, dico) {
 
   if(nrow(selectdf3)==0) {
     cat("There's no  select_one variables to re-encode \n")
+    cat("i.e. No match for Select one variables in your dataset!  \n")
+    cat(" You may double check that the form and the data are matching \n")
+    cat("Double check as well that you did download the data with the correct header (i.e. full path with point delimiters) \n")
   } else {
       cat(paste0("There's ",nrow(selectdf3)," select_one variables to encode \n"))
 
@@ -190,8 +199,13 @@ kobo_encode <- function(data, dico) {
   #names(selectdf)[1] <- "selectvar"
 
   if(nrow(selectdf3)>=1) {
-    cat("Uhmm you have concatenated select_multiple. This case is not handled yet. \n")
-  } else{   cat("No concatenated select_multiple. Better like this! \n")    }
+    cat("Uhmm... you have concatenated select_multiple. If this not already done, you may need to use the kobo_split_multiple function to deconcatenate those lists. \n")
+  } else{   cat("No concatenated select_multiple.! \n")
+
+    cat("i.e. No match for Select multiple variables in your dataset!  \n")
+    cat(" You may double check that the form and the data are matching \n")
+    cat("Double check as well that you did download the data with the correct header (i.e. full path with point delimiters) \n")
+    }
 
 return(data)
 }

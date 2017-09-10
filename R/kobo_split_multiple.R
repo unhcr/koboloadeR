@@ -40,7 +40,12 @@ kobo_split_multiple <- function(data, dico) {
 
   ## Stop here if no select_multiple to split
   if ( nrow(datalabeldf)==0 ){
-    cat("no Select multiple variable in your dataset!")
+    cat("No match for Select multiple variable in your dataset!  \n")
+
+    cat(" You may double check that the form and the data are matching \n")
+
+    cat("Double check as well that you did download the data with the correct header (i.e. full path with point delimiters) \n")
+
     return(data)
   } else {
 

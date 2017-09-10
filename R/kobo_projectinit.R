@@ -102,12 +102,12 @@ kobo_projectinit <- function() {
     file.copy(paste(path_correct,"/koboloadeR/script/2-create-graph.R",sep=""), destfile)
   }
 
-  destfile=paste0(mainDir,"/code/3-generate-report.R")
+  destfile=paste0(mainDir,"/code/3-create-indicators.R")
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/3-create-indicators.R",sep=""), destfile)
   }
 
-  destfile=paste0(mainDir,"/code/3-generate-report.R")
+  destfile=paste0(mainDir,"/code/4-generate-report.R")
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/4-generate-report.R",sep=""), destfile)
   }

@@ -44,7 +44,7 @@ rm(form)
 form <- "form.xls"
 ## Generate & Load dictionnary
 kobo_dico(form)
-dico <- read.csv(paste("data/dico_",form,".csv",sep=""), encoding="UTF-8", na.strings="")
+dico <- read.csv(paste("data/dico_",form,".csv",sep = ""), encoding = "UTF-8", na.strings = "")
 rm(form)
 
 
@@ -55,6 +55,7 @@ rm(form)
 data <- kobo_split_multiple(data.or, dico)
 ## Re-encoding data now based on the dictionnary -- the xlsform dictionnary can be adjusted this script re-runned till satisfaction
 data <- kobo_encode(data, dico)
+
 ## household is the default root data componnents to be used -- in order to deal with nested dataset
 household <- kobo_label(data, dico)
 ## We now save a back up in the data folder to be used for the Rmd

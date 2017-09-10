@@ -86,31 +86,45 @@ kobo_projectinit <- function() {
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/0-packages.R",sep=""), destfile)
   }
+
+  destfile=paste0(mainDir,"/code/0-packages.R")
+  if (!file.exists(destfile)) {
+    file.copy(paste(path_correct,"/koboloadeR/script/0-theme.R",sep=""), destfile)
+  }
+
   destfile=paste0(mainDir,"/code/1-loaddata.R")
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/1-loaddata.R",sep=""), destfile)
   }
+
   destfile=paste0(mainDir,"/code/2-create-graph.R")
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/2-create-graph.R",sep=""), destfile)
   }
+
   destfile=paste0(mainDir,"/code/3-generate-report.R")
   if (!file.exists(destfile)) {
-    file.copy(paste(path_correct,"/koboloadeR/script/3-generate-report.R",sep=""), destfile)
+    file.copy(paste(path_correct,"/koboloadeR/script/3-create-indicators.R",sep=""), destfile)
+  }
+
+  destfile=paste0(mainDir,"/code/3-generate-report.R")
+  if (!file.exists(destfile)) {
+    file.copy(paste(path_correct,"/koboloadeR/script/4-generate-report.R",sep=""), destfile)
   }
   destfile=paste0(mainDir,"/code/report.Rmd")
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/report.Rmd",sep=""), destfile)
   }
+
   destfile=paste0(mainDir,"/code/style-unhcr-portrait.docx")
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/style-unhcr-portrait.docx",sep=""), destfile)
   }
+
   destfile=paste0(mainDir,"/code/style-unhcr-landscape.docx")
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/style-unhcr-landscape.docx",sep=""), destfile)
   }
-
 
 
   subDir <- "data"

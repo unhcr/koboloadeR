@@ -4,6 +4,7 @@ rm(list = ls())
 ################################################################
 ## Load all required packages
 source("code/0-packages.R")
+source("code/0-config.R")
 
 ### Double Check that you have the last version
 #source("https://raw.githubusercontent.com/Edouard-Legoupil/koboloadeR/master/inst/script/install_github.R")
@@ -21,10 +22,10 @@ library(koboloadeR)
 #                                                          #
 ############################################################
 
-rm(data)
+#rm(data)
 
 ## Might need to be tweaked -- double check
-data.or <- read.csv("data/data.csv", sep=";", encoding="UTF-8", na.strings="")
+data.or <- read.csv(path.to.data, sep=";", encoding="UTF-8", na.strings="")
 
 #names(data.or)
 ### Need to replace slash by point in the variable name
@@ -40,12 +41,12 @@ data.or <- read.csv("data/data.csv", sep=";", encoding="UTF-8", na.strings="")
 
 ##############################################
 ## Load form
-rm(form)
-form <- "form.xls"
+#rm(form)
+#form <- "form.xls"
 ## Generate & Load dictionnary
 kobo_dico(form)
 dico <- read.csv(paste("data/dico_",form,".csv",sep = ""), encoding = "UTF-8", na.strings = "")
-rm(form)
+#rm(form)
 
 
 #################################################################################
@@ -59,4 +60,7 @@ data <- kobo_encode(data, dico)
 ## household is the default root data componnents to be used -- in order to deal with nested dataset
 household <- kobo_label(data, dico)
 ## We now save a back up in the data folder to be used for the Rmd
+write.csv(household,"data/data2.csv")
+
+## Save another version in order to add indicators
 write.csv(household,"data/household.csv")

@@ -87,9 +87,14 @@ kobo_projectinit <- function() {
     file.copy(paste(path_correct,"/koboloadeR/script/0-packages.R",sep=""), destfile)
   }
 
-  destfile=paste0(mainDir,"/code/0-packages.R")
+  destfile=paste0(mainDir,"/code/0-theme.R")
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/0-theme.R",sep=""), destfile)
+  }
+
+  destfile=paste0(mainDir,"/code/0-config.R")
+  if (!file.exists(destfile)) {
+    file.copy(paste(path_correct,"/koboloadeR/script/0-config.R",sep=""), destfile)
   }
 
   destfile=paste0(mainDir,"/code/1-loaddata.R")

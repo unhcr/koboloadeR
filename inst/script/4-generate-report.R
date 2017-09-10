@@ -1,9 +1,10 @@
 #### Generate Rmd files for each chapter ------
-
+rm(list = ls())
 ## Load the form
 
 mainDir <- getwd()
 ## Load all required packages
+source(paste0(mainDir,"/code/0-config.R"))
 source(paste0(mainDir,"/code/0-packages.R"))
 library(koboloadeR)
 
@@ -15,12 +16,12 @@ household <- read.csv("data/data2.csv", encoding = "UTF-8", na.strings = "NA")
 ###Form##########################################
 ## Load form
 cat("\n\n Building dictionnary from the xlsform \n")
-rm(form)
-form <- "form.xls"
+#rm(form)
+#form <- "form.xls"
 ## Generate & Load dictionnary
 kobo_dico(form)
 dico <- read.csv(paste("data/dico_",form,".csv",sep = ""), encoding = "UTF-8", na.strings = "")
-rm(form)
+#rm(form)
 
 
 ## label Variables
@@ -107,7 +108,7 @@ for( i in 1:nrow(chapters) )
   cat("source(paste0(mainDirroot,\"/code/0-theme.R\"))", file = chapter.name , sep="\n", append=TRUE)
   cat("library(koboloadeR)", file = chapter.name , sep="\n", append=TRUE)
   cat("## Provide below the name of the form in xsl form - format should be xls not xlsx", file = chapter.name , sep="\n", append=TRUE)
-  cat("form <- \"form.xls\"", file = chapter.name , sep="\n", append=TRUE)
+  cat(paste0("form <- \"",form,"\""), file = chapter.name , sep="\n", append=TRUE)
   cat("dico <- read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding=\"UTF-8\", na.strings=\"\")", file = chapter.name , sep="\n", append=TRUE)
 
 
@@ -241,7 +242,7 @@ for( i in 1:nrow(chapters) )
         cat("No responses recorded for this question. No disaggregation...\n")
         cat("\n", file = chapter.name, append=TRUE)
       } else if( nrow(disaggregation)==0 ) {
-        cat(paste0("cat(\"No disaggregation requested for this question...\")"),file = chapter.name , sep="\n", append=TRUE)
+        cat("No disaggregation requested for this question...\n",file = chapter.name , sep="\n", append=TRUE)
         cat("No disaggregation requested for this question...\n")
         cat("\n", file = chapter.name, append=TRUE)
       } else {
@@ -337,8 +338,8 @@ for( i in 1:nrow(chapters) )
         cat("No responses recorded for this question. No analysis of correlation...\n")
         cat("\n", file = chapter.name, append=TRUE)
       } else if( nrow(correlationdf)==0 ) {
-        cat(paste0("cat(\"No disaggregation requested for this question...\")"),file = chapter.name , sep="\n", append=TRUE)
-        cat("No  disaggregation requested for this question...\n")
+        cat("No correlation requested for this question...\n",file = chapter.name , sep="\n", append=TRUE)
+        cat("No correlation requested for this question...\n")
         cat("\n", file = chapter.name, append=TRUE)
       } else {
 
@@ -695,11 +696,15 @@ cat(" Render now reports... \n")
 for(i in 1:nrow(chapters)) {
   chaptersname <- as.character(chapters[ i , 1])
   cat(paste(i, " - Render word output report for ",chaptersname))
-  render(paste0("code/",i,"-", chaptersname, "-chapter.Rmd", sep="")) }
+  render(paste0("code/",i,"-", chaptersname, "-chapter.Rmd", sep=""))
+  ## Put the report in the out folder
+  file.rename(paste0("code/",i,"-", chaptersname, "-chapter.docx", sep=""), paste0("out/",i,"-", chaptersname,Sys.Date(), "-chapter.docx"))
+
+}
 
 #rmarkdown::render('report-tabulation.Rmd')
 
-cat(" Done!! Reports are in the folder CODE > REPORT - You are now ready to start the qualitative analysis and the analysis workshops...")
+cat(" Done!! Reports are in the folder OUT - Review the report- Adjust your configuration files and you will be very soon ready to start the qualitative analysis and the analysis workshops...")
 
 
 

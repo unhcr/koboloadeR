@@ -1,5 +1,47 @@
 # koboloadeR
 
+## Introduction
+
+### Challenges with Household Survey analysis
+
+
+Household survey often results in dataset with over 300 variables to process & explore. In Humnaitarian Environement, deadlines to get insights from those dataset are often tight. Manual processing is very lengthy and can be done only for a limited part of the dataset. Often, because of those challenges, a lot of potential insights are not discovered.
+
+### Data Crunching
+
+KoboloadeR packages aims at separating “input”, “processing”, and “output” within the data crunching phase of the data analysis worklfow.
+
+The “output” is an Rmd (Rmarkdown) file than produce word, pdf or html reports and the configuration file includes references to all “input”:  
+ 
+ *     Path to raw data files collected using [OpenDataKit](https://opendatakit.org/), [Kobotoolbox](http://www.kobotoolbox.org/) or [ONA](https://ona.io)  
+ *     Path to form (defined using the standard format [xlsform](http://xlsform.org)) in order to build a data dictionary  
+ *     Path to the sample weight for each observation (based on cluster or strata...)   
+ *     Path to the data cleaning log  
+ *     Path to the indicator calculation sheet  
+
+### Advantage of KoboLoadeR 
+
+
+ * __Productivity__: Once the configuration file is written, run the script in Rstudio to get the output
+ * __Training__: No need to write R instruction – limited knowledge of R is required
+ * __Iteration__: Check the output, adjust the various input files & re-run the script till you get a satisfying report
+ * __Reproducibility__: all analysis input are de facto documented  
+
+KoboLoadeR takes care of the processing component so that the technical team can focus on the interpretation.
+
+### Output of koboloadeR  
+
+ * Frequency tables & Bar chart for select type questions
+ * Frequency tables & Histogram for numeric questions
+ * Frequency table for text questions
+ * Cross-tab & graph (if 2 categorical: bar chart, if 1 categoric + 1 numeric: boxplot & if 2 numeric: scatterplot)
+ * Chi-squared test & corrplot presentation
+ * Mapping if geographic field are configured (still in development)
+ * and more to come...
+
+
+##  Overview
+
 The `koboloadeR` package allows to:
 
 * connect to the [KoBo API (v1)](https://kc.kobotoolbox.org/api/v1/) for the [KoBo Toolbox](http://www.kobotoolbox.org/) project. 

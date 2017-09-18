@@ -4,8 +4,7 @@
 
 ### Challenges with Household Survey analysis
 
-
-Household survey often results in dataset with over 300 variables to process & explore. In Humanitarian Environment, deadlines to get insights from those dataset are often tight. Manual processing is very lengthy and can be done only for a limited part of the dataset. Often, because of those challenges, a lot of potential insights are not discovered.
+Household survey often results in dataset with over 300 variables to process & explore. In Humanitarian Environment, deadlines to get insights from those dataset are often tight. Manual processing is very lengthy and can be done only for a limited part of the dataset. Often, because of those challenges, a lot of potential insights are not discovered. This package is developped to support this challenge around data crunching. It's part of the initiative around an [Integrated Framework for Household Survey (IFHS): A toolkit to facilitate design, collection & analysis](https://unhcr.github.io/Integrated-framework-household-survey/).
 
 ### Data Crunching
 
@@ -13,11 +12,11 @@ KoboloadeR packages aims at separating “_input_”, “_processing_” and “
 
 The “output” will be one or multiple Rmd (Rmarkdown) file(s) than will generate word, pdf or html reports and the configuration file includes references to all “input”:  
  
- *     Path to raw data files collected using [OpenDataKit](https://opendatakit.org/), [Kobotoolbox](http://www.kobotoolbox.org/) or [ONA](https://ona.io)  
- *     Path to form (defined using the standard format [xlsform](http://xlsform.org)) in order to build a data dictionary  
- *     Path to the sample weight for each observation (based on cluster or strata...)   
- *     Path to the data cleaning log  
- *     Path to the indicator calculation sheet  
+ * Path to __raw data__ files collected using [OpenDataKit](https://opendatakit.org/), [Kobotoolbox](http://www.kobotoolbox.org/) or [ONA](https://ona.io)  
+ * Path to form (defined using the standard format [xlsform](http://xlsform.org)) in order to build a __data dictionary__  
+ * Path to the __sample weight__ for each observation (based on cluster or strata...)   
+ * Path to the data __cleaning log__  
+ * Path to the __indicator calculation__ sheet  
 
 ### Advantage of KoboLoadeR 
 

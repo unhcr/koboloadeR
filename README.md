@@ -5,13 +5,13 @@
 ### Challenges with Household Survey analysis
 
 
-Household survey often results in dataset with over 300 variables to process & explore. In Humnaitarian Environement, deadlines to get insights from those dataset are often tight. Manual processing is very lengthy and can be done only for a limited part of the dataset. Often, because of those challenges, a lot of potential insights are not discovered.
+Household survey often results in dataset with over 300 variables to process & explore. In Humanitarian Environment, deadlines to get insights from those dataset are often tight. Manual processing is very lengthy and can be done only for a limited part of the dataset. Often, because of those challenges, a lot of potential insights are not discovered.
 
 ### Data Crunching
 
-KoboloadeR packages aims at separating “input”, “processing”, and “output” within the data crunching phase of the data analysis worklfow.
+KoboloadeR packages aims at separating “_input_”, “_processing_” and “_output_” within the data crunching phase of the data analysis worklfow.
 
-The “output” is an Rmd (Rmarkdown) file than produce word, pdf or html reports and the configuration file includes references to all “input”:  
+The “output” will be one or multiple Rmd (Rmarkdown) file(s) than will generate word, pdf or html reports and the configuration file includes references to all “input”:  
  
  *     Path to raw data files collected using [OpenDataKit](https://opendatakit.org/), [Kobotoolbox](http://www.kobotoolbox.org/) or [ONA](https://ona.io)  
  *     Path to form (defined using the standard format [xlsform](http://xlsform.org)) in order to build a data dictionary  

@@ -304,7 +304,7 @@ for( i in 1:nrow(chapters) )
               else if ( figheight>=11) {figheight<-"10"}
 
               ## Open chunk
-              cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight,", size=\"small\"}\n"), file = chapter.name, append=TRUE)
+              cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight*3,", size=\"small\"}\n"), file = chapter.name, append=TRUE)
 
               cat(paste("\n", h, " - Render disaggregation : ", disag.label, "for question: ", questions.label,"\n" ))
 
@@ -334,8 +334,8 @@ for( i in 1:nrow(chapters) )
 
               ## Boxplot with capping treatment
               cat(paste0("## Boxplot"),file = chapter.name ,sep="\n",append=TRUE)
-              cat(paste0("ggplot(",questions.frame,", aes(y=data.nooutlier1$variable, x= ",questions.frame,"$",disag.name,")) +"),file = chapter.name ,sep="\n",append=TRUE)
-              cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour=\"white\") +  #notch=TRUE"),file = chapter.name ,sep="\n",append=TRUE)
+              cat(paste0("ggplot(",questions.frame,", aes(y=data.nooutlier1$variable, x= ",questions.frame,"$",questions.name,")) +"),file = chapter.name ,sep="\n",append=TRUE)
+              cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour=\"black\") +  #notch=TRUE"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("scale_size_area(max_size = 10)+"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("guides(fill=FALSE) +"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("xlab(\"\") +"),file = chapter.name ,sep="\n",append=TRUE)

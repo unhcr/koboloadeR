@@ -178,7 +178,6 @@ for( i in 1:nrow(chapters) )
 
 
 
-
     ###selectone###################################################################################################
     if (questions.type =="select_one" ) {
 
@@ -320,29 +319,31 @@ for( i in 1:nrow(chapters) )
               cat(paste0("data.nooutlier1[ (data.nooutlier1 > (qnt1[2] + H)) & !(is.na(data.nooutlier1)) ] <- caps.df1[2,1]"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("names(data.nooutlier1)[1] <- \"variable\""),file = chapter.name ,sep="\n",append=TRUE)
 
-              cat(paste0("ggplot(",questions.frame,", aes(y=",questions.frame,"$",questions.name," , x=",questions.frame,"$",disag.name,")) +"),file = chapter.name ,sep="\n",append=TRUE)
-              cat(paste0("geom_boxplot( ) + "),file = chapter.name ,sep="\n",append=TRUE)
+              cat(paste0("ggplot(",questions.frame,", aes(x=",questions.frame,"$",questions.name," , y=",questions.frame,"$",disag.name,")) +"),file = chapter.name ,sep="\n",append=TRUE)
+              cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour=\"black\" ) + "),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("scale_size_area(max_size = 10)+"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("guides(fill=FALSE) +"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("xlab(\"\") +"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("ylab(\"\") +"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("coord_flip()+"),file = chapter.name ,sep="\n",append=TRUE)
-              cat(paste0("scale_x_continuous(breaks= pretty_breaks()) +"),file = chapter.name ,sep="\n",append=TRUE)
-              cat(paste0("ggtitle(\"Boxplot before data capping treatement\")  +"),file = chapter.name ,sep="\n",append=TRUE)
+              cat(paste0("scale_y_continuous(breaks= pretty_breaks()) +"),file = chapter.name ,sep="\n",append=TRUE)
+              cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep="\n",append=TRUE)
+              cat(paste0("subtitle = \"Before data capping treatement. By question: ",disag.label,".\") +"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("theme(plot.title=element_text(face=\"bold\", size=9),plot.background = element_rect(fill = \"transparent\",colour = NA))"),file = chapter.name ,sep="\n",append=TRUE)
 
 
               ## Boxplot with capping treatment
               cat(paste0("## Boxplot"),file = chapter.name ,sep="\n",append=TRUE)
-              cat(paste0("ggplot(",questions.frame,", aes(x=data.nooutlier1$variable, y= ",questions.frame,"$",disag.name,")) +"),file = chapter.name ,sep="\n",append=TRUE)
-              cat(paste0("geom_boxplot( ) +  #notch=TRUE"),file = chapter.name ,sep="\n",append=TRUE)
+              cat(paste0("ggplot(",questions.frame,", aes(y=data.nooutlier1$variable, x= ",questions.frame,"$",disag.name,")) +"),file = chapter.name ,sep="\n",append=TRUE)
+              cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour=\"white\") +  #notch=TRUE"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("scale_size_area(max_size = 10)+"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("guides(fill=FALSE) +"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("xlab(\"\") +"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("ylab(\"\") +"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("coord_flip()+"),file = chapter.name ,sep="\n",append=TRUE)
-              cat(paste0("scale_x_continuous(breaks= pretty_breaks()) +"),file = chapter.name ,sep="\n",append=TRUE)
-              cat(paste0("ggtitle(\"Boxplot after data capping treatement\")  +"),file = chapter.name ,sep="\n",append=TRUE)
+              cat(paste0("scale_y_continuous(breaks= pretty_breaks()) +"),file = chapter.name ,sep="\n",append=TRUE)
+              cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep="\n",append=TRUE)
+              cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,".\") +"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("theme(plot.title=element_text(face=\"bold\", size=9),"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("plot.background = element_rect(fill = \"transparent\",colour = NA))"),file = chapter.name ,sep="\n",append=TRUE)
 
@@ -381,7 +382,7 @@ for( i in 1:nrow(chapters) )
               cat(paste0("xlab(\"\") +"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("coord_flip() +"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep="\n",append=TRUE)
-              cat(paste0("subtitle = paste0(\"Weighted results. Question response rate: \",percentreponse,\" by question: \",disag.label,\" .\")) +"),file = chapter.name ,sep="\n",append=TRUE)
+              cat(paste0("subtitle = \"Weighted results. By question: ",disag.label,".\") +"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("theme(plot.title=element_text(face=\"bold\", size=9),plot.background = element_rect(fill = \"transparent\",colour = NA))+"),file = chapter.name ,sep="\n",append=TRUE)
               ## setting up the legend
               #cat(paste0("guides(fill=FALSE) +"),file = chapter.name ,sep="\n",append=TRUE)
@@ -544,6 +545,9 @@ for( i in 1:nrow(chapters) )
       cat(paste0("ggplot(data=frequ, aes(x=frequ$Var1, y=frequ$Freq)) +"),file = chapter.name ,sep="\n",append=TRUE)
       cat(paste0("geom_bar(fill=\"#2a87c8\",colour=\"white\", stat =\"identity\", width=.8)+"),file = chapter.name ,sep="\n",append=TRUE)
       cat(paste0("labs(x=\"\", y=\"Count\")+"),file = chapter.name ,sep="\n",append=TRUE)
+      cat(paste0("ggtitle(\"",questions.label,"\",subtitle = \"Before data capping treatement.\") +"),file = chapter.name ,sep="\n",append=TRUE)
+      cat(paste0(""),file = chapter.name ,sep="\n",append=TRUE)
+
       cat(paste0("theme(plot.title=element_text(face=\"bold\", size=9), plot.background = element_rect(fill = \"transparent\",colour = NA))"),file = chapter.name ,sep="\n",append=TRUE)
 
       ### Detect outliers and adjust bien numbers #####
@@ -563,6 +567,9 @@ for( i in 1:nrow(chapters) )
       cat(paste0("ggplot(data=data.nooutlier, aes(x=data.nooutlier$variable)) +"),file = chapter.name ,sep="\n",append=TRUE)
       cat(paste0("geom_histogram(color=\"white\",fill=\"#2a87c8\", breaks= pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +"),file = chapter.name ,sep="\n",append=TRUE)
       cat(paste0("labs(x=\"\", y=\"Count\")+"),file = chapter.name ,sep="\n",append=TRUE)
+      cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep="\n",append=TRUE)
+      cat(paste0("subtitle = \"After data capping treatement.\") +"),file = chapter.name ,sep="\n",append=TRUE)
+
       cat(paste0("theme(plot.title=element_text(face=\"bold\", size=9), plot.background = element_rect(fill = \"transparent\",colour = NA))"),file = chapter.name ,sep="\n",append=TRUE)
 
       ## Close chunk
@@ -627,28 +634,31 @@ for( i in 1:nrow(chapters) )
               ## Boxplot
 
               cat(paste0("ggplot(",questions.frame,", aes(y=",questions.frame,"$",questions.name," , x=",questions.frame,"$",disag.name,")) +"),file = chapter.name ,sep="\n",append=TRUE)
-              cat(paste0("geom_boxplot( ) + "),file = chapter.name ,sep="\n",append=TRUE)
+              cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour=\"black\") + "),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("scale_size_area(max_size = 10)+"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("guides(fill=FALSE) +"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("xlab(\"\") +"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("ylab(\"\") +"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("coord_flip()+"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("scale_y_continuous(breaks= pretty_breaks()) +"),file = chapter.name ,sep="\n",append=TRUE)
-              cat(paste0("ggtitle(\"Boxplot before data capping treatement\")  +"),file = chapter.name ,sep="\n",append=TRUE)
+              cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep="\n",append=TRUE)
+              cat(paste0("subtitle = \"Before data capping treatement, by question: ",disag.label,".\") +"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("theme(plot.title=element_text(face=\"bold\", size=9),"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("plot.background = element_rect(fill = \"transparent\",colour = NA))"),file = chapter.name ,sep="\n",append=TRUE)
 
               ## Boxplot with capping treatment
               cat(paste0("## Boxplot"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("ggplot(",questions.frame,", aes(y=data.nooutlier$variable, x= ",questions.frame,"$",disag.name,")) +"),file = chapter.name ,sep="\n",append=TRUE)
-              cat(paste0("geom_boxplot( ) +  #notch=TRUE"),file = chapter.name ,sep="\n",append=TRUE)
+              cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour=\"black\") +  #notch=TRUE"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("scale_size_area(max_size = 10)+"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("guides(fill=FALSE) +"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("xlab(\"\") +"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("ylab(\"\") +"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("coord_flip()+"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("scale_y_continuous(breaks= pretty_breaks()) +"),file = chapter.name ,sep="\n",append=TRUE)
-              cat(paste0("ggtitle(\"Boxplot after data capping treatement\")  +"),file = chapter.name ,sep="\n",append=TRUE)
+              cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep="\n",append=TRUE)
+              cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,".\") +"),file = chapter.name ,sep="\n",append=TRUE)
+
               cat(paste0("theme(plot.title=element_text(face=\"bold\", size=9),"),file = chapter.name ,sep="\n",append=TRUE)
               cat(paste0("plot.background = element_rect(fill = \"transparent\",colour = NA))"),file = chapter.name ,sep="\n",append=TRUE)
 

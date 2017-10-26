@@ -21,7 +21,8 @@ Depends:
     tidyr,
     readxl,
     ggplot2,
-    reshape2
+    reshape2,
+    gdata
 Suggests:
     shiny
 URL: https://github.com/Edouard-Legoupil/koboloadeR

@@ -15,10 +15,10 @@ The character to be replaced - coudl be a "/" or a ":"
 \examples{
 kobo_arrange_variablename()
 
-
 \dontrun{
 kobo_arrange_variablename(data)
 }
+
 
 }
 \author{

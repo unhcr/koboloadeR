@@ -32,13 +32,12 @@ kobo_bar_multi <- function(data, dico) {
   } else if (file.exists(paste(mainDir, subDir, sep = "/", collapse = "/"))) {
     cat("bar_multi directory exists in your out directory.\n")
     # you will probably want to handle this separately
-  } else {
+  } else {  dir.create(file.path(mainDir, subDir))
     cat("bar_multi directory does not exist in your out directory - creating now!\n ")
-    dir.create(file.path(mainDir, subDir))
   }
 
 
-  selectdf <- dico[dico$type=="select_multiple", c("fullname","listname","label","name","variable","disaggregation")]
+  selectdf <- dico[dico$type == "select_multiple", c("fullname","listname","label","name","variable","disaggregation"), ]
 
 
   ### Verify that those variable are actually in the original dataframe

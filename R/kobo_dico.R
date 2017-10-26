@@ -45,7 +45,6 @@ kobo_dico <- function(form) {
   {cat("1- No column `disaggregation` in your survey worksheet. Creating a dummy one for the moment...\n");
     survey$disaggregation <- ""}
 
-
   if("correlate" %in% colnames(survey))
   {
     cat("2- Good: You have a column `correlate` in your survey worksheet. This will be used to define the variables that should be checked for correlation between each others.\n");
@@ -62,82 +61,25 @@ kobo_dico <- function(form) {
 
   if("sensitive" %in% colnames(survey))
   {
-    cat("2- Good: You have a column `sensitive` in your survey worksheet. This will be used to distingusih potentially sensitive questions\n");
+    cat("4- Good: You have a column `sensitive` in your survey worksheet. This will be used to distingusih potentially sensitive questions\n");
   } else
-  {cat("2- No column `sensitive` in your survey worksheet. Creating a dummy one for the moment filled as `non-sensitive`. Other option is to record as `sensitive`...\n");
-    survey$sensitive <- "non-sensitive"}
+  {cat("4- No column `sensitive` in your survey worksheet. Creating a dummy one for the moment filled as `non-sensitive`. Other option is to record as `sensitive`...\n");
+    survey$sensitive <- "default-non-sensitive"}
 
 
   if("anonymise" %in% colnames(survey))
   {
-    cat("2- Good: You have a column `anonymise` in your survey worksheet. This will be used to anonymise the dataset.\n");
+    cat("5- Good: You have a column `anonymise` in your survey worksheet. This will be used to anonymise the dataset.\n");
   } else
-  {cat("2- No column `anonymise` in your survey worksheet. Creating a dummy one for the moment filled as `non-anonymised`. Other options to record are `Remove`, `Reference`, `Mask`, `Generalise` (see readme file) ...\n");
-    survey$anonymise <- "non-anonymised"}
+  {cat("5- No column `anonymise` in your survey worksheet. Creating a dummy one for the moment filled as `non-anonymised`. Other options to record are `Remove`, `Reference`, `Mask`, `Generalise` (see readme file) ...\n");
+    survey$anonymise <- "default-non-anonymised"}
 
-
- # if("repeatsummarize" %in% colnames(survey))
-#  {
-#    cat("4- Good: You have a column `repeatsummarize` in your survey worksheet.\n");
-#  } else
-#  {cat("4- No column `repeatsummarize` in your survey worksheet. Creating a dummy one for the moment...\n");
-#    survey$repeatsummarize <- ""}
-
-#  if("variable" %in% colnames(survey))
-#  {
-#    cat("5- Good: You have a column `variable` in your survey worksheet.\n");
-#  } else
-#  {cat("5- No column `variable` in your survey worksheet. Creating a dummy one for the moment...\n");
-#    survey$variable <- ""}
-
-#  if("indicator" %in% colnames(survey))
-#  {
-#    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicator` in your survey worksheet.\n");
-#  } else
-#  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicator` in your survey worksheet. Creating a dummy one for the moment...\n");
-#    survey$indicator <- ""}
-
-#  if("indicatorgroup" %in% colnames(survey))
-#  {
-#    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicatorgroup` in your survey worksheet.\n");
-#  } else
-#  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicatorgroup` in your survey worksheet. Creating a dummy one for the moment...\n");
-#    survey$indicatorgroup <- ""}
-
-#  if("indicatortype" %in% colnames(survey))
-#  {
-#    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicatortype` in your survey worksheet.\n");
-#  } else
-#  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicatortype` in your survey worksheet. Creating a dummy one for the moment...\n");
-#    survey$indicatortype <- ""}
-
-#  if("indicatorlevel" %in% colnames(survey))
-#  {
-#    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicatorlevel` in your survey worksheet.\n");
-#  } else
-#  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicatorlevel` in your survey worksheet. Creating a dummy one for the moment...\n");
-#    survey$indicatorlevel <- ""}
-
-#  if("dataexternal" %in% colnames(survey))
-#  {
-#    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `dataexternal` in your survey worksheet.\n");
-#  } else
-#  {cat("Checking Data Analysis Plan within your xlsform -  No column `dataexternal` in your survey worksheet. Creating a dummy one for the moment...\n");
-#    survey$dataexternal <- ""}
-
-#  if("indicatorcalculation" %in% colnames(survey))
-#  {
-#    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicatorcalculation` in your survey worksheet.\n");
-#  } else
-#  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicatorcalculation` in your survey worksheet. Creating a dummy one for the moment...\n");
-#    survey$indicatorcalculation <- ""}
-
- # if("indicatornormalisation" %in% colnames(survey))
-#  {
-#    cat("Checking Data Analysis Plan within your xlsform -  Good: You have a column `indicatornormalisation` in your survey worksheet.\n");
-#  } else
-#  {cat("Checking Data Analysis Plan within your xlsform -  No column `indicatornormalisation` in your survey worksheet. Creating a dummy one for the moment...\n");
-#    survey$indicatornormalisation <- ""}
+  if("variable" %in% colnames(survey))
+  {
+    cat("6- Good: You have a column `variable` in your survey worksheet. This will be used to flag ordinal variable.\n");
+  } else
+  {cat("6- No column `variable` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
+    survey$variable <- ""}
 
 
   ## Avoid columns without names

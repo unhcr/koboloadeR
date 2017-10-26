@@ -76,19 +76,19 @@ kobo_dico <- function(form) {
     survey$anonymise <- "non-anonymised"}
 
 
-  if("repeatsummarize" %in% colnames(survey))
-  {
-    cat("4- Good: You have a column `repeatsummarize` in your survey worksheet.\n");
-  } else
-  {cat("4- No column `repeatsummarize` in your survey worksheet. Creating a dummy one for the moment...\n");
-    survey$repeatsummarize <- ""}
+ # if("repeatsummarize" %in% colnames(survey))
+#  {
+#    cat("4- Good: You have a column `repeatsummarize` in your survey worksheet.\n");
+#  } else
+#  {cat("4- No column `repeatsummarize` in your survey worksheet. Creating a dummy one for the moment...\n");
+#    survey$repeatsummarize <- ""}
 
-  if("variable" %in% colnames(survey))
-  {
-    cat("5- Good: You have a column `variable` in your survey worksheet.\n");
-  } else
-  {cat("5- No column `variable` in your survey worksheet. Creating a dummy one for the moment...\n");
-    survey$variable <- ""}
+#  if("variable" %in% colnames(survey))
+#  {
+#    cat("5- Good: You have a column `variable` in your survey worksheet.\n");
+#  } else
+#  {cat("5- No column `variable` in your survey worksheet. Creating a dummy one for the moment...\n");
+#    survey$variable <- ""}
 
 #  if("indicator" %in% colnames(survey))
 #  {
@@ -142,7 +142,8 @@ kobo_dico <- function(form) {
 
   ## Avoid columns without names
   survey <- survey[ ,c("type",   "name" ,  "label",
-                       "repeatsummarize","variable","disaggregation",  "chapter", "sensitive","anonymise","correlate"
+                       #"repeatsummarize",
+                       "variable","disaggregation",  "chapter", "sensitive","anonymise","correlate"
                       # "indicator","indicatorgroup","indicatortype",
                       # "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation"
                        #"indicator","select", "Comment", "indicatordirect", "indicatorgroup" ## This indicator reference
@@ -413,7 +414,8 @@ kobo_dico <- function(form) {
     ## not kept: "nameq"     "labelq"   ,"fullname", "label",
     #names(survey) - "type" "name",  "fullname", "label",  "listname", "qrepeat"m  "qlevel",   "qgroup"
   choices2 <- choices[ ,c("type", "name", "namefull",  "labelfull", "chapter","disaggregation","correlate", "sensitive","anonymise", "listname", "qrepeat","qrepeatlabel",  "qlevel", "qgroup", "labelchoice",
-                         "repeatsummarize","variable",
+                         #"repeatsummarize",
+                         "variable",
                          #"indicator","indicatorgroup","indicatortype", "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation",
                          "order", "weight","score", "recategorise")]
 
@@ -423,7 +425,8 @@ kobo_dico <- function(form) {
 
 
   survey2 <-    survey[,c("type", "name",  "fullname", "label", "chapter", "disaggregation","correlate",  "sensitive","anonymise","listname", "qrepeat","qrepeatlabel",  "qlevel",   "qgroup", "labelchoice",
-                          "repeatsummarize","variable",
+                          #"repeatsummarize",
+                          "variable",
 
                           #"indicator","indicatorgroup","indicatortype", "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation",
                           "order", "weight","score", "recategorise")]

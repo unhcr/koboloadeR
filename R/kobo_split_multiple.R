@@ -53,7 +53,7 @@ kobo_split_multiple <- function(data, dico) {
 
   ## Now create the unique select_multiple and append to the dataframe
   for (i in 1:nrow(datalabeldf) ) {
-    # i <- 3
+    # i <- 11
     fullname <- as.character(datalabeldf[i,1])
     id <-  as.integer(as.character(datalabeldf[i,2]))
     cat(paste0(i, " - Splitting variable ", fullname, " in column: ", id, "\n"))
@@ -74,7 +74,6 @@ kobo_split_multiple <- function(data, dico) {
 
     ## thanks to: https://stackoverflow.com/questions/44232180/list-to-dataframe
     tosplitlist <- strsplit(as.character(data[ , id]), " ")
-    cat("Spliting now!\n")
     tosplitlist <- setNames(tosplitlist, seq_along(tosplitlist))
     tosplitlist2 <- stack(tosplitlist)
     tosplitframe <- dcast(tosplitlist2, ind ~ values, value.var="ind", fun.aggregate = length)
@@ -82,21 +81,30 @@ kobo_split_multiple <- function(data, dico) {
     drops <- c("ind", "zNotAnswered")
     tosplitframe <- tosplitframe[ , !(names(tosplitframe) %in% drops)]
 
+
+
     ## Rename the variable to match with dictionnary
     datalabelframe <- as.data.frame( names(tosplitframe))
     names(datalabelframe )[1] <- "nameor"
     datalabelframe$nameor <- as.character(datalabelframe $nameor)
 
-    ## new variables name without /
-    datalabelframe$namenew <- paste(fullname, datalabelframe$nameor, sep=".")
-    ## let's recode the variable of the dataset using short label - column 3 of my reviewed labels
-    names(tosplitframe) <- datalabelframe[, 2]
+    ## Handling the case where no one replied to that question;
+    if( nrow(datalabelframe)==0){
+      cat("there's was no recorded reponses for thise questions...\n")
+      } else {
 
-    ## Bind to original data
-    cat(paste0("Number of columns: ", ncol(data), ", number of additional splitted variables:",ncol(tosplitframe), "\n"))
-    data <- cbind(data, tosplitframe )
+      cat("Spliting now!\n")
+      ## new variables name without /
+      datalabelframe$namenew <- paste(fullname, datalabelframe$nameor, sep=".")
+      ## let's recode the variable of the dataset using short label - column 3 of my reviewed labels
+      names(tosplitframe) <- datalabelframe[, 2]
 
-    cat(paste0("After binding Number of columns: ", ncol(data), "\n"))
+      ## Bind to original data
+      cat(paste0("Number of columns: ", ncol(data), ", number of additional splitted variables:",ncol(tosplitframe), "\n"))
+      data <- cbind(data, tosplitframe )
+
+      cat(paste0("After binding Number of columns: ", ncol(data), "\n"))
+      }
     rm(tosplitframe,tosplitlist,datalabelframe)
   }
 

@@ -36,6 +36,7 @@ kobo_dico <- function(form) {
 
   ## Rename the variable label
   names(survey)[names(survey)=="label::English"] <- "label"
+  names(survey)[names(survey)=="label::english"] <- "label"
   cat("Checking now for additional information within your xlsform. Note that you can insert them in the xls and re-run the function! \n \n ")
 
   if("disaggregation" %in% colnames(survey))
@@ -296,6 +297,7 @@ kobo_dico <- function(form) {
   #rm(choices)
   choices <- read_excel(form_tmp, sheet = "choices")
   names(choices)[names(choices)=="label::English"] <- "label"
+  names(choices)[names(choices)=="label::english"] <- "label"
   names(choices)[names(choices)=="list name"] <- "listname"
   names(choices)[names(choices)=="list_name"] <- "listname"
 

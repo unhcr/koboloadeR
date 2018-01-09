@@ -25,7 +25,8 @@ library(koboloadeR)
 #rm(data)
 
 ## Might need to be tweaked -- double check
-data.or <- read.csv(path.to.data, sep=";", encoding="UTF-8", na.strings="")
+cat("\n\n\n Load orginal dataset \n\n\n\n")
+data.or <- read.csv(path.to.data, sep = ";", encoding = "UTF-8", na.strings = "")
 
 #names(data.or)
 ### Need to replace slash by point in the variable name
@@ -44,6 +45,7 @@ data.or <- read.csv(path.to.data, sep=";", encoding="UTF-8", na.strings="")
 #rm(form)
 #form <- "form.xls"
 ## Generate & Load dictionnary
+cat("\n\n\n Generate dictionnary from the xlsform \n\n\n\n")
 kobo_dico(form)
 dico <- read.csv(paste("data/dico_",form,".csv",sep = ""), encoding = "UTF-8", na.strings = "")
 #rm(form)
@@ -51,16 +53,22 @@ dico <- read.csv(paste("data/dico_",form,".csv",sep = ""), encoding = "UTF-8", n
 
 #################################################################################
 ##### Re-encode correctly the dataset
-
+###################################################################################
+##### Re-encode correctly the dataset
+cat("\n\n\n Now split select_multiple  variables \n\n\n\n")
 ## Check to split select_multiple if data is extracted from ODK
 data <- kobo_split_multiple(data.or, dico)
+cat("\n\n\n Now  re-encode data  \n\n\n\n")
 ## Re-encoding data now based on the dictionnary -- the xlsform dictionnary can be adjusted this script re-runned till satisfaction
 data <- kobo_encode(data, dico)
 
+cat("\n\n\n Now  label variables \n\n\n\n")
 ## household is the default root data componnents to be used -- in order to deal with nested dataset
 household <- kobo_label(data, dico)
-## We now save a back up in the data folder to be used for the Rmd
-write.csv(household,"data/data2.csv")
 
+############################################################
+cat("\n\nWrite backup\n")
+## We now save a back up in the data folder to be used for the Rmd
+write.csv(household,"data/data2.csv", row.names = FALSE, na = "")
 ## Save another version in order to add indicators
-write.csv(household,"data/household.csv")
+write.csv(household,"data/household.csv", row.names = FALSE, na = "")

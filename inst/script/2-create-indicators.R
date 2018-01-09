@@ -1,3 +1,10 @@
+
+#########################
+## Script to compute indicators
+
+rm(list = ls())
+
+
 mainDir <- getwd()
 ## Load all required packages
 source(paste0(mainDir,"/code/0-packages.R"))
@@ -7,11 +14,11 @@ library(koboloadeR)
 ## Load data & dico #############################################################################
 #form <- "form.xls"
 ## Run this only after data cleaning
-dico <- read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding="UTF-8", na.strings="")
-household <- read.csv(paste0(mainDir,"/data/household-clean-weight.csv"), encoding="UTF-8", na.strings="NA")
-#household.back <- household
-#case_number_details <- read.csv(paste0(mainDir,"/data/case_number_details.csv"), encoding="UTF-8", na.strings="NA")
-#individual_biodata <- read.csv(paste0(mainDir,"/data/individual_biodata.csv"), encoding="UTF-8", na.strings="NA")
+dico <- read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+household <- read.csv("data/household.csv", encoding = "UTF-8", na.strings = "NA")
+#CaseInformation <- read.csv("data/CaseInformation.csv", encoding="UTF-8", na.strings="NA")
+#IndividaulBioData <- read.csv("data/IndividaulBioData.csv", encoding="UTF-8", na.strings="NA")
+#InformationNotRegFamilies <- read.csv("data/InformationNotRegFamilies.csv", encoding="UTF-8", na.strings="NA")
 
 
 ## Create the dicotemp #############################################################################
@@ -33,7 +40,6 @@ dicotemp$qrepeatlabel <- "trigger"
 dicotemp$qlevel <- "trigger"
 dicotemp$qgroup <- "trigger"
 dicotemp$labelchoice <- "trigger"
-dicotemp$repeatsummarize <- "trigger"
 dicotemp$variable <- "trigger"
 dicotemp$order <- "trigger"
 dicotemp$weight <- "trigger"
@@ -44,14 +50,15 @@ dicotemp$indic <- "feature"
 
 ####Load data analysis plan#############################################################################
 #library(readxl)
-#indicator <- read_excel("data/form.xls", sheet = "indicator")
+indicator <- read_excel(paste("data/",form,sep = ""), sheet = "indicator")
 
 
 ## Load indicator info #############################################################################
 
-for(i in 1:nrow(indicator))
+for (i in 1:nrow(indicator))
+
 {
-  # i <-5
+  # i <-2
   indicator.type	<- as.character(indicator[ i, c("type")])
   indicator.fullname	<- as.character(indicator[ i, c("fullname")])
   indicator.label	<- as.character(indicator[ i, c("label")])
@@ -63,13 +70,23 @@ for(i in 1:nrow(indicator))
   indicator.frame	<- as.character(indicator[ i, c("frame")])
   indicator.listname <- as.character(indicator[ i, c("listname")])
   indicator.calculation	<- as.character(indicator[ i, c("calculation")])
-  cat(paste0(i, "- Load  indicator: ", indicator.label,"\n"))
+  cat(paste0(i, "- Load  indicator: ", indicator.label," of type: ",indicator.type,"\n"))
 
   ## Build and run the formula to insert the indicator in the right frame  ###########################
-  indic.formula <- paste0(indicator.frame,"$",indicator.fullname,"<-",indicator.calculation )
+  indic.formula <- paste0(indicator.frame,"$",indicator.fullname," <- ",indicator.calculation )
   if (file.exists("code/temp.R")) file.remove("code/temp.R")
-  cat(indic.formula, file="code/temp.R" , sep="\n", append=TRUE)
+  cat(indic.formula, file = "code/temp.R" , sep = "\n", append = TRUE)
+  cat("####", file = "code/temp.R" , sep = "\n", append = TRUE)
+
+  ## do a check on indicator variable type
+  indicator.type2 <- indicator.type
+  ifelse(indicator.type == "select_one", indicator.type2 <- "character", indicator.type2 <- indicator.type)
+
+  cat(paste0(indicator.frame,"$",indicator.fullname," <- as.",indicator.type2,"(",indicator.frame,"$",indicator.fullname,")"), file = "code/temp.R" , sep = "\n", append = TRUE)
+  cat(paste0("str(",indicator.frame,"$",indicator.fullname,")"), file = "code/temp.R" , sep = "\n", append = TRUE)
+  cat(paste0("summary(",indicator.frame,"$",indicator.fullname,")"), file = "code/temp.R" , sep = "\n", append = TRUE)
   source("code/temp.R")
+  cat(paste0(i, "- Executed  indicator: ", indicator.label,"\n"))
   if (file.exists("code/temp.R")) file.remove("code/temp.R")
 
   ## Insert the indicator in a temp dico frame to be appended to the full dico  ######################
@@ -91,7 +108,6 @@ for(i in 1:nrow(indicator))
   dicotemp1$qlevel <- " "
   dicotemp1$qgroup <- " "
   dicotemp1$labelchoice <- " "
-  dicotemp1$repeatsummarize <- " "
   dicotemp1$variable <- " "
   dicotemp1$order <- " "
   dicotemp1$weight <- " "
@@ -108,6 +124,10 @@ for(i in 1:nrow(indicator))
 dico$indic <- "data"
 ## removing first line
 dicotemp <- dicotemp[ 2:nrow(dicotemp), ]
+
+#names(dico)
+#names(dicotemp)
+
 dico <- rbind(dico,dicotemp)
 
 rm(dicotemp,dicotemp1)
@@ -116,7 +136,7 @@ rm(dicotemp,dicotemp1)
 #household.check <- household[ , ((ncol(household.back)+1):ncol(household))]
 #summary(household.check)
 ## label Variables
-household.check <- kobo_label(household.check , dico)
+#household.check <- kobo_label(household.check , dico)
 
 ## Check that the join is correct by looking at total HH members
 #household$mf <- household$F +household$M
@@ -124,11 +144,23 @@ household.check <- kobo_label(household.check , dico)
 #View(household[ , c("section2.total_hh", "mf", "adultchild")])
 
 ## label Variables
+cat("\n\n quick check on labeling\n")
 household <- kobo_label(household , dico)
+CaseInformation <- kobo_label(CaseInformation, dico)
+IndividaulBioData <- kobo_label(IndividaulBioData, dico)
+
+cat("\n\n Re-encoding now the data plus indicators based on the the full dictionnary\n")
+household <- kobo_encode(household, dico)
+CaseInformation <- kobo_encode(CaseInformation, dico)
+IndividaulBioData <- kobo_encode(IndividaulBioData, dico)
+InformationNotRegFamilies <- kobo_encode(InformationNotRegFamilies, dico)
 
 cat("\n\nWrite backup\n")
+write.csv(dico, paste0("data/dico2_",form,".csv"), row.names = FALSE, na = "")
 
-write.csv(household, "data/household2.csv")
-write.csv(case_number_details, "data/case_number_details2.csv")
-write.csv(individual_biodata , "data/individual_biodata2.csv")
+
+write.csv(household, "data/household2.csv", row.names = FALSE, na = "")
+#write.csv(CaseInformation, "data/CaseInformation2.csv", row.names = FALSE, na = "")
+#write.csv(IndividaulBioData , "data/IndividaulBioData2.csv", row.names = FALSE, na = "")
+#write.csv(InformationNotRegFamilies, "data/InformationNotRegFamilies2.csv", row.names = FALSE, na = "")
 

@@ -1,4 +1,4 @@
 library(testthat)
 
-test_check("ahp")
+#test_check("test-porjectinit.R")
 #devtools::test()

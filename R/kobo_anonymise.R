@@ -52,8 +52,9 @@
 
 kobo_anonymise <- function(frame, dico) {
 
-  # frame <- household
-  # framename <- "household"
+  # frame <- CaseInformation
+  # framename <- "CaseInformation"
+  framename <- deparse(substitute(frame))
   ## library(digest)
   ## Get the anonymisation type defined within the xlsform / dictionnary
   dico.ano <- dico[ !(is.na(dico$anonymise)) & dico$qrepeatlabel == framename,  ]
@@ -64,35 +65,47 @@ kobo_anonymise <- function(frame, dico) {
   ## Get the anonymisation type defined within the xlsform / dictionnary
   #anotype <- as.data.frame(unique(dico.ano$anonymise))
 
-  anotype.remove  <- dico[ which(dico$anonymise=="remove" & dico$qrepeatlabel == framename),  ]
+  anotype.remove  <- dico[ which(dico$anonymise=="remove" ),  ]
+  # & dico$qrepeatlabel == framename
   if( nrow(anotype.remove )>0) {
-    cat(paste0(nrow(anotype.remove), " variables to remove \n\n"))
+    cat(paste0(nrow(anotype.remove), "potential variables to remove \n\n"))
 
       for (i in 1:nrow(anotype.remove)) {
-        cat(paste0(i, "- Remove  value: ", as.character(anotype.remove[ i, c("label")]),"\n"))
-
+       # i <- 1
+        cat(paste0(i, "- Remove, if exists, the value of: ", as.character(anotype.remove[ i, c("label")]),"\n"))
         ## Build and run the formula to insert the indicator in the right frame  ###########################
-        indic.formula <- paste0(framename,"$",as.character(anotype.remove[ i, c("fullname")]),"<- \"removed\"" )
+        varia <- paste0(framename,"$",as.character(anotype.remove[ i, c("fullname")]))
+        formula <-
         if (file.exists("code/temp.R")) file.remove("code/temp.R")
-        cat(indic.formula, file="code/temp.R" , sep="\n", append=TRUE)
+
+        # if ("start" %in% names(CaseInformation)) { cat("1")} else {cat("2") }
+
+       # paste('if ("', framename , '")')
+
+        cat(paste0("if (\"", as.character(anotype.remove[ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file="code/temp.R" , sep="\n", append=TRUE)
+        cat(paste0(framename,"$",as.character(anotype.remove[ i, c("fullname")]),"<- \"removed\" } else" ), file="code/temp.R" , sep="\n", append=TRUE)
+        cat("{}", file="code/temp.R" , sep="\n", append=TRUE)
         source("code/temp.R")
         if (file.exists("code/temp.R")) file.remove("code/temp.R")
 
       }
   } else{}
 
-  anotype.reference <- dico[ which(dico$anonymise=="reference" & dico$qrepeatlabel == framename),  ]
+  anotype.reference <- dico[ which(dico$anonymise=="reference" ),  ]
+  # & dico$qrepeatlabel == framename
   if( nrow(anotype.reference )>0) {
     cat(paste0(nrow(anotype.reference), " variables to encrypt \n\n"))
       for (i in 1:nrow(anotype.reference )) {
-        cat(paste0(i, "- Reference through cryptographical hash function: ", as.character(anotype.reference [ i, c("label")]),"\n"))
+        cat(paste0(i, "- Reference through cryptographical hash function, if exists, the value of: ", as.character(anotype.reference [ i, c("label")]),"\n"))
 
         ## Build and run the formula to insert the indicator in the right frame  ###########################
-        indic.formula <- paste0(framename,"$",as.character(anotype.reference [ i, c("fullname")]),
+        formula <- paste0(framename,"$",as.character(anotype.reference [ i, c("fullname")]),
                                 "<- digest(" ,framename,"$",as.character(anotype.reference [ i, c("fullname")]),
                                              ", algo= \"crc32\")" )
-        if (file.exists("code/temp.R")) file.remove("code/temp.R")
-        cat(indic.formula, file="code/temp.R" , sep="\n", append=TRUE)
+        if (file.exists("code/temp.R")) file.reference("code/temp.R")
+        cat(paste0("if (\"", as.character(anotype.reference [ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file="code/temp.R" , sep="\n", append=TRUE)
+        cat(paste0(formula, "} else"), file="code/temp.R" , sep="\n", append=TRUE)
+        cat("{}", file="code/temp.R" , sep="\n", append=TRUE)
         source("code/temp.R")
         if (file.exists("code/temp.R")) file.remove("code/temp.R")
 
@@ -105,19 +118,23 @@ kobo_anonymise <- function(frame, dico) {
     cat(paste0(nrow(anotype.scramble), " variables to scramble \n\n"))
 
       for (i in 1:nrow(anotype.scramble )) {
-        cat(paste0(i, "- Scrambling: ", as.character(anotype.scramble [ i, c("label")]),"\n"))
+        cat(paste0(i, "- Scrambling, if exists, the value of: ", as.character(anotype.scramble [ i, c("label")]),"\n"))
 
         ## Build and run the formula to insert the indicator in the right frame  ###########################
         indic.formula <- paste0(framename,"$",as.character(anotype.scramble  [ i, c("fullname")]),
                                 "<- digest(" ,framename,"$",as.character(anotype.scramble  [ i, c("fullname")]),
                                 ", algo= \"crc32\")" )
         if (file.exists("code/temp.R")) file.remove("code/temp.R")
-        cat(indic.formula, file="code/temp.R" , sep="\n", append=TRUE)
+        cat(paste0("if (\"", as.character(anotype.scramble [ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file="code/temp.R" , sep="\n", append=TRUE)
+        cat(paste0(formula, "} else"), file="code/temp.R" , sep="\n", append=TRUE)
+        cat("{}", file="code/temp.R" , sep="\n", append=TRUE)
         source("code/temp.R")
         if (file.exists("code/temp.R")) file.remove("code/temp.R")
       }
   } else{ }  }
-  else { cat("Nothing to anonymise based on the xlsform dictionnary\n") }
+  else { cat("Sorry, it looks like there's nothing to anonymise based on the xlsform dictionnary... \n") }
 
+
+  return(frame)
 }
 NULL

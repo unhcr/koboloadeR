@@ -4,15 +4,18 @@
 #'
 #' @description  Automatically produce an anonymised dataset in line with the anonymisation plan set up in the xlsform.
 #'
-#'This method should be used whenever Kobo or ODK forms are used as data collection tools and personal data is being collected. Even when personal data is not being collected it still may be appropriate to apply the methodology since quasi-identifiable data or other sensitive data could lead to personal identification or should not be shared.
+#'  This method should be used whenever Kobo or ODK forms are used as data collection tools and personal data is being collected.
+#'  Even when personal data is not being collected it still may be appropriate to apply the methodology since quasi-identifiable data
+#'   or other sensitive data could lead to personal identification or should not be shared.
+#'   https://jangorecki.github.io/blog/2014-11-07/Data-Anonymization-in-R.html
 #'
 #' \tabular{rrrrrr}{
 #'   \strong{Type}    \tab \strong{Description}  \cr
-#'   ----------------\tab-------------- \cr
+#'   ----------------\tab----------- \cr
 #'   \strong{Direct identifiers}     \tab	Can be directly used to identify an individual. E.g. Name, Address, Date of birth, Telephone number, GPS location \cr
 #'   \strong{Quasi- identifiers}     \tab	Can be used to identify individuals when it is joined with other information. E.g. Age, Salary, Next of kin, School name, Place of work \cr
-#'  \strong{Sensitive information}       \tab & Community identifiable information	Might not identify an individual but could put an individual or group at risk. E.g. Gender, Ethnicity, Religious belief \cr
-#'   \strong{Meta data}      \tab 	Data about who, where and how the data is collected is often stored separately to the main data and can be used identify individuals
+#'   \strong{Sensitive information}  \tab & Community identifiable information	Might not identify an individual but could put an individual or group at risk. E.g. Gender, Ethnicity, Religious belief \cr
+#'   \strong{Meta data}              \tab 	Data about who, where and how the data is collected is often stored separately to the main data and can be used identify individuals
 #' }
 #'
 #'The following are different anonymisation actions that can be performed on sensitive fields. The type of anonymisation should be dictated by the desired use of the data. A good approach to follow is to start from the minimum data required, and then to identify if any of those fields should be obscured.
@@ -29,7 +32,7 @@
 #' }
 #'
 #'
-#' @param data kobo or odk data set to use
+#' @frame  kobo or odk dataset to use
 #' @param dico Generated from kobo_dico function
 #'
 #'
@@ -42,14 +45,79 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_anonymise(data, dico)
+#' kobo_anonymise(frame, dico)
 #' }
 #'
 #'
 
-kobo_anonymise <- function(data, dico) {
+kobo_anonymise <- function(frame, dico) {
 
+  # frame <- household
+  # framename <- "household"
+  ## library(digest)
+  ## Get the anonymisation type defined within the xlsform / dictionnary
+  dico.ano <- dico[ !(is.na(dico$anonymise)) & dico$qrepeatlabel == framename,  ]
 
+  if( nrow(dico.ano)>0) {
+    cat(paste0(nrow(dico.ano), " variables to anonymise\n"))
+
+  ## Get the anonymisation type defined within the xlsform / dictionnary
+  #anotype <- as.data.frame(unique(dico.ano$anonymise))
+
+  anotype.remove  <- dico[ which(dico$anonymise=="remove" & dico$qrepeatlabel == framename),  ]
+  if( nrow(anotype.remove )>0) {
+    cat(paste0(nrow(anotype.remove), " variables to remove \n\n"))
+
+      for (i in 1:nrow(anotype.remove)) {
+        cat(paste0(i, "- Remove  value: ", as.character(anotype.remove[ i, c("label")]),"\n"))
+
+        ## Build and run the formula to insert the indicator in the right frame  ###########################
+        indic.formula <- paste0(framename,"$",as.character(anotype.remove[ i, c("fullname")]),"<- \"removed\"" )
+        if (file.exists("code/temp.R")) file.remove("code/temp.R")
+        cat(indic.formula, file="code/temp.R" , sep="\n", append=TRUE)
+        source("code/temp.R")
+        if (file.exists("code/temp.R")) file.remove("code/temp.R")
+
+      }
+  } else{}
+
+  anotype.reference <- dico[ which(dico$anonymise=="reference" & dico$qrepeatlabel == framename),  ]
+  if( nrow(anotype.reference )>0) {
+    cat(paste0(nrow(anotype.reference), " variables to encrypt \n\n"))
+      for (i in 1:nrow(anotype.reference )) {
+        cat(paste0(i, "- Reference through cryptographical hash function: ", as.character(anotype.reference [ i, c("label")]),"\n"))
+
+        ## Build and run the formula to insert the indicator in the right frame  ###########################
+        indic.formula <- paste0(framename,"$",as.character(anotype.reference [ i, c("fullname")]),
+                                "<- digest(" ,framename,"$",as.character(anotype.reference [ i, c("fullname")]),
+                                             ", algo= \"crc32\")" )
+        if (file.exists("code/temp.R")) file.remove("code/temp.R")
+        cat(indic.formula, file="code/temp.R" , sep="\n", append=TRUE)
+        source("code/temp.R")
+        if (file.exists("code/temp.R")) file.remove("code/temp.R")
+
+      }
+    } else{}
+
+  anotype.scramble <- dico[ which(dico$anonymise=="scramble" & dico$qrepeatlabel == framename),  ]
+
+  if( nrow(anotype.scramble ) >0) {
+    cat(paste0(nrow(anotype.scramble), " variables to scramble \n\n"))
+
+      for (i in 1:nrow(anotype.scramble )) {
+        cat(paste0(i, "- Scrambling: ", as.character(anotype.scramble [ i, c("label")]),"\n"))
+
+        ## Build and run the formula to insert the indicator in the right frame  ###########################
+        indic.formula <- paste0(framename,"$",as.character(anotype.scramble  [ i, c("fullname")]),
+                                "<- digest(" ,framename,"$",as.character(anotype.scramble  [ i, c("fullname")]),
+                                ", algo= \"crc32\")" )
+        if (file.exists("code/temp.R")) file.remove("code/temp.R")
+        cat(indic.formula, file="code/temp.R" , sep="\n", append=TRUE)
+        source("code/temp.R")
+        if (file.exists("code/temp.R")) file.remove("code/temp.R")
+      }
+  } else{ }  }
+  else { cat("Nothing to anonymise based on the xlsform dictionnary\n") }
 
 }
 NULL

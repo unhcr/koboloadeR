@@ -1,12 +1,10 @@
 Package: koboloadeR
 Type: Package
 Title: Retrieve Data Using the KoBo Toolbox API & Automatise data exploration
-Version: 0.1.4
-Authors@R: person("Edouard", "Legoupil", email = "edouard.legoupil@gmail.com",
+Version: 0.1.5
+Authors@R: person("Edouard", "Legoupil", email = "legoupil@unhcr.org",
   role = c("aut", "cre"))
-Description: KoBo Toolbox offers a convenient way to collect data using web and
-    mobile forms. This package facilitates the retrieval & analysis of data entered using these
-    tools using the KoBo Toolbox API (v1).
+Description: This package facilitates the data crunching for dataset collected using xlsform.
 License: GPL-3
 LazyData: TRUE
 Depends:
@@ -22,9 +20,10 @@ Depends:
     readxl,
     ggplot2,
     reshape2,
+    digest,
     gdata
 Suggests:
     shiny
-URL: https://github.com/Edouard-Legoupil/koboloadeR
-BugReports: https://github.com/Edouard-Legoupil/koboloadeR/issues
+URL: https://github.com/unhcr/koboloadeR
+BugReports: https://github.com/unhcr/koboloadeR/issues
 RoxygenNote: 6.0.1

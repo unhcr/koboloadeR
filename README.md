@@ -60,6 +60,10 @@ kobo_apps("data_viewer")
 
 ## Walk Through
 
+ 0. Install R & Rstudio  
+
+A good introduction here: https://ismayc.github.io/rbasics-book 
+
  1. Install the package
 ```
 source("https://raw.githubusercontent.com/Edouard-Legoupil/koboloadeR/master/inst/script/install_github.R")

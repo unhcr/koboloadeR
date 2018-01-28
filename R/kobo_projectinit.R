@@ -1,6 +1,6 @@
 #' @name kobo_projectinit
 #' @rdname kobo_projectinit
-#' @title  Analysis project initiation
+#' @title  Initiation of the Analysis Project
 #'
 #' @description    Create analysis project structure
 #'
@@ -19,7 +19,7 @@ kobo_projectinit <- function() {
   mainDir <- getwd()
 
 
-  cat("let's create various standard folders and copy some analysis script\n")
+  cat("Let's create various standard folders and copy some analysis script\n")
 
   subDir <- "perso"
   if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
@@ -28,7 +28,7 @@ kobo_projectinit <- function() {
     cat("perso directory exists in your project directory but is a file.\n")
     # you will probably want to handle this separately
   } else {
-    cat("perso directory does not exist in your project directory - creating now!\n ")
+    cat("++Perso++ directory does not exist in your project directory - creating now!\n ")
     dir.create(file.path(mainDir, subDir))
   }
 
@@ -54,7 +54,7 @@ kobo_projectinit <- function() {
     cat("Code directory exists in your project directory but is a file.\n")
     # you will probably want to handle this separately
   } else {
-    cat("Code directory does not exist in your project directory - creating now!\n ")
+    cat("++Code++ directory does not exist in your project directory - creating now!\n ")
     dir.create(file.path(mainDir, subDir))
   }
 
@@ -84,51 +84,51 @@ kobo_projectinit <- function() {
 
   destfile=paste0(mainDir,"/code/0-packages.R")
   if (!file.exists(destfile)) {
-    file.copy(paste(path_correct,"/koboloadeR/script/0-packages.R",sep=""), destfile)
+    file.copy(paste(path_correct,"/koboloadeR/script/0-packages.R",sep = ""), destfile)
   }
 
   destfile=paste0(mainDir,"/code/0-theme.R")
   if (!file.exists(destfile)) {
-    file.copy(paste(path_correct,"/koboloadeR/script/0-theme.R",sep=""), destfile)
+    file.copy(paste(path_correct,"/koboloadeR/script/0-theme.R",sep = ""), destfile)
   }
 
   destfile=paste0(mainDir,"/code/0-config.R")
   if (!file.exists(destfile)) {
-    file.copy(paste(path_correct,"/koboloadeR/script/0-config.R",sep=""), destfile)
+    file.copy(paste(path_correct,"/koboloadeR/script/0-config.R",sep = ""), destfile)
   }
 
   destfile=paste0(mainDir,"/code/1-loaddata.R")
   if (!file.exists(destfile)) {
-    file.copy(paste(path_correct,"/koboloadeR/script/1-loaddata.R",sep=""), destfile)
+    file.copy(paste(path_correct,"/koboloadeR/script/1-loaddata.R",sep = ""), destfile)
   }
 
-  destfile=paste0(mainDir,"/code/2-create-graph.R")
+#  destfile=paste0(mainDir,"/code/2-create-graph.R")
+#  if (!file.exists(destfile)) {
+#    file.copy(paste(path_correct,"/koboloadeR/script/2-create-graph.R",sep = ""), destfile)
+#  }
+
+  destfile=paste0(mainDir,"/code/2-create-indicators.R")
   if (!file.exists(destfile)) {
-    file.copy(paste(path_correct,"/koboloadeR/script/2-create-graph.R",sep=""), destfile)
+    file.copy(paste(path_correct,"/koboloadeR/script/2-create-indicators.R",sep = ""), destfile)
   }
 
-  destfile=paste0(mainDir,"/code/3-create-indicators.R")
+  destfile=paste0(mainDir,"/code/3-generate-report.R")
   if (!file.exists(destfile)) {
-    file.copy(paste(path_correct,"/koboloadeR/script/3-create-indicators.R",sep=""), destfile)
-  }
-
-  destfile=paste0(mainDir,"/code/4-generate-report.R")
-  if (!file.exists(destfile)) {
-    file.copy(paste(path_correct,"/koboloadeR/script/4-generate-report.R",sep=""), destfile)
+    file.copy(paste(path_correct,"/koboloadeR/script/3-generate-report.R",sep = ""), destfile)
   }
   destfile=paste0(mainDir,"/code/report.Rmd")
   if (!file.exists(destfile)) {
-    file.copy(paste(path_correct,"/koboloadeR/script/report.Rmd",sep=""), destfile)
+    file.copy(paste(path_correct,"/koboloadeR/script/report.Rmd",sep = ""), destfile)
   }
 
   destfile=paste0(mainDir,"/code/style-unhcr-portrait.docx")
   if (!file.exists(destfile)) {
-    file.copy(paste(path_correct,"/koboloadeR/script/style-unhcr-portrait.docx",sep=""), destfile)
+    file.copy(paste(path_correct,"/koboloadeR/script/style-unhcr-portrait.docx",sep = ""), destfile)
   }
 
   destfile=paste0(mainDir,"/code/style-unhcr-landscape.docx")
   if (!file.exists(destfile)) {
-    file.copy(paste(path_correct,"/koboloadeR/script/style-unhcr-landscape.docx",sep=""), destfile)
+    file.copy(paste(path_correct,"/koboloadeR/script/style-unhcr-landscape.docx",sep = ""), destfile)
   }
 
 
@@ -140,7 +140,7 @@ kobo_projectinit <- function() {
     cat("Data directory exists in your project directory but is a file.\n")
     # you will probably want to handle this separately
   } else {
-    cat("Data directory does not exist in your project directory - creating now! \n")
+    cat("++Data++ directory does not exist in your project directory - creating now! \n")
     dir.create(file.path(mainDir, subDir))
   }
 
@@ -169,7 +169,7 @@ kobo_projectinit <- function() {
     cat("Ouput exists in your project directory but is a file.\n")
     # you will probably want to handle this separately
   } else {
-    cat("Out directory does not exist in your project directory - creating now!\n ")
+    cat("++Out++ directory does not exist in your project directory - creating now!\n ")
     dir.create(file.path(mainDir, subDir))
   }
 
@@ -189,6 +189,7 @@ kobo_projectinit <- function() {
   }
 
 
+  cat("Please open now the file called 0-config.R within the ++code++ folder and configure the path to the form and the dataset. \n ")
 
 
 }

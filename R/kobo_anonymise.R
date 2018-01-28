@@ -57,6 +57,13 @@ kobo_anonymise <- function(frame, dico) {
   framename <- deparse(substitute(frame))
   ## library(digest)
   ## Get the anonymisation type defined within the xlsform / dictionnary
+
+  if( levels(dico$anonymise) == "default-non-anonymised") {
+    cat(paste0("You have not defined any variables to anonymise within your xlsform. \n"))
+    cat(paste0(" Insert a column named anonymise to insert your anonymisation plan\n")) }
+  else{
+
+
   dico.ano <- dico[ !(is.na(dico$anonymise)) & dico$qrepeatlabel == framename,  ]
 
   if( nrow(dico.ano)>0) {
@@ -132,8 +139,8 @@ kobo_anonymise <- function(frame, dico) {
         if (file.exists("code/temp.R")) file.remove("code/temp.R")
       }
   } else{ }  }
-  else { cat("Sorry, it looks like there's nothing to anonymise based on the xlsform dictionnary... \n") }
-
+  else { cat("Sorry, it looks like there's nothing to anonymise based on the anonymisation plan within the xlsform dictionnary... \n") }
+  }
 
   return(frame)
 }

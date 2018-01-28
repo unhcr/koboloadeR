@@ -72,3 +72,11 @@ cat("\n\nWrite backup\n")
 write.csv(household,"data/data2.csv", row.names = FALSE, na = "")
 ## Save another version in order to add indicators
 write.csv(household,"data/household.csv", row.names = FALSE, na = "")
+
+############################################################
+## Build anonymised version of the frame
+
+cat("\n\n\n Anonymise Household \n\n\n\n")
+# household1 <- kobo_split_multiple(household, dico)
+household.anom <- kobo_anonymise(household, dico)
+write.csv(household.anom, "data/household-anom.csv", row.names = FALSE, na = "")

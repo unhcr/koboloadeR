@@ -66,10 +66,10 @@ A good introduction here: https://ismayc.github.io/rbasics-book
 
  1. Install the package
 ```
-source("https://raw.githubusercontent.com/Edouard-Legoupil/koboloadeR/master/inst/script/install_github.R")
+source("https://raw.githubusercontent.com/unhcr/koboloadeR/master/inst/script/install_github.R")
 install.packages("devtools")
 library("devtools")
-install_github("Edouard-Legoupil/koboloadeR")
+install_github("unhcr/koboloadeR")
 library("koboloadeR")
 ```
 (This version of `install_github` via [@jtilly](https://github.com/jtilly/install_github).)

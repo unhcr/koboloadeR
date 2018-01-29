@@ -1,4 +1,4 @@
 library(testthat)
+library(koboloadeR)
 
-#test_check("test-porjectinit.R")
-#devtools::test()
+test_check("koboloadeR")

@@ -125,17 +125,20 @@ for (i in 1:nrow(chapters) )
 
   cat("\n", file = chapter.name , sep = "\n", append = TRUE)
   cat("## Set up ordinal Variables", file = chapter.name , sep = "\n", append = TRUE)
-  for (o in 1:nrow(ordinal)) {
-    # o <- 1
-    ordinal.listname <- as.character(ordinal[ o, c("listname")])
-    ordinal.name <- as.character(ordinal[ o, c("fullname")])
-    ordinal.frame <- as.character(ordinal[ o, c("qrepeatlabel")])
-    if ( exists(paste0(ordinal.frame)) == TRUE) {
-      cat(paste0("list.ordinal <- as.character(dico[ dico$listname == \"", ordinal.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])"),file = chapter.name ,sep = "\n", append = TRUE)
-      cat(paste0(ordinal.frame,"$",ordinal.name," <- as.factor(",ordinal.frame,"$",ordinal.name,")"),file = chapter.name ,sep = "\n", append = TRUE)
-      cat(paste0("levels(",ordinal.frame,"$",ordinal.name,") <- list.ordinal"),file = chapter.name ,sep = "\n", append = TRUE)
-    } else {}
-  }
+  if (nrow(ordinal) > 0) {
+
+    for (o in 1:nrow(ordinal)) {
+      # o <- 1
+      ordinal.listname <- as.character(ordinal[ o, c("listname")])
+      ordinal.name <- as.character(ordinal[ o, c("fullname")])
+      ordinal.frame <- as.character(ordinal[ o, c("qrepeatlabel")])
+      if ( exists(paste0(ordinal.frame)) == TRUE) {
+        cat(paste0("list.ordinal <- as.character(dico[ dico$listname == \"", ordinal.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])"),file = chapter.name ,sep = "\n", append = TRUE)
+        cat(paste0(ordinal.frame,"$",ordinal.name," <- as.factor(",ordinal.frame,"$",ordinal.name,")"),file = chapter.name ,sep = "\n", append = TRUE)
+        cat(paste0("levels(",ordinal.frame,"$",ordinal.name,") <- list.ordinal"),file = chapter.name ,sep = "\n", append = TRUE)
+      } else {}
+    }
+  } else {}
 
   ## To do use configuration file to weight the data #######
   cat("\n", file = chapter.name , sep = "\n", append = TRUE)
@@ -168,7 +171,7 @@ for (i in 1:nrow(chapters) )
   cat(paste("  *  __Reflect__: question data quality and/or make suggestions to change questions;   \n"),file = chapter.name , sep = "\n", append = TRUE)
   cat(paste("  *  __Interpret__: develop qualitative interpretations of data patterns;   \n"),file = chapter.name , sep = "\n", append = TRUE)
   cat(paste("  *  __Recommend__: develop recommendation in terms of programmatic adjustment;   \n"),file = chapter.name , sep = "\n", append = TRUE)
-  cat(paste("  *  __Classify__: ordeLevel of sensitivity for the information;   \n"),file = chapter.name , sep = "\n", append = TRUE)
+  cat(paste("  *  __Classify__: order the level of sensitivity for the information;   \n"),file = chapter.name , sep = "\n", append = TRUE)
 
 
   cat(paste("# Compilation of questions results"),file = chapter.name , sep = "\n", append = TRUE)
@@ -850,83 +853,95 @@ for (i in 1:nrow(chapters) )
       selectmultilist <- as.character(check[ ,1])
       ## Reshape answers
       data.selectmultilist <- get(paste0(questions.frame))[ ,selectmultilist ]
+      data.selectmultilist <- get(paste0(questions.frame))[ ,selectmultilist ]
       data.selectmultilist$id <- rownames(data.selectmultilist)
-      totalanswer <- nrow(data.selectmultilist)
-      data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1] != "Not replied", ]
-      percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),"%")
-      meltdata <- melt(data.selectmultilist,id = "id")
-      castdata <- as.data.frame(table(meltdata[c("value")]))
-      castdata$freqper <- castdata$Freq/nrow(data.selectmultilist)
-      castdata <- castdata[castdata$Var1 != "Not selected", ]
-      castdata$Var1 <- factor(castdata$Var1, levels = castdata[order(castdata$freqper), "Var1"])
-      frequ <- castdata[castdata$Var1 != "", ]
 
-      if (nrow(frequ) %in% c("0","1")) {
+      ### Account for the case where there no answer to given the questions
+      if (ncol(data.selectmultilist) %in% c("0","1")) {
         cat("No responses recorded for this question...\n",file = chapter.name , sep = "\n", append = TRUE)
         cat("No responses recorded for this question...\n")
       } else{
 
-        ## Open chunk
-        cat(paste0("\n```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=8, size=\"small\"}\n", sep = '\n'), file = chapter.name, append = TRUE)
-        cat(paste0("### Tabulation"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("##Compute contengency table"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("selectmultilist1 <- as.data.frame(dico[dico$type == \"select_multiple\" & dico$listname==\"",questions.listname, "\" & grepl(\"", questions.shortname,"\",dico$fullname)==TRUE , c(\"fullname\")])"),file = chapter.name ,sep = "\n", append = TRUE)
 
-        cat(paste0("names(selectmultilist1)[1] <- \"check\""),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("check <- as.data.frame(names(",questions.frame ,"))"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("names(check)[1] <- \"check\""),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("check$id <- row.names(check)"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("check <- merge(x=check, y=selectmultilist1,by=\"check\")"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("selectmultilist <- as.character(check[ ,1])"),file = chapter.name ,sep = "\n", append = TRUE)
-
-        cat(paste0("## Reshape answers"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("data.selectmultilist <- ",questions.frame ,"[ selectmultilist ]"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("data.selectmultilist$id <- rownames(data.selectmultilist)"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("totalanswer <- nrow(data.selectmultilist)"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!=\"Not replied\", ]"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits=1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("meltdata <- melt(data.selectmultilist,id=\"id\")"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("castdata <- as.data.frame(table(meltdata[c(\"value\")]))"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("castdata$freqper <- castdata$Freq/nrow(data.selectmultilist)"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("castdata <- castdata[castdata$Var1!=\"Not selected\", ]"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("castdata$Var1 <-factor(castdata$Var1, levels=castdata[order(castdata$freqper), \"Var1\"])"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("frequ <- castdata[castdata$Var1!=\"\", ]"),file = chapter.name ,sep = "\n", append = TRUE)
-
-        cat(paste0("## display table"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("names(frequ)[1] <- \"", questions.shortname,"\""),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("frequ[ ,3] <- paste0(round(frequ[ ,3]*100,digits=1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
-
-        cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\") %>% kable_styling ( position = \"center\")"),file = chapter.name ,sep = "\n", append = TRUE)
-
-        cat(paste0("frequ1 <- castdata[castdata$Var1!=\"\", ]"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("frequ1[ ,4] <- paste0(round(frequ1[ ,3]*100,digits=1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("names(frequ1)[4] <- \"freqper2\""),file = chapter.name ,sep = "\n", append = TRUE)
-
-        cat(paste0("\n"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("## and now the graph"),file = chapter.name ,sep = "\n", append = TRUE)
-
-        cat(paste0("ggplot(frequ1, aes(x=Var1, y=freqper)) +"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("geom_bar(fill=\"#2a87c8\",colour=\"#2a87c8\", stat =\"identity\", width=.8) +"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("guides(fill=FALSE) +"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("geom_label_repel(aes(y = freqper, label = freqper2), fill = \"#2a87c8\", color = 'white') +"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("ylab(\"Frequency\") +"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("scale_y_continuous(labels=percent) +"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("xlab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("coord_flip() +"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("subtitle = paste0(\"Question response rate: \",percentreponse,\" .\")) +"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("theme(plot.title=element_text(face=\"bold\", size = 9 ),"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("plot.background = element_rect(fill = \"transparent\",colour = NA))"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("\n```\n", sep = '\n'), file = chapter.name, append = TRUE)
-        ###select.multi.rel######################################################################
+        totalanswer <- nrow(data.selectmultilist)
+        data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1] != "Not replied", ]
+        percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),"%")
+        meltdata <- melt(data.selectmultilist,id = "id")
+        castdata <- as.data.frame(table(meltdata[c("value")]))
 
 
-        cat(paste("### Analysis of relationship" ,sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
-        ## Open chunk
-        cat(paste0("\n```{r ", questions.name, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=4, size=\"small\"}\n", sep = '\n'), file = chapter.name, append = TRUE)
-        ## Close chunk
-        cat(paste0("\n```\n", sep = '\n'), file = chapter.name, append = TRUE)
+        castdata$freqper <- castdata$Freq/nrow(data.selectmultilist)
+        castdata <- castdata[castdata$Var1 != "Not selected", ]
+        castdata$Var1 <- factor(castdata$Var1, levels = castdata[order(castdata$freqper), "Var1"])
+        frequ <- castdata[castdata$Var1 != "", ]
 
+        if (nrow(frequ) %in% c("0","1")) {
+          cat("No responses recorded for this question...\n",file = chapter.name , sep = "\n", append = TRUE)
+          cat("No responses recorded for this question...\n")
+        } else{
+
+          ## Open chunk
+          cat(paste0("\n```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=8, size=\"small\"}\n", sep = '\n'), file = chapter.name, append = TRUE)
+          cat(paste0("### Tabulation"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("##Compute contengency table"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("selectmultilist1 <- as.data.frame(dico[dico$type == \"select_multiple\" & dico$listname==\"",questions.listname, "\" & grepl(\"", questions.shortname,"\",dico$fullname)==TRUE , c(\"fullname\")])"),file = chapter.name ,sep = "\n", append = TRUE)
+
+          cat(paste0("names(selectmultilist1)[1] <- \"check\""),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("check <- as.data.frame(names(",questions.frame ,"))"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("names(check)[1] <- \"check\""),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("check$id <- row.names(check)"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("check <- merge(x=check, y=selectmultilist1,by=\"check\")"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("selectmultilist <- as.character(check[ ,1])"),file = chapter.name ,sep = "\n", append = TRUE)
+
+          cat(paste0("## Reshape answers"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("data.selectmultilist <- ",questions.frame ,"[ selectmultilist ]"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("data.selectmultilist$id <- rownames(data.selectmultilist)"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("totalanswer <- nrow(data.selectmultilist)"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!=\"Not replied\", ]"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits=1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("meltdata <- melt(data.selectmultilist,id=\"id\")"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("castdata <- as.data.frame(table(meltdata[c(\"value\")]))"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("castdata$freqper <- castdata$Freq/nrow(data.selectmultilist)"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("castdata <- castdata[castdata$Var1!=\"Not selected\", ]"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("castdata$Var1 <-factor(castdata$Var1, levels=castdata[order(castdata$freqper), \"Var1\"])"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("frequ <- castdata[castdata$Var1!=\"\", ]"),file = chapter.name ,sep = "\n", append = TRUE)
+
+          cat(paste0("## display table"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("names(frequ)[1] <- \"", questions.shortname,"\""),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("frequ[ ,3] <- paste0(round(frequ[ ,3]*100,digits=1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
+
+          cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\") %>% kable_styling ( position = \"center\")"),file = chapter.name ,sep = "\n", append = TRUE)
+
+          cat(paste0("frequ1 <- castdata[castdata$Var1!=\"\", ]"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("frequ1[ ,4] <- paste0(round(frequ1[ ,3]*100,digits=1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("names(frequ1)[4] <- \"freqper2\""),file = chapter.name ,sep = "\n", append = TRUE)
+
+          cat(paste0("\n"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("## and now the graph"),file = chapter.name ,sep = "\n", append = TRUE)
+
+          cat(paste0("ggplot(frequ1, aes(x=Var1, y=freqper)) +"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("geom_bar(fill=\"#2a87c8\",colour=\"#2a87c8\", stat =\"identity\", width=.8) +"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("guides(fill=FALSE) +"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("geom_label_repel(aes(y = freqper, label = freqper2), fill = \"#2a87c8\", color = 'white') +"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("ylab(\"Frequency\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("scale_y_continuous(labels=percent) +"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("xlab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("coord_flip() +"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("subtitle = paste0(\"Question response rate: \",percentreponse,\" .\")) +"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("theme(plot.title=element_text(face=\"bold\", size = 9 ),"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("plot.background = element_rect(fill = \"transparent\",colour = NA))"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("\n```\n", sep = '\n'), file = chapter.name, append = TRUE)
+          ###select.multi.rel######################################################################
+
+
+          cat(paste("### Analysis of relationship" ,sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
+          ## Open chunk
+          cat(paste0("\n```{r ", questions.name, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=4, size=\"small\"}\n", sep = '\n'), file = chapter.name, append = TRUE)
+          ## Close chunk
+          cat(paste0("\n```\n", sep = '\n'), file = chapter.name, append = TRUE)
+
+        }
       }
 
       ####date###############################################################################################

@@ -187,8 +187,8 @@ kobo_projectinit <- function() {
                  "# BE CAREFUL: DO NOT SHARE PROTECTION SENSITIVE DATA ON GITHUB!"), fileConn)
     close(fileConn)
   }
-
-
+ ## reset the correct Working directory
+ setwd(mainDir)
   cat("Please open now the file called 0-config.R within the ++code++ folder and configure the path to the form and the dataset. \n ")
 
 

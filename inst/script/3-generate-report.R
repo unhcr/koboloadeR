@@ -86,9 +86,9 @@ for (i in 1:nrow(chapters) )
   ## TO DO : put in configuration file name of report, author, organisation & location
   ## TO DO : put in configuration wethere report should be portrait or landscape
   cat("---", file = chapter.name , sep = "\n", append = TRUE)
-  cat(paste("title: \"Preliminary exploration of results: ",chaptersname , "- Draft not for distribution. \"", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
-  cat("author: \"Prepared by UNHCR\"", file = chapter.name , sep = "\n", append = TRUE)
-  cat("date: \"Amman, generated on the `r format(Sys.Date(),  '%d %B %Y')`\"", file = chapter.name , sep = "\n", append = TRUE)
+  cat(paste("title: \"Data Crunching Report: ",chaptersname , "- Draft not for distribution. \"", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
+  cat("author: \"Generated with [Koboloader](https://github.com/unhcr/koboloadeR) \"", file = chapter.name , sep = "\n", append = TRUE)
+  cat("date: \" `r format(Sys.Date(),  '%d %B %Y')`\"", file = chapter.name , sep = "\n", append = TRUE)
   cat("output:",file = chapter.name , sep = "\n", append = TRUE)
   cat("  word_document:", file = chapter.name , sep = "\n", append = TRUE)
   cat("    fig_caption: yes", file = chapter.name , sep = "\n", append = TRUE)
@@ -994,6 +994,14 @@ for (i in 1:nrow(chapters) )
 
 #```{r child = 'chapter1.Rmd'}
 #```
+cat(" Clean memory... \n")
+gc()
+rm(list = ls())
+mainDir <- getwd()
+source(paste0(mainDir,"/code/0-packages.R"))
+form <- "form.xls"
+dico <- read.csv(paste("data/dico_",form,".csv",sep = ""), encoding = "UTF-8", na.strings = "")
+chapters <- read.csv(paste("data/chapters.csv",sep = ""), encoding = "UTF-8", na.strings = "")
 
 ### Render now all reports
 cat(" Render now reports... \n")
@@ -1004,11 +1012,11 @@ for (i in 1:nrow(chapters)) {
   render(paste0("code/",i,"-", chaptersname, "-chapter.Rmd", sep = ""))
   ## Put the report in the out folder
   file.rename(paste0("code/",i,"-", chaptersname, "-chapter.docx", sep = ""), paste0("out/report-",i,"-", chaptersname,Sys.Date(), "-chapter.docx"))
-
+  ## Clean  memory
+  gc()
 }
 
 #rmarkdown::render('report-tabulation.Rmd')
 
 cat(" Done!! Reports are in the folder OUT - Review the report- Adjust your configuration files and you will be very soon ready to start the qualitative analysis and the analysis workshops...")
-
 

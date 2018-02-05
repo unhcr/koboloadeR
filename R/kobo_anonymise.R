@@ -33,8 +33,7 @@
 #'
 #'
 #' @frame  kobo or odk dataset to use
-#' @param dico Generated from kobo_dico function
-#'
+#' @param  dico Generated from kobo_dico function
 #'
 #' @author Edouard Legoupil
 #'

@@ -2,7 +2,7 @@
 % Please edit documentation in R/kobo_projectinit.R
 \name{kobo_projectinit}
 \alias{kobo_projectinit}
-\title{Analysis project initiation}
+\title{Initiation of the Analysis Project}
 \usage{
 kobo_projectinit()
 }

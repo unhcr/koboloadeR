@@ -66,7 +66,7 @@ chapters <- as.data.frame(chapters[!is.na(chapters$Chapter), ])
 
 names(chapters)[1] <- "Chapter"
 
-
+write.csv(chapters, "data/chapters.csv", row.names = FALSE, na = "")
 
 
 ## for each chapter: create a Rmd file -------
@@ -75,7 +75,7 @@ names(chapters)[1] <- "Chapter"
 
 for (i in 1:nrow(chapters) )
 {
-  # i <-1
+  # i <-4
   chaptersname <- as.character(chapters[ i , 1])
   cat(paste(i, " - Render chapter for ",as.character(chapters[ i , 1]),"\n" ))
   chapter.name <- paste("code/",i,"-", chaptersname, "-chapter.Rmd", sep = "")
@@ -133,7 +133,7 @@ for (i in 1:nrow(chapters) )
       ordinal.name <- as.character(ordinal[ o, c("fullname")])
       ordinal.frame <- as.character(ordinal[ o, c("qrepeatlabel")])
       if ( exists(paste0(ordinal.frame)) == TRUE) {
-        cat(paste0("list.ordinal <- as.character(dico[ dico$listname == \"", ordinal.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])"),file = chapter.name ,sep = "\n", append = TRUE)
+        cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", ordinal.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = chapter.name ,sep = "\n", append = TRUE)
         cat(paste0(ordinal.frame,"$",ordinal.name," <- as.factor(",ordinal.frame,"$",ordinal.name,")"),file = chapter.name ,sep = "\n", append = TRUE)
         cat(paste0("levels(",ordinal.frame,"$",ordinal.name,") <- list.ordinal"),file = chapter.name ,sep = "\n", append = TRUE)
       } else {}
@@ -164,10 +164,10 @@ for (i in 1:nrow(chapters) )
   cat(paste("  *  append calculated indicators to your data frame. \n\n"),file = chapter.name , sep = "\n", append = TRUE)
 
   cat(paste("The objective of this report is to allow to quickly identify potential patterns in your dataset.
-            A quick screening of this initial report should allow to select the most meaningfull graphs.
+            A quick screening of this initial report should allow to select the most meaningful graphs.
             A data digest from this initial report can be then reviewed through a __data analysis workshop__
-            where subject matter experts can contribute with qualitative componnents.
-            When analysing those representations in a collective setting, you may:  \n "),file = chapter.name , sep = "\n", append = TRUE)
+            where subject matter experts can contribute with qualitative components.
+            When analyzing those representations in a collective setting, you may:  \n "),file = chapter.name , sep = "\n", append = TRUE)
   cat(paste("  *  __Reflect__: question data quality and/or make suggestions to change questions;   \n"),file = chapter.name , sep = "\n", append = TRUE)
   cat(paste("  *  __Interpret__: develop qualitative interpretations of data patterns;   \n"),file = chapter.name , sep = "\n", append = TRUE)
   cat(paste("  *  __Recommend__: develop recommendation in terms of programmatic adjustment;   \n"),file = chapter.name , sep = "\n", append = TRUE)
@@ -185,7 +185,7 @@ for (i in 1:nrow(chapters) )
 
   for (j in 1:nrow(chapterquestions))
   {
-    # j <-2
+    # j <-16
     ## Now getting level for each questions
     questions.name <- as.character(chapterquestions[ j , c("fullname")])
     questions.shortname <- as.character(chapterquestions[ j , c("name")])
@@ -241,7 +241,7 @@ for (i in 1:nrow(chapters) )
         ## - if not ordinal order according to frequency - if ordinal order according to order in the dico
         if (questions.ordinal == "ordinal" ) {
           ### get the list of options in the right order
-          cat(paste0("list.ordinal <- as.character(dico[ dico$listname == \"", questions.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", questions.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = chapter.name ,sep = "\n", append = TRUE)
           cat(paste0("levels(frequ$Var1) <- list.ordinal"),file = chapter.name ,sep = "\n", append = TRUE)
         } else {
           cat(paste0("frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])"),file = chapter.name ,sep = "\n", append = TRUE)
@@ -270,7 +270,7 @@ for (i in 1:nrow(chapters) )
 
 
         if (questions.ordinal == "ordinal" ) {
-          cat(paste0("list.ordinal <- as.character(dico[ dico$listname == \"", questions.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])"),file = chapter.name ,sep = "\n", append = TRUE)
+          cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", questions.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = chapter.name ,sep = "\n", append = TRUE)
           cat(paste0("levels(frequ3$Var1) <- list.ordinal"),file = chapter.name ,sep = "\n", append = TRUE)
         } else {
           cat(paste0("frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])"),file = chapter.name ,sep = "\n", append = TRUE)
@@ -378,7 +378,7 @@ for (i in 1:nrow(chapters) )
               cat(paste0("names(data.nooutlier1)[1] <- \"variable\""),file = chapter.name ,sep = "\n", append = TRUE)
 
               if (disag.ordinal == "ordinal" ) {
-                cat(paste0("list.ordinal <- as.character(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])"),file = chapter.name ,sep = "\n", append = TRUE)
+                cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = chapter.name ,sep = "\n", append = TRUE)
                 cat(paste0("levels(",questions.frame,"$",disag.name,") <- list.ordinal"),file = chapter.name ,sep = "\n", append = TRUE)
               } else {}
 
@@ -441,9 +441,9 @@ for (i in 1:nrow(chapters) )
                 cat(paste0("names(crosssfrequ.weight)[1] <- \"quest\""),file = chapter.name ,sep = "\n", append = TRUE)
                 cat(paste0("names(crosssfrequ.weight)[2] <- \"disag\""),file = chapter.name ,sep = "\n", append = TRUE)
                 cat(paste0("crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
-                cat(paste0("list.ordinal <- as.character(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])"),file = chapter.name ,sep = "\n", append = TRUE)
+                cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = chapter.name ,sep = "\n", append = TRUE)
                 cat(paste0("levels(crosssfrequ.weight$disag) <- list.ordinal"),file = chapter.name ,sep = "\n", append = TRUE)
-                cat(paste0("list.ordinal <- as.character(dico[ dico$listname == \"", questions.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])"),file = chapter.name ,sep = "\n", append = TRUE)
+                cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", questions.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = chapter.name ,sep = "\n", append = TRUE)
                 cat(paste0("levels(crosssfrequ.weight$quest) <- list.ordinal"),file = chapter.name ,sep = "\n", append = TRUE)
 
               } else if (disag.ordinal == "ordinal" ) {
@@ -452,7 +452,7 @@ for (i in 1:nrow(chapters) )
                 cat(paste0("names(crosssfrequ.weight)[1] <- \"quest\""),file = chapter.name ,sep = "\n", append = TRUE)
                 cat(paste0("names(crosssfrequ.weight)[2] <- \"disag\""),file = chapter.name ,sep = "\n", append = TRUE)
                 cat(paste0("crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits=1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
-                cat(paste0("list.ordinal <- as.character(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])"),file = chapter.name ,sep = "\n", append = TRUE)
+                cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = chapter.name ,sep = "\n", append = TRUE)
                 cat(paste0("levels(crosssfrequ.weight$disag) <- list.ordinal"),file = chapter.name ,sep = "\n", append = TRUE)
 
               } else {
@@ -504,6 +504,7 @@ for (i in 1:nrow(chapters) )
       correlationdf <- join(x = correlation1, y = check, by = "fullname", type = "left")
       correlationdf <- correlationdf[!is.na(correlationdf$id), ]
 
+
       if (nrow(correlationdf) == 0 ) {
         cat("No correlation requested for this question...\n",file = chapter.name , sep = "\n", append = TRUE)
         cat("No correlation requested for this question...\n")
@@ -515,7 +516,7 @@ for (i in 1:nrow(chapters) )
       } else {
 
         cat("\n", file = chapter.name, append = TRUE)
-        cat(paste("### Significant Associations (chi-squarred with p value < 5%)" ,sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
+        cat(paste("### Significant Associations (chi-square with p value < 5%)" ,sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
         cat("\n", file = chapter.name, append = TRUE)
 
         rm(chiquare.resultall)
@@ -551,12 +552,24 @@ for (i in 1:nrow(chapters) )
           names(formula)[2] <- "tested"
           formula <- formula[!(is.na(formula$target)),]
           formula <- formula[!(is.na(formula$tested)),]
+
+          ## Check that each class is represented
+          check.class <- as.data.frame(table(formula$target,formula$tested))
+          n.class <- nrow(check.class)
+          n.class.notnull <- nrow(check.class[check.class$Freq>0, ])
+
           ### Testing number of levels for the 2 variables as 'x' and 'y' must have at least 2 levels
           if ( (chiquare.result[1, c("target")] != chiquare.result[1, c("tested")] ) &
                (nlevels(as.factor(as.character(formula$target))) > 1 ) &
                (nlevels(as.factor(as.character(formula$tested))) > 1 ) &
+
+               ## If too many levels, the corrogram is not legible...
                (nlevels(as.factor(as.character(formula$target))) < 8 ) &
-               (nlevels(as.factor(as.character(formula$tested))) < 8 ) )
+               (nlevels(as.factor(as.character(formula$tested))) < 8 ) &
+               ## May have class with zero value...
+               n.class == n.class.notnull
+
+               )
           { chiquare.result[1, c("p.value")]  <- round(chisq.test(formula$target,formula$tested)$p.value,4)
           } else {chiquare.result[1, c("p.value")] <- 1  }
           chiquare.resultall <- rbind(chiquare.resultall, chiquare.result)
@@ -593,14 +606,14 @@ for (i in 1:nrow(chapters) )
             cat(paste0("corrplot(chisq.test(",formula.target1,",", formula.tested1,")$residuals,"), file = chapter.name , sep = "\n", append = TRUE)
             cat(paste0("is.cor = FALSE, # use for general matrix to convert to Sq form"), file = chapter.name , sep = "\n", append = TRUE)
             cat(paste0("cl.pos = \"n\", ## Do not display the color legend"), file = chapter.name , sep = "\n", append = TRUE)
-            cat(paste0("cl.cex = 0.8, # Size of all label"), file = chapter.name , sep = "\n", append = TRUE)
+            cat(paste0("cl.cex = 0.7, # Size of all label"), file = chapter.name , sep = "\n", append = TRUE)
             cat(paste0("tl.cex = 0.7, # Size of axis label"), file = chapter.name , sep = "\n", append = TRUE)
             cat(paste0("tl.srt = 45, # string rotation in degrees"), file = chapter.name , sep = "\n", append = TRUE)
             cat(paste0("tl.col = \"black\", # color of text label."), file = chapter.name , sep = "\n", append = TRUE)
             cat(paste0("addCoef.col = \"grey\", # add coeff in the chart"), file = chapter.name , sep = "\n", append = TRUE)
             cat(paste0("number.cex= 3/ncol(chisq.test(",formula.target1,",", formula.tested1,")), # size of coeff"), file = chapter.name , sep = "\n", append = TRUE)
             cat(paste0("mar = c(0.5,0.5,4, 0.5), ## margin of plots"), file = chapter.name , sep = "\n", append = TRUE)
-            cat(paste0("title= paste0(\"Correlation between", "\n",target.label,"(row)\n", " & ",tested.label," (col)\")) "), file = chapter.name , sep = "\n", append = TRUE)
+            cat(paste0("title= paste0(\"Correlation between", "\n",target.label," (row)\n", " & ",tested.label," (col)\")) "), file = chapter.name , sep = "\n", append = TRUE)
             ## Close chunk
             cat(paste0("\n```\n", sep = '\n'), file = chapter.name, append = TRUE)
           }
@@ -737,7 +750,7 @@ for (i in 1:nrow(chapters) )
 
               ## account of Ordinal variable
               if (disag.ordinal == "ordinal") {
-                cat(paste0("list.ordinal <- as.character(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])"),file = chapter.name ,sep = "\n", append = TRUE)
+                cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = chapter.name ,sep = "\n", append = TRUE)
                 cat(paste0(questions.frame,"$",disag.name," <- as.factor(",questions.frame,"$",disag.name,")"),file = chapter.name ,sep = "\n", append = TRUE)
                 cat(paste0("levels(",questions.frame,"$",disag.name,") <- list.ordinal"),file = chapter.name ,sep = "\n", append = TRUE)
                 cat(paste0("\n"),file = chapter.name ,sep = "\n", append = TRUE)
@@ -1000,8 +1013,8 @@ rm(list = ls())
 mainDir <- getwd()
 source(paste0(mainDir,"/code/0-packages.R"))
 form <- "form.xls"
-dico <- read.csv(paste("data/dico_",form,".csv",sep = ""), encoding = "UTF-8", na.strings = "")
-chapters <- read.csv(paste("data/chapters.csv",sep = ""), encoding = "UTF-8", na.strings = "")
+dico <- read.csv(paste(mainDir,"/data/dico_",form,".csv",sep = ""), encoding = "UTF-8", na.strings = "")
+chapters <- read.csv(paste(mainDir,"/data/chapters.csv",sep = ""), encoding = "UTF-8", na.strings = "")
 
 ### Render now all reports
 cat(" Render now reports... \n")
@@ -1019,4 +1032,5 @@ for (i in 1:nrow(chapters)) {
 #rmarkdown::render('report-tabulation.Rmd')
 
 cat(" Done!! Reports are in the folder OUT - Review the report- Adjust your configuration files and you will be very soon ready to start the qualitative analysis and the analysis workshops...")
+
 

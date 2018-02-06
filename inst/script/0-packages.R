@@ -68,7 +68,7 @@ packages <- c(
 
   #  "Hmisc", # generate a detailled describtion of a given dataset
   #  "gbm", # Generalized Boosted Regression Models
-  #  "car", ## ## Companion to Applied Regression
+    "car", ## ## Companion to Applied Regression
   #  "rminer", "CORElearn",  # ordinal Regression
   #  "caret", # Gradient Boosting & AdaBoost
   #  "bigRR",  ## Classification

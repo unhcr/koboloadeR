@@ -134,8 +134,7 @@ for (i in 1:nrow(chapters) )
       ordinal.frame <- as.character(ordinal[ o, c("qrepeatlabel")])
       if ( exists(paste0(ordinal.frame)) == TRUE) {
         cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", ordinal.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0(ordinal.frame,"$",ordinal.name," <- as.factor(",ordinal.frame,"$",ordinal.name,")"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("levels(",ordinal.frame,"$",ordinal.name,") <- list.ordinal"),file = chapter.name ,sep = "\n", append = TRUE)
+        cat(paste0(ordinal.frame,"$",ordinal.name," <- factor(",ordinal.frame,"$",ordinal.name,", levels = list.ordinal)"),file = chapter.name ,sep = "\n", append = TRUE)
       } else {}
     }
   } else {}
@@ -144,8 +143,12 @@ for (i in 1:nrow(chapters) )
   cat("\n", file = chapter.name , sep = "\n", append = TRUE)
   cat("## Create weighted survey object", file = chapter.name , sep = "\n", append = TRUE)
 
+  ## with strata
+  #cat("household.survey <- svydesign(id=~1, strata= ~ RecordCategory ,check.strata = TRUE,  data = household,  weights = ~ WeightingCoefficient  )", file = chapter.name , sep = "\n", append = TRUE)
 
-  #cat("data.survey <- svydesign(ids = ~ section1.location.district ,  data = data,  weights = ~Normalized.Weight ,  fpc = ~fpc )", file = chapter.name , sep = "\n", append = TRUE)
+  ## with clusters
+  #cat("household.survey <- svydesign(ids = ~ section1.location.district ,  data = household,  weights = ~ Normalized.Weight ,  fpc = ~fpc )", file = chapter.name , sep = "\n", append = TRUE)
+
   ## If no weight, the weighted object is unweigthted
   cat("household.survey <- svydesign(ids = ~ 1 ,  data = household )", file = chapter.name , sep = "\n", append = TRUE)
 
@@ -478,8 +481,8 @@ for (i in 1:nrow(chapters) )
               cat(paste0("scale_fill_viridis(discrete=TRUE) +"),file = chapter.name ,sep = "\n", append = TRUE)
               cat(paste0("xlab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
               cat(paste0("coord_flip() +"),file = chapter.name ,sep = "\n", append = TRUE)
-              cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep = "\n", append = TRUE)
-              cat(paste0("subtitle = \" By question: ",disag.label,".\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+              cat(paste0("ggtitle(\"",questions.label," (color)\","),file = chapter.name ,sep = "\n", append = TRUE)
+              cat(paste0("subtitle = \" By question: ",disag.label," (bar)\") +"),file = chapter.name ,sep = "\n", append = TRUE)
               cat(paste0("theme(plot.title=element_text(face=\"bold\", size = 9 ),plot.background = element_rect(fill = \"transparent\",colour = NA)) +"),file = chapter.name ,sep = "\n", append = TRUE)
               ## setting up the legend
               #cat(paste0("guides(fill=FALSE) +"),file = chapter.name ,sep = "\n", append = TRUE)

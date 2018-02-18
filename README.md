@@ -113,11 +113,10 @@ Note that for charting purpose, it's recommanded that labels for questions & cho
 
 Column | Description
 ------|--------------
-`repeatsummarize`| used to summarize repeat questions 
-`variable`| used to flag `ordinal` variables so that graphs are not ordered per frequency.
+`chapter`| used to breakfdown the final report
 `disaggregation`| used to flag variables used to  `facet` dataset 
 `correlate`| used to flag variables used for  statistical test of independence (for categorical variable) or correlation for numeric variable
-`chapter`| used to breakfdown the final report
+`variable`| used to flag `ordinal` variables so that graphs are not ordered per frequency.
 `sensitive`| used to flag variables identified as sensitive
 `anonymise`| used to generate an anonymised datset in line the anonymisation plan within the xlsform
 

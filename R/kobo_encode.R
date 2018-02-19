@@ -26,7 +26,7 @@
 kobo_encode <- function(data, dico) {
   ### First we provide attribute label to variable name
   #data1 <- data
-  #data <- data
+  # data <- household
   data.label <- as.data.frame(names(data))
   names(data.label)[1] <- "fullname"
   data.label <- join (x=data.label, y=dico, by="fullname", type="left" )
@@ -112,14 +112,14 @@ kobo_encode <- function(data, dico) {
   } else{
     #names(selectdf)[1] <- "selectvar"
 
-    for (i in 1:nrow(selectdf3)) {
-      #i <-228
-      #i <-1
+    for (j in 1:nrow(selectdf3)) {
+      #j <-228
+      #j <-1
       #i <-195
       #cat(i)
-      fullname <- as.character(selectdf3 [ i,1])
-      variablename <- as.character(selectdf3 [ i,2])
-      variablelistname <- as.character(selectdf3 [ i,3])
+      fullname <- as.character(selectdf3 [ j,1])
+      variablename <- as.character(selectdf3 [ j,2])
+      variablelistname <- as.character(selectdf3 [ j,3])
 
       variablelevel <- as.data.frame(levels(as.factor(data[ ,fullname])))
       names(variablelevel)[1] <- "namecoded"
@@ -131,7 +131,7 @@ kobo_encode <- function(data, dico) {
         labelchoice <- as.character(dico[dico$fullname==fullname, c("labelchoice")])
         data[ , fullname][data[ , fullname]==variablecode] <- labelchoice
 
-        cat(paste0("Recode disaggregated select_one variable: ", fullname," for: ",labelchoice, "\n"))
+        cat(paste0(j " - Recode disaggregated select_one variable: ", fullname," for: ",labelchoice, "\n"))
 
         #View(data[i])
       } else { cat(paste0("The following disaggregated select_one variable has no answers to recode in the dataset: ",fullname, "\n")) }

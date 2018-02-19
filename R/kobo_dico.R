@@ -391,7 +391,7 @@ kobo_dico <- function(form) {
 
 
   ## Trim long label...
-  dico$fullname <- substring(dico$fullname[], 0, 85)
+  dico$label <- substring(dico$label, 0, 85)
 
 
   ## A few fix on the dico

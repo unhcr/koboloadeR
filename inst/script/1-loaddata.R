@@ -77,7 +77,7 @@ write.csv(household,"data/household.csv", row.names = FALSE, na = "")
 ############################################################
 ## Re-encoding data now based on the dictionnary -- the xlsform dictionnary can be adjusted this script re-runned till satisfaction
 cat("\n\n\n Now  re-encode data  \n\n\n\n")
-household <- kobo_encode(data, dico)
+household <- kobo_encode(household, dico)
 
 ############################################################
 ## Cheking the labels matching...

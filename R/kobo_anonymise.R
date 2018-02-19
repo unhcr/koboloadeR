@@ -51,8 +51,8 @@
 
 kobo_anonymise <- function(frame, dico) {
 
-  # frame <- CaseInformation
-  # framename <- "CaseInformation"
+  # frame <- household
+  # framename <- "household"
   framename <- deparse(substitute(frame))
   ## library(digest)
   ## Get the anonymisation type defined within the xlsform / dictionnary
@@ -101,21 +101,40 @@ kobo_anonymise <- function(frame, dico) {
   # & dico$qrepeatlabel == framename
   if( nrow(anotype.reference )>0) {
     cat(paste0(nrow(anotype.reference), " variables to encrypt \n\n"))
-      for (i in 1:nrow(anotype.reference )) {
-        cat(paste0(i, "- Reference through cryptographical hash function, if exists, the value of: ", as.character(anotype.reference [ i, c("label")]),"\n"))
+
+        if (file.exists("code/temp-reference.R")) file.remove("code/temp-reference.R")
+        ## Initiate reference table
+        formula0 <- paste0(framename,".anom.reference <- as.data.frame(row.names(", framename,"))" )
+        cat(paste0(formula0, ""), file="code/temp-reference.R" , sep="\n", append=TRUE)
+
+      for (i in 1:nrow(anotype.reference)) {
+        # i <- 1
+        cat(paste0(i, "- Replace by row id and create a reference table, the value of: ", as.character(anotype.reference [ i, c("label")]),"\n"))
 
         ## Build and run the formula to insert the indicator in the right frame  ###########################
-        formula <- paste0(framename,"$",as.character(anotype.reference [ i, c("fullname")]),
-                                "<- digest(" ,framename,"$",as.character(anotype.reference [ i, c("fullname")]),
-                                             ", algo= \"crc32\")" )
-        if (file.exists("code/temp.R")) file.reference("code/temp.R")
-        cat(paste0("if (\"", as.character(anotype.reference [ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file="code/temp.R" , sep="\n", append=TRUE)
-        cat(paste0(formula, "} else"), file="code/temp.R" , sep="\n", append=TRUE)
-        cat("{}", file="code/temp.R" , sep="\n", append=TRUE)
-        source("code/temp.R")
-        if (file.exists("code/temp.R")) file.remove("code/temp.R")
 
+
+        formula1 <-  paste0(framename,".anom.reference1 <- as.data.frame(", framename,"$",as.character(anotype.reference [ i, c("fullname")]),")" )
+        formula11 <- paste0("names(",framename,".anom.reference1) <- \"",anotype.reference [ i, c("fullname")],"\"" )
+        formula12 <- paste0(framename,".anom.reference <- cbind(",framename,".anom.reference, ", framename,".anom.reference1)")
+        formula13 <- paste0("rm(",framename,".anom.reference1) ")
+        formula2 <-  paste0(framename, "$", as.character(anotype.reference [ i, c("fullname")]), " <- row.names(", framename,")" )
+
+
+        cat(paste0("if (\"", as.character(anotype.reference [ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file="code/temp-reference.R" , sep="\n", append=TRUE)
+        cat(paste0(formula1, ""), file="code/temp-reference.R" , sep="\n", append=TRUE)
+        cat(paste0(formula11, ""), file="code/temp-reference.R" , sep="\n", append=TRUE)
+        cat(paste0(formula12, ""), file="code/temp-reference.R" , sep="\n", append=TRUE)
+        cat(paste0(formula13, ""), file="code/temp-reference.R" , sep="\n", append=TRUE)
+        cat(paste0(formula2, "} else"), file="code/temp-reference.R" , sep="\n", append=TRUE)
+        cat("{}", file="code/temp-reference.R" , sep="\n", append=TRUE)
       }
+    formula3 <- paste0( "write.csv(",framename,".anom.reference, \"data/anom_reference_",framename,".csv\", row.names = FALSE, na = \"\")")
+    cat(formula3, file="code/temp-reference.R" , sep="\n", append=TRUE)
+
+    source("code/temp-reference.R")
+    if (file.exists("code/temp-reference-reference.R")) file.remove("code/temp-reference.R")
+
     } else{}
 
   anotype.scramble <- dico[ which(dico$anonymise=="scramble" & dico$qrepeatlabel == framename),  ]
@@ -124,7 +143,7 @@ kobo_anonymise <- function(frame, dico) {
     cat(paste0(nrow(anotype.scramble), " variables to scramble \n\n"))
 
       for (i in 1:nrow(anotype.scramble )) {
-        cat(paste0(i, "- Scrambling, if exists, the value of: ", as.character(anotype.scramble [ i, c("label")]),"\n"))
+        cat(paste0(i, "- Scramble through cryptographical hash function, if exists, the value of: ", as.character(anotype.scramble [ i, c("label")]),"\n"))
 
         ## Build and run the formula to insert the indicator in the right frame  ###########################
         indic.formula <- paste0(framename,"$",as.character(anotype.scramble  [ i, c("fullname")]),

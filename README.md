@@ -84,6 +84,11 @@ enter the command:
 ```
 setInternet2(TRUE)
 ```
+Alternatively, you may add to .Rprofile or Rprofile.site the following line:
+
+```
+options(download.file.method = "wininet")
+```
 
 (This version of `install_github` via [@jtilly](https://github.com/jtilly/install_github).)
 

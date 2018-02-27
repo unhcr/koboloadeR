@@ -1,5 +1,7 @@
 # koboloadeR
 
+This packages the capacity of UNHCR Kobo server @ http://kobo.unhcr.org
+
 ## Introduction
 
 ### Challenges with Household Survey analysis
@@ -19,7 +21,6 @@ The “output” will be one or multiple Rmd (Rmarkdown) file(s) than will gener
  * Path to the __indicator calculation__ sheet  
 
 ### Advantage of KoboLoadeR 
-
 
  * __Productivity__: Once the configuration file is written, run the script in Rstudio to get the output
  * __Training__: No need to write R instruction – limited knowledge of R is required
@@ -61,7 +62,8 @@ kobo_apps("data_viewer")
 ## Walk Through
 
  0. Install R & Rstudio  
-
+First, R download here: https://cran.r-project.org/bin/windows/base/
+Then Rstudio Download here: https://www.rstudio.com/products/rstudio/download/
 A good introduction here: https://ismayc.github.io/rbasics-book 
 
  1. Install the package
@@ -72,6 +74,17 @@ library("devtools")
 install_github("unhcr/koboloadeR")
 library("koboloadeR")
 ```
+
+
+Note that in case you get the follwoing error:
+```
+InternetOpenUrl failed: 'An error occurred in the secure channel support'
+```
+enter the command:
+```
+setInternet2(TRUE)
+```
+
 (This version of `install_github` via [@jtilly](https://github.com/jtilly/install_github).)
 
  2. Start a project within Rstudio

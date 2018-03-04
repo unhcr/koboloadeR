@@ -66,7 +66,7 @@ packages <- c(
   ### Packages for Modeling Stage
 
 
-  #  "Hmisc", # generate a detailled describtion of a given dataset
+    "Hmisc", "htmlTable", # generate a detailled describtion of a given dataset
   #  "gbm", # Generalized Boosted Regression Models
     "car", ## ## Companion to Applied Regression
   #  "rminer", "CORElearn",  # ordinal Regression

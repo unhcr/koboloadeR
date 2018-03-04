@@ -80,7 +80,7 @@ Note that in case you get the follwoing error:
 ```
 InternetOpenUrl failed: 'An error occurred in the secure channel support'
 ```
-enter the command:
+Enter the command:
 ```
 setInternet2(TRUE)
 ```
@@ -90,7 +90,26 @@ Alternatively, you may add to .Rprofile or Rprofile.site the following line:
 options(download.file.method = "wininet")
 ```
 
-(This version of `install_github` via [@jtilly](https://github.com/jtilly/install_github).)
+One common errors during the package installation is linked to the antivirus _"real time file system protection"_. I do the following to fix the problem:
+
+```
+trace(utils:::unpackPkgZip, edit=TRUE)
+
+```
+Edit line 140:
+
+```
+Sys.sleep(0.5)
+
+```
+to:
+
+```
+Sys.sleep(2)
+
+```
+
+
 
  2. Start a project within Rstudio
  

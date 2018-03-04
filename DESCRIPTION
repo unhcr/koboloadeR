@@ -9,6 +9,7 @@ License: GPL-3
 LazyData: TRUE
 Depends:
     data.table (>= 1.9.4),
+    curl,
     RCurl,
     httr,
     bit64,
@@ -21,6 +22,7 @@ Depends:
     ggplot2,
     reshape2,
     digest,
+    sdcMicro,
     gdata
 Suggests:
     shiny

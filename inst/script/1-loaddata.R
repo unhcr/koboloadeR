@@ -36,12 +36,14 @@ dico <- read.csv(paste("data/dico_",form,".csv",sep = ""), encoding = "UTF-8", n
 
 #rm(data)
 ## Might need to be tweaked -- double check
-cat("\n\n\n Load orginal dataset \n\n\n\n")
+cat("\n\n\n Load original dataset \n\n\n\n")
 data.or <- read.csv(path.to.data, sep = ";", encoding = "UTF-8", na.strings = "")
 
 ## Account for case when separator is a coma....
 if (ncol(data.or) == 1) {
-  data.or <- read.csv(path.to.data, sep = ",", encoding = "UTF-8", na.strings = "") } else { }
+  data.or <- read.csv(path.to.data, sep = ",", encoding = "UTF-8", na.strings = "") } else {
+    cat("\n")
+  }
 
 #names(data.or)
 ### Need to replace slash by point in the variable name
@@ -73,6 +75,9 @@ household <- kobo_anonymise(household, dico)
 cat("\n\nWrite backup before encoding or indicators calculation..\n")
 write.csv(household,"data/household.csv", row.names = FALSE, na = "")
 
+############################################################
+## Compute indicators if defined
+source("code/2-create-indicators")
 
 ############################################################
 ## Re-encoding data now based on the dictionnary -- the xlsform dictionnary can be adjusted this script re-runned till satisfaction

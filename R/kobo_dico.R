@@ -82,11 +82,33 @@ kobo_dico <- function(form) {
   {cat("6- No column `variable` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
     survey$variable <- ""}
 
+  ## Adding 	clean cluster	predict
+  if ("clean" %in% colnames(survey))
+  {
+    cat("7- Good: You have a column `clean` in your survey worksheet. This will be used to flag variables that shoudl be clean with kobo_clean function.\n");
+  } else
+  {cat("7- No column `clean` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
+    survey$clean <- "not-to-be-clean"}
+
+  if ("cluster" %in% colnames(survey))
+  {
+    cat("8- Good: You have a column `cluster` in your survey worksheet. This will be used to flag variables to be used for clustering exploration.\n");
+  } else
+  {cat("8- No column `cluster` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
+    survey$cluster <- ""}
+
+  if ("predict" %in% colnames(survey))
+  {
+    cat("9- Good: You have a column `predict` in your survey worksheet. This will be used to flag variables to be used for clustering exploration.\n");
+  } else
+  {cat("9- No column `predict` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
+    survey$predict <- ""}
+
 
   ## Avoid columns without names
   survey <- survey[ ,c("type",   "name" ,  "label",
                        #"repeatsummarize",
-                       "variable","disaggregation",  "chapter", "sensitive","anonymise","correlate"
+                       "variable","disaggregation",  "chapter", "sensitive","anonymise","correlate","clean","cluster","predict"
                       # "indicator","indicatorgroup","indicatortype",
                       # "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation"
                        #"indicator","select", "Comment", "indicatordirect", "indicatorgroup" ## This indicator reference
@@ -305,30 +327,30 @@ kobo_dico <- function(form) {
 
   if ("order" %in% colnames(choices))
   {
-    cat("6 -  Good: You have a column `order` in your `choices` worksheet.\n");
+    cat("10 -  Good: You have a column `order` in your `choices` worksheet.\n");
   } else
-  {cat("6 -  No column `order` in your `choices` worksheet. Creating a dummy one for the moment...\n");
+  {cat("10 -  No column `order` in your `choices` worksheet. Creating a dummy one for the moment...\n");
     choices$order <- ""}
 
   if ("weight" %in% colnames(choices))
   {
-    cat("7 -  Good: You have a column `weight` in your `choices` worksheet.\n");
+    cat("11 -  Good: You have a column `weight` in your `choices` worksheet.\n");
   } else
-  {cat("7 -  No column `weight` in your `choices` worksheet. Creating a dummy one for the moment...\n");
+  {cat("11 -  No column `weight` in your `choices` worksheet. Creating a dummy one for the moment...\n");
     choices$weight <- ""}
 
   if ("recategorise" %in% colnames(choices))
   {
-    cat("8 -  Good: You have a column `recategorise` in your `choices` worksheet.\n");
+    cat("12 -  Good: You have a column `recategorise` in your `choices` worksheet.\n");
   } else
-  {cat("8 -  No column `recategorise` in your `choices` worksheet. Creating a dummy one for the moment...\n");
+  {cat("12 -  No column `recategorise` in your `choices` worksheet. Creating a dummy one for the moment...\n");
     choices$recategorise <- ""}
 
   if ("score" %in% colnames(choices))
   {
-    cat("9 -  Good: You have a column `score` in your `choices` worksheet.\n");
+    cat("13 -  Good: You have a column `score` in your `choices` worksheet.\n");
   } else
-  {cat("9 -  No column `score` in your `choices` worksheet. Creating a dummy one for the moment...\n");
+  {cat("13 -  No column `score` in your `choices` worksheet. Creating a dummy one for the moment...\n");
     choices$score <- ""}
 
   choices <- choices[,c("listname",  "name",  "label", "order", "weight","score","recategorise")]
@@ -355,7 +377,9 @@ kobo_dico <- function(form) {
     #names(choices) -"type", "name", "namefull",  "labelfull", "listname", "qrepeat", "qlevel", "qgroup"
     ## not kept: "nameq"     "labelq"   ,"fullname", "label",
     #names(survey) - "type" "name",  "fullname", "label",  "listname", "qrepeat"m  "qlevel",   "qgroup"
-  choices2 <- choices[ ,c("type", "name", "namefull",  "labelfull", "chapter","disaggregation","correlate", "sensitive","anonymise", "listname", "qrepeat","qrepeatlabel",  "qlevel", "qgroup", "labelchoice",
+  choices2 <- choices[ ,c("type", "name", "namefull",  "labelfull", "chapter","disaggregation","correlate", "sensitive","anonymise",
+                          "clean","cluster","predict",
+                          "listname", "qrepeat","qrepeatlabel",  "qlevel", "qgroup", "labelchoice",
                          #"repeatsummarize",
                          "variable",
                          #"indicator","indicatorgroup","indicatortype", "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation",
@@ -366,7 +390,9 @@ kobo_dico <- function(form) {
   names(choices2)[names(choices2) == "labelfull"] <- "label"
 
 
-  survey2 <-    survey[,c("type", "name",  "fullname", "label", "chapter", "disaggregation","correlate",  "sensitive","anonymise","listname", "qrepeat","qrepeatlabel",  "qlevel",   "qgroup", "labelchoice",
+  survey2 <-    survey[,c("type", "name",  "fullname", "label", "chapter", "disaggregation","correlate",  "sensitive","anonymise",
+                          "clean","cluster","predict",
+                          "listname", "qrepeat","qrepeatlabel",  "qlevel",   "qgroup", "labelchoice",
                           #"repeatsummarize",
                           "variable",
 

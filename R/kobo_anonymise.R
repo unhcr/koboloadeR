@@ -109,9 +109,9 @@ kobo_anonymise <- function(frame, dico) {
   ## also for SubmissionDate
 
   #### Reference ###############
-  anotype.reference <- dico[ which(dico$anonymise=="reference" ),  ]
+  anotype.reference <- dico[ which(dico$anonymise == "reference" ),  ]
   # & dico$qrepeatlabel == framename
-  if( nrow(anotype.reference )>0) {
+  if (nrow(anotype.reference) > 0) {
     cat(paste0(nrow(anotype.reference), " variables to encrypt \n\n"))
 
         if (file.exists("code/temp-reference.R")) file.remove("code/temp-reference.R")

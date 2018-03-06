@@ -33,7 +33,7 @@ kobo_clean <- function(frame, dico) {
   ## library(digest)
   ## Get the anonymisation type defined within the xlsform / dictionnary
 
-  if (levels(dico$clean) == "not-to-be-cleaned") {
+  if (levels(dico$clean) == "no") {
     cat(paste0("You have not defined variables to clean within your xlsform. \n"))
     cat(paste0(" Insert a column named clean and reference the csv file to use for cleaning. \n")) }
   else {

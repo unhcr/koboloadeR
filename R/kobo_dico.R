@@ -88,7 +88,7 @@ kobo_dico <- function(form) {
     cat("7- Good: You have a column `clean` in your survey worksheet. This will be used to flag variables that shoudl be clean with kobo_clean function.\n");
   } else
   {cat("7- No column `clean` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
-    survey$clean <- "not-to-be-clean"}
+    survey$clean <- "no"}
 
   if ("cluster" %in% colnames(survey))
   {

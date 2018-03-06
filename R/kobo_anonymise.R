@@ -57,23 +57,25 @@ kobo_anonymise <- function(frame, dico) {
   ## library(digest)
   ## Get the anonymisation type defined within the xlsform / dictionnary
 
-  if( levels(dico$anonymise) == "default-non-anonymised") {
-    cat(paste0("You have not defined any variables to anonymise within your xlsform. \n"))
+  if (levels(dico$anonymise) == "default-non-anonymised") {
+    cat(paste0("You have not defined variables to anonymise within your xlsform. \n"))
     cat(paste0(" Insert a column named anonymise to insert your anonymisation plan\n")) }
   else{
 
 
   dico.ano <- dico[ !(is.na(dico$anonymise)) & dico$qrepeatlabel == framename,  ]
 
-  if( nrow(dico.ano)>0) {
+  if (nrow(dico.ano) > 0) {
     cat(paste0(nrow(dico.ano), " variables to anonymise\n"))
 
   ## Get the anonymisation type defined within the xlsform / dictionnary
   #anotype <- as.data.frame(unique(dico.ano$anonymise))
 
-  anotype.remove  <- dico[ which(dico$anonymise=="remove" ),  ]
+
+  #### Remove ###############
+  anotype.remove  <- dico[ which(dico$anonymise == "remove" ),  ]
   # & dico$qrepeatlabel == framename
-  if( nrow(anotype.remove )>0) {
+  if (nrow(anotype.remove) > 0) {
     cat(paste0(nrow(anotype.remove), "potential variables to remove \n\n"))
 
       for (i in 1:nrow(anotype.remove)) {
@@ -88,15 +90,25 @@ kobo_anonymise <- function(frame, dico) {
 
        # paste('if ("', framename , '")')
 
-        cat(paste0("if (\"", as.character(anotype.remove[ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file="code/temp.R" , sep="\n", append=TRUE)
-        cat(paste0(framename,"$",as.character(anotype.remove[ i, c("fullname")]),"<- \"removed\" } else" ), file="code/temp.R" , sep="\n", append=TRUE)
-        cat("{}", file="code/temp.R" , sep="\n", append=TRUE)
+        cat(paste0("if (\"", as.character(anotype.remove[ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file = "code/temp.R" , sep = "\n", append = TRUE)
+        cat(paste0(framename,"$",as.character(anotype.remove[ i, c("fullname")]),"<- \"removed\" } else" ), file = "code/temp.R" , sep = "\n", append = TRUE)
+        cat("{}", file = "code/temp.R" , sep = "\n", append = TRUE)
         source("code/temp.R")
         if (file.exists("code/temp.R")) file.remove("code/temp.R")
 
       }
   } else{}
 
+  ### Specific case for geopoint ###
+  # geopoint
+  # group._geopoint_latitude or Latitude
+  # group._geopoint_longitude
+  # group._geopoint_altitude
+  # group._geopoint_precision or Acuracy
+
+  ## also for SubmissionDate
+
+  #### Reference ###############
   anotype.reference <- dico[ which(dico$anonymise=="reference" ),  ]
   # & dico$qrepeatlabel == framename
   if( nrow(anotype.reference )>0) {
@@ -105,7 +117,7 @@ kobo_anonymise <- function(frame, dico) {
         if (file.exists("code/temp-reference.R")) file.remove("code/temp-reference.R")
         ## Initiate reference table
         formula0 <- paste0(framename,".anom.reference <- as.data.frame(row.names(", framename,"))" )
-        cat(paste0(formula0, ""), file="code/temp-reference.R" , sep="\n", append=TRUE)
+        cat(paste0(formula0, ""), file = "code/temp-reference.R" , sep = "\n", append = TRUE)
 
       for (i in 1:nrow(anotype.reference)) {
         # i <- 1
@@ -121,16 +133,16 @@ kobo_anonymise <- function(frame, dico) {
         formula2 <-  paste0(framename, "$", as.character(anotype.reference [ i, c("fullname")]), " <- row.names(", framename,")" )
 
 
-        cat(paste0("if (\"", as.character(anotype.reference [ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file="code/temp-reference.R" , sep="\n", append=TRUE)
-        cat(paste0(formula1, ""), file="code/temp-reference.R" , sep="\n", append=TRUE)
-        cat(paste0(formula11, ""), file="code/temp-reference.R" , sep="\n", append=TRUE)
-        cat(paste0(formula12, ""), file="code/temp-reference.R" , sep="\n", append=TRUE)
-        cat(paste0(formula13, ""), file="code/temp-reference.R" , sep="\n", append=TRUE)
-        cat(paste0(formula2, "} else"), file="code/temp-reference.R" , sep="\n", append=TRUE)
-        cat("{}", file="code/temp-reference.R" , sep="\n", append=TRUE)
+        cat(paste0("if (\"", as.character(anotype.reference [ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file = "code/temp-reference.R" , sep = "\n", append = TRUE)
+        cat(paste0(formula1, ""), file = "code/temp-reference.R" , sep = "\n", append = TRUE)
+        cat(paste0(formula11, ""), file = "code/temp-reference.R" , sep = "\n", append = TRUE)
+        cat(paste0(formula12, ""), file = "code/temp-reference.R" , sep = "\n", append = TRUE)
+        cat(paste0(formula13, ""), file = "code/temp-reference.R" , sep = "\n", append = TRUE)
+        cat(paste0(formula2, "} else"), file = "code/temp-reference.R" , sep = "\n", append = TRUE)
+        cat("{}", file = "code/temp-reference.R" , sep = "\n", append = TRUE)
       }
     formula3 <- paste0( "write.csv(",framename,".anom.reference, \"data/anom_reference_",framename,".csv\", row.names = FALSE, na = \"\")")
-    cat(formula3, file="code/temp-reference.R" , sep="\n", append=TRUE)
+    cat(formula3, file = "code/temp-reference.R" , sep = "\n", append = TRUE)
 
     source("code/temp-reference.R")
     if (file.exists("code/temp-reference-reference.R")) file.remove("code/temp-reference.R")
@@ -139,20 +151,20 @@ kobo_anonymise <- function(frame, dico) {
 
   anotype.scramble <- dico[ which(dico$anonymise=="scramble" & dico$qrepeatlabel == framename),  ]
 
-  if( nrow(anotype.scramble ) >0) {
+  if (nrow(anotype.scramble ) > 0) {
     cat(paste0(nrow(anotype.scramble), " variables to scramble \n\n"))
 
       for (i in 1:nrow(anotype.scramble )) {
-        cat(paste0(i, "- Scramble through cryptographical hash function, if exists, the value of: ", as.character(anotype.scramble [ i, c("label")]),"\n"))
+        cat(paste0(i, "- Scramble through cryptographical hash function, if exists, the value of: ", as.character(anotype.scramble[ i, c("label")]),"\n"))
 
         ## Build and run the formula to insert the indicator in the right frame  ###########################
-        indic.formula <- paste0(framename,"$",as.character(anotype.scramble  [ i, c("fullname")]),
-                                "<- digest(" ,framename,"$",as.character(anotype.scramble  [ i, c("fullname")]),
+        indic.formula <- paste0(framename,"$",as.character(anotype.scramble[ i, c("fullname")]),
+                                "<- digest(" ,framename,"$",as.character(anotype.scramble[ i, c("fullname")]),
                                 ", algo= \"crc32\")" )
         if (file.exists("code/temp.R")) file.remove("code/temp.R")
-        cat(paste0("if (\"", as.character(anotype.scramble [ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file="code/temp.R" , sep="\n", append=TRUE)
-        cat(paste0(formula, "} else"), file="code/temp.R" , sep="\n", append=TRUE)
-        cat("{}", file="code/temp.R" , sep="\n", append=TRUE)
+        cat(paste0("if (\"", as.character(anotype.scramble [ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file = "code/temp.R" , sep = "\n", append = TRUE)
+        cat(paste0(formula, "} else"), file = "code/temp.R" , sep = "\n", append = TRUE)
+        cat("{}", file = "code/temp.R" , sep = "\n", append = TRUE)
         source("code/temp.R")
         if (file.exists("code/temp.R")) file.remove("code/temp.R")
       }

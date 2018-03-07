@@ -115,7 +115,7 @@ kobo_anonymise <- function(frame, dico) {
   anotype.remove  <- dico[ which(dico$anonymise == "remove" ),  ]
   # & dico$qrepeatlabel == framename
   if (nrow(anotype.remove) > 0) {
-    cat(paste0(nrow(anotype.remove), "potential variables to remove \n\n"))
+    cat(paste0(nrow(anotype.remove), " potential variables to remove \n\n"))
 
       for (i in 1:nrow(anotype.remove)) {
        # i <- 1

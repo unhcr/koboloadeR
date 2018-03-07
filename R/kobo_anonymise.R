@@ -62,6 +62,45 @@ kobo_anonymise <- function(frame, dico) {
     cat(paste0(" Insert a column named anonymise to insert your anonymisation plan\n")) }
   else{
 
+   # names(frame)
+
+
+    ### Specific case for geopoint ###
+    colname <- grep("geopoint_latitude", colnames(frame))
+    if (length(colname) > 0) { cat("Removing Latitude column \n")
+      frame[ ,colname] <- "remove"} else {}
+    colname <- grep("Latitude", colnames(frame))
+    if (length(colname) > 0) { cat("Removing Latitude column \n")
+      frame[ ,colname] <- "remove"} else {}
+
+    colname <- grep("geopoint_longitude", colnames(frame))
+    if (length(colname) > 0) { cat("Removing Longitude column \n")
+      frame[ ,colname] <- "remove"} else {}
+    colname <- grep("Longitude", colnames(frame))
+    if (length(colname) > 0) { cat("Removing Longitude column \n")
+      frame[ ,colname] <- "remove"} else {}
+
+    colname <- grep("geopoint_altitude", colnames(frame))
+    if (length(colname) > 0) { cat("Removing Altitude column \n")
+      frame[ ,colname] <- "remove"} else {}
+    colname <- grep("Altitude", colnames(frame))
+    if (length(colname) > 0) { cat("Removing Altitude column \n")
+      frame[ ,colname] <- "remove"} else {}
+
+    colname <- grep("geopoint_precision", colnames(frame))
+    if (length(colname) > 0) { cat("Removing accuracy column \n")
+      frame[ ,colname] <- "remove"} else {}
+    colname <- grep("Accuracy", colnames(frame))
+    if (length(colname) > 0 ) { cat("Removing accuracy column \n")
+      frame[ ,colname] <- "remove"} else {}
+
+    colname <- grep("SubmissionDate", colnames(frame))
+    if (length(colname) > 0 ) { cat("Removing SubmissionDate column \n")
+      frame[ ,colname] <- "remove"} else {}
+
+
+
+
 
   dico.ano <- dico[ !(is.na(dico$anonymise)) & dico$qrepeatlabel == framename,  ]
 
@@ -99,14 +138,7 @@ kobo_anonymise <- function(frame, dico) {
       }
   } else{}
 
-  ### Specific case for geopoint ###
-  # geopoint
-  # group._geopoint_latitude or Latitude
-  # group._geopoint_longitude
-  # group._geopoint_altitude
-  # group._geopoint_precision or Acuracy
 
-  ## also for SubmissionDate
 
   #### Reference ###############
   anotype.reference <- dico[ which(dico$anonymise == "reference" ),  ]
@@ -168,7 +200,7 @@ kobo_anonymise <- function(frame, dico) {
         source("code/temp.R")
         if (file.exists("code/temp.R")) file.remove("code/temp.R")
       }
-  } else{ }  }
+  } else{}  }
   else { cat("Sorry, it looks like there's nothing to anonymise based on the anonymisation plan within the xlsform dictionnary... \n") }
   }
 

@@ -56,8 +56,8 @@ kobo_clean <- function(frame, dico) {
             formula5 <- paste0(framename," <- join(x = ",framename,", y = ", cleanframe,", by = \"",variable ,"\", type = \"left\")")
             formula6 <- paste0("tolcolumn <-  ncol(",framename,")")
             formula7 <- paste0(framename," <- ",framename,"[c(1:as.integer(colname), as.integer(tolcolumn), as.integer(colname + 1):as.integer(tolcolumn - 1) )]")
-            formula8 <- paste0("cat(paste0(\"Matching level for the variable is:\",")
-            formula9 <- paste0("round( nrow(", framename ,"[ !(is.na(", framename ,"$", variable ,".clean)), ]) / nrow(", framename ,") *100,digits = 1),\"%\"))")
+            formula8 <- paste0("cat(paste0(\"Matching level for the variable is : \",")
+            formula9 <- paste0("round( nrow(", framename ,"[ !(is.na(", framename ,"$", variable ,".clean)), ]) / nrow(", framename ,") *100,digits = 1),\"%\n\n\"))")
 
 
             if (file.exists("code/temp-clean.R")) file.remove("code/temp-clean.R")
@@ -70,7 +70,7 @@ kobo_clean <- function(frame, dico) {
             cat(paste0(formula6, ""), file = "code/temp-clean.R" , sep = "\n", append = TRUE)
             cat(paste0(formula7, ""), file = "code/temp-clean.R" , sep = "\n", append = TRUE)
             cat(paste0(formula8, ""), file = "code/temp-clean.R" , sep = "\n", append = TRUE)
-            cat(paste0(formula9, "} else {cat(\" Nothing..\") } "), file = "code/temp-clean.R" , sep = "\n", append = TRUE)
+            cat(paste0(formula9, "} else {cat(\" That variable is not in that frame...\n\") } "), file = "code/temp-clean.R" , sep = "\n", append = TRUE)
             source("code/temp-clean.R")
             if (file.exists("code/temp-clean.R")) file.remove("code/temp-clean.R")
           }

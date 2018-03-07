@@ -10,7 +10,7 @@ source("code/0-config.R")
 #source("https://raw.githubusercontent.com/Edouard-Legoupil/koboloadeR/master/inst/script/install_github.R")
 #install.packages("devtools")
 #library("devtools")
-#install_github("Edouard-Legoupil/koboloadeR")
+#install_github("unhcr/koboloadeR")
 
 library(koboloadeR)
 
@@ -64,6 +64,12 @@ if (ncol(data.or) == 1) {
 ## Check to split select_multiple if data is extracted from ODK
 cat("\n\n\n Now split select_multiple  variables \n\n\n\n")
 household <- kobo_split_multiple(data.or, dico)
+
+
+############################################################
+## Clean variable if any
+cat("\n\n\n Clean variable if any \n\n\n\n")
+household <- kobo_clean(household, dico)
 
 ############################################################
 ## Build anonymised version of the frame

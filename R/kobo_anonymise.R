@@ -117,25 +117,23 @@ kobo_anonymise <- function(frame, dico) {
   if (nrow(anotype.remove) > 0) {
     cat(paste0(nrow(anotype.remove), " potential variables to remove \n\n"))
 
+      if (file.exists("code/temp.R")) file.remove("code/temp.R")
       for (i in 1:nrow(anotype.remove)) {
        # i <- 1
         cat(paste0(i, "- Remove, if exists, the value of: ", as.character(anotype.remove[ i, c("label")]),"\n"))
         ## Build and run the formula to insert the indicator in the right frame  ###########################
         varia <- paste0(framename,"$",as.character(anotype.remove[ i, c("fullname")]))
-        formula <-
-        if (file.exists("code/temp.R")) file.remove("code/temp.R")
 
         # if ("start" %in% names(CaseInformation)) { cat("1")} else {cat("2") }
 
        # paste('if ("', framename , '")')
 
         cat(paste0("if (\"", as.character(anotype.remove[ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file = "code/temp.R" , sep = "\n", append = TRUE)
-        cat(paste0(framename,"$",as.character(anotype.remove[ i, c("fullname")]),"<- \"removed\" } else" ), file = "code/temp.R" , sep = "\n", append = TRUE)
+        cat(paste0(framename,"$",as.character(anotype.remove[ i, c("fullname")])," <- \"removed\" } else" ), file = "code/temp.R" , sep = "\n", append = TRUE)
         cat("{}", file = "code/temp.R" , sep = "\n", append = TRUE)
-        source("code/temp.R")
-        if (file.exists("code/temp.R")) file.remove("code/temp.R")
-
-      }
+       }
+    source("code/temp.R")
+    #if (file.exists("code/temp.R")) file.remove("code/temp.R")
   } else{}
 
 

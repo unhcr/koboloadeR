@@ -117,7 +117,7 @@ kobo_anonymise <- function(frame, dico) {
   if (nrow(anotype.remove) > 0) {
     cat(paste0(nrow(anotype.remove), " potential variables to remove \n\n"))
 
-      if (file.exists("code/temp.R")) file.remove("code/temp.R")
+      if (file.exists("code/temp-remove.R")) file.remove("code/temp-remove.R")
       for (i in 1:nrow(anotype.remove)) {
        # i <- 1
         cat(paste0(i, "- Remove, if exists, the value of: ", as.character(anotype.remove[ i, c("label")]),"\n"))
@@ -128,13 +128,19 @@ kobo_anonymise <- function(frame, dico) {
 
        # paste('if ("', framename , '")')
 
-        cat(paste0("if (\"", as.character(anotype.remove[ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file = "code/temp.R" , sep = "\n", append = TRUE)
-        cat(paste0(framename,"$",as.character(anotype.remove[ i, c("fullname")])," <- \"removed\" } else" ), file = "code/temp.R" , sep = "\n", append = TRUE)
-        cat("{}", file = "code/temp.R" , sep = "\n", append = TRUE)
-       }
-    source("code/temp.R")
-    #if (file.exists("code/temp.R")) file.remove("code/temp.R")
-  } else{}
+        cat(paste0("if (\"", as.character(anotype.remove[ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat(paste0(framename,"$",as.character(anotype.remove[ i, c("fullname")])," <- \"removed\" } else" ), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat("{}", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+      }
+
+    cat(" Source remove script \n\n")
+
+    mainDir <- getwd()
+    source(paste0(mainDir,"/code/temp-remove.R"))
+    source("code/temp-remove.R")
+    #if (file.exists("code/temp-remove.R")) file.remove("code/temp-remove.R")
+
+    } else{}
 
 
 
@@ -174,6 +180,8 @@ kobo_anonymise <- function(frame, dico) {
     formula3 <- paste0( "write.csv(",framename,".anom.reference, \"data/anom_reference_",framename,".csv\", row.names = FALSE, na = \"\")")
     cat(formula3, file = "code/temp-reference.R" , sep = "\n", append = TRUE)
 
+    mainDir <- getwd()
+    source(paste0(mainDir,"/code/temp-reference.R"))
     source("code/temp-reference.R")
     if (file.exists("code/temp-reference-reference.R")) file.remove("code/temp-reference.R")
 
@@ -191,12 +199,13 @@ kobo_anonymise <- function(frame, dico) {
         indic.formula <- paste0(framename,"$",as.character(anotype.scramble[ i, c("fullname")]),
                                 "<- digest(" ,framename,"$",as.character(anotype.scramble[ i, c("fullname")]),
                                 ", algo= \"crc32\")" )
-        if (file.exists("code/temp.R")) file.remove("code/temp.R")
-        cat(paste0("if (\"", as.character(anotype.scramble [ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file = "code/temp.R" , sep = "\n", append = TRUE)
-        cat(paste0(formula, "} else"), file = "code/temp.R" , sep = "\n", append = TRUE)
-        cat("{}", file = "code/temp.R" , sep = "\n", append = TRUE)
-        source("code/temp.R")
-        if (file.exists("code/temp.R")) file.remove("code/temp.R")
+        if (file.exists("code/temp-remove.R")) file.remove("code/temp-remove.R")
+        cat(paste0("if (\"", as.character(anotype.scramble [ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat(paste0(formula, "} else"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat("{}", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        source("code/temp-remove.R")
+        source(paste0(getwd(),"/code/temp-remove.R"))
+        if (file.exists("code/temp-remove.R")) file.remove("code/temp-remove.R")
       }
   } else{}  }
   else { cat("Sorry, it looks like there's nothing to anonymise based on the anonymisation plan within the xlsform dictionnary... \n") }

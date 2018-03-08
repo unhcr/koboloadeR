@@ -82,7 +82,7 @@ kobo_split_multiple <- function(data, dico) {
     if (ncol(tosplitframe) == 3 ) {
       cat(paste0("There was only one modality selected for this select_multiple question in the whole dataset. \n"))
     } else {
-      cat(paste0("There was ", ncol(tosplitframe) - 2 , "different modalities for that question. \n"))    }
+      cat(paste0("There was ", ncol(tosplitframe) - 2 , " different modalities for that question. \n"))    }
 
     for (h in 2:ncol(tosplitframe) ) { tosplitframe[tosplitframe$zNotAnswered == 1, h] <- "Not replied"}
     drops <- c("ind", "zNotAnswered")

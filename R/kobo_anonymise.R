@@ -32,7 +32,7 @@
 #' }
 #'
 #'
-#' @frame  kobo or odk dataset to use
+#' @param  kobo or odk dataset to use
 #' @param  dico Generated from kobo_dico function
 #'
 #' @author Edouard Legoupil
@@ -47,96 +47,86 @@
 #' kobo_anonymise(frame, dico)
 #' }
 #'
-#'
 
 kobo_anonymise <- function(frame, dico) {
 
   # frame <- household
   # framename <- "household"
   framename <- deparse(substitute(frame))
-  ## library(digest)
-  ## Get the anonymisation type defined within the xlsform / dictionnary
+
+
+  ## Get the anonymisation type defined within the xlsform / dictionnary ######
 
   if (levels(dico$anonymise) == "default-non-anonymised") {
     cat(paste0("You have not defined variables to anonymise within your xlsform. \n"))
     cat(paste0(" Insert a column named anonymise to insert your anonymisation plan\n")) }
   else{
 
-   # names(frame)
+
+    #### Check we have anonymisation instructions ###############
+    dico.ano <- dico[ !(is.na(dico$anonymise)) & dico$qrepeatlabel == framename,  ]
+    if (nrow(dico.ano) > 0) {
+      cat(paste0(nrow(dico.ano), " variables to anonymise\n"))
 
 
-    ### Specific case for geopoint ###
-    colname <- grep("geopoint_latitude", colnames(frame))
-    if (length(colname) > 0) { cat("Removing Latitude column \n")
-      frame[ ,colname] <- "remove"} else {}
-    colname <- grep("Latitude", colnames(frame))
-    if (length(colname) > 0) { cat("Removing Latitude column \n")
-      frame[ ,colname] <- "remove"} else {}
-
-    colname <- grep("geopoint_longitude", colnames(frame))
-    if (length(colname) > 0) { cat("Removing Longitude column \n")
-      frame[ ,colname] <- "remove"} else {}
-    colname <- grep("Longitude", colnames(frame))
-    if (length(colname) > 0) { cat("Removing Longitude column \n")
-      frame[ ,colname] <- "remove"} else {}
-
-    colname <- grep("geopoint_altitude", colnames(frame))
-    if (length(colname) > 0) { cat("Removing Altitude column \n")
-      frame[ ,colname] <- "remove"} else {}
-    colname <- grep("Altitude", colnames(frame))
-    if (length(colname) > 0) { cat("Removing Altitude column \n")
-      frame[ ,colname] <- "remove"} else {}
-
-    colname <- grep("geopoint_precision", colnames(frame))
-    if (length(colname) > 0) { cat("Removing accuracy column \n")
-      frame[ ,colname] <- "remove"} else {}
-    colname <- grep("Accuracy", colnames(frame))
-    if (length(colname) > 0 ) { cat("Removing accuracy column \n")
-      frame[ ,colname] <- "remove"} else {}
-
-    colname <- grep("SubmissionDate", colnames(frame))
-    if (length(colname) > 0 ) { cat("Removing SubmissionDate column \n")
-      frame[ ,colname] <- "remove"} else {}
-
-
-
-
-
-  dico.ano <- dico[ !(is.na(dico$anonymise)) & dico$qrepeatlabel == framename,  ]
-
-  if (nrow(dico.ano) > 0) {
-    cat(paste0(nrow(dico.ano), " variables to anonymise\n"))
-
-  ## Get the anonymisation type defined within the xlsform / dictionnary
-  #anotype <- as.data.frame(unique(dico.ano$anonymise))
 
 
   #### Remove ###############
   anotype.remove  <- dico[ which(dico$anonymise == "remove" ),  ]
-  # & dico$qrepeatlabel == framename
   if (nrow(anotype.remove) > 0) {
     cat(paste0(nrow(anotype.remove), " potential variables to remove \n\n"))
 
-      if (file.exists("code/temp-remove.R")) file.remove("code/temp-remove.R")
+    if (file.exists("code/temp-remove.R")) file.remove("code/temp-remove.R")
+    cat("cat(\"Now Running removal Script \n \")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+
+
+    ### Specific cases  ###
+    cat(paste0("colname <- grep(\"geopoint_latitude\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat("if (length(colname) > 0) { cat(\"Removing Latitude column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat(paste0("colname <- grep(\"Latitude\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat("if (length(colname) > 0) { cat(\"Removing Latitude column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+
+    cat(paste0("colname <- grep(\"geopoint_longitude\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat("if (length(colname) > 0) { cat(\"Removing Longitude column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat(paste0("colname <- grep(\"Longitude\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat("if (length(colname) > 0) { cat(\"Removing Longitude column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+
+    cat(paste0("colname <- grep(\"geopoint_altitude\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat("if (length(colname) > 0) { cat(\"Removing Altitude column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat(paste0("colname <- grep(\"Altitude\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat("if (length(colname) > 0) { cat(\"Removing Altitude column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+
+    cat(paste0("colname <- grep(\"geopoint_precision\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat("if (length(colname) > 0) { cat(\"Removing accuracy column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat(paste0("colname <- grep(\"Accuracy\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat("if (length(colname) > 0 ) { cat(\"Removing accuracy column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+
+    cat(paste0("colname <- grep(\"SubmissionDate\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat("if (length(colname) > 0 ) { cat(\"Removing SubmissionDate column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+    cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+
+
+
       for (i in 1:nrow(anotype.remove)) {
        # i <- 1
         cat(paste0(i, "- Remove, if exists, the value of: ", as.character(anotype.remove[ i, c("label")]),"\n"))
-        ## Build and run the formula to insert the indicator in the right frame  ###########################
         varia <- paste0(framename,"$",as.character(anotype.remove[ i, c("fullname")]))
-
-        # if ("start" %in% names(CaseInformation)) { cat("1")} else {cat("2") }
-
-       # paste('if ("', framename , '")')
-
         cat(paste0("if (\"", as.character(anotype.remove[ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
         cat(paste0(framename,"$",as.character(anotype.remove[ i, c("fullname")])," <- \"removed\" } else" ), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
         cat("{}", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
       }
 
-    cat(" Source remove script \n\n")
-
-    mainDir <- getwd()
-    source(paste0(mainDir,"/code/temp-remove.R"))
+    cat(" Source removal script \n\n")
+    #mainDir <- getwd()
+    #source(paste0(mainDir,"/code/temp-remove.R"))
     source("code/temp-remove.R")
     #if (file.exists("code/temp-remove.R")) file.remove("code/temp-remove.R")
 
@@ -151,6 +141,8 @@ kobo_anonymise <- function(frame, dico) {
     cat(paste0(nrow(anotype.reference), " variables to encrypt \n\n"))
 
         if (file.exists("code/temp-reference.R")) file.remove("code/temp-reference.R")
+        cat("cat(\"Now Running reference Script \n \")", file = "code/temp-reference.R" , sep = "\n", append = TRUE)
+
         ## Initiate reference table
         formula0 <- paste0(framename,".anom.reference <- as.data.frame(row.names(", framename,"))" )
         cat(paste0(formula0, ""), file = "code/temp-reference.R" , sep = "\n", append = TRUE)
@@ -158,9 +150,6 @@ kobo_anonymise <- function(frame, dico) {
       for (i in 1:nrow(anotype.reference)) {
         # i <- 1
         cat(paste0(i, "- Replace by row id and create a reference table, the value of: ", as.character(anotype.reference [ i, c("label")]),"\n"))
-
-        ## Build and run the formula to insert the indicator in the right frame  ###########################
-
 
         formula1 <-  paste0(framename,".anom.reference1 <- as.data.frame(", framename,"$",as.character(anotype.reference [ i, c("fullname")]),")" )
         formula11 <- paste0("names(",framename,".anom.reference1) <- \"",anotype.reference [ i, c("fullname")],"\"" )
@@ -180,37 +169,40 @@ kobo_anonymise <- function(frame, dico) {
     formula3 <- paste0( "write.csv(",framename,".anom.reference, \"data/anom_reference_",framename,".csv\", row.names = FALSE, na = \"\")")
     cat(formula3, file = "code/temp-reference.R" , sep = "\n", append = TRUE)
 
-    mainDir <- getwd()
-    source(paste0(mainDir,"/code/temp-reference.R"))
+  #  mainDir <- getwd()
+  #  source(paste0(mainDir,"/code/temp-reference.R"))
     source("code/temp-reference.R")
     if (file.exists("code/temp-reference-reference.R")) file.remove("code/temp-reference.R")
 
     } else{}
 
+  #### Scramble ###############
   anotype.scramble <- dico[ which(dico$anonymise=="scramble" & dico$qrepeatlabel == framename),  ]
 
   if (nrow(anotype.scramble ) > 0) {
     cat(paste0(nrow(anotype.scramble), " variables to scramble \n\n"))
 
-      for (i in 1:nrow(anotype.scramble )) {
+        if (file.exists("code/temp-scramble.R")) file.remove("code/temp-scramble.R")
+       cat("cat(\"Now Running scramble Script \n \")", file = "code/temp-scramble.R" , sep = "\n", append = TRUE)
+
+       for (i in 1:nrow(anotype.scramble )) {
         cat(paste0(i, "- Scramble through cryptographical hash function, if exists, the value of: ", as.character(anotype.scramble[ i, c("label")]),"\n"))
 
-        ## Build and run the formula to insert the indicator in the right frame  ###########################
         indic.formula <- paste0(framename,"$",as.character(anotype.scramble[ i, c("fullname")]),
                                 "<- digest(" ,framename,"$",as.character(anotype.scramble[ i, c("fullname")]),
                                 ", algo= \"crc32\")" )
-        if (file.exists("code/temp-remove.R")) file.remove("code/temp-remove.R")
         cat(paste0("if (\"", as.character(anotype.scramble [ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-        cat(paste0(formula, "} else"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-        cat("{}", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-        source("code/temp-remove.R")
-        source(paste0(getwd(),"/code/temp-remove.R"))
-        if (file.exists("code/temp-remove.R")) file.remove("code/temp-remove.R")
+        cat(paste0(formula, "} else"), file = "code/temp-scramble.R" , sep = "\n", append = TRUE)
+        cat("{}", file = "code/temp-scramble.R" , sep = "\n", append = TRUE)
       }
+        source("code/temp-scramble.R")
+       # source(paste0(getwd(),"/code/temp-scramble.R"))
+       # if (file.exists("code/temp-scramble.R")) file.remove("code/temp-scramble.R")
   } else{}  }
   else { cat("Sorry, it looks like there's nothing to anonymise based on the anonymisation plan within the xlsform dictionnary... \n") }
   }
 
-  return(frame)
+ # return(frame)
+
 }
 NULL

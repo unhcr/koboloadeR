@@ -74,7 +74,7 @@ household <- kobo_clean(household, dico)
 ############################################################
 ## Build anonymised version of the frame
 cat("\n\n\n Anonymise Household \n\n\n\n")
-household <- kobo_anonymise(household, dico)
+kobo_anonymise(household, dico)
 
 ############################################################
 ## Save preliminary version before encoding or adding indicators
@@ -83,7 +83,7 @@ write.csv(household,"data/household.csv", row.names = FALSE, na = "")
 
 ############################################################
 ## Compute indicators if defined
-source("code/2-create-indicators")
+source("code/2-create-indicators.R")
 
 ############################################################
 ## Re-encoding data now based on the dictionnary -- the xlsform dictionnary can be adjusted this script re-runned till satisfaction

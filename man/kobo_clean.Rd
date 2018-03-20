@@ -8,6 +8,8 @@ kobo_clean(frame, dico)
 }
 \arguments{
 \item{dico}{Generated from kobo_dico function}
+
+\item{kobo}{or odk dataset to use}
 }
 \description{
 The function works on a loop based on the dictionnary.

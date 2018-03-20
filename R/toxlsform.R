@@ -28,9 +28,11 @@ toxlsform <- function(df,
 
   stopifnot(is.data.frame(df))
 
+  # n = 10
+
   ## build survey sheet
-  survey <- data.frame(name = names(df),
-                    type = rep(as.character(NA), ncol(df)),
+  survey <- data.frame( type = rep(as.character(NA), ncol(df)),
+                    name = names(df),
                     label = names(df),
                     chapter = rep(as.character(NA), ncol(df)),
                     disaggregation = rep(as.character(NA), ncol(df)),

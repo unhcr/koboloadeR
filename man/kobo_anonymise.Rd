@@ -8,6 +8,8 @@ kobo_anonymise(frame, dico)
 }
 \arguments{
 \item{dico}{Generated from kobo_dico function}
+
+\item{kobo}{or odk dataset to use}
 }
 \description{
 Automatically produce an anonymised dataset in line with the anonymisation plan set up in the xlsform.
@@ -45,7 +47,6 @@ kobo_anonymise()
 \dontrun{
 kobo_anonymise(frame, dico)
 }
-
 
 }
 \author{

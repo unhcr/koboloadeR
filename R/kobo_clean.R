@@ -8,7 +8,7 @@
 #' The new cleaned variable will be inserted in the dictionnary. with a suffix '.clean'
 #'
 #'
-#' @frame  kobo or odk dataset to use
+#' @param  kobo or odk dataset to use
 #' @param  dico Generated from kobo_dico function
 #'
 #' @author Edouard Legoupil

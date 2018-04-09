@@ -30,8 +30,8 @@ kobo_dico <- function(form) {
   # read the survey tab of ODK from
   form_tmp <- paste0("data/",form)
 
-  ####
-  ### First review all questions first ###########################################################################################
+
+  ### First review all questions from survey sheet #################################################
   survey <- read_excel(form_tmp, sheet = "survey")
 
   ## Rename the variable label
@@ -39,6 +39,9 @@ kobo_dico <- function(form) {
   names(survey)[names(survey) == "label::english"] <- "label"
   cat("Checking now for additional information within your xlsform. Note that you can insert them in the xls and re-run the function! \n \n ")
 
+
+
+  ### add column if not present #################################################
   if ("disaggregation" %in% colnames(survey))
   {
   cat("1- Good: You have a column `disaggregation` in your survey worksheet.\n");
@@ -60,12 +63,12 @@ kobo_dico <- function(form) {
   {cat("3- No column `chapter` in your survey worksheet. Creating a dummy one for the moment ...\n");
     survey$chapter <- ""}
 
-  if ("sensitive" %in% colnames(survey))
+  if ("structuralequation" %in% colnames(survey))
   {
-    cat("4- Good: You have a column `sensitive` in your survey worksheet. This will be used to distingusih potentially sensitive questions\n");
+    cat("4- Good: You have a column `structuralequation` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
   } else
-  {cat("4- No column `sensitive` in your survey worksheet. Creating a dummy one for the moment filled as `non-sensitive`. Other option is to record as `sensitive`...\n");
-    survey$sensitive <- "default-non-sensitive"}
+  {cat("4- No column `structuralequation` in your survey worksheet. Creating a dummy one for the moment...\n");
+    survey$structuralequation <- ""}
 
 
   if ("anonymise" %in% colnames(survey))
@@ -104,11 +107,24 @@ kobo_dico <- function(form) {
   {cat("9- No column `predict` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
     survey$predict <- ""}
 
+  if ("mappoint" %in% colnames(survey))
+  {
+    cat("10- Good: You have a column `mappoint` in your survey worksheet. This will be used to flag variables to be used for clustering exploration.\n");
+  } else
+  {cat("10- No column `mappoint` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
+    survey$mappoint <- ""}
+
+  if ("mappoly" %in% colnames(survey))
+  {
+    cat("11- Good: You have a column `mappoly` in your survey worksheet. This will be used to flag variables to be used for clustering exploration.\n");
+  } else
+  {cat("11- No column `mappoly` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
+    survey$mappoly <- ""}
 
   ## Avoid columns without names
   survey <- survey[ ,c("type",   "name" ,  "label",
                        #"repeatsummarize",
-                       "variable","disaggregation",  "chapter", "sensitive","anonymise","correlate","clean","cluster","predict"
+                       "variable","disaggregation",  "chapter", "structuralequation","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
                       # "indicator","indicatorgroup","indicatortype",
                       # "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation"
                        #"indicator","select", "Comment", "indicatordirect", "indicatorgroup" ## This indicator reference
@@ -165,12 +181,12 @@ kobo_dico <- function(form) {
   for(i in 2:nrow(survey))
   {
     #Check based on repeat type
-         if (survey[ i, c("type")] %in% c("begin repeat","begin_repeat") && survey[ i-1, c("qrepeat")]=="")                  {survey[ i, c("qrepeat")]  <- "repeatnest1"}
-    else if (survey[ i, c("type")] %in% c("begin repeat","begin_repeat") && survey[ i-1, c("qrepeat")]=="repeatnest1")       {survey[ i, c("qrepeat")]  <-  "repeatnest2"}
-    else if (!(survey[ i, c("type")] %in% c("end repeat","end_repeat"))  && survey[ i-1, c("qrepeat")]=="repeatnest1")       {survey[ i, c("qrepeat")]  <-  "repeatnest1"}
-    else if (!(survey[ i, c("type")] %in% c("end repeat","end_repeat"))  && survey[ i-1, c("qrepeat")]=="repeatnest2")       {survey[ i, c("qrepeat")]  <-  "repeatnest2"}
-    else if (survey[ i, c("type")] %in% c("end repeat","end_repeat")     && survey[ i-1, c("qrepeat")]=="repeatnest1" )      {survey[ i, c("qrepeat")]  <-  ""}
-    else if (survey[ i, c("type")] %in% c("end repeat","end_repeat")     && survey[ i-1, c("qrepeat")]=="repeatnest2" )      {survey[ i, c("qrepeat")]  <-  "repeatnest1"}
+         if (survey[ i, c("type")] %in% c("begin repeat","begin_repeat") && survey[ i - 1, c("qrepeat")] == "")                  {survey[ i, c("qrepeat")]  <- "repeatnest1"}
+    else if (survey[ i, c("type")] %in% c("begin repeat","begin_repeat") && survey[ i - 1, c("qrepeat")] == "repeatnest1")       {survey[ i, c("qrepeat")]  <-  "repeatnest2"}
+    else if (!(survey[ i, c("type")] %in% c("end repeat","end_repeat"))  && survey[ i - 1, c("qrepeat")] == "repeatnest1")       {survey[ i, c("qrepeat")]  <-  "repeatnest1"}
+    else if (!(survey[ i, c("type")] %in% c("end repeat","end_repeat"))  && survey[ i - 1, c("qrepeat")] == "repeatnest2")       {survey[ i, c("qrepeat")]  <-  "repeatnest2"}
+    else if (survey[ i, c("type")] %in% c("end repeat","end_repeat")     && survey[ i - 1, c("qrepeat")] == "repeatnest1" )      {survey[ i, c("qrepeat")]  <-  ""}
+    else if (survey[ i, c("type")] %in% c("end repeat","end_repeat")     && survey[ i - 1, c("qrepeat")] == "repeatnest2" )      {survey[ i, c("qrepeat")]  <-  "repeatnest1"}
 
     else   {survey[ i, c("qrepeat")]  <-  ""}
   }
@@ -183,20 +199,20 @@ kobo_dico <- function(form) {
   {
     # Now insert the repeat label based on name
     # i <-230
-         if ( survey[ i, c("type")] =="begin repeat" )                                                {survey[ i, c("qrepeatlabel")]  <- survey[ i, c("name")]}
-    else if ( survey[ i, c("type")] !="end repeat"   && survey[ i-1, c("qrepeat")]=="repeatnest1" )   {survey[ i, c("qrepeatlabel")]  <- survey[ i-1, c("qrepeatlabel")] }
-    else if ( survey[ i, c("type")] !="end repeat"   && survey[ i-1, c("qrepeat")]=="repeatnest2" )   {survey[ i, c("qrepeatlabel")]  <- survey[ i-1, c("qrepeatlabel")] }
-    else if ( survey[ i, c("type")] =="end repeat"   && survey[ i-1, c("qrepeat")]=="repeatnest1")    {survey[ i, c("qrepeatlabel")]  <-  "household"}
-    else if ( survey[ i, c("type")] =="end repeat"   && survey[ i-1, c("qrepeat")]=="repeatnest2")    { nestabove <- as.character(survey[ i-1, c("qrepeatlabel")])
+         if ( survey[ i, c("type")] == "begin repeat" )                                                {survey[ i, c("qrepeatlabel")]  <- survey[ i, c("name")]}
+    else if ( survey[ i, c("type")] !="end repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest1" )   {survey[ i, c("qrepeatlabel")]  <- survey[ i - 1, c("qrepeatlabel")] }
+    else if ( survey[ i, c("type")] !="end repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest2" )   {survey[ i, c("qrepeatlabel")]  <- survey[ i - 1, c("qrepeatlabel")] }
+    else if ( survey[ i, c("type")] == "end repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest1")    {survey[ i, c("qrepeatlabel")]  <-  "household"}
+    else if ( survey[ i, c("type")] == "end repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest2")    { nestabove <- as.character(survey[ i - 1, c("qrepeatlabel")])
                                                                                                        nestabovenum <- as.integer(which(nestable$name == nestabove ) -1)
                                                                                                       survey[ i, c("qrepeatlabel")]  <-  as.character( nestable[ nestabovenum , 1] ) }
 
     ## Sometimes it seems that we get an underscore for type
-    else if ( survey[ i, c("type")] =="begin_repeat" )                                                {survey[ i, c("qrepeatlabel")]  <- survey[ i, c("name")]}
-    else if ( survey[ i, c("type")] !="end_repeat"   && survey[ i-1, c("qrepeat")]=="repeatnest1" )   {survey[ i, c("qrepeatlabel")]  <- survey[ i-1, c("qrepeatlabel")] }
-    else if ( survey[ i, c("type")] !="end_repeat"   && survey[ i-1, c("qrepeat")]=="repeatnest2" )   {survey[ i, c("qrepeatlabel")]  <- survey[ i-1, c("qrepeatlabel")] }
-    else if ( survey[ i, c("type")] =="end_repeat"   && survey[ i-1, c("qrepeat")]=="repeatnest1")    {survey[ i, c("qrepeatlabel")]  <-  "household"}
-    else if ( survey[ i, c("type")] =="end_repeat"   && survey[ i-1, c("qrepeat")]=="repeatnest2")    { nestabove <- as.character(survey[ i-1, c("qrepeatlabel")])
+    else if ( survey[ i, c("type")] == "begin_repeat" )                                                {survey[ i, c("qrepeatlabel")]  <- survey[ i, c("name")]}
+    else if ( survey[ i, c("type")] !="end_repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest1" )   {survey[ i, c("qrepeatlabel")]  <- survey[ i - 1, c("qrepeatlabel")] }
+    else if ( survey[ i, c("type")] !="end_repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest2" )   {survey[ i, c("qrepeatlabel")]  <- survey[ i - 1, c("qrepeatlabel")] }
+    else if ( survey[ i, c("type")] == "end_repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest1")    {survey[ i, c("qrepeatlabel")]  <-  "household"}
+    else if ( survey[ i, c("type")] == "end_repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest2")    { nestabove <- as.character(survey[ i - 1, c("qrepeatlabel")])
                                                                                                         nestabovenum <- as.integer(which(nestable$name == nestabove ) -1)
                                                                                                         survey[ i, c("qrepeatlabel")]  <-  as.character( nestable[ nestabovenum , 1] ) }
 
@@ -206,39 +222,39 @@ kobo_dico <- function(form) {
   ### Get question levels in order to match the variable name
   survey$qlevel <- ""
   for(i in 2:nrow(survey))
-  {      if (survey[ i, c("type")] =="begin group" && survey[ i-1, c("qlevel")]=="" )      {survey[ i, c("qlevel")]  <-  "level1"}
-    else if (survey[ i, c("type")] =="begin_group" && survey[ i-1, c("qlevel")]=="" )      {survey[ i, c("qlevel")]  <-  "level1"}
+  {      if (survey[ i, c("type")] == "begin group" && survey[ i - 1, c("qlevel")] == "" )      {survey[ i, c("qlevel")]  <-  "level1"}
+    else if (survey[ i, c("type")] == "begin_group" && survey[ i - 1, c("qlevel")] == "" )      {survey[ i, c("qlevel")]  <-  "level1"}
 
-    else if (survey[ i, c("type")] =="begin group" && survey[ i-1, c("qlevel")]=="level1") {survey[ i, c("qlevel")]  <-  "level2"}
-    else if (survey[ i, c("type")] =="begin_group" && survey[ i-1, c("qlevel")]=="level1") {survey[ i, c("qlevel")]  <-  "level2"}
+    else if (survey[ i, c("type")] == "begin group" && survey[ i - 1, c("qlevel")] == "level1") {survey[ i, c("qlevel")]  <-  "level2"}
+    else if (survey[ i, c("type")] == "begin_group" && survey[ i - 1, c("qlevel")] == "level1") {survey[ i, c("qlevel")]  <-  "level2"}
 
-    else if (survey[ i, c("type")] =="begin group" && survey[ i-1, c("qlevel")]=="level2") {survey[ i, c("qlevel")]  <-  "level3"}
-    else if (survey[ i, c("type")] =="begin_group" && survey[ i-1, c("qlevel")]=="level2") {survey[ i, c("qlevel")]  <-  "level3"}
+    else if (survey[ i, c("type")] == "begin group" && survey[ i - 1, c("qlevel")] == "level2") {survey[ i, c("qlevel")]  <-  "level3"}
+    else if (survey[ i, c("type")] == "begin_group" && survey[ i - 1, c("qlevel")] == "level2") {survey[ i, c("qlevel")]  <-  "level3"}
 
-    else if (survey[ i, c("type")] =="begin group" && survey[ i-1, c("qlevel")]=="level3") {survey[ i, c("qlevel")]  <-  "level4"}
-    else if (survey[ i, c("type")] =="begin_group" && survey[ i-1, c("qlevel")]=="level3") {survey[ i, c("qlevel")]  <-  "level4"}
+    else if (survey[ i, c("type")] == "begin group" && survey[ i - 1, c("qlevel")] == "level3") {survey[ i, c("qlevel")]  <-  "level4"}
+    else if (survey[ i, c("type")] == "begin_group" && survey[ i - 1, c("qlevel")] == "level3") {survey[ i, c("qlevel")]  <-  "level4"}
 
-    else if (survey[ i, c("type")] =="begin group" && survey[ i-1, c("qlevel")]=="level4") {survey[ i, c("qlevel")]  <-  "level5"}
-    else if (survey[ i, c("type")] =="begin_group" && survey[ i-1, c("qlevel")]=="level4") {survey[ i, c("qlevel")]  <-  "level5"}
+    else if (survey[ i, c("type")] == "begin group" && survey[ i - 1, c("qlevel")] == "level4") {survey[ i, c("qlevel")]  <-  "level5"}
+    else if (survey[ i, c("type")] == "begin_group" && survey[ i - 1, c("qlevel")] == "level4") {survey[ i, c("qlevel")]  <-  "level5"}
 
     ## Now end of group
 
-    else if (survey[ i, c("type")] =="end group" && survey[ i-1, c("qlevel")]=="level1") {survey[ i, c("qlevel")] <- "" }
-    else if (survey[ i, c("type")] =="end_group" && survey[ i-1, c("qlevel")]=="level1") {survey[ i, c("qlevel")] <- "" }
+    else if (survey[ i, c("type")] == "end group" && survey[ i - 1, c("qlevel")] == "level1") {survey[ i, c("qlevel")] <- "" }
+    else if (survey[ i, c("type")] == "end_group" && survey[ i - 1, c("qlevel")] == "level1") {survey[ i, c("qlevel")] <- "" }
 
-    else if (survey[ i, c("type")] =="end group" && survey[ i-1, c("qlevel")]=="level2") {survey[ i, c("qlevel")]  <-  "level1"}
-    else if (survey[ i, c("type")] =="end_group" && survey[ i-1, c("qlevel")]=="level2") {survey[ i, c("qlevel")]  <-  "level1"}
+    else if (survey[ i, c("type")] == "end group" && survey[ i - 1, c("qlevel")] == "level2") {survey[ i, c("qlevel")]  <-  "level1"}
+    else if (survey[ i, c("type")] == "end_group" && survey[ i - 1, c("qlevel")] == "level2") {survey[ i, c("qlevel")]  <-  "level1"}
 
-    else if (survey[ i, c("type")] =="end group" && survey[ i-1, c("qlevel")]=="level3") {survey[ i, c("qlevel")]  <-  "level2"}
-    else if (survey[ i, c("type")] =="end_group" && survey[ i-1, c("qlevel")]=="level3") {survey[ i, c("qlevel")]  <-  "level2"}
+    else if (survey[ i, c("type")] == "end group" && survey[ i - 1, c("qlevel")] == "level3") {survey[ i, c("qlevel")]  <-  "level2"}
+    else if (survey[ i, c("type")] == "end_group" && survey[ i - 1, c("qlevel")] == "level3") {survey[ i, c("qlevel")]  <-  "level2"}
 
-    else if (survey[ i, c("type")] =="end group" && survey[ i-1, c("qlevel")]=="level4") {survey[ i, c("qlevel")]  <-  "level3"}
-    else if (survey[ i, c("type")] =="end_group" && survey[ i-1, c("qlevel")]=="level4") {survey[ i, c("qlevel")]  <-  "level3"}
+    else if (survey[ i, c("type")] == "end group" && survey[ i - 1, c("qlevel")] == "level4") {survey[ i, c("qlevel")]  <-  "level3"}
+    else if (survey[ i, c("type")] == "end_group" && survey[ i - 1, c("qlevel")] == "level4") {survey[ i, c("qlevel")]  <-  "level3"}
 
-    else if (survey[ i, c("type")] =="end group" && survey[ i-1, c("qlevel")]=="level5") {survey[ i, c("qlevel")]  <-  "level4"}
-    else if (survey[ i, c("type")] =="end_group" && survey[ i-1, c("qlevel")]=="level5") {survey[ i, c("qlevel")]  <-  "level4"}
+    else if (survey[ i, c("type")] == "end group" && survey[ i - 1, c("qlevel")] == "level5") {survey[ i, c("qlevel")]  <-  "level4"}
+    else if (survey[ i, c("type")] == "end_group" && survey[ i - 1, c("qlevel")] == "level5") {survey[ i, c("qlevel")]  <-  "level4"}
 
-    else   {survey[ i, c("qlevel")]  <-  survey[ i-1, c("qlevel")]}
+    else   {survey[ i, c("qlevel")]  <-  survey[ i - 1, c("qlevel")]}
   }
 
   ### Get question groups in order to match the variable name
@@ -262,7 +278,7 @@ kobo_dico <- function(form) {
                survey[ i, c("qrepeat")] %in% c("", "repeatnest1", "repeatnest2") &&
               !(survey[ i, c("type")]   %in% c("begin_group","begin group","end_group","end group","begin_repeat","begin repeat","end_repeat","end repeat")) )
 
-      {survey[ i, c("qgroup")] <- survey[ i-1, c("qgroup")]
+      {survey[ i, c("qgroup")] <- survey[ i - 1, c("qgroup")]
 
 
     } else if (survey[ i, c("qlevel")]   %in% c("level1") &&
@@ -275,13 +291,13 @@ kobo_dico <- function(form) {
               survey[ i, c("qrepeat")]  %in% c("", "repeatnest1", "repeatnest2") &&
               survey[ i, c("type")]     %in% c("begin_group","begin group") )
 
-       {survey[ i, c("qgroup")] <- paste(survey[ i-1, c("qgroup")], survey[ i, c("name")],sep = ".")
+       {survey[ i, c("qgroup")] <- paste(survey[ i - 1, c("qgroup")], survey[ i, c("name")],sep = ".")
 
     } else if (survey[ i, c("qlevel")]   %in% c("level1","level2","level3","level4","level5")  &&
               survey[ i, c("qrepeat")]  %in% c("repeatnest1", "repeatnest2") &&
               survey[ i, c("type")]     %in% c("begin_repeat","begin repeat")   )
 
-      {survey[ i, c("qgroup")] <- paste(survey[ i-1, c("qgroup")], survey[ i, c("qrepeatlabel")], sep = ".")
+      {survey[ i, c("qgroup")] <- paste(survey[ i - 1, c("qgroup")], survey[ i, c("qrepeatlabel")], sep = ".")
 
     } else if (survey[ i, c("qlevel")]   %in% c("level1","level2","level3","level4","level5") &&
               survey[ i, c("qrepeat")]  %in% c("", "repeatnest1", "repeatnest2") &&
@@ -327,23 +343,23 @@ kobo_dico <- function(form) {
 
   if ("order" %in% colnames(choices))
   {
-    cat("10 -  Good: You have a column `order` in your `choices` worksheet.\n");
+    cat("12 -  Good: You have a column `order` in your `choices` worksheet.\n");
   } else
-  {cat("10 -  No column `order` in your `choices` worksheet. Creating a dummy one for the moment...\n");
+  {cat("12 -  No column `order` in your `choices` worksheet. Creating a dummy one for the moment...\n");
     choices$order <- ""}
 
   if ("weight" %in% colnames(choices))
   {
-    cat("11 -  Good: You have a column `weight` in your `choices` worksheet.\n");
+    cat("13 -  Good: You have a column `weight` in your `choices` worksheet.\n");
   } else
-  {cat("11 -  No column `weight` in your `choices` worksheet. Creating a dummy one for the moment...\n");
+  {cat("13 -  No column `weight` in your `choices` worksheet. Creating a dummy one for the moment...\n");
     choices$weight <- ""}
 
   if ("recategorise" %in% colnames(choices))
   {
-    cat("12 -  Good: You have a column `recategorise` in your `choices` worksheet.\n");
+    cat("14 -  Good: You have a column `recategorise` in your `choices` worksheet.\n");
   } else
-  {cat("12 -  No column `recategorise` in your `choices` worksheet. Creating a dummy one for the moment...\n");
+  {cat("14 -  No column `recategorise` in your `choices` worksheet. Creating a dummy one for the moment...\n");
     choices$recategorise <- ""}
 
   if ("score" %in% colnames(choices))
@@ -377,8 +393,8 @@ kobo_dico <- function(form) {
     #names(choices) -"type", "name", "namefull",  "labelfull", "listname", "qrepeat", "qlevel", "qgroup"
     ## not kept: "nameq"     "labelq"   ,"fullname", "label",
     #names(survey) - "type" "name",  "fullname", "label",  "listname", "qrepeat"m  "qlevel",   "qgroup"
-  choices2 <- choices[ ,c("type", "name", "namefull",  "labelfull", "chapter","disaggregation","correlate", "sensitive","anonymise",
-                          "clean","cluster","predict",
+  choices2 <- choices[ ,c("type", "name", "namefull",  "labelfull", "chapter","disaggregation","correlate", "structuralequation","anonymise",
+                          "clean","cluster","predict","mappoint","mappoly",
                           "listname", "qrepeat","qrepeatlabel",  "qlevel", "qgroup", "labelchoice",
                          #"repeatsummarize",
                          "variable",
@@ -390,8 +406,8 @@ kobo_dico <- function(form) {
   names(choices2)[names(choices2) == "labelfull"] <- "label"
 
 
-  survey2 <-    survey[,c("type", "name",  "fullname", "label", "chapter", "disaggregation","correlate",  "sensitive","anonymise",
-                          "clean","cluster","predict",
+  survey2 <-    survey[,c("type", "name",  "fullname", "label", "chapter", "disaggregation","correlate",  "structuralequation","anonymise",
+                          "clean","cluster","predict","mappoint","mappoly",
                           "listname", "qrepeat","qrepeatlabel",  "qlevel",   "qgroup", "labelchoice",
                           #"repeatsummarize",
                           "variable",
@@ -428,16 +444,16 @@ kobo_dico <- function(form) {
   #levels(as.factor(dico$qrepeat))
   ## Changing type for flatenned repeat questions
 
-  #dico$type[dico$qrepeat=="repeat" & dico$type %in% c("integer")] <- "integerlist"
-  #dico$type[dico$qrepeat=="repeat" & dico$type %in% c("text")] <- "textlist"
-  #dico$type[dico$qrepeat=="repeat" & dico$type %in% c("select_one")] <- "select_onelist"
+  #dico$type[dico$qrepeat== "repeat" & dico$type %in% c("integer")] <- "integerlist"
+  #dico$type[dico$qrepeat== "repeat" & dico$type %in% c("text")] <- "textlist"
+  #dico$type[dico$qrepeat== "repeat" & dico$type %in% c("select_one")] <- "select_onelist"
 
-  #dico$type[dico$qrepeat=="repeat" & dico$type %in% c("select_one_d")] <- "integer"
-  #dico$type[dico$qrepeat=="repeat" & dico$type %in% c("select_multiple")] <- "integer"
+  #dico$type[dico$qrepeat== "repeat" & dico$type %in% c("select_one_d")] <- "integer"
+  #dico$type[dico$qrepeat== "repeat" & dico$type %in% c("select_multiple")] <- "integer"
 
-  #dico[dico$qrepeat=="repeat" & dico$type %in% c("select_multiple")]
+  #dico[dico$qrepeat== "repeat" & dico$type %in% c("select_multiple")]
 
-  #if (dico$qrepeat=="repeat" && dico$type %in% c("select_one_d", "select_multiple")) {dico$type <- "integer"
+  #if (dico$qrepeat== "repeat" && dico$type %in% c("select_one_d", "select_multiple")) {dico$type <- "integer"
   #                               cat("Note that select_one & select_multiple questions within REPEAT part are converted to integer (results are summed up).\n")
   #} else { dico$type <- dico$type
    #  cat("Note that select_one & select_multiple questions within REPEAT part are converted to integer (results are summed up).\n")

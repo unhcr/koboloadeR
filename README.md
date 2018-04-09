@@ -148,14 +148,20 @@ Note that for charting purpose, it's recommanded that labels for questions & cho
 
 ### In the `survey` worksheet:
 
-Column | Description
-------|--------------
-`chapter`| used to breakfdown the final report
-`disaggregation`| used to flag variables used to  `facet` dataset 
-`correlate`| used to flag variables used for  statistical test of independence (for categorical variable) or correlation for numeric variable
-`variable`| used to flag `ordinal` variables so that graphs are not ordered per frequency.
-`sensitive`| used to flag variables identified as sensitive
-`anonymise`| used to generate an anonymised datset in line the anonymisation plan within the xlsform
+Column              | Description
+--------------------|--------------
+`chapter`           | used to breakfdown the final report
+`disaggregation`    | used to flag variables used to  `facet` dataset 
+`correlate`         | used to flag variables used for  statistical test of independence (for categorical variable) or correlation for numeric variable
+`variable`          | used to flag `ordinal` variables so that graphs are not ordered per frequency.
+`anonymise`         | used to generate an anonymised datset in line the anonymisation plan within the xlsform
+`structuralequation`| used to tag variables to the standard structural equation model: `risk`, `coping`, `vulnerability`
+`clean`             | used to flag external csv file to be used for the cleaning of a specific variable
+`cluster`           | used to flag variables used for statistical clustering
+`predict`           | used to flag variables to be predicted based on a joined registration dataset
+`mappoint`          | used to flag variables to be mapped as point
+`mappoly`           | used to flag variables to be mapped as polygon
+ 
 
 ### In the `choices` worksheet:
 

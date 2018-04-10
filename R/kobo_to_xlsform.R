@@ -1,5 +1,5 @@
-#' @name toxlsform
-#' @rdname toxlsform
+#' @name kobo_to_xlsform
+#' @rdname kobo_to_xlsform
 #' @title  Generate xlsfrom skeleton from a dataframe
 #'
 #' @description Creates and save a xlsform skeleton from a data.frames in your data folder
@@ -20,14 +20,14 @@
 #' @examples
 #' data(iris)
 #' str(iris)
-#' toxlsform(iris)
+#' kobo_to_xlsform(iris)
 
 
-toxlsform <- function(df,
+kobo_to_xlsform <- function(df,
                      n=100) {
 
   stopifnot(is.data.frame(df))
-
+  # df <- data.df
   # n = 10
 
   ## build survey sheet
@@ -83,7 +83,7 @@ toxlsform <- function(df,
               choices <- rbind(choices, choices1)
           }
           rm(choices1)
-        }   else {cat("Too manny choices to consider it as a factor\n")}
+        }   else {cat("Too many choices to consider it as a factor\n")}
     ###
     }   else {cat("This is not a factor \n")}
    }

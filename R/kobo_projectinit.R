@@ -39,9 +39,9 @@ kobo_projectinit <- function() {
     cat("")
     # Handle this error as appropriate
   }
-  destfile=paste0(mainDir,"/perso/README.md")
+  destfile = paste0(mainDir,"/perso/README.md")
   if (!file.exists(destfile)) {
-    fileConn<-file(destfile)
+    fileConn <- file(destfile)
     writeLines(c("### This folder is where your user name, password and config are stored"), fileConn)
     close(fileConn)
   }
@@ -65,9 +65,9 @@ kobo_projectinit <- function() {
     cat("")
     # Handle this error as appropriate
   }
-  destfile=paste0(mainDir,"/code/README.md")
+  destfile = paste0(mainDir,"/code/README.md")
   if (!file.exists(destfile)) {
-    fileConn<-file(destfile)
+    fileConn <- file(destfile)
     writeLines(c("### This folder is where analysis scripts are saved"), fileConn)
     close(fileConn)
   }
@@ -82,55 +82,49 @@ kobo_projectinit <- function() {
      } else{ path_correct <- as.character(path[2,1])}
     }
 
-  destfile=paste0(mainDir,"/code/0-packages.R")
+  destfile = paste0(mainDir,"/code/0-packages.R")
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/0-packages.R",sep = ""), destfile)
   }
 
-  destfile=paste0(mainDir,"/code/0-theme.R")
+  destfile = paste0(mainDir,"/code/0-theme.R")
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/0-theme.R",sep = ""), destfile)
   }
 
-  destfile=paste0(mainDir,"/code/0-config.R")
+  destfile = paste0(mainDir,"/code/0-config.R")
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/0-config.R",sep = ""), destfile)
   }
 
-  destfile=paste0(mainDir,"/code/1-loaddata.R")
+  destfile = paste0(mainDir,"/code/1-loaddata.R")
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/1-loaddata.R",sep = ""), destfile)
   }
 
-#  destfile=paste0(mainDir,"/code/2-create-graph.R")
+#  destfile = paste0(mainDir,"/code/2-create-graph.R")
 #  if (!file.exists(destfile)) {
 #    file.copy(paste(path_correct,"/koboloadeR/script/2-create-graph.R",sep = ""), destfile)
 #  }
 
-  destfile=paste0(mainDir,"/code/2-create-indicators.R")
+  destfile = paste0(mainDir,"/code/2-create-indicators.R")
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/2-create-indicators.R",sep = ""), destfile)
   }
 
-  destfile=paste0(mainDir,"/code/3-generate-report.R")
+  destfile = paste0(mainDir,"/code/3-generate-report.R")
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/3-generate-report.R",sep = ""), destfile)
   }
-  destfile=paste0(mainDir,"/code/report.Rmd")
+  destfile = paste0(mainDir,"/code/report.Rmd")
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/report.Rmd",sep = ""), destfile)
   }
 
-  destfile=paste0(mainDir,"/code/style-unhcr-portrait.docx")
+  destfile = paste0(mainDir,"/code/style-unhcr-portrait.docx")
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/style-unhcr-portrait.docx",sep = ""), destfile)
   }
-
-  destfile=paste0(mainDir,"/code/style-unhcr-landscape.docx")
-  if (!file.exists(destfile)) {
-    file.copy(paste(path_correct,"/koboloadeR/script/style-unhcr-landscape.docx",sep = ""), destfile)
-  }
-
 
   subDir <- "data"
 
@@ -151,9 +145,9 @@ kobo_projectinit <- function() {
     cat("")
     # Handle this error as appropriate
   }
-  destfile=paste0(mainDir,"/data/README.md")
+  destfile = paste0(mainDir,"/data/README.md")
   if (!file.exists(destfile)) {
-    fileConn<-file(destfile)
+    fileConn <- file(destfile)
     writeLines(c("### This folder is the one where are stored data in CSV format, the form in XLS format and geodata in SHP format",
                  "# BE CAREFUL: DO NOT SHARE PROTECTION SENSITIVE DATA ON GITHUB!",
                  "",
@@ -180,9 +174,9 @@ kobo_projectinit <- function() {
     cat("")
     # Handle this error as appropriate
   }
-  destfile=paste0(mainDir,"/out/README.md")
+  destfile = paste0(mainDir,"/out/README.md")
   if (!file.exists(destfile)) {
-    fileConn<-file(destfile)
+    fileConn <- file(destfile)
     writeLines(c("### This folder is where the analysis output will be generated",
                  "# BE CAREFUL: DO NOT SHARE PROTECTION SENSITIVE DATA ON GITHUB!"), fileConn)
     close(fileConn)

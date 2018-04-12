@@ -1,8 +1,6 @@
 rm(list = ls())
 
-
-################################################################
-## Load all required packages
+## Load all required packages         #############################################
 source("code/0-packages.R")
 source("code/0-config.R")
 
@@ -15,16 +13,11 @@ source("code/0-config.R")
 library(koboloadeR)
 
 ## kobo_projectinit()
-
-############################################################
-#                                                          #
-#   Position your form & your data in the data folder
-#                                                          #
-############################################################
+## Now Position your form & your data in the data folder
 
 
-##############################################
-## Load form and building dictionnary
+
+## Load form and building dictionnary #############################################
 #rm(form)
 #form <- "form.xls"
 ## Generate & Load dictionnary
@@ -34,8 +27,7 @@ dico <- read.csv(paste("data/dico_",form,".csv",sep = ""), encoding = "UTF-8", n
 #rm(form)
 
 
-#rm(data)
-## Might need to be tweaked -- double check
+# Load data #######################################################################
 cat("\n\n\n Load original dataset \n\n\n\n")
 data.or <- read.csv(path.to.data, sep = ";", encoding = "UTF-8", na.strings = "")
 
@@ -58,46 +50,46 @@ if (ncol(data.or) == 1) {
 #names(data.or) <- datalabel[, 2]
 
 
+### Generate anonymisation report  ################################################
+##Uncomment ot generate an anonymisation report
+#kobo_anonymisation_report(data.or)
 
 
-###################################################################################
-## Check to split select_multiple if data is extracted from ODK
+## Check to split select_multiple if data is extracted from ODK ###################
 cat("\n\n\n Now split select_multiple  variables \n\n\n\n")
 household <- kobo_split_multiple(data.or, dico)
 
 
-############################################################
-## Clean variable if any
+## Clean variable if any ##########################################################
 cat("\n\n\n Clean variable if any \n\n\n\n")
 household <- kobo_clean(household, dico)
 
-############################################################
-## Build anonymised version of the frame
+## Build anonymised version of the frame ##########################################
 cat("\n\n\n Anonymise Household \n\n\n\n")
 kobo_anonymise(household, dico)
 
-############################################################
-## Save preliminary version before encoding or adding indicators
+## Save preliminary version before encoding or adding indicators ##################
 cat("\n\nWrite backup before encoding or indicators calculation..\n")
 write.csv(household,"data/household.csv", row.names = FALSE, na = "")
 
-############################################################
-## Compute indicators if defined
+
+## Compute indicators if defined ##################################################
 source("code/2-create-indicators.R")
 
-############################################################
-## Re-encoding data now based on the dictionnary -- the xlsform dictionnary can be adjusted this script re-runned till satisfaction
+
+## Re-encoding data now based on the dictionnary -- ##############################
+## the xlsform dictionnary can be adjusted this script re-runned till satisfaction
 cat("\n\n\n Now  re-encode data  \n\n\n\n")
 household <- kobo_encode(household, dico)
 
-############################################################
-## Cheking the labels matching...
+
+## Cheking the labels matching... #################################################
 ## household is the default root data componnents to be used -- in order to deal with nested dataset
 cat("\n\n\n Now  labeling variables \n\n\n\n")
 household <- kobo_label(household, dico)
 
-############################################################
-## We now save a back up in the data folder to be used for the Rmd
+
+## We now save a back up in the data folder to be used for the Rmd  ###############
 cat("\n\nWrite backup ready for report generation \n")
 write.csv(household,"data/data2.csv", row.names = FALSE, na = "")
 

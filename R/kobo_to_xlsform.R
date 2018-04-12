@@ -28,8 +28,9 @@ kobo_to_xlsform <- function(df,
 
   stopifnot(is.data.frame(df))
   # df <- data.df
+  ## str(df)
   # n = 10
-
+  df[sapply(df, is.labelled)] <- lapply(df[sapply(df, is.labelled)], as.factor)
   ## build survey sheet
   survey <- data.frame( type = rep(as.character(NA), ncol(df)),
                     name = names(df),
@@ -90,9 +91,9 @@ kobo_to_xlsform <- function(df,
 
   # install.packages("WriteXLS")
   library(WriteXLS)
-  WriteXLS("survey", "data/form.xls", AdjWidth = TRUE, BoldHeaderRow = TRUE, AutoFilter = TRUE, FreezeRow = 1)
+  WriteXLS("survey", "data/form-from-data.xls", AdjWidth = TRUE, BoldHeaderRow = TRUE, AutoFilter = TRUE, FreezeRow = 1)
   #WriteXLS("choices", "data/form.xls", AdjWidth = TRUE, BoldHeaderRow = TRUE, AutoFilter = TRUE, FreezeRow = 1)
   library(XLConnect)
-  writeWorksheetToFile(file = "data/form.xls", data = choices, sheet = "choices")
+  writeWorksheetToFile(file = "data/form-from-data.xls", data = choices, sheet = "choices")
 
 }

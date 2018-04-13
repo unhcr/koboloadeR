@@ -17,210 +17,168 @@
 
 kobo_projectconfig <- function() {
 
-  cat(" ##################################################################\n")
-  cat(" # Welcome to KoboloadeR !                                        #\n")
-  cat(" #an R package to facilitate data crunching of survey  microdata. #\n")
-  cat(" ##################################################################\n")
+
+  cat("This script will allow you to write the configuration files for your project.\n")
+
   cat(" \n")
-  cat(" The 2 main advantages of KoboloadeR are to: \n")
-  cat(" 1. Save time to quicly generate the graphs and analysis you need to discover insights from your dataset.\n")
-  cat(" 2. Ensure analysis reproducibilty through a separation of the analysis configuration and the analysis process.\n")
+
   cat(" \n")
-  cat(" For more information: consult https://github.com/Edouard-Legoupil/koboloadeR/blob/master/README.md \n")
-  cat(" or send a message to legoupil@unhcr.org\n")
+  cat("First creating the necessary forlders\n")
+  kobo_projectinit()
+  #load necess
   cat(" \n")
-  cat("                     :+o. oo:. \n")
-  cat("                   /ooo+  /ooo+.\n")
-  cat("                 /oooo/    -oooo+.\n")
-  cat("              .+oooo/        :osoo+- \n")
-  cat("            :osoo+-             ./oooo/ \n")
-  cat("          /oooo:..    -ooso+    . -+ooo+.\n")
-  cat("       ./ooo+. .oo/   oooooo.  -so:  /ooo+-\n")
-  cat("      /oooo/  .ooo:   :oooo/   .oos:  -oooo+.\n")
-  cat("    -ooooo/   +ooo     :oo+     +ooo   -soooo/\n")
-  cat("    ooooos-  :soo-   :+oooo+-    ooo+   soooos-\n")
-  cat("   .oooooo/.:ooo/  -oooooooooo-  .soo+.-sooooo:\n")
-  cat("   .oooooooooooo   /oooooooooo/   /oooosoooooo:\n")
-  cat("   .oooooooooos:   /oooooooooo+   .oooooooooos-\n")
-  cat("    ooooooooooo    /oooooooooo+    +ooooooooos-\n")
-  cat("    oooooooooo:    /oooooooooo+    .ooooooooos.\n")
-  cat("    ooooooooo+     /oooooooooo+     :oooooooos.\n")
-  cat("    +ooooooo+      /oooooooooo+      /oooooooo \n")
-  cat("    /ooooooo.      /oooooooooo+       oooooooo \n")
-  cat("    :soooooo       /oooooooooo+       /oooooo+ \n")
-  cat("    .soooooo       :soooooooos/       /oooooo: \n")
-  cat("     ooooooo          /oooos.         /ooooos- \n")
-  cat("     +oooooo          /oooos          /ooooos  \n")
-  cat("     +oooooo          /oooos          /oooooo  \n")
-  cat("      .----.          -:::::           -----.  \n")
+  cat(" \n")
+  cat("Now configuring a few elements to write the config file: \n")
+
+  cat(" \n")
+  cat("  1.- confirm the name of the main dataframe for the data. this should be a *.xls file  - NOT a *.xlsx file! \n")
+  datafile <- readline("insert the name of the data file: if empty - we use data.xls \n")
+  if(datafile==""){
+    datafile<-"data.xls"
+  }
+  datafile<-str_replace_all(datafile," ","")
+  cat(" \n")
+  cat("  2.- Confirm the name of the form. This should be a *.xls file - NOT a *.xlsx file! \n")
+  formfile <- readline("Insert the name of the form file: if empty - we use form.xls \n")
+  if(formfile==""){
+    formfile<-c("form.xls")
+  }
+  formfile<-str_replace_all(formfile," ","")
+  Koboformname <- read_excel(paste0("data/",formfile) , sheet='settings')
+  koboformname <- as.character(Koboformname[1,"id_string"])
+
+  cat(" \n")
+  cat("  3.- Type of weighting system used? Type the number in brackets().Default is None (2) \n")
+  usedweight <- readline("Sampling frame (1), None (2)")
+  if(usedweight==""){
+    usedweight <- 2
+  }
+  if (usedweight==1){
+    cat("     3.1- Type of sampling used ? Type the number in brackets() \n")
+    usedsampling <- readline("Simple random (1), 2 stages random -st1 (2), cluster sampling(3)")
+
+  }
+  cat(" \n")
+
+  cat(" \n")
+  usedanalysisplan <- readline("4.- Did you use the data analysis plan? Yes (Y) or No (N)")
+  cat(" \n")
+
+  cleaneddata <- readline("5.- Did you clean the data? Yes (Y) or No (N)")
+  if (cleaneddata=="Y"){
+    namecleansheet <- readline("   - What is the name of the cleaned excel sheet? Default: 'cleaned_data'")
+    if(namecleansheet==''){
+      namecleansheet<- "cleaned_data"
+    }
+  }
+  cat(" \n")
+
+
+  cat("  5.- Other information \n")
+  report_name <- readline("What is the name of the report?\n")
+  location <- readline("Where is the report written?\n")
+  author <- readline("What is your name (author)?\n")
+  organisation <- readline("What is your organisation?\n")
+
+  cat(" \n")
+  cat(" \n")
+  cat(" \n")
+  cat(" \n")
+  cat(" ##############################################\n")
+  cat(" # The initial configuration is completed!    #\n")
+  cat(" # A config file has been generated!          #\n")
+  cat(" # Please verify all is good: data/0-config.R #\n")
+  cat(" ##############################################\n")
+  cat(" \n")
+  cat(" \n")
+  cat(" \n")
+  cat("# When you are ready, run kobo_dico() to continue the analysis")
+
+  ###Config file writing
+  #Fetching the directory
+  mainDir <- getwd()
+  #Path to file
+  configfile<-paste(mainDir,"/code/0-config.R",sep="")
+  #Writting file
+  sink(configfile)
+  cat("#### Config file ###\n")
+  cat("\n")
+  cat("### Can be manualy edited or interactively rewritten using the function kobo_projectconfig() \n")
+  cat("\n")
+  cat("### 1. Form in xslform format - saved as .xls - not xlsx - in the data folder###\n")
+  cat('#Replace "',formfile,'" by the name of the form in the data folder (ex: baseline_form.xls)\n')
+  cat(paste("form<-'",formfile,"'",sep=""))
+  cat("\n")
+  cat(paste('path.to.form <- paste("data/',formfile,'",sep="") \n',sep=""))
+  path.to.form <- paste("'data/",formfile,"'",sep="")
+
+  cat("\n")
+  cat("\n### 2. Main dataframe for the data. this should be a *.xls file ###\n")
+  cat("#Replace 'datafile' by the name of the dataframe in the data folder (ex: baseline_data.xls)\n")
+  cat(paste('path.to.data <- paste("data/',datafile,'",sep="") \n',sep=""))
+  path.to.data <- paste("'data/",datafile,"'",sep="")
+  cat(paste('datafile <-"',datafile,'"',sep=""))
   cat("\n")
 
-  cat(" \n")
-  cat(" This script will allow you to write the configuration files for your project.\n")
+  if(cleaneddata=="Y"){
+    cat(paste('data <- read_excel(',path.to.data,', sheet="',namecleansheet,'")',sep=""))
+    cat("\n")
 
-  cat(" \n")
+  }
+  if(cleaneddata=="N"){
 
-  cat(" \n")
-  cat(" First creating the necessary forlders\n")
-  #library("koboloadeR")
-  #kobo_projectinit()
-  cat(" \n")
-  cat(" \n")
-  cat(" Now configuring a few elements to write the config file: \n")
+    cat(paste('data <- read_excel(',path.to.data,', sheet="',koboformname,'")',sep=""))
+    cat("\n")
 
-  cat(" \n")
-  cat("  1.- confirm the name of the main dataframe for the data. this should be a *.csv file with ; as separator \n")
-  datafile <- readline("insert the name of the data file: if empty - we use data.csv \n")
+  }
 
-  cat(" \n")
-  cat("  2.- Confirm the name of the xlsform file for the form. this should be a *.xls file - NOT a *.xlsx file! \n")
-  formfile <- readline("insert the name of the form file: if empty - we use form.xls \n")
 
-  cat(" \n")
-  cat("  3.- What sampling do you have? \n")
-  usedweight <- readline("No sampling(type 1) , Cluster sample (type 2), Stratified sample (type 3), Respondent Driven Sample sample (type 4)? ")
-  if (runproject=='Y') {
-      source("./code/runproject.R")
-    } else {
-      cat("You can now go to /code/runproject.R in order to run the project.\n")
+  cat("### 3.- Type of weighting used ###\n")
+
+  if(usedweight==1){
+    cat("#From Sampling frame: \n")
+    cat(paste('usedweight <- "sampling_frame"',sep=""))
+    cat("\n")
+    cat("####### 3.1 - Type of sampling used ###\n")
+
+    if(usedsampling==1){
+      cat("#Simple random: \n")
+      cat(paste('usedsampling <- "simple random"',sep=""))
+    }
+    if(usedsampling==2){
+      cat("#2 stages random - 1st: \n")
+      cat(paste('usedsampling <- "2 stages random"',sep=""))
+    }
+    if(usedsampling==3){
+      cat("#Cluster sampling: \n")
+      cat(paste('usedsampling <- "cluster sampling"',sep=""))
     }
 
+    cat("\n")
 
-  cat(" \n")
-  cat("  4.- Do you have data cleaning log? \n")
-  usedlog<- readline("Type yes - or leave empty of no datacleaning log ")
-  cat(" \n")
-  cat("  4.- Do you have indicators definition? \n")
-  usedindic <- readline("Type yes - or leave empty of no in ")
-  cat(" \n")
-  cat(" \n")
-  cat(" \n")
-  cat(" ###########################################\n")
-  cat(" # The initial configuration is completed! #\n")
-  cat(" # A config file has been generated!       #\n")
-  cat(" ###########################################\n")
-  cat(" \n")
-  cat("────────────────────░███░\n")
-  cat("───────────────────░█░░░█░\n")
-  cat("──────────────────░█░░░░░█░\n")
-  cat("─────────────────░█░░░░░█░\n")
-  cat("──────────░░░───░█░░░░░░█░\n")
-  cat("─────────░███░──░█░░░░░█░\n")
-  cat("───────░██░░░██░█░░░░░█░\n")
-  cat("──────░█░░█░░░░██░░░░░█░\n")
-  cat("────░██░░█░░░░░░█░░░░█░\n")
-  cat("───░█░░░█░░░░░░░██░░░█░\n")
-  cat("──░█░░░░█░░░░░░░░█░░░█░\n")
-  cat("──░█░░░░░█░░░░░░░░█░░░█░\n")
-  cat("──░█░░█░░░█░░░░░░░░█░░█░\n")
-  cat("─░█░░░█░░░░██░░░░░░█░░█░\n")
-  cat("─░█░░░░█░░░░░██░░░█░░░█░\n")
-  cat("─░█░█░░░█░░░░░░███░░░░█░\n")
-  cat("░█░░░█░░░██░░░░░█░░░░░█░\n")
-  cat("░█░░░░█░░░░█████░░░░░█░\n")
-  cat("░█░░░░░█░░░░░░░█░░░░░█░\n")
-  cat("░█░█░░░░██░░░░█░░░░░█░\n")
-  cat("─░█░█░░░░░████░░░░██░\n")
-  cat("─░█░░█░░░░░░░█░░██░█░\n")
-  cat("──░█░░██░░░██░░█░░░█░\n")
-  cat("───░██░░███░░██░█░░█░\n")
-  cat("────░██░░░███░░░█░░░█░\n")
-  cat("──────░███░░░░░░█░░░█░\n")
-  cat("──────░█░░░░░░░░█░░░█░\n")
-  cat("──────░█░░░░░░░░░░░░█░\n")
-  cat("──────░█░░░░░░░░░░░░░█░\n")
-  cat("──────░█░░░░░░░░░░░░░█░\n")
-  cat(" \n")
-  cat(" \n")
-  cat("  Step 1.- Now generating the dictionnary from the xlsfrom. \n")
-  cat(" \n")
-  cat("  Step 2.- Now generating the additional indicators. \n")
-  cat(" \n")
-  cat("  Step 3.-- Now generating a default Rmarkdown template for your report. \n")
-  cat(" \n")
-  cat("  Step 4.- Now generating the corresponding report in word format. \n")
-  cat(" \n")
-  cat(" ###################################################################\n")
-  cat(" # Check the report and adjust the configuration of your analysis! #\n")
-  cat(" # Refer to the package doccumentation for more details            #\n")
-  cat(" ###################################################################\n")
-  cat(" ─────█▀▀▀▀▀▀█───\n")
-  cat("───▄▀──────────█──\n")
-  cat("──▄▀───────────█──\n")
-  cat("─▄▀─█───────────█─\n")
-  cat("█──▄█────────▄──█─\n")
-  cat("─▀▀─█──█──█──█▄▀\n")
-  cat("─────█──█──█▀\n")
-  cat("─────█──█▄█\n")
-  cat("─────█──█\n")
-  cat("─────█▄\n")
-  cat(" \n")
-  cat("  A- In your xlsform: \n")
-  cat("     - Define the chapter to be used for each question \n")
-  cat("     - Shorten labels, \n")
-  cat("     - Define the variable to be used for disaggregation\n")
-  cat("     - Define the variable to be used for correlation. \n")
-
-  cat(" \n")
-  cat("  B- Add new indicators in the  list. \n")
-  cat(" \n")
-  cat("  C- Revise data cleaning log. \n")
-
-
-
-
-  mainDir <- getwd()
-
-
-
-  ## Now we can create the configuration file for the project
-  cat("Now we can create the configuration file for the project.\n")
-
-  apichoose <- readline("Select the server you want to use - Enter 1 for UNHCR server, 2 for OCHA server, 3 for HHI server and 4 for ONA server: ")
-  username <- readline("Provide your username for the server you selected: ")
-  password <- readline("Provide your password for the server you selected: ")
-  user <- paste(username,password,sep=":")
-  if (apichoose=='1') {
-    api = "https://kobocat.unhcr.org/api/v1/"
-  } else if (apichoose=='2') {
-    api <- "https://kc.humanitarianresponse.info/api/v1/"
-  } else if (apichoose=='3')  {
-    api <- "https://kc.kobotoolbox.org/api/v1/"
-  } else if (apichoose=='4')  {
-    api <-  "https://ona.io/api/v1/"
-  } else  {
-    cat("Wrong number")
+  }else{
+    cat(paste0('usedweight <- "none"'))
   }
-  ## Store password & user name in another file -- not to be shared in github
-  #source("perso/username.R")
-  library(koboloadeR)
+  cat("\n")
+  cat("\n")
+  cat("###  4.- Used the data analysis plan\n")
+  cat(paste('analysis_plan <-"',usedanalysisplan,'"',sep=""))
 
-  #kobo_dataset <- kobo_datasets (user = usernamepassword , api = apiurl)
-
-  print(kobo_datasets(user, api))
-
-  formid <- readline("Select the formid your want to pull from the list above: ")
-  str(kobo_data_downloader(formid, user, api, check = TRUE))
+  cat("\n")
 
 
-  destfile="./perso/username.R"
-  if (!file.exists(destfile)) {
-    fileConn<-file(destfile)
-    writeLines(c("# This is the connection to your data collection project on Kobotoolbox",
-                 # "usernamepassword <- paste(user,passw,sep=":")",
-                 "host <- apiurl",
-                 "formid <- formid"), fileConn)
-    close(fileConn)
-  }
+  cat("\n")
+  cat("\n")
 
-  ## End of it...
-
-  runproject <- readline("Doyou want to run the project now: Yes(Y)/No(N)? ")
-  if (runproject=='Y') {
-    source("./code/runproject.R")
-  } else {
-    cat("You can now go to /code/runproject.R in order to run the project.\n")
-  }
-
+  cat("###  5. General info on the project\n")
+  cat(paste('report_name <-"',report_name,'"',sep=""))
+  cat("\n")
+  cat(paste('location <-"',location,'"',sep=""))
+  cat("\n")
+  cat(paste('author <-"',author,'"',sep=""))
+  cat("\n")
+  cat(paste('organisation <-"',organisation,'"',sep=""))
+  cat("\n")
+  sink()
 }
 NULL

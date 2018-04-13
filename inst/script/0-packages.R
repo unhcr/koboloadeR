@@ -8,67 +8,36 @@ packages <- c(
   ### Packages for Premodeling Stage
 
   ## Data Manipulation
-  "viridis",
-  "lubridate",
+  #"viridis",
+  #"lubridate",
   "date","gdata","zoo", ## playing with date
-  "dplyr",  "data.table", "doBy","tidyr", ## Data manipulation
+  "dplyr",  "data.table", "doBy","tidyr", ## Data manipulation\
+  "DT",
   "reshape2", # package to easily melt data to long form
   "stringr","stringdist","stringi", ## string manipulation
-
-  ## Missing value imputation
-  # "missForest",  "missMDA", "Amelia",
-
-
-  ## Outlier Detection
-  # "outliers",  "evir",
-
-  ## Feature Selection
-  #"features",  "RRF",
-  # "Boruta", # wrapper for feature selection algorythm
-
-  ## Dimension Reduction
-  # "CCP", # Dimension Reduction
-  # "FactoMineR", "ade4",  ## multivariate analysis - MCA
-
-
+  "xlsx",
   ##### Packages for Visualisation
-  #"lattice", # Visualisation
-  "graphics",
+  #"graphics",
   "ggplot2", ## advanced graphics
-  "ggseas", ## seasonal adjustemnt with GGplot2
-  "ggrepel", ## getting nice labels in ggplot2
-  #"ggvis", ## interactive grammar of graphics
-  "ggthemes", ## Customised themes for ggplot2: excel, stata, economist, tufte, wall street journal...
+  #"ggseas", ## seasonal adjustemnt with GGplot2
+  #"ggrepel", ## getting nice labels in ggplot2
+  #"ggthemes", ## Customised themes for ggplot2: excel, stata, economist, tufte, wall street journal...
   "grid", "gridExtra", # Assembel graphcis together
-  #"gtable", #Arrange 'Grobs' in Tables
-  "vcd", # Visualisation of categorical data
+  #"vcd", # Visualisation of categorical data
   "RColorBrewer", # a package offering color palette from
   "scales", #Scale Functions for Visualization
-  "extrafont", ##" load additional font
-  "hexbin", ## Hexagrid viz
-  #"xkcd", ## Style from the xkcd comics
-  #"scatterplot3d",
+  #"extrafont", ##" load additional font
+  #"hexbin", ## Hexagrid viz
   "corrplot", # Visualiation of correlation Matrix
-  "igraph", #network analysis and visualisation
-  "ellipse",  ## drawing ellipses and ellipse-like confidence regions
-  #"factoextra", ## Visualize the Results of Multivariate Data Analyses
-
-  ##### Packages for Mapping
-  "rgdal","rgeos","sp","maptools", ## standard Geo manipulation packages
-  "ggmap", ## get background from webmapping API
-  "raster","cartography", ## packages used for the maps --
-  "classInt",  ## used for univariate classification
-  # "deldir", # delaunay triangulation & Voronoi
-  # "viridis", # Default Color Maps from 'matplotlib'
-  # "fields", ## Tools for Spatial Data
+  #"igraph", #network analysis and visualisation
 
   ##################################################################
   ### Packages for Modeling Stage
 
 
-    "Hmisc", "htmlTable", # generate a detailled describtion of a given dataset
+  #  "Hmisc", # generate a detailled describtion of a given dataset
   #  "gbm", # Generalized Boosted Regression Models
-    "car", ## ## Companion to Applied Regression
+  #  "car", ## ## Companion to Applied Regression
   #  "rminer", "CORElearn",  # ordinal Regression
   #  "caret", # Gradient Boosting & AdaBoost
   #  "bigRR",  ## Classification
@@ -139,10 +108,10 @@ packages <- c(
 
   "formatR", #  used to format the code
 
-  "parallel", ## Improve performance
+ #"parallel", ## Improve performance
   "Rcpp", ## used to compile some pacjckages
 
-  "foreign", ## read data from SPSS, SAS or Stata
+  #"foreign", ## read data from SPSS, SAS or Stata
   #  "sqldf", "RODBC",
   #"RMongo",
   #  "RSQLite", ## Direct connection with databases
@@ -150,17 +119,15 @@ packages <- c(
   #"rJava", "XLConnect", ## Read and write excel files
   "readxl", ## Read Excel files
 
-  "httr", "rjson","jsonlite", ## get data from API
   "XML", "xml2", ## Manipulation of xml
 
-  "RCurl", ##used to download files from API -install CURL before and separately
   "devtools", # package used to load packages hosted in github --
 
-  #  "gmailr", # Access gmail api
-  "RGtk2",
-  #  "rattle", ## GUI for data mining
+  #"RGtk2",
+
+
   ## used to generate reports
-  "knitr", "pander", "xtable", "rmarkdown", "kableExtra","koRpus", "tables"
+  "knitr", "pander", "xtable", "rmarkdown", "koRpus", "tables"
 )
 
 ## identify packages not installed yet
@@ -170,56 +137,34 @@ if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
 
 rm(packages)
 
-#Sys.getenv("R_LIBS_USER")
-
-#remove.packages("tibble")
-#install.packages("tibble")
 library("knitr")
-library("kableExtra")
+library("xlsx")
 library("koRpus")
 library("tables")
 library("rmarkdown")
-
 library("survey")
-library("ggrepel")
-library("viridis")
-#gpclibPermit()
-
-# loads packages into memory
+library("DT")
+#library("viridis")
 library("stringr")
-library("stringi")
-#library("lattice")
-#library("rattle")
-library("car")
+#library("stringi")
+#library("car")
 library("plyr")
 library("ggplot2") ## The grammar of graphics!
-library("extrafont") ## Additional fonts
+#library("extrafont") ## Additional fonts
 library("ggthemes") ## Additional themes for gplot2
-library("zoo") ## Manage reformatting of date
+#library("zoo") ## Manage reformatting of date
 library("reshape2") ## Restructure data between wide and long format before plotting them - melt and cast
-#library("maptools") ## Create maps
-#library("rgdal") ## Open geographic files
-#library("rgeos")
-library("ggmap") ## get background map from google map
-library("sp") ## Spatial library
-#library("raster") ## Managing raster dataset
 library("RColorBrewer") ## Color palette
-library("classInt") ## Classififcation
-library("hexbin") ## Hexa binning
-library("lubridate")
-library("date")
+#library("classInt") ## Classififcation
+#library("hexbin") ## Hexa binning
+#library("lubridate")
+#library("date")
 library("gdata")
-library("gridExtra")
+#library("gridExtra")
 library("scales")
-#library("formatR")
-#library("RGtk2")
-#library("gWidgetsRGtk2")
 library("readxl")
 library("plyr")
-#library("xlsx")
-#library("FactoMineR")
-
 library("corrplot")
-library("graphics")
-library("vcd")
+#library("graphics")
+#library("vcd")
 

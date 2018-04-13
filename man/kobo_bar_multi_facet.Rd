@@ -4,12 +4,10 @@
 \alias{kobo_bar_multi_facet}
 \title{Generate frequency bar chart for select_multiple variable}
 \usage{
-kobo_bar_multi_facet(data, dico)
+kobo_bar_multi_facet(mainDir = "")
 }
 \arguments{
-\item{data}{kobodatset to use}
-
-\item{dico}{( generated from kobo_dico)}
+\item{mainDir}{Path to the project's working directory: mainly for proper shiny app path}
 }
 \description{
 Automatically generate faceted chart for select multiple variables. ggplot2 is used.
@@ -18,7 +16,7 @@ Automatically generate faceted chart for select multiple variables. ggplot2 is u
 kobo_bar_multi_facet()
 
 \dontrun{
-kobo_bar_multi_facet(data,  dico)
+kobo_bar_multi_facet()
 }
 
 

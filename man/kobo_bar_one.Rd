@@ -4,12 +4,10 @@
 \alias{kobo_bar_one}
 \title{Generate bar Chart - frequency - for select_one questions}
 \usage{
-kobo_bar_one(data, dico)
+kobo_bar_one(mainDir = "")
 }
 \arguments{
-\item{data}{.}
-
-\item{dico}{( generated from kobo_dico)}
+\item{mainDir}{Path to the project's working directory: mainly for shiny app}
 }
 \description{
 Automatically generate bar chart for each of the select_one question in the dataset. ggplot2 is used.
@@ -18,11 +16,11 @@ Automatically generate bar chart for each of the select_one question in the data
 kobo_bar_one()
 
 \dontrun{
-kobo_bar_one(data, dico)
+kobo_bar_one()
 }
 
 
 }
 \author{
-Edouard Legoupil
+Edouard Legoupil, Elliott Messeiller
 }

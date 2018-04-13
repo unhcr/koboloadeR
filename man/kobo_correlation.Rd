@@ -4,7 +4,7 @@
 \alias{kobo_correlation}
 \title{Generate histogramm plots based on dates}
 \usage{
-kobo_correlation(data, dico)
+kobo_correlation()
 }
 \arguments{
 \item{data}{kobodatset to use}
@@ -18,7 +18,7 @@ Automatically generate maps for all nominal & ordinal variables based on dates. 
 kobo_correlation()
 
 \dontrun{
-kobo_correlation(data,  dico)
+kobo_correlation(S)
 }
 
 

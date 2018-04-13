@@ -4,11 +4,10 @@
 \alias{kobo_dico}
 \title{Data dictionnary}
 \usage{
-kobo_dico(form)
+kobo_dico(mainDir = "")
 }
 \arguments{
-\item{form}{The full filename of the form to be accessed (xls or xlsx file).
-It is assumed that the form is stored in the data folder.}
+\item{mainDir}{}
 }
 \value{
 A "data.table" with the full data dictionnary. To be used in the rest of the analysis.
@@ -20,10 +19,10 @@ Produce a data dictionnary based on the xlsform for the project
 kobo_dico()
 
 \dontrun{
-kobo_dico("myform.xls")
+kobo_dico()
 }
 
 }
 \author{
-Edouard Legoupil
+Edouard Legoupil, Elliott Messeiller
 }

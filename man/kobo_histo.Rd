@@ -4,12 +4,10 @@
 \alias{kobo_histo}
 \title{Generate histograme for all integer questions}
 \usage{
-kobo_histo(data, dico)
+kobo_histo(mainDir = "")
 }
 \arguments{
-\item{data}{kobodatset to use}
-
-\item{dico}{( generated from kobo_dico)}
+\item{mainDir}{Path to the project's working directory: mainly for proper shiny app path}
 }
 \description{
 Automatically generate histogrammes for each of the integer questions in the dataset. ggplot2 is used.
@@ -18,7 +16,7 @@ Automatically generate histogrammes for each of the integer questions in the dat
 kobo_histo()
 
 \dontrun{
-kobo_histo(data, dico)
+kobo_histo()
 }
 
 

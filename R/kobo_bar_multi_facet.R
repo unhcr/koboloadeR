@@ -5,8 +5,7 @@
 #' @description  Automatically generate faceted chart for select multiple variables. ggplot2 is used.
 #'
 #'
-#' @param data kobodatset to use
-#' @param dico ( generated from kobo_dico)
+#' @param mainDir Path to the project's working directory: mainly for proper shiny app path
 #'
 #'
 #'
@@ -19,137 +18,204 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_bar_multi_facet(data,  dico)
+#' kobo_bar_multi_facet()
 #' }
 #'
 #'
 
-kobo_bar_multi_facet <- function(data,  dico) {
-
-  mainDir <- "out"
-  subDir <- "facet_multi"
-  if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
-    cat("facet_multi directory exists in out directory and is a directory.\n")
-  } else if (file.exists(paste(mainDir, subDir, sep = "/", collapse = "/"))) {
-    cat("facet_multi directory exists in your out directory.\n")
-    # you will probably want to handle this separately
-  } else {
-    cat("facet_multi directory does not exist in your out directory - creating now!\n ")
-    dir.create(file.path(mainDir, subDir))
+kobo_bar_multi_facet <- function(mainDir='') {
+  # Making your life easier by finding the dico and data from 0-config.R (created during kobo_project_config())
+  if (mainDir==''){
+    mainDir <- getwd()
   }
 
-  selectdf <- dico[dico$type=="select_multiple", c("fullname","listname","label","name","variable","disaggregation")]
+  source(paste0(mainDir,"/code/0-config.R"), local=TRUE)
 
 
-  ### Verify that those variable are actually in the original dataframe
+  # List of select_multiple questions and choices
+  selectdf <- dico[dico$type == "select_multiple", c("fullname","listname","label","name","disaggregation"), ]
+
+  ### Verify that those variables are actually in the original dataframe
   check <- as.data.frame(names(data))
   names(check)[1] <- "fullname"
   check$id <- row.names(check)
   selectdf <- join(x=selectdf, y=check, by="fullname",  type="left")
   selectdf <- selectdf[!is.na(selectdf$id), ]
 
-  ## Check if disagreggated select_multiple
+  allvar<-dico[, c("fullname","listname","label","name","disaggregation"), ]
+
+  ## now correct list of variables
+  selectone <- as.character(selectdf[selectdf$disaggregation!=""& selectdf$disaggregation!="weight", c("fullname")])
+  ## df of variable to loop around
+  selectonet <- as.data.frame(selectone)
+
+
   if (nrow(selectdf)==0){
-    cat("There's no disagreggated select_multiple variables. \n")
+    cat("There's no select_multiple questions \n")
   } else{
+
     ## get list of variables used for faceting
-    selectfacet <- as.character(selectdf[selectdf$disaggregation=="facet" , c("fullname")])
+    selectfacet <- as.character(selectdf[selectdf$disaggregation!="" & selectdf$disaggregation!="weight", c("fullname")])
     selectfacet <- selectfacet[!is.na(selectfacet)]
 
-    ## Check if variables to facet
     if(length(selectfacet)==0) {
-      cat("There's no variable to facet in your data analysis plan.\n")
-    } else {  cat(paste0( length(selectfacet) , " variable(s) to facet in your data analysis plan. Let's proceed! \n"))
+      cat("There's no variable to disaggregate in your data analysis plan.\n")
 
-        selectfacett <- as.data.frame(selectfacet)
+    } else {  cat(paste0( length(selectfacet) , " variable(s) to disaggregate in your data analysis plan. Let's proceed! \n"))
 
+      selectmulti <- as.character(selectdf[, c("fullname")])
+      data.selectmulti <- data [selectmulti]
+      data.selectmulti <- data [selectfacet]
+      data.selectmulti  <- kobo_label(data.selectmulti, dico)
 
-        selectmulti <- as.character(selectdf[, c("fullname")])
-        data.selectmulti <- data [selectfacet, selectmulti ]
-        data.selectmulti  <- kobo_label(data.selectmulti, dico)
-
-
-        listmulti <- dico[dico$type=="select_multiple_d", c("listname","label","name","fullname","variable","disaggregation","qrepeat")]
-        selectdf1 <- as.data.frame(unique(selectdf$listname))
-        names(selectdf1)[1] <- "listname"
-        listmulti <- join(x=listmulti, y=selectdf1, by="listname", type="left")
-
-        ## loop around listname
-        for (i in 1:nrow(listmulti) ) {
-          # i <- 6
-          listloop <- as.character(listmulti[i,1])
-          listlabel <-  as.character(listmulti[i,2])
+      selectfacett <- selectdf[selectdf$disaggregation!=""& selectdf$disaggregation!="weight", c("fullname","disaggregation")]
+      single.facet <- as.data.frame(table(selectfacett[,2]))
+      single.facet <- as.data.frame(single.facet[single.facet$Var1!="",c("Var1")])
+      names(single.facet) <- "Var1"
 
 
-          ### select variable for a specific multiple questions
-          selectmultilist <- as.character(dico[dico$type=="select_multiple" & dico$listname==listloop , c("fullname")])
+      listmulti <- dico[dico$type=="select_multiple_d", c("listname","label","name","fullname","disaggregation")]
+      selectdf1 <- as.data.frame(unique(selectdf$listname))
+      names(selectdf1)[1] <- "listname"
+      listmulti <- join(x=listmulti, y=selectdf1, by="listname", type="left")
 
-          ## Check that those variable are in the dataset
-          selectdf <- dico[dico$type=="select_multiple" & dico$listname==listloop , c("fullname","listname","label","name","variable","disaggregation")]
-          selectdf2 <- join(x=selectdf, y=check, by="fullname",  type="left")
-          selectdf2 <- selectdf2[!is.na(selectdf2$id), ]
+      listmultichoice <- dico[dico$type=="select_multiple_d", c("listname","label","name","fullname","disaggregation","labelchoice")]
 
-          ### Check that list are in dataset
-          if (nrow(selectdf2)==0){ cat("passing \n")
-          } else {
-
-            selectmultilist <- as.character(selectdf2[, c("fullname")])
-
-            ## loop around the list of variables to facet
-            for (j in 1:nrow(selectfacett) ) {
-              # j <- 2
-              facetname <- as.character(selectfacett[j,1])
-              facetlabel <- as.character(dico[dico$fullname==facetname,c("label")])
-
-                    ## Reshape answers
-                    data.selectmultilist <- data.selectmulti[facetname , selectmultilist ]
-                    data.selectmultilist$id <- rownames(data.selectmultilist)
-
-                    totalanswer <- nrow(data.selectmultilist)
-                    ## subsetting to those who replied
-
-                    data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!="Not replied", ]
-
-                    percentreponse <- paste(round((nrow(data.selectmultilist)/totalanswer)*100,digits=1),"%",sep="")
+      for (i in 1:nrow(listmulti) ) {
+        # i <- 7
+        variablename <- as.character(listmulti[i,"fullname"])
+        listloop <- as.character(listmulti[i,1])
+        listlabel <-  as.character(listmulti[i,2])
 
 
-                    meltdata <- melt(data.selectmultilist,id="id")
+        ### select variable for a specific multiple questions
+        selectmultilist <- as.character(dico[dico$type=="select_multiple" & dico$listname==listloop & dico$label==listlabel, c("fullname")])
 
-                    castdata <- as.data.frame(table(meltdata[c("value")])) #,  useNA = "ifany"
-                    castdata$freqper <- castdata$Freq/nrow(data.selectmultilist)
+        ## Check that those variable are in the dataset
+        selectdf <- dico[dico$type=="select_multiple" & dico$listname==listloop & dico$qlevel==variablename , c("fullname","listname","label","name","disaggregation","labelchoice")]
+        selectdf2 <- join(x=selectdf, y=check, by="fullname",  type="left")
+        selectdf2 <- selectdf2[!is.na(selectdf2$id), ]
 
-                    castdata <- castdata[castdata$Var1!="Not selected", ]
-                    #castdata <- dcast(meltdata, value~variable, fun.aggregate = length)
-                    castdata$Var1 <-factor(castdata$Var1, levels=castdata[order(castdata$freqper), "Var1"])
+        # If no answers to this question, passing to the next select_multiple
+        if (nrow(selectdf2)==0){ cat("Only empty values, passing. \n")
+        } else {
 
-                    #levels(castdata$Var1)
-                    castdata <- castdata[castdata$Var1!="", ]
+          listlabelchoice <- as.character(selectdf2[,"labelchoice"])
+          selectmultilist <- as.character(selectdf2[, c("fullname")])
+          data.selectmultilist <- data.selectmulti[selectmultilist]
+          names(data.selectmultilist) <- listlabelchoice
 
-                    ggplot(castdata, aes(x=Var1, y=freqper)) +
-                      geom_bar(fill="#2a87c8",colour="#2a87c8",stat = "identity") +
-                      xlab("") + ylab("")+
-                      scale_y_continuous(labels=percent)+
-                      coord_flip()+
-                      facet_wrap(as.formula(paste("~", facetname)), ncol=2) +
-                      ggtitle(listlabel, subtitle = paste0("Facetted by question: ",facetlabel,"\n",
-                                                           "select_multiple question: Response rate to this question is ",percentreponse," of the total.")) +
-                      theme(plot.title=element_text(face="bold", size=9),
-                            plot.background = element_rect(fill = "transparent",colour = NA))
+          # Listing the choices to the question
+          selectmultilist <- as.character(selectdf2[, c("fullname")])
 
-                      ggsave(filename=paste("out/facet_multi/bar_multifreq_",variablename,"_facet_",facetname,".png",sep=""), width=10, height=10,units="in", dpi=300)
-                      cat(paste0("Generated bar chart for question: ",i, " ", listlabel ," - with facet on - ",j, " ",facetlabel,"\n"))
-                      rm(variablename, castdata)
+          ## Reshape answers
+          # Selecting only the answers to this question
 
-                  }
-                  ### End loop around facet
+          data.selectmultilist <- data.selectmultilist[, colSums(!is.na(data.selectmultilist)) != 0]
+          if (ncol(data.selectmultilist)==0){ cat("Only empty values, passing. \n")
+          }else{
+
+          #Selecting only the answers selected at least once
+          data.selectmultilist <- sapply(data.selectmultilist, as.numeric)
+
+          data.selectmultilist <- data.frame(data.selectmultilist[, colSums(data.selectmultilist,na.rm=TRUE) != 0, drop=FALSE],check.names=FALSE)
+
+            for (j in 1:nrow(single.facet) ) {
+
+
+              if(listmultichoice[i,"disaggregation"]!=single.facet[j,1]){
+              } else{
+
+                facetname1 <- as.character(single.facet[j,1])
+                facetname <- as.character(allvar[allvar$name==facetname1,c("fullname")])
+
+                facetlabel <- as.character(dico[dico$fullname==facetname,c("label")])
+                facetchoices <- dico[dico$name==facetname1, c("name","labelchoice","listname")]
+                facetchoices <-dico[dico$listname==facetchoices[,3], c("name","labelchoice","listname")]
+                facetchoices <- facetchoices[facetchoices$name!=facetname1, c("name","labelchoice","listname")]
+
+                # Put ID to each row
+
+                data.selectmultilist$id <- rownames(data.selectmultilist)
+
+                if(usedweight=="sampling_frame"){
+                  data.selectmultilist$weight <- data$weight
+                  names(data.selectmultilist$weight) <- "weight"
                 }
-                ### Check that list are in dataset
+
+                data.selectmultilist[facetname] <- data[facetname]
+                names(data.selectmultilist)[length(names(data.selectmultilist))] <- "facet"
+
+
+
+                #Count total answer (for the survey) and answered to this question
+
+                totalanswer <- nrow(data.selectmultilist)
+                count_replied <- as.numeric(sum(!is.na(data.selectmultilist[,1 ])))
+
+                percentresponse <- paste(round((count_replied/totalanswer)*100,digits=2),"%",sep="")
+
+                if(usedweight=="sampling_frame"){
+
+                  meltdata <- melt(data.selectmultilist,id=c("weight","id","facet"))
+
+                  castdata <- as.data.frame(table(meltdata[,c("value","variable","facet","weight")]))
+                  castdata$Freq <- as.numeric(as.character(castdata$Freq))
+                  castdata$weight <- as.numeric(as.character(castdata$weight))
+                  castdata$freqper <- round((castdata$Freq*castdata$weight)/count_replied,digits=2)
+                }
+
+                else{
+                  meltdata <- melt(data.selectmultilist,id=c("id","facet"))
+
+                  castdata <- as.data.frame(table(meltdata[,c("value","variable","facet")]))
+                  castdata$Freq <- as.numeric(as.character(castdata$Freq))
+                  castdata$freqper <- round((castdata$Freq)/count_replied,digits=2)
+                }
+
+                castdata <- castdata[castdata$value!=0, ]
+
+                #combining values
+                castdata<- ddply(castdata, c("variable","facet"),numcolwise(sum))
+
+                castdata$variable = str_wrap(castdata$variable,width=15)
+
+                background_rect <- data.frame(unique(castdata[,c("variable")]))
+                names(background_rect) <- c("variable")
+                background_rect$freqper <-1
+
+                theme_set(theme_gray(base_size = 20)
+                          )
+
+                  ggplot(castdata,aes(x=variable, y=freqper)) +
+                    geom_bar(data=background_rect,aes(x=variable),stat = "identity", alpha=0.2)+
+                    geom_bar(stat = "identity", position="dodge",aes(fill=facet))+
+                    geom_text(aes(label=paste(round(freqper*100),"%",sep=""), fill=facet, hjust = -0.5), position=position_dodge(width=0.8))+
+                    xlab("") + ylab("")+
+                    scale_y_continuous(labels=percent, limits = c(0,1))+
+                    scale_fill_brewer(name=paste0(facetlabel),palette="PuBu")+
+                    coord_flip()+
+                    ggtitle(str_wrap(listlabel,width=50))+
+                    theme(plot.title=element_text(face="bold", size=25))
+
+                  ggsave(filename=paste(mainDir, "/out/disagg_multi/",variablename,"_bar_multi_disagg_",facetname,".png",sep=""), width=12, height=10,units="in", dpi=300)
+
+                cat(paste0("Generated bar chart for question: ", listlabel , "\n"))
               }
-             ### End loop around listname
+            }
+           }
         }
-        ### Test if facet in dico
+      }
+    }
   }
-  ### test if disagreggated select_multiple
+
+  cat(" \n")
+  cat(" \n")
+  cat(" ###################################################################\n")
+  cat(" # The bar charts for select_mutliple questions were generated!    #\n")
+  cat(" # You can find them in the folder 'out/disagg_multi'!             #\n")
+  cat(" ###################################################################\n")
+
 }
 NULL
 

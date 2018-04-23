@@ -28,7 +28,7 @@ packages <- c(
 
   ## Dimension Reduction
   # "CCP", # Dimension Reduction
-  # "FactoMineR", "ade4",  ## multivariate analysis - MCA
+   "FactoMineR", "ade4","factoextra",  ## multivariate analysis - MCA
 
 
   ##### Packages for Visualisation
@@ -117,7 +117,7 @@ packages <- c(
 
   ##################################################################
   ### Packages for Survey data management
-  #  "sampling", ## Survey Sampling
+  "sampling", "simFrame", ## Survey Sampling
   "survey",  ##Analysis of Complex Survey Samples
 
   ##################################################################

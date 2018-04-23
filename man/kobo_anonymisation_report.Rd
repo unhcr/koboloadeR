@@ -4,12 +4,12 @@
 \alias{kobo_anonymisation_report}
 \title{Generate anonymised dataset}
 \usage{
-kobo_anonymisation_report(frame)
+kobo_anonymisation_report(frame, dico)
 }
 \arguments{
-\item{kobo}{or odk dataset to use}
-
 \item{dico}{Generated from kobo_dico function}
+
+\item{kobo}{or odk dataset to use}
 }
 \description{
 Automatically produce a disclosure risk measurement report.
@@ -21,7 +21,7 @@ Automatically produce a disclosure risk measurement report.
 kobo_anonymise()
 
 \dontrun{
-kobo_anonymisation_report(frame)
+kobo_anonymisation_report(frame, dico)
 }
 
 }

@@ -20,11 +20,11 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_anonymisation_report(frame)
+#' kobo_anonymisation_report(frame, dico)
 #' }
 #'
 
-kobo_anonymisation_report <- function(frame) {
+kobo_anonymisation_report <- function(frame, dico) {
 
   # frame <- data.or
   # framename <- "household"

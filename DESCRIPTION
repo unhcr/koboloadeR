@@ -3,7 +3,7 @@ Type: Package
 Title: Retrieve Data Using the KoBo Toolbox API & Automatise data exploration
 Version: 0.1.5
 Authors@R: person("Edouard", "Legoupil", email = "legoupil@unhcr.org",
-  role = c("aut", "cre"))
+  role = c("aut", "cre"), "Damien", "Seite")
 Description: This package facilitates the data crunching for dataset collected using xlsform.
 License: GPL-3
 LazyData: TRUE

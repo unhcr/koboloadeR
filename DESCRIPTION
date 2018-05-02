@@ -1,12 +1,29 @@
-Package: KoboAnalyser
+Package: koboloadeR
 Type: Package
 Title: KoboAnalyser, data discovery and analysis for data collected through the KoboToolbox.
 Version: 0.1.4
-Authors@R: person("Elliott", "Messeiller", email = "elliott.messeiller@acted.org",
-  role = c("aut", "cre"))
+Authors@R: c(person("Edouard", "Legoupil", email = "legoupil@unhcr.org", role = "cre"),
+            person("Elliott", "Messeiller", email = "elliott.messeiller@acted.org", role = "aut"))
 Description: Run analysis for data collected through the KoboToolbox.
-    Largely based on KoboloadeR (https://github.com/Edouard-Legoupil/koboloadeR) by Edouard Legoupil.
 License: GPL-3
 LazyData: TRUE
 Depends:
+Depends:
+    data.table (>= 1.9.4),
+    curl,
+    RCurl,
+    httr,
+    bit64,
+    readr,
+    DT,
+    plyr,
+    dplyr,
+    tidyr,
+    readxl,
+    ggplot2,
+    reshape2,
+    digest,
+    sdcMicro,
+    gdata,
+    shiny
 RoxygenNote: 6.0.1

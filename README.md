@@ -1,11 +1,10 @@
 # Introduction
-KoboAnalyser is a R package to conduct data discovery and analysis for data collected through  KoboToolbox.
-The package is largely based on KoboloadeR (https://github.com/Edouard-Legoupil/koboloadeR) by Edouard Legoupil
+koboloadeR is a R package to conduct data discovery and analysis for data collected through  KoboToolbox.
 
-# KoboAnalyser quick setup
+# koboloadeR quick setup
 
 ## Prerequisite
-To be able to use KoboAnalyser you will need:
+To be able to use koboloadeR you will need:
 
 * R: download here: https://cran.rstudio.com/). For Windows, choose "install R for the first time".
 
@@ -17,26 +16,26 @@ To be able to use KoboAnalyser you will need:
 * Install R Studio: follow instruction from the installer
 * Launch R Studio
 
-### Install KoboAnalyser from Github (up to date version):
+### Install koboloadeR from Github (up to date version):
 
 * In the R console, install 'devtool' package:
 ```
 install.packages("devtools")
 ```
-* Install KoboAnalyser:
+* Install koboloadeR:
 ```
 library(devtools)
-install_github("ElliottMess/KoboAnalyser")
+install_github("ElliottMess/koboloadeR")
 
 ```
-* You are all set! You can know use KoboAnalyser
+* You are all set! You can know use koboloadeR
 
-### Install KoboAnalyser from Zip package:
+### Install koboloadeR from Zip package:
 
 * In Tools (top of R Studio): click Install Packages
 * Choose Install from: Package Archive File (.zip; .tar.gz)
-* In Package archive, select the file KoboAnalyser.tar.gz that you downloaded/received
-* You are all set! You can know use KoboAnalyser
+* In Package archive, select the file koboloadeR.tar.gz that you downloaded/received
+* You are all set! You can know use koboloadeR
 
 ## Quick start
 First, create a project in R Studio:
@@ -51,13 +50,13 @@ First, create a project in R Studio:
 Then setup a few things: run those two lines:
 
 ```
-library (KoboAnalyser) # This loads KoboAnalyser package
+library (koboloadeR) # This loads koboloadeR package
 kobo_projectinit() # Creats folders necessary and transfer files needed
 ```
 It might take a while as a few other packages have to be installed or loaded. Once the see the " >" again at the beginning of the line, you can run:
 
 ```
-kobo_shiny("app_koboanalyser.R")
+kobo_shiny("app_koboloadeR.R")
 ```
 
 This will launch a graphic interface with other instructions and options.

@@ -86,7 +86,7 @@ packages <- c(
 
   ##################################################################
   ### Packages for Survey data management
-  #  "sampling", ## Survey Sampling
+  "sampling", ## Survey Sampling
   "survey",  ##Analysis of Complex Survey Samples
 
   ##################################################################
@@ -165,6 +165,7 @@ library("scales")
 library("readxl")
 library("plyr")
 library("corrplot")
+library("sampling")
 #library("graphics")
 #library("vcd")
 

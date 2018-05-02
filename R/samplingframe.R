@@ -33,22 +33,36 @@ samplingframe <- function(data, strata, pop_col, confidence_level=0.95, margin_e
 ## sampling frame
     if(method=="strat2st"){
         SamplingFrame <- data.frame(data)
-        SamplingFrame <- transform(SamplingFrame, strata=match(paste0(strata), unique(paste0(strata))))
-        SamplingFrame$psu_id <- as.numeric(row.names(SamplingFrame))
-        SamplingFrame_extended <- SamplingFrame[rep(row.names(SamplingFrame),SamplingFrame[[pop_col]]), ]
-        
-        strata_population <- data.frame(table(SamplingFrame_extended[,c(strata)]))
-        strata_population$sample_target <- round(strata_population$Freq/(1+1/(proportion*(1-proportion))*(margin_error/qnorm(1-(1-confidence_level)/2))^2*(strata_population$Freq-1)),0)
-        strata_s <- as.numeric(as.vector(SamplingFrame_extended$strata))
-        nh <- as.vector(strata_population$sample_target)
-        
-        SamplingFrame_extended$probabilities <- inclusionprobabilities(strata_s,nh)
-        SamplingFrame_extended$selected <- UPbrewer(SamplingFrame_extended$probabilities)
-        final <- data.frame(table(SamplingFrame_extended))
-        final <- final[final$Freq!=0 & final$selected==1,]
-        final$to_survey <- round(final$Freq *(buffer+1),0)
+        if(any(is.na(as.numeric(SamplingFrame[[pop_col]])))==T){
+            cat("Your population column has non-numercial values, please choose a column only with numbers.")
+        }
+        else{
+            if(is.numeric(SamplingFrame[pop_col])==F){SamplingFrame[pop_col] <- as.numeric(as.character(SamplingFrame[[pop_col]]))}
+            SamplingFrame$strata <- as.numeric(factor(SamplingFrame[[strata]]))
+            SamplingFrame$psu_id <- as.numeric(row.names(SamplingFrame))
+            SamplingFrame_extended <- SamplingFrame[rep(row.names(SamplingFrame),SamplingFrame[[pop_col]]), ]
+            rownames(SamplingFrame_extended)<- NULL
+            SamplingFrame_extended$ID_unit <- rownames(SamplingFrame_extended)
+            
+            strata_population <- data.frame(table(SamplingFrame_extended[,c(strata)]))
+            strata_population$sample_target <- ""
+            for (i in 1:nrow(strata_population)){
+                strata_population[i,"sample_target"] <- as.numeric(round(strata_population[i,"Freq"]/(1+1/(proportion*(1-proportion))*(margin_error/qnorm(1-(1-confidence_level)/2))^2*(strata_population[i,"Freq"]-1)),0))
+                strata_population$sample_target<- as.numeric(strata_population$sample_target)
+                }
+            strata_s <- as.numeric(as.vector(SamplingFrame_extended$strata))
+            nh <- as.numeric(as.vector(strata_population$sample_target))
+            
+            final <- strata(SamplingFrame_extended, stratanames = c(strata),size = nh,method="srswor")
+            final <- SamplingFrame_extended[SamplingFrame_extended$ID_unit %in% final$ID_unit,]
+            final <- final[,-which(names(final) %in% c("psu_id","pop","strata","ID_unit"))]
+            final <- data.frame(table(final))
+            final <- final[final$Freq!=0,]
+            final$Freq <- round(final$Freq *(buffer+1),0)
+            names(final)[4] <- "To survey"            
 
         return(final)
+        }
     }
     else{cat("\nSorry, this method is not suported yet.")}
         

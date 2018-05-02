@@ -44,6 +44,8 @@ ui <-
                   ),
 
                fluidRow(
+                 actionButton("sample_b","Sample!"),
+                 dataTableOutput("sampling_frame_dt"),
                  downloadButton("sample", "Download sample frame")       
                )
       
@@ -90,25 +92,38 @@ server <- function(input, output,session) {
       
   })
   
+  sample_frame_f <- observeEvent(input$sample_b,{
+      inFile <- input$datafile
+      if(is.null(inFile)) return("Please upload your sampling frame")
+      strat <- as.character(input$strata)
+      col_pop <- as.character(input$pop)
+      SamplingFrame <-data.frame(read_excel(inFile$datapath, sheet = input$data_sheet))
+      conf_level <-input$confidence_level/100
+      mar_erro <- input$margin_error/100
+      prop <- input$proportion/100
+      buff <- input$buffer/100
+      sample_frame_f <- samplingframe(data=SamplingFrame,strata = strat, pop_col = col_pop, confidence_level = conf_level,margin_error = mar_erro,proportion = prop,method =input$sampling_meth,buffer=buff)
+      output$sampling_frame_dt <- renderDataTable(sample_frame_f, options = list(lengthMenu = c(5, 30, 50), pageLength = 5))
+      output$sample <- downloadHandler(
+          filename = function(){
+              paste0("sampling_frame.csv")
+          },
+          content = function(file) {
+              write.csv(sample_frame_f(), file)
+          })
+      
+      output$sample <- downloadHandler(
+          filename = function(){
+              paste0("sampling_frame.csv")
+          },
+          content = function(file) {
+              write.csv(sample_frame_f, file)
+          })
+      
+      
+  })
+  
 
-  output$sample <- downloadHandler(
-      filename = function(){
-          paste0("sampling_frame.csv")
-      },
-      content = function(file) {
-          inFile <- input$datafile
-          if(is.null(inFile)) return(NULL)
-          strat <- as.character(input$strata)
-          col_pop <- as.character(input$pop)
-          SamplingFrame <-data.frame(read_excel(inFile$datapath, sheet = input$data_sheet))
-          conf_level <-input$confidence_level/100
-          mar_erro <- input$margin_error/100
-          prop <- input$proportion/100
-          buff <- input$buffer/100
-          finale_sample_frame <- samplingframe(data=SamplingFrame,strata = strat, pop_col = col_pop, confidence_level = conf_level,margin_error = mar_erro,proportion = prop,method =input$sampling_meth,buffer=buff)
-          
-          write.csv(finale_sample_frame, file)
-    })
 
 
 }

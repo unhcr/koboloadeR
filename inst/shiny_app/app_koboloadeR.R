@@ -13,7 +13,7 @@ ui <-
 
       tabPanel("Introduction",
                fluidRow(
-                 h1("Welcome to KoboAnalyser!", align="center"),
+                 h1("Welcome to koboloadeR!", align="center"),
                  p("This tool will allow to explore your data collected through Kobo. ", align="center"),
                  column(5,
                         h2("Content of the tool"),
@@ -70,7 +70,7 @@ ui <-
                             tags$li("'sampling_frame': where you can specify your sampling frame to weight your data according to the method given in Project Configuration"),
                             tags$li("'instruction': help on how to fill the new XLSform.")
                           ),
-                          "Please see the 'instruction' on how to setup your XLSform for KoboAnalyser")
+                          "Please see the 'instruction' on how to setup your XLSform for koboloadeR")
 
                  )
                )
@@ -204,7 +204,7 @@ server <- function(input, output,session) {
     sink(configfile)
     cat("#### Config file ###\n")
     cat("\n")
-    cat("### Can be manualy edited or interactively rewritten using the function kobo_projectconfig() or kobo_shiny('app_koboanalyser.R') \n")
+    cat("### Can be manualy edited or interactively rewritten using the function kobo_projectconfig() or kobo_shiny('app_koboloadeR.R') \n")
     cat("\n")
     cat("### 1. Form   ###\n")
     cat(paste("form<-'",inFile_form$name,"'",sep=""))

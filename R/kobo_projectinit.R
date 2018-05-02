@@ -74,36 +74,36 @@ kobo_projectinit <- function() {
   path <- as.data.frame(.libPaths())
   if (nrow(path)==1) {path_correct <- as.character(path[1,1])
   } else{ cat("You have multiple library path! \n")
-     if( dir.exists(file.path(path[1,1],"/KoboAnalyser")) ){
+     if( dir.exists(file.path(path[1,1],"/koboloadeR")) ){
        path_correct <- as.character(path[1,1])
      } else{ path_correct <- as.character(path[2,1])}
     }
 
   destfile=paste0(mainDir,"/code/0-packages.R")
   if (!file.exists(destfile)) {
-    file.copy(paste(path_correct,"/KoboAnalyser/script/0-packages.R",sep=""), destfile)
+    file.copy(paste(path_correct,"/koboloadeR/script/0-packages.R",sep=""), destfile)
   }
 
   destfile=paste0(mainDir,"/code/0-config.R")
   if (!file.exists(destfile)) {
-    file.copy(paste(path_correct,"/KoboAnalyser/script//0-config.R",sep=""), destfile)
+    file.copy(paste(path_correct,"/koboloadeR/script//0-config.R",sep=""), destfile)
   }
 
   destfile=paste0(mainDir,"/code/1-generate-report.R")
   if (!file.exists(destfile)) {
-    file.copy(paste(path_correct,"/KoboAnalyser/script//4-generate-report.R",sep=""), destfile)
+    file.copy(paste(path_correct,"/koboloadeR/script//4-generate-report.R",sep=""), destfile)
   }
   destfile=paste0(mainDir,"/code/report.Rmd")
   if (!file.exists(destfile)) {
-    file.copy(paste(path_correct,"/KoboAnalyser/script//report.Rmd",sep=""), destfile)
+    file.copy(paste(path_correct,"/koboloadeR/script//report.Rmd",sep=""), destfile)
   }
   destfile=paste0(mainDir,"/code/report_template.docx")
   if (!file.exists(destfile)) {
-    file.copy(paste(path_correct,"/KoboAnalyser/script//report_template.docx",sep=""), destfile)
+    file.copy(paste(path_correct,"/koboloadeR/script//report_template.docx",sep=""), destfile)
   }
   destfile=paste0(mainDir,"/code/XLSform_template.xlsx")
   if (!file.exists(destfile)) {
-    file.copy(paste(path_correct,"/KoboAnalyser/script//XLSform_template.xlsx",sep=""), destfile)
+    file.copy(paste(path_correct,"/koboloadeR/script//XLSform_template.xlsx",sep=""), destfile)
   }
 
 
@@ -119,10 +119,12 @@ kobo_projectinit <- function() {
     dir.create(file.path(mainDir, subDir,subsubDir))
   }
 
-  destfile=paste0(mainDir,"/code/shiny_app/app_koboanalyser.R")
-    file.copy(paste(path_correct,"/KoboAnalyser/shiny_app//app_koboanalyser.R",sep=""), destfile, overwrite = TRUE)
+  destfile=paste0(mainDir,"/code/shiny_app/app_koboloadeR.R")
+    file.copy(paste(path_correct,"/koboloadeR/shiny_app//app_koboloadeR.R",sep=""), destfile, overwrite = TRUE)
 
-
+  destfile=paste0(mainDir,"/code/shiny_app/app_sampling.R")
+    file.copy(paste(path_correct,"/koboloadeR/shiny_app//app_sampling.R",sep=""), destfile, overwrite = TRUE)
+    
   subsubsubDir <- "www"
   if (file.exists(paste(mainDir, subDir,"/",subsubDir,"/",subsubsubDir, "/",sep = "/", collapse = "/"))) {
     cat("www exists in subDir and is a directory.\n")
@@ -135,7 +137,7 @@ kobo_projectinit <- function() {
   }
   destfile=paste0(mainDir,"/code/shiny_app/www/exportformat.png")
   if (!file.exists(destfile)) {
-    file.copy(paste(path_correct,"/KoboAnalyser/shiny_app/www//exportformat.png",sep=""), destfile)
+    file.copy(paste(path_correct,"/koboloadeR/shiny_app/www//exportformat.png",sep=""), destfile)
   }
 
 

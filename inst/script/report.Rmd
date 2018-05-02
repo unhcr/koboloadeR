@@ -15,7 +15,7 @@ output:
 
 ```{r setup, include=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
 # Load project configuration parameters, data, dico, and form
-  library(KoboAnalyser)
+  library(koboloadeR)
   mainDir=getwd()
   mainDir= dirname(mainDir)
   source(paste0(mainDir,"/code/0-config.R"), local=TRUE)

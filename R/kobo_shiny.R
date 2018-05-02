@@ -22,7 +22,7 @@
 kobo_shiny <- function(app="") {
   mainDir <- getwd()
 
-  validApps <- list.files(system.file("shiny_app", package = "KoboAnalyser"))
+  validApps <- list.files(system.file("shiny_app", package = "koboloadeR"))
 
   validAppsMsg <-
     paste0(

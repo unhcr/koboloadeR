@@ -4,12 +4,10 @@
 \alias{kobo_bar_multi}
 \title{Generate bar Chart - frequency - for select_multiple questions}
 \usage{
-kobo_bar_multi(data, dico)
+kobo_bar_multi(mainDir = "")
 }
 \arguments{
-\item{data}{kobodatset to use}
-
-\item{dico}{Generated from kobo_dico function}
+\item{mainDir}{Path to the project's working directory: mainly for proper shiny app path}
 }
 \description{
 Automatically generate bar chart for each of the select_multiple question in the dataset. ggplot2 is used.
@@ -18,11 +16,11 @@ Automatically generate bar chart for each of the select_multiple question in the
 kobo_bar_multi()
 
 \dontrun{
-kobo_bar_multi(data, dico)
+kobo_bar_multi()
 }
 
 
 }
 \author{
-Edouard Legoupil
+Edouard Legoupil, Elliott Messeiller
 }

@@ -4,12 +4,10 @@
 \alias{kobo_bar_one_facet}
 \title{Generate faceted frequency bar chart}
 \usage{
-kobo_bar_one_facet(data, dico)
+kobo_bar_one_facet(mainDir = "")
 }
 \arguments{
-\item{data}{kobodatset to use}
-
-\item{dico}{( generated from kobo_dico)}
+\item{mainDir}{Path to the project's working directory: mainly for proper shiny app path}
 }
 \description{
 Automatically generate faceted chart for select one variable.. ggplot2 is used.
@@ -18,11 +16,11 @@ Automatically generate faceted chart for select one variable.. ggplot2 is used.
 kobo_bar_one_facet()
 
 \dontrun{
-kobo_bar_one_facet(data,  dico)
+kobo_bar_one_facet()
 }
 
 
 }
 \author{
-Edouard Legoupil
+Edouard Legoupil, Elliott Messeiller
 }

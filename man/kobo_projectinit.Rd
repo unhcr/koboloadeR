@@ -2,7 +2,7 @@
 % Please edit documentation in R/kobo_projectinit.R
 \name{kobo_projectinit}
 \alias{kobo_projectinit}
-\title{Initiation of the Analysis Project}
+\title{Analysis project initiation}
 \usage{
 kobo_projectinit()
 }
@@ -17,5 +17,5 @@ kobo_projectinit()
 
 }
 \author{
-Edouard Legoupil
+Edouard Legoupil, Elliott MEesseiller
 }

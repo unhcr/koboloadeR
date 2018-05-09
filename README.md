@@ -1,46 +1,7 @@
-# koboloadeR
+# Introduction
 
-This packages the capacity of UNHCR Kobo server @ http://kobo.unhcr.org
-
-## Introduction
-
-### Challenges with Household Survey analysis
-
-Household survey often results in dataset with over 300 variables to process & explore. In Humanitarian Environment, deadlines to get insights from those dataset are often tight. Manual processing is very lengthy and can be done only for a limited part of the dataset. Often, because of those challenges, a lot of potential insights are not discovered. This package is developped to support this challenge around data crunching. It's part of the initiative around an [Integrated Framework for Household Survey (IFHS): A toolkit to facilitate design, collection & analysis](https://unhcr.github.io/Integrated-framework-household-survey/).
-
-### Data Crunching
-
-KoboloadeR packages aims at separating “_input_”, “_processing_” and “_output_” within the data crunching phase of the data analysis worklfow.
-
-The “output” will be one or multiple Rmd (Rmarkdown) file(s) than will generate word, pdf or html reports and the configuration file includes references to all “input”:  
- 
- * Path to __raw data__ files collected using [OpenDataKit](https://opendatakit.org/), [Kobotoolbox](http://www.kobotoolbox.org/) or [ONA](https://ona.io)  
- * Path to form (defined using the standard format [xlsform](http://xlsform.org)) in order to build a __data dictionary__  
- * Path to the __sample weight__ for each observation (based on cluster or strata...)   
- * Path to the data __cleaning log__  
- * Path to the __indicator calculation__ sheet  
-
-### Advantage of KoboLoadeR 
-
- * __Productivity__: Once the configuration file is written, run the script in Rstudio to get the output
- * __Training__: No need to write R instruction – limited knowledge of R is required
- * __Iteration__: Check the output, adjust the various input files & re-run the script till you get a satisfying report
- * __Reproducibility__: all analysis input are de facto documented  
-
-KoboLoadeR takes care of the processing component so that the technical team can focus on the interpretation.
-
-### Output of koboloadeR  
-
- * Frequency tables & Bar chart for select type questions
- * Frequency tables & Histogram for numeric questions
- * Frequency table for text questions
- * Cross-tab & graph (if 2 categorical: bar chart, if 1 categoric + 1 numeric: boxplot & if 2 numeric: scatterplot)
- * Chi-squared test & corrplot presentation
- * Mapping if geographic field are configured (still in development)
- * and more to come...
-
-
-##  Overview
+koboloadeR is a R package to conduct data discovery and analysis for data collected through  KoboToolbox.
+This package builds on the capacity of UNHCR Kobo server @ http://kobo.unhcr.org
 
 The `koboloadeR` package allows to:
 
@@ -52,30 +13,88 @@ The `koboloadeR` package allows to:
 
 * generate automatically of a series of charts & maps based on a formatted data analysis plan
 
-* access to a Shiny data viewer accessible using:
+* access to a series of dedicated Shiny application to set up your project
 
+# koboloadeR quick setup and Walk Through
+
+## Prerequisite
+To be able to use koboloadeR you will need:
+
+ * R: download here: https://cran.rstudio.com/). For Windows, choose "install R for the first time".
+
+ * R Studio  (https://www.rstudio.com/products/rstudio/download/#download)
+
+
+## Installation  
+
+ * Install R: follow instruction from the installer.
+ * Install R Studio: follow instruction from the installer
+ * Launch R Studio
+
+### Install koboloadeR from Github (up to date version):
+
+* In the R console, install 'devtool' package:
 ```
-kobo_apps("data_viewer")
-```
-
-
-## Walk Through
-
- 0. Install R & Rstudio  
-First, R download here: https://cran.r-project.org/bin/windows/base/
-Then Rstudio Download here: https://www.rstudio.com/products/rstudio/download/
-A good introduction here: https://ismayc.github.io/rbasics-book 
-
- 1. Install the package
-```
-source("https://raw.githubusercontent.com/unhcr/koboloadeR/master/inst/script/install_github.R")
 install.packages("devtools")
-library("devtools")
+```
+* Install koboloadeR:
+```
+library(devtools)
 install_github("unhcr/koboloadeR")
-library("koboloadeR")
+
+```
+* You are all set! You can know use koboloadeR
+
+
+# Quick start
+
+## Create a project 
+First, in R Studio:
+
+* In R Studio, select File, click New project. A box opens
+* Choose New Directory
+* Choose Empty project
+* Type the name of the folder where you want to put your data
+* Select where you want to put this folder
+* Click Create project
+
+Then setup a few things: run those two lines:
+
+```
+library (koboloadeR) # This loads koboloadeR package
+kobo_projectinit() # Creates folders necessary and transfer files needed
 ```
 
+It might take a while as a few other packages have to be installed or loaded. Once the see the " >" again at the beginning of the line, you can run:
 
+
+```
+kobo_shiny("app_koboloadeR.R")
+```
+
+This will launch a graphic interface with other instructions and options.
+
+For better performances, select "Open in Browser" on the top of the window.
+
+## Get your data
+
+Either:  
+ 
+   *  Grab your data with `kobo_data_downloader` & Get your form with `kobo_form`
+   * or simply copy your data in `csv` format and your xlsform in `xls` format in the `data` folder that was created during the project initiation
+ 
+ use the following options to extract data
+![alt text](https://raw.githubusercontent.com/Edouard-Legoupil/koboloadeR/master/inst/script/exportformat.png)
+ 
+
+
+# Troubleshooting
+
+Before anything else, try to restart the R session:
+* In R studio, on top go to "Session"
+* "Restart R"
+
+## Can not install the package
 Note that in case you get the follwoing error:
 ```
 InternetOpenUrl failed: 'An error occurred in the secure channel support'
@@ -111,31 +130,91 @@ Sys.sleep(2)
 
 
 
- 2. Start a project within Rstudio
- 
- 3. Launch the initialisation function: 
+### The application crashed
+If the application (graphic interface) crashes, make sure that all packages necessary are loaded with:
+
 ```
-kobo_projectinit()
+source("code/0-packages.R")
 ```
- in order to organise your project. It also starts a series of question to set up a configuration file to access a kobo server. You can now go in the `code` folder and source the `0-packages.R` script in order to install a curated list of packages.
+
+Also make sure that you downloaded your data in the right format:
+* Export as XLS
+* XML values and headers
+* Include groups in headers
+* 'Group separator' as dot ('.')
+
+
+### Error when building the dictionnary or configuration file
+
+If you see this message (or similar error):
+```
+Error in file(file, ifelse(append, "a", "w")) : 
+  cannot open the connection
+```
+It is most likely because you have the form, dictionary or data set open on your computer. If you close it and start over, the problem should be fixed.
+
+  
+### Error when loading packages
+ If you get this error: 
  
 ```
- source("code/0-packages.R")
+Error: package or namespace load failed for 'rJava'
 ```
+
+It could be because you have a 64bit version of R, but have a 32bit version of Java. Check this thread for guidance: https://stackoverflow.com/questions/37735108/r-error-onload-failed-in-loadnamespace-for-rjava
+
+
+
+# Resources
+Here are a few introductions and tutorials for  R:
+* A good introduction to R here: https://ismayc.github.io/rbasics-book 
+* An introduction to R: complete but not very user-friendly: https://cran.r-project.org/doc/manuals/r-release/R-intro.html
+*	Try R: http://tryr.codeschool.com/
+*	Data Camp's Introduction to R: https://www.datacamp.com/courses/free-introduction-to-r
+
+To go further:
+*	https://www.rstudio.com/online-learning/
+*	https://www.r-bloggers.com/how-to-learn-r-2/
+
+
+
+# Background elements on the package
+
+## Challenges with Household Survey analysis
+
+Household survey often results in dataset with over 300 variables to process & explore. In Humanitarian Environment, deadlines to get insights from those dataset are often tight. Manual processing is very lengthy and can be done only for a limited part of the dataset. Often, because of those challenges, a lot of potential insights are not discovered. This package is developped to support this challenge around data crunching. It's part of the initiative around an [Integrated Framework for Household Survey (IFHS): A toolkit to facilitate design, collection & analysis](https://unhcr.github.io/Integrated-framework-household-survey/).
+
+## Data Crunching
+
+KoboloadeR packages aims at separating “_input_”, “_processing_” and “_output_” within the data crunching phase of the data analysis worklfow.
+
+The “output” will be one or multiple Rmd (Rmarkdown) file(s) than will generate word, pdf or html reports and the configuration file includes references to all “input”:  
  
- 4. Either:  
- 
-   *  Grab your data with `kobo_data_downloader` & Get your form with `kobo_form`
-   * or simply copy your data in `csv` format and your xlsform in `xls` format in the `data` folder that was created during the project initiation
- 
- use the following options to extract data
-![alt text](https://raw.githubusercontent.com/Edouard-Legoupil/koboloadeR/master/inst/script/exportformat.png)
- 
- 5. Open the `1-loaddata.R` script in the code folder, replace the name of the dataset and the name of the form.
- 
- 6. Create your dictionnary with `kobo_dico`
- 
- 7. Generate your graphs with `kobo_bar_one`, `kobo_bar_multi`, `kobo_histo`, `kobo_trend`, `kobo_bar_one_facet`, `kobo_correlate`, `kobo_boxplot_facet` (see below for explanation)
+ * Path to __raw data__ files collected using [OpenDataKit](https://opendatakit.org/), [Kobotoolbox](http://www.kobotoolbox.org/) or [ONA](https://ona.io)  
+ * Path to form (defined using the standard format [xlsform](http://xlsform.org)) in order to build a __data dictionary__  
+ * Path to the __sample weight__ for each observation (based on cluster or strata...)   
+ * Path to the data __cleaning log__  
+ * Path to the __indicator calculation__ sheet  
+
+## Advantage of KoboLoadeR 
+
+ * __Productivity__: Once the configuration file is written, run the script in Rstudio to get the output
+ * __Training__: No need to write R instruction – limited knowledge of R is required
+ * __Iteration__: Check the output, adjust the various input files & re-run the script till you get a satisfying report
+ * __Reproducibility__: all analysis input are de facto documented  
+
+KoboLoadeR takes care of the processing component so that the technical team can focus on the interpretation.
+
+## Output of koboloadeR  
+
+ * Frequency tables & Bar chart for select type questions
+ * Frequency tables & Histogram for numeric questions
+ * Frequency table for text questions
+ * Cross-tab & graph (if 2 categorical: bar chart, if 1 categoric + 1 numeric: boxplot & if 2 numeric: scatterplot)
+ * Chi-squared test & corrplot presentation
+ * Mapping if geographic field are configured (still in development)
+ * and more to come...
+
 
 
 ## Data Analysis Plan within your `xlsfrom`
@@ -185,33 +264,6 @@ Column | Description
 `indicatorcalculation`| used to reference the calculation method to be used for the indicator: `Percentage`, `Sum`, `Max/Min`, `Average`, `Score`, `Denominator`, `Numerator`, `Numerator.external` (i.e. linked to an external value)
 `indicatornomalisation`| used to reference the normalisation method to be used for the indicator
 
-## Core Functions
-
-The package contains the following core functions:
-
-Function | Description
-------|--------------
-`kobo_datasets`| Lists the datasets available for a given user. Returns a `data.table` with the basic metadata about the available datasets.
-`kobo_submission_count`|Lists the number of submissions for a particular data collection project. A single integer. This function is mostly for use within the `kobo_data_downloader` function.
-`kobo_data_downloader`|Downloads a specified dataset via the KoBo API. Returns a `data.table` of the entire dataset requested.
-
-For all of the above functions, the default is to use the UNHCR KoBo Toolbox API URLs. However, it should be possible to specify the API URL to use if you have a custom installation of the toolbox.
-
-## Chart Generation functions
-
-* Adding a `kobo_bar_one` function to generate bar chart - frequency for all `select_one` questions
-
-* Adding a `kobo_bar_multi` function to generate bar chart - frequency for all `select_multiple` questions
-
-* Adding a `kobo_histo` function to generate histogramme for all `integer` questions
-
-* Adding a `kobo_trend` function to generate histogramme for all `select_one` and `select_multiple` questions based 
-
-* Adding a `kobo_bar_one_facet` function to generate bar chart for all `select_one` questions facetted on questions tagged as `facet` in the data analysis plan 
-
-* Adding a `kobo_correlate` function to generate dot plot for all `integer` questions correlated with integer questions tagged as `correlate` in the data analysis plan 
-
-* Adding a `kobo_boxplot_facet` function to generate box plot for all `integer` questions faceted with categorical questions tagged as `facet` in the data analysis plan 
 
 ## Shiny Apps
 
@@ -223,18 +275,8 @@ App | Description
 
 Here's [a blog post introducing the package](http://news.mrdwab.com/post/koboloader/)!
 
-### Exported Utility Functions
 
-The package contains the following exported utility functions:
-
-Function|Description
-----|----
-`kobo_time_parser_UTC`|Converts a date/time character string into a POSIXct time object.
-`kobo_time_parser`|Formats a date/time character string into a character string for a specified timezone. Convert using `as.POSIXct` if you need an actual time object.
-
----------------
-
-## Examples
+## Gettinf data from API
 
 The following examples access the public data available via KoBo Toolbox. Note that all of the functions have been set with defaults of `user = NULL` and `api = 'kobo'`.
 

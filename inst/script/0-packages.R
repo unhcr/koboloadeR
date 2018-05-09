@@ -14,7 +14,7 @@ packages <- c(
   "dplyr",  "data.table", "doBy","tidyr", ## Data manipulation
   "reshape2", # package to easily melt data to long form
   "stringr","stringdist","stringi", ## string manipulation
-
+  "DT",
   ## Missing value imputation
   # "missForest",  "missMDA", "Amelia",
 
@@ -33,23 +33,23 @@ packages <- c(
 
   ##### Packages for Visualisation
   #"lattice", # Visualisation
-  "graphics",
+  #"graphics",
   "ggplot2", ## advanced graphics
-  "ggseas", ## seasonal adjustemnt with GGplot2
+  #"ggseas", ## seasonal adjustemnt with GGplot2
   "ggrepel", ## getting nice labels in ggplot2
   #"ggvis", ## interactive grammar of graphics
-  "ggthemes", ## Customised themes for ggplot2: excel, stata, economist, tufte, wall street journal...
+  # "ggthemes", ## Customised themes for ggplot2: excel, stata, economist, tufte, wall street journal...
   "grid", "gridExtra", # Assembel graphcis together
   #"gtable", #Arrange 'Grobs' in Tables
   "vcd", # Visualisation of categorical data
   "RColorBrewer", # a package offering color palette from
   "scales", #Scale Functions for Visualization
-  "extrafont", ##" load additional font
+  #"extrafont", ##" load additional font
   "hexbin", ## Hexagrid viz
   #"xkcd", ## Style from the xkcd comics
   #"scatterplot3d",
   "corrplot", # Visualiation of correlation Matrix
-  "igraph", #network analysis and visualisation
+  #"igraph", #network analysis and visualisation
   "ellipse",  ## drawing ellipses and ellipse-like confidence regions
   #"factoextra", ## Visualize the Results of Multivariate Data Analyses
 
@@ -66,7 +66,7 @@ packages <- c(
   ### Packages for Modeling Stage
 
 
-    "Hmisc", "htmlTable", # generate a detailled describtion of a given dataset
+   # "Hmisc", "htmlTable", # generate a detailled describtion of a given dataset
   #  "gbm", # Generalized Boosted Regression Models
     "car", ## ## Companion to Applied Regression
   #  "rminer", "CORElearn",  # ordinal Regression
@@ -117,7 +117,8 @@ packages <- c(
 
   ##################################################################
   ### Packages for Survey data management
-  "sampling", "simFrame", ## Survey Sampling
+  "sampling", ## Survey Sampling
+  #"simFrame",
   "survey",  ##Analysis of Complex Survey Samples
 
   ##################################################################
@@ -139,25 +140,26 @@ packages <- c(
 
   "formatR", #  used to format the code
 
-  "parallel", ## Improve performance
+ # "parallel", ## Improve performance
   "Rcpp", ## used to compile some pacjckages
 
-  "foreign", ## read data from SPSS, SAS or Stata
+  # "foreign", ## read data from SPSS, SAS or Stata
   #  "sqldf", "RODBC",
-  #"RMongo",
+  # "RMongo",
   #  "RSQLite", ## Direct connection with databases
 
   #"rJava", "XLConnect", ## Read and write excel files
   "readxl", ## Read Excel files
+  "xlsx",
 
-  "httr", "rjson","jsonlite", ## get data from API
-  "XML", "xml2", ## Manipulation of xml
+  #"httr", "rjson","jsonlite", ## get data from API
+  #"XML", "xml2", ## Manipulation of xml
 
   "RCurl", ##used to download files from API -install CURL before and separately
   "devtools", # package used to load packages hosted in github --
 
   #  "gmailr", # Access gmail api
-  "RGtk2",
+ # "RGtk2",
   #  "rattle", ## GUI for data mining
   ## used to generate reports
   "knitr", "pander", "xtable", "rmarkdown", "kableExtra","koRpus", "tables"
@@ -216,10 +218,10 @@ library("scales")
 #library("gWidgetsRGtk2")
 library("readxl")
 library("plyr")
-#library("xlsx")
+library("xlsx")
 #library("FactoMineR")
 
 library("corrplot")
 library("graphics")
 library("vcd")
-
+library("DT")

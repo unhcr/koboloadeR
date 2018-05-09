@@ -218,7 +218,7 @@ server <- function(input, output,session) {
     cat(paste('sheet <- "',inFile_sheet,'"',sep=""))
     cat("\n")
     cat("\n")
-    cat(paste0('data <- read_excel("',path.to.data,'", sheet="',inFile_sheet,'")'))
+    cat(paste0('data <- read_excel("',inFile_data,'", sheet="',inFile_sheet,'")'))
     cat("\n")
     cat("### 1. Weighting system   ###\n")
     cat(paste("usedweight<-'",inFile_weight,"'",sep=""))

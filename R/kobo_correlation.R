@@ -19,12 +19,16 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_correlation(data,  dico)
+#' kobo_correlation(S)
 #' }
 #'
 #'
 
-kobo_correlation <- function(data,  dico) {
+kobo_correlation <- function() {
+
+  source("code/0-config.R")
+  data <- read.csv(path.to.data,sep = ";")
+  dico <- read.csv(path.to.dico,sep = ",")
 
   mainDir <- "out"
   subDir <- "correlation"
@@ -40,7 +44,7 @@ kobo_correlation <- function(data,  dico) {
 
 
   ## Check that those variable are in the dataset
-  selectdf <- dico[dico$type=="integer" , c("fullname","listname","label","name","variable","disaggregation")]
+  selectdf <- dico[dico$type=="integer" , c("fullname","listname","label","name","variable","disaggregation","correlate")]
   check <- as.data.frame(names(data))
   names(check)[1] <- "fullname"
   check$id <- row.names(check)
@@ -53,7 +57,7 @@ kobo_correlation <- function(data,  dico) {
   selectintegert <- as.data.frame(selectinteger)
 
   ## get list of variables used for faceting
-  selectcorrel <- as.character(selectdf[selectdf$disaggregation=="correlate" , c("fullname")])
+  selectcorrel <- as.character(selectdf[selectdf$correlate!="" , c("fullname")])
   selectcorrel <- selectcorrel[!is.na(selectcorrel)]
   selectcorrelt <- as.data.frame(selectcorrel)
 
@@ -63,9 +67,9 @@ kobo_correlation <- function(data,  dico) {
 
       ## subset data with selectone
       data.integer <- data [ selectinteger ]
-      ## force to data frame 
+      ## force to data frame
       data.integer <- as.data.frame(data.integer)
-      
+
       ## Remove variable where we get only NA
       data.integer <- data.integer[,colSums(is.na(data.integer))<nrow(data.integer)]
       data.integer <- kobo_label(data.integer, dico)
@@ -93,6 +97,8 @@ kobo_correlation <- function(data,  dico) {
                         ## and now the graph
                           data.integer[ , i] <- as.integer(data.integer[ , i])
                           data.integer[ , j] <- as.integer(data.integer[ , j])
+
+                          theme_set(theme_gray(base_size = 20))
 
                             ggplot(data.integer, aes(x=data.integer[ , i], y=data.integer[ , j])) +
                               geom_count(aes(size = ..prop.., group = 1)) +

@@ -1,6 +1,6 @@
 #' @name kobo_bar_multi_print
 #' @rdname kobo_bar_multi_print
-#' @title  Generate bar Chart - frequency - for select_multiple questions
+#' @title  Generate bar Chart - frequency - for select_multiple questions and save output as svg for illustrator
 #'
 #' @description  Automatically generate bar chart for each of the select_multiple question in the dataset. used in report
 #'

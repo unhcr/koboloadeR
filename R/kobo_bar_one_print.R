@@ -1,6 +1,6 @@
 #' @name kobo_bar_one_print
 #' @rdname kobo_bar_one_print
-#' @title  Generate bar Chart - frequency - for select_one questions
+#' @title  Generate bar Chart - frequency - for select_one questions and save output as svg for illustrator
 #'
 #' @description  Automatically generate bar chart for each of the select_one question in the dataset. Used in report
 #'

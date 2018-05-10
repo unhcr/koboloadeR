@@ -1,6 +1,6 @@
 #' @name kobo_bar_one_facet_print
 #' @rdname kobo_bar_one_facet_print
-#' @title  Generate faceted frequency bar chart
+#' @title  Generate faceted frequency bar chart  and save output as svg for illustrator
 #'
 #' @description  Automatically generate faceted chart for select one variable.. ggplot2 is used.
 #'

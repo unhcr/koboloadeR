@@ -1,6 +1,6 @@
 #' @name kobo_bar_multi_facet
 #' @rdname kobo_bar_multi_facet
-#' @title  Generate frequency bar chart for select_multiple variable
+#' @title  Generate frequency bar chart for select_multiple variable and save output as svg for illustrator
 #'
 #' @description  Automatically generate faceted chart for select multiple variables. ggplot2 is used.
 #'

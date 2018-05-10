@@ -33,16 +33,21 @@ To be able to use koboloadeR you will need:
 
 ### Install koboloadeR from Github (up to date version):
 
-* In the R console, install 'devtool' package:
+* In the R console, install 'devtool' package: 
+
 ```
 install.packages("devtools")
 ```
-* Install koboloadeR:
-```
-library(devtools)
-install_github("unhcr/koboloadeR")
+
+* Install koboloadeR: 
 
 ```
+library(devtools)
+install_github("unhcr/koboloadeR") 
+
+```  
+
+
 * You are all set! You can know use koboloadeR
 
 
@@ -62,15 +67,18 @@ Then setup a few things: run those two lines:
 
 ```
 library (koboloadeR) # This loads koboloadeR package
+
 kobo_projectinit() # Creates folders necessary and transfer files needed
-```
+```  
 
 It might take a while as a few other packages have to be installed or loaded. Once the see the " >" again at the beginning of the line, you can run:
 
 
 ```
 kobo_shiny("app_koboloadeR.R")
-```
+```  
+
+
 
 This will launch a graphic interface with other instructions and options.
 
@@ -84,17 +92,18 @@ Either:
    * or simply copy your data in `csv` format and your xlsform in `xls` format in the `data` folder that was created during the project initiation
  
  use the following options to extract data
-![alt text](https://raw.githubusercontent.com/Edouard-Legoupil/koboloadeR/master/inst/script/exportformat.png)
+![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/master/inst/script/exportformat.png)
  
-
+You may also use a dedicated shinyapp for this
 
 ```
 kobo_shiny("app_dataviewer.R")
-```
+```   
+
 
 # Build a sample
 
-
+You may also use a dedicated shinyapp for this
 
 ```
 kobo_shiny("app_sampling.R")
@@ -108,21 +117,25 @@ Before anything else, try to restart the R session:
 * "Restart R"
 
 ## Can not install the package
-Note that in case you get the follwoing error:
+Note that in case you get the following error:
+
 ```
 InternetOpenUrl failed: 'An error occurred in the secure channel support'
-```
+``` 
+
 Enter the command:
+
 ```
 setInternet2(TRUE)
 ```
+
 Alternatively, you may add to .Rprofile or Rprofile.site the following line:
 
 ```
 options(download.file.method = "wininet")
 ```
 
-One common errors during the package installation is linked to the antivirus _"real time file system protection"_. I do the following to fix the problem:
+One common errors during the package installation is linked to the antivirus _"real time file system protection"_. The following will fix the problem:
 
 ```
 trace(utils:::unpackPkgZip, edit=TRUE)
@@ -148,7 +161,7 @@ If the application (graphic interface) crashes, make sure that all packages nece
 
 ```
 source("code/0-packages.R")
-```
+``` 
 
 Also make sure that you downloaded your data in the right format:
 * Export as XLS

@@ -100,7 +100,7 @@ server <- function(input, output,session) {
       mar_erro <- input$margin_error/100
       prop <- input$proportion/100
       buff <- input$buffer/100
-      sample_frame_f <- samplingframe(data = SamplingFrame,
+      sample_frame_f <- kobo_samplingframe(data = SamplingFrame,
                                       strata = strat,
                                       pop_col = col_pop,
                                       confidence_level = conf_level,

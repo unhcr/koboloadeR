@@ -88,6 +88,19 @@ Either:
  
 
 
+```
+kobo_shiny("app_dataviewer.R")
+```
+
+# Build a sample
+
+
+
+```
+kobo_shiny("app_sampling.R")
+```
+
+
 # Troubleshooting
 
 Before anything else, try to restart the R session:

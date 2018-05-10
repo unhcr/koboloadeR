@@ -1,0 +1,103 @@
+
+
+```{r setup, include=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+mainDir <- getwd()
+mainDirroot <- substring(mainDir, 0 , nchar(mainDir)- 5)
+
+
+
+## Load all required packages
+source(paste0(mainDir,"/0-packages.R"))
+library(koboloadeR)
+
+## Provide below the name of the datafile - shoudl be a csv file
+datafilename <- "data"
+
+data.or <- read.csv(paste0(mainDirroot,"/data/",datafilename,".csv"), sep=";", encoding="UTF-8", na.strings="n/a")
+
+data.or <- kobo_arrange_variablename(data.or)
+
+
+## Load form
+## It is assumed that the dictionnary was already generated!
+
+## Provide below the name of the form in xsl form - format should be xls not xlsx
+
+form <- "form.xls"
+dico <- read.csv(paste(mainDirroot,"data/dico_",form,".csv",sep=""), encoding="UTF-8", na.strings="")
+
+
+#################################################################################
+##### Re-encode correctly the dataset
+
+data <- kobo_encode(data.or, dico)
+data <- kobo_label(data, dico)
+
+surveyname <- kobo_surveyname(form)
+
+```
+
+---
+title: "Title \n Preliminary exploration of results - draft not for distribution - "
+author: "Prepared by UNHCR DOiA"
+date: "Amman, `r Sys.Date()`"
+output: 
+  word_document: 
+    fig_caption: yes
+    fig_height: 5
+    fig_width: 8
+    toc: yes
+    toc_depth: 2
+---
+
+***
+***
+# Executive summary and main findings
+
+***
+# Background Introduction
+
+# Plotting Select_one questions
+
+
+
+```{r bar_one, echo=FALSE, warning=FALSE, cache=FALSE, fig.width=7, fig.height=2}
+
+#########################################################################################
+## Produce graphs of all select_one questions
+kobo_bar_one_print(data,dico)
+
+
+```
+
+# Plotting Select_multiple questions
+
+```{r bar_multi, echo=FALSE, warning=FALSE, cache=FALSE, fig.width=7, fig.height=2}
+
+
+
+#########################################################################################
+## Produce graphs of all select_multiple questions
+kobo_bar_multi_print(data,dico)
+
+```
+
+
+# Plotting numeric questions
+
+```{r histogram, echo=FALSE, warning=FALSE, cache=FALSE, fig.width=7, fig.height=6}
+#########################################################################################
+## Produce histogramme for all numeric variable
+#kobo_histo_print(data,dico)
+
+```
+
+# Plotting facetted analysis
+
+```{r facet, echo=FALSE, warning=FALSE, cache=FALSE, fig.width=7, fig.height=8}
+
+########################################################################################
+### Produce faceted chart select_one
+
+kobo_bar_one_facet_print(data,dico)
+```

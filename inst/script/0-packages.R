@@ -4,165 +4,201 @@
 ##This should detect and install missing packages before loading them –
 packages <- c(
 
-  ##################################################################
-  ### Packages for Premodeling Stage
 
-  ## Data Manipulation
-  "viridis",
-  "lubridate",
-  "date","gdata","zoo", ## playing with date
-  "dplyr",  "data.table", "doBy","tidyr", ## Data manipulation
-  "reshape2", # package to easily melt data to long form
-  "stringr","stringdist","stringi", ## string manipulation
-  "DT",
-  ## Missing value imputation
-  # "missForest",  "missMDA", "Amelia",
+  ## Tydiverse #########
+  # https://www.tidyverse.org
 
+  #"dplyr",  "doBy","tidyr", ## Data manipulation
+  #"ggplot2", ## advanced graphics
+  # "stringr",
+  "tidyverse",
 
-  ## Outlier Detection
-  # "outliers",  "evir",
-
-  ## Feature Selection
-  #"features",  "RRF",
-  # "Boruta", # wrapper for feature selection algorythm
-
-  ## Dimension Reduction
-  # "CCP", # Dimension Reduction
-   "FactoMineR", "ade4","factoextra",  ## multivariate analysis - MCA
-
-
-  ##### Packages for Visualisation
-  #"lattice", # Visualisation
-  #"graphics",
-  "ggplot2", ## advanced graphics
-  #"ggseas", ## seasonal adjustemnt with GGplot2
   "ggrepel", ## getting nice labels in ggplot2
+  "ggthemes", ## Customised themes for ggplot2: excel, stata, economist, tufte, wall street journal...
+  #"ggseas", ## seasonal adjustemnt with GGplot2
   #"ggvis", ## interactive grammar of graphics
-  # "ggthemes", ## Customised themes for ggplot2: excel, stata, economist, tufte, wall street journal...
-  "grid", "gridExtra", # Assembel graphcis together
-  #"gtable", #Arrange 'Grobs' in Tables
-  "vcd", # Visualisation of categorical data
-  "RColorBrewer", # a package offering color palette from
-  "scales", #Scale Functions for Visualization
-  #"extrafont", ##" load additional font
-  "hexbin", ## Hexagrid viz
+
+  "extrafont", ##" load additional font
+
+  ## Data Manipulation ####
+  "reshape2", # package to easily melt data to long form
+  "lubridate", "date","gdata",## playing with date
+  "zoo", ## Manage reformatting of date
+  "data.table", ## Fast aggregation of large data (e.g. 100GB in RAM), fast ordered joins, fast add/modify/delete of columns
+  "DT", # A Wrapper of the JavaScript Library 'DataTables
+  "stringdist", "stringi", ## string manipulation
+
+  ##### Visualisation ########
+  #"lattice",
+  #"graphics",
+  # Visualiation of correlation Matrix  ##
+  "corrplot",
+  ## drawing ellipses and ellipse-like confidence regions
+  "ellipse",
   #"xkcd", ## Style from the xkcd comics
   #"scatterplot3d",
-  "corrplot", # Visualiation of correlation Matrix
   #"igraph", #network analysis and visualisation
-  "ellipse",  ## drawing ellipses and ellipse-like confidence regions
-  #"factoextra", ## Visualize the Results of Multivariate Data Analyses
+  # Assemble graphics together
+  "grid", "gridExtra",
+  "gtable", # Arrange 'Grobs' in Tables
 
-  ##### Packages for Mapping
+  "vcd",  # Visualisation of categorical data
+  #Scale Functions for Visualization
+  "scales",
+
+  # Color palette ####
+  "RColorBrewer",
+  "viridis",
+
+  #####  Mapping ########
   "rgdal","rgeos","sp","maptools", ## standard Geo manipulation packages
   "ggmap", ## get background from webmapping API
   "raster","cartography", ## packages used for the maps --
   "classInt",  ## used for univariate classification
-  # "deldir", # delaunay triangulation & Voronoi
-  # "viridis", # Default Color Maps from 'matplotlib'
-  # "fields", ## Tools for Spatial Data
+  "hexbin", ## Hexagrid viz
+  #"deldir", # delaunay triangulation & Voronoi
+  #"fields", ## Tools for Spatial Data
 
-  ##################################################################
-  ### Packages for Modeling Stage
+  #### Pre-modelling  ########
+  ## Missing value imputation ###
+  # "missForest",  "missMDA", "Amelia",
+  ## Outlier Detection ####
+  # "outliers",  "evir",
 
+  ### Feature Selection ########
+  #"features",
+  # "RRF",
+  # "Boruta", # wrapper for feature selection algorythm
 
-   # "Hmisc", "htmlTable", # generate a detailled describtion of a given dataset
-  #  "gbm", # Generalized Boosted Regression Models
+  ### Dimension Reduction ########
+  #"stats",  # Dimensionality Reduction Algorithms princomp
+  # "CCP",
+
+  # "htmlTable", # generate a detailled describtion of a given dataset
+
+  ## Multivariate analysis - MCA ########
+  "FactoMineR",
+  "ade4",
+  "factoextra",
+  ##"FactoInvestigate",
+
+  ### Packages for Modeling Stage ########
+    "Hmisc", #  Contains many functions useful for data analysis, high-level graphics, utility operations, functions for computing
     "car", ## ## Companion to Applied Regression
+  #  "gbm", # Generalized Boosted Regression Models
   #  "rminer", "CORElearn",  # ordinal Regression
   #  "caret", # Gradient Boosting & AdaBoost
   #  "bigRR",  ## Classification
 
 
+  ###  Machine Learning ########
+  "e1071", #SVM (Support Vector Machine)
+  "knncat", # KNN (K- Nearest Neighbors)
+  "randomForest", # randomForest
 
-  #  "e1071", #SVM (Support Vector Machine)
-  #  "knncat", # KNN (K- Nearest Neighbors)
-  #  "randomForest", # randomForest
-  #  "stats", # Dimensionality Reduction Algorithms princomp
-  ## Time Series
-  #  "forecast", "ltsa",
+  ###  Recursive Partitioning and Regression Trees
+  "rpart",
+  "rpart.plot",
 
-  # survival analysis
-  #  "survival", "BaSTA",
-  #  "pastecs", #Analysis of Space-Time Ecological Series
 
-  # Lasso and Elastic-Net Regularized Generalized Linear Models
-  #  "glmnet",
-  #  "lme4", # Linear Mixed-Effects Models
+  ###  Time Series & survival analysis ########
+  #"forecast", "ltsa",
+  #"survival", "BaSTA",
+  #"pastecs", #Analysis of Space-Time Ecological Series
 
-  #  "MASS",
-  #  "VGAM", #Vector Generalized Linear and Additive Models
-  #  "aod", ## Analysis of Overdispersed Data
+  ###  Lasso and Elastic-Net Regularized Generalized Linear Models  ########
+  #"glmnet",
+    "lme4", # Linear Mixed-Effects Models  #  "MASS",
+  #"VGAM", #Vector Generalized Linear and Additive Models
+  #"aod", ## Analysis of Overdispersed Data
 
-  ## Cluster analysis
-  #  "cluster", "cba", "Rankcluster",
+  ### Cluster analysis #####
+  #"cluster", "cba", "Rankcluster",
 
-  ##################################################################
-  ### Packages for Post Modeling Stage
 
-  #  "lmtest", # Testing Linear Regression Models
+  ### Post Modeling Stage ########
+  ## Testing Linear Regression Models
+  #  "lmtest",
+  ## Global Validation of Linear Models Assumptions
+  #  "gvlma",
+  ## General Model Validation
+  #  "lsmeans", "comparison",
+  ## Regression validation
+  #  "regtest", "ACD",
+  ## Classification validation
+  #  "binomTools","Daim",
+  ## Clustering valisation
+  # "clusteval","sigclust",
 
-  #  "gvlma", #Global Validation of Linear Models Assumptions
+  ### ROC Analysis ########
+  "pROC",
+  # "timeROC",
 
-  #  "lsmeans", "comparison", #general Model Validation
-  #  "regtest", "ACD", #Regression validation
-
-  #  "binomTools","Daim", ## classification validation
-  #  "clusteval","sigclust", ## Clustering valisation
-
-  #  "pROC","timeROC", # ROC Analysis
-
-  ## Recursive Partitioning and Regression Trees
-  #  "rpart", "rpart.plot",
-
-  ##################################################################
-  ### Packages for Survey data management
+  ### Packages for Survey data management ########
   "sampling", ## Survey Sampling
-  #"simFrame",
+  #  "simFrame",
   "survey",  ##Analysis of Complex Survey Samples
 
-  ##################################################################
-  ### Other Packages
+  ## Procedures for Psychological, Psychometric, and Personality Research ########
+  #  "psych",
 
-
-  #  "psych", ## Procedures for Psychological, Psychometric, and Personality Research
-
-  #  "Benchmarking", #Benchmark and Frontier Analysis Using Data Envelopmenbt Aanalysis
-
+  ## Benchmark and Frontier Analysis Using Data Envelopmenbt Aanalysis ########
+  #  "Benchmarking",
   #  "pwr", # Power Analysis allows  to determine the sample size required to detect an effect of a given size with a given degree of confidence.
 
-  ## text mining
+  ## Text mining ########
   #  "tm", "twitteR" ,
-  #  "wordcloud", #Word Clouds
-  #  "LDAvis", # Interactive Visualization of Topic Models
+  ## Word Clouds
+  #  "wordcloud",
+  ## Interactive Visualization of Topic Models
+  #  "LDAvis",
 
-  #  "AER",  # Applied economtrics with R
+  # Applied economtrics with R ########
+  # "AER",
 
-  "formatR", #  used to format the code
+  ## Get data from SPSS, SAS or Stata ########
+  # "foreign", "haven",
 
- # "parallel", ## Improve performance
-  "Rcpp", ## used to compile some pacjckages
+  ## Direct connection with databases ########
+  #  "sqldf",
+  #  "RODBC",
+  #  "RMongo",
+  #  "RSQLite"
 
-  # "foreign", ## read data from SPSS, SAS or Stata
-  #  "sqldf", "RODBC",
-  # "RMongo",
-  #  "RSQLite", ## Direct connection with databases
-
+  ## Get data from Excel ########
   #"rJava", "XLConnect", ## Read and write excel files
   "readxl", ## Read Excel files
-  "xlsx",
+ # "xlsx",
 
-  #"httr", "rjson","jsonlite", ## get data from API
+  ## Get data or files from API ########
+  #"httr", "rjson","jsonlite",
   #"XML", "xml2", ## Manipulation of xml
+  #"gmailr", # Access gmail api
+  ##-install CURL before and separately
+  "RCurl",
 
-  "RCurl", ##used to download files from API -install CURL before and separately
+
+  ### Extend R  ########
+  "formatR", #  used to format the code
+  "Rcpp", ## used to compile some pacckages
   "devtools", # package used to load packages hosted in github --
+   # "parallel", ## Improve performance
 
-  #  "gmailr", # Access gmail api
- # "RGtk2",
-  #  "rattle", ## GUI for data mining
-  ## used to generate reports
-  "knitr", "pander", "xtable", "rmarkdown", "kableExtra","koRpus", "tables"
+  ### GUI ########
+  #"RGtk2",
+  #"rattle",
+
+  ### Anonymisation #######
+ "bit64",  "sdcMicro",
+
+  ## Generate reports  ########
+  "knitr",
+  "pander",
+  "xtable",
+  "rmarkdown",
+  "kableExtra",
+  "koRpus",
+  "tables"
 )
 
 ## identify packages not installed yet
@@ -172,56 +208,46 @@ if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
 
 rm(packages)
 
-#Sys.getenv("R_LIBS_USER")
+# Now load packages into memory ####
+# Sys.getenv("R_LIBS_USER")
+# .libPaths()
+# gpclibPermit()
 
-#remove.packages("tibble")
-#install.packages("tibble")
+library("tidyverse")
+library("ggthemes")
+library("plyr")
+library("ggrepel")
+library("viridis")
+library("RColorBrewer")
+library("classInt")
+library("hexbin")
+
+library("DT")
+library("extrafont")
+library("corrplot")
+library("graphics")
+library("vcd")
+library("stringi")
+
+
+library("zoo")
+library("reshape2")
+library("lubridate")
+library("date")
+library("gdata")
+library("gridExtra")
+library("scales")
+
+library("survey")
+
 library("knitr")
 library("kableExtra")
 library("koRpus")
 library("tables")
 library("rmarkdown")
 
-library("survey")
-library("ggrepel")
-library("viridis")
-#gpclibPermit()
-
-# loads packages into memory
-library("stringr")
-library("stringi")
-#library("lattice")
-#library("rattle")
-library("car")
-library("plyr")
-library("ggplot2") ## The grammar of graphics!
-library("extrafont") ## Additional fonts
-library("ggthemes") ## Additional themes for gplot2
-library("zoo") ## Manage reformatting of date
-library("reshape2") ## Restructure data between wide and long format before plotting them - melt and cast
-#library("maptools") ## Create maps
-#library("rgdal") ## Open geographic files
-#library("rgeos")
-library("ggmap") ## get background map from google map
-library("sp") ## Spatial library
-#library("raster") ## Managing raster dataset
-library("RColorBrewer") ## Color palette
-library("classInt") ## Classififcation
-library("hexbin") ## Hexa binning
-library("lubridate")
-library("date")
-library("gdata")
-library("gridExtra")
-library("scales")
-#library("formatR")
-#library("RGtk2")
-#library("gWidgetsRGtk2")
 library("readxl")
-library("plyr")
-library("xlsx")
-#library("FactoMineR")
+#library("xlsx")
 
-library("corrplot")
-library("graphics")
-library("vcd")
-library("DT")
+library("car")
+

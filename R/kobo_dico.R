@@ -145,14 +145,6 @@ kobo_dico <- function(form) {
   cat(" \n Now extracting list name from questions type.\n \n")
   survey$listname <- ""
 
-  ## handle case where we have "or_other"
-  #survey$listname <- with(survey, ifelse(grepl("or_other", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  survey$listname) ,
-  #                                       paste0( substr(survey$listname , 1, (nchar(survey$listname)-8 ))),survey$listname))
-
-  ## handle case where we have "or_other"
-  survey$listname <- with(survey, ifelse(grepl("or_other", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  survey$listname) ,
-                                         paste0( substr(survey$listname , 1, (nchar(survey$listname)-8 ))),survey$listname))
-
 
   ## Extract for select_one
   survey$listname <- with(survey, ifelse(grepl("select_one", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  survey$type) ,
@@ -167,6 +159,14 @@ kobo_dico <- function(form) {
 
   survey$type <- with(survey, ifelse(grepl("select_multiple", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  survey$type), paste0("select_multiple_d"),survey$type))
 
+  ## handle case where we have "or_other"
+  #survey$listname <- with(survey, ifelse(grepl("or_other", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  survey$listname) ,
+  #                                       paste0( substr(survey$listname , 1, (nchar(survey$listname)-8 ))),survey$listname))
+
+  ## handle case where we have "or_other"
+  survey$listname <- with(survey, ifelse(grepl("or_other", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  survey$listname) ,
+                                         paste0( substr(survey$listname , 1, (nchar(survey$listname)-8 ))),
+                                         survey$listname))
 
   ## Remove trailing space
   survey$listname <- trim(survey$listname)

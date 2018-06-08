@@ -25,7 +25,7 @@
 
 kobo_cluster_report <- function(frame, dico) {
 
-  # frame <- data.or
+  # frame <- household
   # framename <- "household"
   framename <- deparse(substitute(frame))
   write.csv(frame, paste0("data/clustering-report-",framename,".csv"), row.names = FALSE, na = "")
@@ -60,7 +60,7 @@ kobo_cluster_report <- function(frame, dico) {
         reportcluster  <- paste0("code/clustering-report-",framename,".Rmd")
 
         ## TO DO : CHECK IF FILE EXIST - AND REQUEST USER TO DELETE BEFORE REGENERATING - SUGGESTING TO SAVE PREVIOUS UNDER NEW NAME
-        if (file.exists(reportanom)) file.remove(reportanom)
+        if (file.exists(reportcluster)) file.remove(reportcluster)
 
 
 
@@ -107,7 +107,7 @@ kobo_cluster_report <- function(frame, dico) {
         cat("dico <- read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = reportcluster , sep = "\n", append = TRUE)
         cat("\n", file = reportcluster , sep = "\n", append = TRUE)
 
-        cat(paste0("datacluster <-  read.csv(paste0(mainDirroot,\"/data/clusterreport-",framename,".csv\"), sep = \",\", encoding = \"UTF-8\", na.strings = \"\")"), file = reportanom , sep = "\n", append = TRUE)
+        cat(paste0("datacluster <-  read.csv(paste0(mainDirroot,\"/data/clustering-report-",framename,".csv\"), sep = \",\", encoding = \"UTF-8\", na.strings = \"\")"), file = reportcluster , sep = "\n", append = TRUE)
 
         cat("\n", file = reportcluster , sep = "\n", append = TRUE)
         cat("```", file = reportcluster , sep = "\n", append = TRUE)

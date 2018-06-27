@@ -15,6 +15,11 @@ The `koboloadeR` package allows to:
 
 * access to a series of dedicated Shiny application to set up your project
 
+* support the full range of data science level
+
+![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/master/inst/script/datascience.png)
+
+
 # koboloadeR quick setup and Walk Through
 
 ## Prerequisite

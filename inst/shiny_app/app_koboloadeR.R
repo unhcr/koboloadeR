@@ -9,6 +9,7 @@ ui <- fluidPage(
              ## Introduction#####
              tabPanel("Introduction",
                       mainPanel(
+                        fluidRow(
                         h2("Instruction"),
                         h3(" 1- Export data from Kobo"),
                         p("Both your form and data should be downloaded directly from kobo."),
@@ -25,25 +26,39 @@ ui <- fluidPage(
                         h3(" 2- Use the XLSform template supplied"),
                         p("In the folder 'code', you will find a XLSform template.",
                           br(),
-                          "You will see that this template has three extra sheets:",
+                          "You will see that this te
+                          mplate has three extra sheets:",
                           tags$ol(
                             tags$li("'analysis_plan': where you can define your indicators or new variables if need"),
                             tags$li("'sampling_frame': where you can specify your sampling frame to weight your data according to the method given in Project Configuration"),
                             tags$li("'instruction': help on how to fill the new XLSform.")
                           ),
                           "Please see the 'instruction' on how to setup your XLSform for koboloadeR")
-                      )
+                      ))
              ),
 
              ## Project Configuration#####
              tabPanel("Project configuration",
                       titlePanel("Configuring a few elements for your project"),
                       mainPanel(
+
+
+                        fluidRow(
+                          h2("Information about the reports"),
+                          column(10,
+                                 textInput("report_name", label =  "Name of the report", value = "Data Crunching Report"),
+                                 textInput("location", label =  "Where is the report written", value = "out"),
+                                 textInput("author", label =  "What is your name (author)?", value = "Edouard"),
+                                 textInput("organisation", label =  "What is your organisation?"), value = "UNHCR" )
+                        ),
+
+                        fluidRow(
+                          column(5, offset = 2, fileInput("form", label = h4("Select the file with the form"),accept = c(".xlsx")))
+                        ),
+
                         fluidRow(
                           #list files in "data" and make dropdown of choices. then select sheets to be used for data, analysis plan and sampling
-                          column(5,  fileInput("datafile", label = h4("Select the file with the data"),accept = c(".xlsx",".xls",".csv")),
-                                 uiOutput("data_sheet")),
-                          column(5, offset = 2, fileInput("form", label = h4("Select the file with the form"),accept = c(".xlsx")))
+                          column(5,  fileInput("datafile", label = h4("Select the file with the data"),accept = c(".xlsx",".xls",".csv")),  uiOutput("data_sheet"))
                         ),
 
                         fluidRow(
@@ -55,20 +70,9 @@ ui <- fluidPage(
                                                                               "2 stages random -st1" = "2_stages",
                                                                               "cluster sampling" = "cluster_sampling"))))
                         ),
-
                         fluidRow(
-                          radioButtons("analysis_plan", h4("Did you use the analysis plan sheet?"),
-                                       choices = c("No" = "n", "Yes" = "y")),
+                          radioButtons("analysis_plan", h4("Did you use the indicators calculation sheet?"), choices = c("No" = "n", "Yes" = "y")),
                           uiOutput("files_uploaded")
-                        ),
-
-                        fluidRow(
-                          h2("Information about the reports"),
-                          column(10,
-                                 textInput("report_name", "Name of the report"),
-                                 textInput("location", "Where is the report written"),
-                                 textInput("author", "What is your name (author)?"),
-                                 textInput("organisation", "What is your organisation?") )
                         )
                       ),
 
@@ -109,7 +113,8 @@ ui <- fluidPage(
                                       h4("Bar graphs for select_multiple questions with disaggregation"), actionButton("bar_multi_facet", "Generate graphs"),
                                       h4("Histograms for integer,decimal, and calculate questions with disaggregation"), actionButton("histo", "Generate graphs")
                                     ),
-                                    sidebarPanel( h4("Download outputs"), downloadButton("report", "Generate report") ))
+                                    sidebarPanel(
+                                      h4("Download outputs"), downloadButton("report", "Generate report") ))
              )
   )
 )

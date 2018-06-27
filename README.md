@@ -17,7 +17,7 @@ The `koboloadeR` package allows to:
 
 * support the full range of data science level
 
-![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/master/inst/script/datascience.png)
+![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/datascience.png)
 
 
 # koboloadeR quick setup and Walk Through
@@ -97,7 +97,7 @@ Either:
    * or simply copy your data in `csv` format and your xlsform in `xls` format in the `data` folder that was created during the project initiation
  
  use the following options to extract data
-![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/master/inst/script/exportformat.png)
+![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/exportformat.png)
  
 You may also use a dedicated shinyapp for this
 

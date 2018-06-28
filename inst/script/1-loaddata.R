@@ -5,7 +5,7 @@ source("code/0-packages.R")
 source("code/0-config.R")
 
 ### Double Check that you have the last version
-#source("https://raw.githubusercontent.com/Edouard-Legoupil/koboloadeR/master/inst/script/install_github.R")
+#source("https://raw.githubusercontent.com/unhcr/koboloadeR/master/inst/script/install_github.R")
 #install.packages("devtools")
 #library("devtools")
 #install_github("unhcr/koboloadeR")
@@ -66,7 +66,7 @@ household <- kobo_clean(household, dico)
 
 ## Build anonymised version of the frame ##########################################
 cat("\n\n\n Anonymise Household \n\n\n\n")
-kobo_anonymise(household, dico)
+#kobo_anonymise(household, dico)
 
 ## Save preliminary version before encoding or adding indicators ##################
 cat("\n\nWrite backup before encoding or indicators calculation..\n")
@@ -75,7 +75,8 @@ write.csv(household,"data/household.csv", row.names = FALSE, na = "")
 
 ## Compute indicators if defined ##################################################
 source("code/2-create-indicators.R")
-
+## Writing to a new version of the dico
+write.csv(dico, paste0("data/dico_",form,"-indic.csv"), row.names = FALSE, na = "")
 
 ## Re-encoding data now based on the dictionnary -- ##############################
 ## the xlsform dictionnary can be adjusted this script re-runned till satisfaction

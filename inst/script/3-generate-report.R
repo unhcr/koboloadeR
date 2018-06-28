@@ -19,8 +19,7 @@ cat("\n\n Building dictionnary from the xlsform \n")
 #rm(form)
 #form <- "form.xls"
 ## Generate & Load dictionnary
-kobo_dico(form)
-dico <- read.csv(paste("data/dico_",form,".csv",sep = ""), encoding = "UTF-8", na.strings = "")
+dico <- read.csv(paste("data/dico_",form,"-indic.csv",sep = ""), encoding = "UTF-8", na.strings = "")
 #rm(form)
 
 
@@ -111,7 +110,7 @@ for (i in 1:nrow(chapters) )
   cat("library(koboloadeR)", file = chapter.name , sep = "\n", append = TRUE)
   cat("## Provide below the name of the form in xsl form - format should be xls not xlsx", file = chapter.name , sep = "\n", append = TRUE)
   cat(paste0("form <- \"",form,"\""), file = chapter.name , sep = "\n", append = TRUE)
-  cat("dico <- read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = chapter.name , sep = "\n", append = TRUE)
+  cat("dico <- read.csv(paste0(mainDirroot,\"/data/dico_\",form,\"-indic.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = chapter.name , sep = "\n", append = TRUE)
 
 
   ## TO DO: Use config file to load the different frame

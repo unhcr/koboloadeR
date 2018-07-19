@@ -8,7 +8,7 @@ source("code/0-config.R")
 #source("https://raw.githubusercontent.com/unhcr/koboloadeR/master/inst/script/install_github.R")
 #install.packages("devtools")
 #library("devtools")
-#install_github("unhcr/koboloadeR")
+#install_github("unhcr/koboloadeR", ref = "gh-pages")
 
 library(koboloadeR)
 

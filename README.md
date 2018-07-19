@@ -38,6 +38,8 @@ To be able to use koboloadeR you will need:
 
 ### Package installation: koboloadeR from Github (up to date version):
 
+Note that the package is still in beta-version. We hope to have soon a release available on CRAN.
+
 * Open R studio interface and within the R console, install 'devtool' package: 
 
 ```
@@ -48,7 +50,7 @@ install.packages("devtools")
 
 ```
 library(devtools)
-install_github("unhcr/koboloadeR") 
+install_github("unhcr/koboloadeR", ref = "gh-pages") 
 
 ```  
 

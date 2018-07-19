@@ -30,15 +30,15 @@ To be able to use koboloadeR you will need:
  * R Studio  (https://www.rstudio.com/products/rstudio/download/#download)
 
 
-## Installation  
+## Software installation  
 
  * Install R: follow instruction from the installer.
  * Install R Studio: follow instruction from the installer
  * Launch R Studio
 
-### Install koboloadeR from Github (up to date version):
+### Package installation: koboloadeR from Github (up to date version):
 
-* In the R console, install 'devtool' package: 
+* Open R studio interface and within the R console, install 'devtool' package: 
 
 ```
 install.packages("devtools")
@@ -53,7 +53,7 @@ install_github("unhcr/koboloadeR")
 ```  
 
 
-* You are all set! You can know use koboloadeR
+* You are all set! You can know use koboloadeR. If you have a problem consult the common troubleshooting part at the end of this page.
 
 
 # Quick start
@@ -114,85 +114,6 @@ You may also use a dedicated shinyapp for this
 kobo_shiny("app_sampling.R")
 ```
 
-
-# Troubleshooting
-
-Before anything else, try to restart the R session:
-* In R studio, on top go to "Session"
-* "Restart R"
-
-## Can not install the package
-Note that in case you get the following error:
-
-```
-InternetOpenUrl failed: 'An error occurred in the secure channel support'
-``` 
-
-Enter the command:
-
-```
-setInternet2(TRUE)
-```
-
-Alternatively, you may add to .Rprofile or Rprofile.site the following line:
-
-```
-options(download.file.method = "wininet")
-```
-
-One common errors during the package installation is linked to the antivirus _"real time file system protection"_. The following will fix the problem:
-
-```
-trace(utils:::unpackPkgZip, edit=TRUE)
-
-```
-Edit line 140:
-
-```
-Sys.sleep(0.5)
-
-```
-to:
-
-```
-Sys.sleep(2)
-
-```
-
-
-
-### The application crashed
-If the application (graphic interface) crashes, make sure that all packages necessary are loaded with:
-
-```
-source("code/0-packages.R")
-``` 
-
-Also make sure that you downloaded your data in the right format:
-* Export as XLS
-* XML values and headers
-* Include groups in headers
-* 'Group separator' as dot ('.')
-
-
-### Error when building the dictionnary or configuration file
-
-If you see this message (or similar error):
-```
-Error in file(file, ifelse(append, "a", "w")) : 
-  cannot open the connection
-```
-It is most likely because you have the form, dictionary or data set open on your computer. If you close it and start over, the problem should be fixed.
-
-  
-### Error when loading packages
- If you get this error: 
- 
-```
-Error: package or namespace load failed for 'rJava'
-```
-
-It could be because you have a 64bit version of R, but have a 32bit version of Java. Check this thread for guidance: https://stackoverflow.com/questions/37735108/r-error-onload-failed-in-loadnamespace-for-rjava
 
 
 
@@ -385,5 +306,85 @@ __Reference__   |	Variable is removed entirely from the data set and is copied i
 __Mask__        |	The Variable  values are replaced with meaningless values but the categories are preserved. A reference file is created to link the original value with the meaningless value. Typically applied to categorical Variable . For example, Town names could be masked with random combinations of letters. It would still be possible to perform statisitical analysis on the Variable  but the person running the analysis would not be able to identify the original values, they would only become meaningful when replaced with the original values. The reference file is never shared and the data is also preserved in the original file.  
 __Generalise__	| Continuous Variable  is turned into categorical or ordinal Variable  by summarising it into ranges. For example, Age could be turned into age ranges, Weight could be turned into ranges. It can also apply to categorical Variable  where parent groups are created. For example, illness is grouped into illness type. Generalised Variable  can also be masked for extra anonymisation. The Variable  is preserved in the original file.  
 
+
+# Common Troubleshooting
+
+Before anything else, try to restart the R session:
+* In R studio, on top go to "Session"
+* "Restart R"
+
+## Can not install the package
+Note that in case you get the following error:
+
+```
+InternetOpenUrl failed: 'An error occurred in the secure channel support'
+``` 
+
+Enter the command:
+
+```
+setInternet2(TRUE)
+```
+
+Alternatively, you may add to .Rprofile or Rprofile.site the following line:
+
+```
+options(download.file.method = "wininet")
+```
+
+## Unable to move temporary installation
+
+One common errors during the package installation is linked to the antivirus _"real time file system protection"_. The following will fix the problem:
+
+```
+trace(utils:::unpackPkgZip, edit=TRUE)
+
+```
+Edit line 140:
+
+```
+Sys.sleep(0.5)
+
+```
+to:
+
+```
+Sys.sleep(2)
+
+```
+
+
+### The application crashed
+If the application (graphic interface) crashes, make sure that all packages necessary are loaded with:
+
+```
+source("code/0-packages.R")
+``` 
+
+Also make sure that you downloaded your data in the right format:
+* Export as XLS
+* XML values and headers
+* Include groups in headers
+* 'Group separator' as dot ('.')
+
+
+### Error when building the dictionnary or configuration file
+
+If you see this message (or similar error):
+```
+Error in file(file, ifelse(append, "a", "w")) : 
+  cannot open the connection
+```
+It is most likely because you have the form, dictionary or data set open on your computer. If you close it and start over, the problem should be fixed.
+
+  
+### Error when loading packages
+ If you get this error: 
+ 
+```
+Error: package or namespace load failed for 'rJava'
+```
+
+It could be because you have a 64bit version of R, but have a 32bit version of Java. Check this thread for guidance: https://stackoverflow.com/questions/37735108/r-error-onload-failed-in-loadnamespace-for-rjava
 
 

@@ -106,19 +106,19 @@
 <li><p>R Studio (<a href="https://www.rstudio.com/products/rstudio/download/#download" class="uri">https://www.rstudio.com/products/rstudio/download/#download</a>)</p></li>
 </ul>
 </div>
-<div id="installation" class="section level2">
+<div id="software-installation" class="section level2">
 <h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<a href="#software-installation" class="anchor"></a>Software installation</h2>
 <ul>
 <li>Install R: follow instruction from the installer.</li>
 <li>Install R Studio: follow instruction from the installer</li>
 <li>Launch R Studio</li>
 </ul>
-<div id="install-koboloader-from-github-up-to-date-version" class="section level3">
+<div id="package-installation-koboloader-from-github-up-to-date-version" class="section level3">
 <h3 class="hasAnchor">
-<a href="#install-koboloader-from-github-up-to-date-version" class="anchor"></a>Install koboloadeR from Github (up to date version):</h3>
+<a href="#package-installation-koboloader-from-github-up-to-date-version" class="anchor"></a>Package installation: koboloadeR from Github (up to date version):</h3>
 <ul>
-<li>In the R console, install ‘devtool’ package:</li>
+<li>Open R studio interface and within the R console, install ‘devtool’ package:</li>
 </ul>
 <pre><code>install.packages("devtools")</code></pre>
 <ul>
@@ -128,7 +128,7 @@
 install_github("unhcr/koboloadeR") 
 </code></pre>
 <ul>
-<li>You are all set! You can know use koboloadeR</li>
+<li>You are all set! You can know use koboloadeR. If you have a problem consult the common troubleshooting part at the end of this page.</li>
 </ul>
 </div>
 </div>
@@ -176,62 +176,6 @@ kobo_projectinit() # Creates folders necessary and transfer files needed</code><
 <a href="#build-a-sample" class="anchor"></a>Build a sample</h1>
 <p>You may also use a dedicated shinyapp for this</p>
 <pre><code><a href="reference/kobo_shiny.html">kobo_shiny("app_sampling.R")</a></code></pre>
-</div>
-<div id="troubleshooting" class="section level1">
-<h1 class="hasAnchor">
-<a href="#troubleshooting" class="anchor"></a>Troubleshooting</h1>
-<p>Before anything else, try to restart the R session:</p>
-<ul>
-<li>In R studio, on top go to “Session”</li>
-<li>“Restart R”</li>
-</ul>
-<div id="can-not-install-the-package" class="section level2">
-<h2 class="hasAnchor">
-<a href="#can-not-install-the-package" class="anchor"></a>Can not install the package</h2>
-<p>Note that in case you get the following error:</p>
-<pre><code>InternetOpenUrl failed: 'An error occurred in the secure channel support'</code></pre>
-<p>Enter the command:</p>
-<pre><code>setInternet2(TRUE)</code></pre>
-<p>Alternatively, you may add to .Rprofile or Rprofile.site the following line:</p>
-<pre><code>options(download.file.method = "wininet")</code></pre>
-<p>One common errors during the package installation is linked to the antivirus <em>“real time file system protection”</em>. The following will fix the problem:</p>
-<pre><code>trace(utils:::unpackPkgZip, edit=TRUE)
-</code></pre>
-<p>Edit line 140:</p>
-<pre><code>Sys.sleep(0.5)
-</code></pre>
-<p>to:</p>
-<pre><code>Sys.sleep(2)
-</code></pre>
-<div id="the-application-crashed" class="section level3">
-<h3 class="hasAnchor">
-<a href="#the-application-crashed" class="anchor"></a>The application crashed</h3>
-<p>If the application (graphic interface) crashes, make sure that all packages necessary are loaded with:</p>
-<pre><code>source("code/0-packages.R")</code></pre>
-<p>Also make sure that you downloaded your data in the right format:</p>
-<ul>
-<li>Export as XLS</li>
-<li>XML values and headers</li>
-<li>Include groups in headers</li>
-<li>‘Group separator’ as dot (‘.’)</li>
-</ul>
-</div>
-<div id="error-when-building-the-dictionnary-or-configuration-file" class="section level3">
-<h3 class="hasAnchor">
-<a href="#error-when-building-the-dictionnary-or-configuration-file" class="anchor"></a>Error when building the dictionnary or configuration file</h3>
-<p>If you see this message (or similar error):</p>
-<pre><code>Error in file(file, ifelse(append, "a", "w")) : 
-  cannot open the connection</code></pre>
-<p>It is most likely because you have the form, dictionary or data set open on your computer. If you close it and start over, the problem should be fixed.</p>
-</div>
-<div id="error-when-loading-packages" class="section level3">
-<h3 class="hasAnchor">
-<a href="#error-when-loading-packages" class="anchor"></a>Error when loading packages</h3>
-<p>If you get this error:</p>
-<pre><code>Error: package or namespace load failed for 'rJava'</code></pre>
-<p>It could be because you have a 64bit version of R, but have a 32bit version of Java. Check this thread for guidance: <a href="https://stackoverflow.com/questions/37735108/r-error-onload-failed-in-loadnamespace-for-rjava" class="uri">https://stackoverflow.com/questions/37735108/r-error-onload-failed-in-loadnamespace-for-rjava</a></p>
-</div>
-</div>
 </div>
 <div id="resources" class="section level1">
 <h1 class="hasAnchor">
@@ -574,6 +518,66 @@ example("kobo_data_downloader")</code></pre>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+<div id="common-troubleshooting" class="section level1">
+<h1 class="hasAnchor">
+<a href="#common-troubleshooting" class="anchor"></a>Common Troubleshooting</h1>
+<p>Before anything else, try to restart the R session:</p>
+<ul>
+<li>In R studio, on top go to “Session”</li>
+<li>“Restart R”</li>
+</ul>
+<div id="can-not-install-the-package" class="section level2">
+<h2 class="hasAnchor">
+<a href="#can-not-install-the-package" class="anchor"></a>Can not install the package</h2>
+<p>Note that in case you get the following error:</p>
+<pre><code>InternetOpenUrl failed: 'An error occurred in the secure channel support'</code></pre>
+<p>Enter the command:</p>
+<pre><code>setInternet2(TRUE)</code></pre>
+<p>Alternatively, you may add to .Rprofile or Rprofile.site the following line:</p>
+<pre><code>options(download.file.method = "wininet")</code></pre>
+</div>
+<div id="unable-to-move-temporary-installation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#unable-to-move-temporary-installation" class="anchor"></a>Unable to move temporary installation</h2>
+<p>One common errors during the package installation is linked to the antivirus <em>“real time file system protection”</em>. The following will fix the problem:</p>
+<pre><code>trace(utils:::unpackPkgZip, edit=TRUE)
+</code></pre>
+<p>Edit line 140:</p>
+<pre><code>Sys.sleep(0.5)
+</code></pre>
+<p>to:</p>
+<pre><code>Sys.sleep(2)
+</code></pre>
+<div id="the-application-crashed" class="section level3">
+<h3 class="hasAnchor">
+<a href="#the-application-crashed" class="anchor"></a>The application crashed</h3>
+<p>If the application (graphic interface) crashes, make sure that all packages necessary are loaded with:</p>
+<pre><code>source("code/0-packages.R")</code></pre>
+<p>Also make sure that you downloaded your data in the right format:</p>
+<ul>
+<li>Export as XLS</li>
+<li>XML values and headers</li>
+<li>Include groups in headers</li>
+<li>‘Group separator’ as dot (‘.’)</li>
+</ul>
+</div>
+<div id="error-when-building-the-dictionnary-or-configuration-file" class="section level3">
+<h3 class="hasAnchor">
+<a href="#error-when-building-the-dictionnary-or-configuration-file" class="anchor"></a>Error when building the dictionnary or configuration file</h3>
+<p>If you see this message (or similar error):</p>
+<pre><code>Error in file(file, ifelse(append, "a", "w")) : 
+  cannot open the connection</code></pre>
+<p>It is most likely because you have the form, dictionary or data set open on your computer. If you close it and start over, the problem should be fixed.</p>
+</div>
+<div id="error-when-loading-packages" class="section level3">
+<h3 class="hasAnchor">
+<a href="#error-when-loading-packages" class="anchor"></a>Error when loading packages</h3>
+<p>If you get this error:</p>
+<pre><code>Error: package or namespace load failed for 'rJava'</code></pre>
+<p>It could be because you have a 64bit version of R, but have a 32bit version of Java. Check this thread for guidance: <a href="https://stackoverflow.com/questions/37735108/r-error-onload-failed-in-loadnamespace-for-rjava" class="uri">https://stackoverflow.com/questions/37735108/r-error-onload-failed-in-loadnamespace-for-rjava</a></p>
+</div>
 </div>
 </div>
 

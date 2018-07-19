@@ -140,7 +140,7 @@ packages <- c(
   "survey",  ##Analysis of Complex Survey Samples
 
   ## Procedures for Psychological, Psychometric, and Personality Research ########
-  #  "psych",
+    "psych",
 
   ## Benchmark and Frontier Analysis Using Data Envelopmenbt Aanalysis ########
   #  "Benchmarking",
@@ -203,7 +203,7 @@ packages <- c(
 
 ## identify packages not installed yet
 if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
-  install.packages(setdiff(packages, rownames(installed.packages())))
+  install.packages(setdiff(packages, rownames(installed.packages())), dependencies = TRUE)
 }
 
 rm(packages)

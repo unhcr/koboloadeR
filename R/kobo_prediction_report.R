@@ -4,13 +4,13 @@
 #'
 #' @description  Automatically produce a report of prediction
 #'
-#'  
+#'
 #'
 #'
 #' @param  kobo or odk dataset to use
 #' @param  dico Generated from kobo_dico function
 #'
-#' @author Edouard Legoupil
+#' @author Damien Seite
 #'
 #' @examples
 #' kobo_prediction_report()
@@ -23,97 +23,66 @@
 #' }
 #'
 #'
+#'
+#'
+kobo_Prediction_report <- function(dico) {
 
 
-#install.packages("stringr")
-library(stringr)
 mainDir <- getwd()
 # mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 5)
 mainDirroot <- getwd()
-#install.packages("plyr")
-library(plyr)
 
-kobo_Prediction_report <- function() {
-  
-  # mainDir <- getwd()
-  # mainDirroot <- getwd()
-  # frame <- data.or
-  # framename <- "household"
-  reg_question <- read.csv(paste0(mainDirroot,"/data/reg_question.csv"), encoding = "UTF-8", na.strings = c("","NA"))
-  
-  framename <- deparse(substitute(reg_question))
-  # write.csv(frame, paste0("data/prediction-report-",framename,".csv"), row.names = FALSE, na = "")
-  
-  ## Check that all those selectedVars are in the frame ####
-  #dico <- read.csv(paste0(mainDirroot,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
-  #reg_question <- read.csv(paste0(mainDirroot,"/data/reg_question.csv"), encoding = "UTF-8", na.strings = "NA")
-  
-  check <- as.data.frame(names(reg_question))
-  names(check)[1] <- "fullname"
-  check$id <- row.names(check)
-  
-  selected.predict <- dico[ which(dico$predict == "yes" & dico$type %in% c("select_one","select_one_d",'integer')), ]
-  selected.predict <- join(x = selected.predict, y = check, by = "fullname", type = "left")
-  selected.predict <- subset(selected.predict, fullname %in% check$fullname)
-  
-  
-  #selected.predict <- selected.predict[!is.na(selected.predict$id), ]
-  selected.predictVars <- as.character(selected.predict[ , c("fullname")])
-  #selected.clusterVars2 <- as.character(selected.cluster[ , c("name")])
-  selected.predictVars2 <- str_replace_all(as.character(selected.predict[ , c("name")]), "_", ".")
-  
-  
-  selected.id <- dico[ which(dico$predict == "id"), ]
-  selected.id <- join(x = selected.id, y = check, by = "fullname", type = "left")
-  selected.id <- selected.id[!is.na(selected.id$id),  ]
-  selected.idVars <- as.character(selected.id[ , c("fullname")])
-  
-  survey <- reg_question
-  #survey <- read.csv(paste0(mainDirroot,"/data/",framename,".csv"), encoding = "UTF-8", na.strings = "NA")
-  
-  ## Set up ordinal Variables
-  list.ordinal <- as.character(dico[ dico$listname == "vulnerability" & dico$type == "select_one_d", c("labelchoice") ])
-  survey$subj_assessment.observations <- factor(survey$subj_assessment.observations, levels = list.ordinal)
-  
-  
-  
-  ### Getting proGres data
-  progrescase <- read.csv(paste0(mainDirroot,"/data/progrescaseirq.csv"), encoding = "UTF-8", na.strings = c("","NA"))
-  
-  ## merge 2017/2018 arrival year
-  progrescase$YearArrivalCategory[progrescase$YearArrivalCategory == "2018" ] <- "2017/2018"
-  progrescase$YearArrivalCategory[progrescase$YearArrivalCategory == "2017" ] <- "2017/2018"
-  
-  
-  ## Join Survey & Registration
-  survey$CaseNo <- survey$demo.reg_question.unhcr_case_number
-  survey.pro <- join(x = survey, y = progrescase, by = "CaseNo", type = "inner")
-  
-  cat (round(nrow(survey.pro)/nrow(progrescase)*100, digits = 1),"%", "of registered people are also in the household survey dataset" )
-  
-  
-  
-  
-  if (nrow(selected.predict) == 0) { cat ("You have not selected variables to predict \n") } 
-  
-  
-  
-  #Generating a report for each variable in selected.predictVars
-  
-  
-  for (i in 1:length(selected.predictVars)){
-    
-    variablesname <- as.character(selected.predictVars[ i ])
-    cat(paste(i, " - Render chapter for ",as.character(selected.predictVars[ i ]),"\n" ))
-    variable.name <- paste("code/",i,"-", variablesname, "-chapter.Rmd", sep = "")
-    
-    
-    
-    
-    if(selected.predictVars[i] %in% dico[ which(dico$fullname == selected.predictVars[i] & dico$variable == "ordinal"), ]$fullname){
-      
-      
-      
+framename <- deparse(substitute(frame))
+# write.csv(frame, paste0("data/prediction-report-",framename,".csv"), row.names = FALSE, na = "")
+
+## Check that all those selectedVars are in the frame ####
+dico <- read.csv(paste0(mainDirroot,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+
+check <- as.data.frame(names(framename))
+names(check)[1] <- "fullname"
+check$id <- row.names(check)
+
+selected.predict <- dico[ which(dico$predict == "yes" & dico$type %in% c("select_one","select_one_d",'integer')), ]
+selected.predict <- join(x = selected.predict, y = check, by = "fullname", type = "left")
+selected.predict <- subset(selected.predict, fullname %in% check$fullname)
+
+
+#selected.predict <- selected.predict[!is.na(selected.predict$id), ]
+selected.predictVars <- as.character(selected.predict[ , c("fullname")])
+#selected.clusterVars2 <- as.character(selected.cluster[ , c("name")])
+selected.predictVars2 <- str_replace_all(as.character(selected.predict[ , c("name")]), "_", ".")
+
+
+selected.id <- dico[ which(dico$predict == "id"), ]
+selected.id <- join(x = selected.id, y = check, by = "fullname", type = "left")
+selected.id <- selected.id[!is.na(selected.id$id),]
+selected.idVars <- as.character(selected.id[ , c("fullname")])
+
+survey <- read.csv(paste0(mainDirroot,"/data/",framename,".csv"), encoding = "UTF-8", na.strings = "NA")
+
+### Getting proGres data
+progrescase <- read.csv(paste0(mainDirroot,"/data/progrescase.csv"), encoding = "UTF-8", na.strings = c("","NA"))
+
+## Join Survey & Registration
+survey$CaseNo <- survey$demo.reg_question.unhcr_case_number
+survey.pro <- join(x = survey, y = progrescase, by = "CaseNo", type = "inner")
+
+cat(round(nrow(survey.pro)/nrow(progrescase)*100, digits = 1),"%", "of registered people are also in the household survey dataset" )
+
+
+if (nrow(selected.predict) == 0) { cat("You have not selected variables to predict \n") }
+
+# Generating a report for each variable in selected.predictVars #####
+for (i in 1:length(selected.predictVars)) {
+
+  variablesname <- as.character(selected.predictVars[ i ])
+  cat(paste(i, " - Render chapter for ",as.character(selected.predictVars[ i ]),"\n" ))
+  variable.name <- paste("code/",i,"-", variablesname, "-chapter.Rmd", sep = "")
+
+
+# Generating a report for ordinal variable  #####
+    if (selected.predictVars[i] %in% dico[ which(dico$fullname == selected.predictVars[i] & dico$variable == "ordinal"), ]$fullname) {
+
       cat("---", file = variable.name , sep = "\n", append = TRUE)
       cat("title: \"Prediction report\"", file = variable.name , sep = "\n", append = TRUE)
       cat("author: \"(Categorical outcome)\"", file = variable.name , sep = "\n", append = TRUE)
@@ -195,29 +164,6 @@ kobo_Prediction_report <- function() {
       cat("#library(rattle)", file = variable.name , sep = "\n", append = TRUE)
       cat("#library(classInt)", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("## Provide below the name of the form in xsl form - format should be xls not xlsx", file = variable.name , sep = "\n", append = TRUE)
-      # cat("form <- \"form.xls\"", file = variable.name , sep = "\n", append = TRUE)
-      # cat("dico <- read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = variable.name , sep = "\n", append = TRUE)
-      # cat("survey <- survey <- read.csv(paste0(mainDirroot,\"/data/reg_question.csv\"), encoding = \"UTF-8\", na.strings = \"NA\")", file = variable.name , sep = "\n", append = TRUE)
-      # # cat("survey <- reg_question ", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("## Set up ordinal Variables", file = variable.name , sep = "\n", append = TRUE)
-      # cat("list.ordinal <- as.character(dico[ dico$listname == \"vulnerability\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])", file = variable.name , sep = "\n", append = TRUE)
-      # cat("survey$subj_assessment.observations <- factor(survey$subj_assessment.observations, levels = list.ordinal)", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("### Getting proGres data", file = variable.name , sep = "\n", append = TRUE)
-      # cat("progrescase <- read.csv(paste0(mainDirroot,\"/data/progrescaseirq.csv\"), encoding = \"UTF-8\", na.strings = \"NA\")", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("## merge 2017/2018 arrival year", file = variable.name , sep = "\n", append = TRUE)
-      # cat("progrescase$YearArrivalCategory[progrescase$YearArrivalCategory == \"2018\" ] <- \"2017/2018\"", file = variable.name , sep = "\n", append = TRUE)
-      # cat("progrescase$YearArrivalCategory[progrescase$YearArrivalCategory == \"2017\" ] <- \"2017/2018\"", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("## Join Survey & Registration", file = variable.name , sep = "\n", append = TRUE)
-      # cat("survey$CaseNo <- survey$demo.reg_question.unhcr_case_number", file = variable.name , sep = "\n", append = TRUE)
-      # cat("survey.pro <- join(x = survey, y = progrescase, by = \"CaseNo\", type = \"inner\")", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -292,9 +238,9 @@ kobo_Prediction_report <- function() {
       cat("pred$cool1Cat <-  factor(pred$cool1Cat, levels = levels(train$cool1Cat))", file = variable.name , sep = "\n", append = TRUE)
       cat("pred$coal2Cat <-  factor(pred$coal2Cat, levels = levels(train$coal2Cat))", file = variable.name , sep = "\n", append = TRUE)
       cat("pred$cool2Cat <-  factor(pred$cool2Cat, levels = levels(train$cool2Cat))", file = variable.name , sep = "\n", append = TRUE)
-      
-      
-      
+
+
+
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("#install.packages(\"VIM\")", file = variable.name , sep = "\n", append = TRUE)
       cat("library(VIM)", file = variable.name , sep = "\n", append = TRUE)
@@ -317,7 +263,7 @@ kobo_Prediction_report <- function() {
       cat("pred2 <- pred[ is.na(pred$occupationcat) == FALSE, ]", file = variable.name , sep = "\n", append = TRUE)
       cat("pred2 <- pred2[ pred2$YearArrivalCategory != \"2018\", ]", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      
+
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -751,14 +697,13 @@ kobo_Prediction_report <- function() {
       cat("#install.packages(\"lintr\")", file = variable.name , sep = "\n", append = TRUE)
       cat("#library(lintr)", file = variable.name , sep = "\n", append = TRUE)
       cat("```", file = variable.name , sep = "\n", append = TRUE)
-      
-      
+
+
     }
-    
-    
-    
-    if(selected.predictVars[i] %in% dico[ which(dico$fullname == selected.predictVars[i] & dico$variable == "binary"), ]$fullname){
-      
+
+
+# Generating a report for binary variable  #####
+    if (selected.predictVars[i] %in% dico[ which(dico$fullname == selected.predictVars[i] & dico$variable == "binary"), ]$fullname){
       cat("---", file = variable.name , sep = "\n", append = TRUE)
       cat("title: \"Prediction report\"", file = variable.name , sep = "\n", append = TRUE)
       cat("author: \"(Binary outcome)\"", file = variable.name , sep = "\n", append = TRUE)
@@ -840,29 +785,6 @@ kobo_Prediction_report <- function() {
       cat("#library(classInt)", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("## Provide below the name of the form in xsl form - format should be xls not xlsx", file = variable.name , sep = "\n", append = TRUE)
-      # cat("form <- \"form.xls\"", file = variable.name , sep = "\n", append = TRUE)
-      # cat("dico <- read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = variable.name , sep = "\n", append = TRUE)
-      # cat("survey <- survey <- read.csv(paste0(mainDirroot,\"/data/reg_question.csv\"), encoding = \"UTF-8\", na.strings = \"NA\")", file = variable.name , sep = "\n", append = TRUE)
-      # # cat("survey <- reg_question ", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("## Set up ordinal Variables", file = variable.name , sep = "\n", append = TRUE)
-      # cat("list.ordinal <- as.character(dico[ dico$listname == \"vulnerability\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])", file = variable.name , sep = "\n", append = TRUE)
-      # cat("survey$subj_assessment.observations <- factor(survey$subj_assessment.observations, levels = list.ordinal)", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("### Getting proGres data", file = variable.name , sep = "\n", append = TRUE)
-      # cat("progrescase <- read.csv(paste0(mainDirroot,\"/data/progrescaseirq.csv\"), encoding = \"UTF-8\", na.strings = \"NA\")", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("## merge 2017/2018 arrival year", file = variable.name , sep = "\n", append = TRUE)
-      # cat("progrescase$YearArrivalCategory[progrescase$YearArrivalCategory == \"2018\" ] <- \"2017/2018\"", file = variable.name , sep = "\n", append = TRUE)
-      # cat("progrescase$YearArrivalCategory[progrescase$YearArrivalCategory == \"2017\" ] <- \"2017/2018\"", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("## Join Survey & Registration", file = variable.name , sep = "\n", append = TRUE)
-      # cat("survey$CaseNo <- survey$demo.reg_question.unhcr_case_number", file = variable.name , sep = "\n", append = TRUE)
-      # cat("survey.pro <- join(x = survey, y = progrescase, by = \"CaseNo\", type = \"inner\")", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("survey.pro1 <- survey.pro[ , c(\"KEY\", \"SET.OF.demo.reg_question\",\"CaseNo\",", file = variable.name , sep = "\n", append = TRUE)
@@ -1349,7 +1271,7 @@ kobo_Prediction_report <- function() {
       cat("LR_model2 <- stepAIC(LR_model)", file = variable.name , sep = "\n", append = TRUE)
       cat("for (i in length(test)){ LR_model2$xlevels[i] <- levels(test[i])}", file = variable.name , sep = "\n", append = TRUE)
       cat("LR_model.predict <- predict(LR_model2, test, type = \"response\")", file = variable.name , sep = "\n", append = TRUE)
-      cat("LR_model<-LR_model2", file = variable.name , sep = "\n", append = TRUE)       
+      cat("LR_model<-LR_model2", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("#########mettre une limite", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -1651,15 +1573,13 @@ kobo_Prediction_report <- function() {
       cat("#install.packages(\"lintr\")", file = variable.name , sep = "\n", append = TRUE)
       cat("#library(lintr)", file = variable.name , sep = "\n", append = TRUE)
       cat("```", file = variable.name , sep = "\n", append = TRUE)
-      
-      
+
+
     }
-    
-    
+
+
+# Generating a report for numeric variable  #####
     if(selected.predictVars[i] %in% dico[ which(dico$fullname == selected.predictVars[i] & dico$variable == "number"), ]$fullname){
-      
-      
-      
       cat("---", file = variable.name , sep = "\n", append = TRUE)
       cat("title: \"Prediction report\"", file = variable.name , sep = "\n", append = TRUE)
       cat("author: \"(Continous outcome)\"", file = variable.name , sep = "\n", append = TRUE)
@@ -1744,28 +1664,6 @@ kobo_Prediction_report <- function() {
       cat("#library(classInt)", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("## Provide below the name of the form in xsl form - format should be xls not xlsx", file = variable.name , sep = "\n", append = TRUE)
-      # cat("form <- \"form.xls\"", file = variable.name , sep = "\n", append = TRUE)
-      # cat("dico <- read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = variable.name , sep = "\n", append = TRUE)
-      # cat("survey <- survey <- read.csv(paste0(mainDirroot,\"/data/reg_question.csv\"), encoding = \"UTF-8\", na.strings = \"NA\")", file = variable.name , sep = "\n", append = TRUE)
-      # # cat("survey <- reg_question ", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("## Set up ordinal Variables", file = variable.name , sep = "\n", append = TRUE)
-      # cat("list.ordinal <- as.character(dico[ dico$listname == \"vulnerability\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])", file = variable.name , sep = "\n", append = TRUE)
-      # cat("survey$subj_assessment.observations <- factor(survey$subj_assessment.observations, levels = list.ordinal)", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("### Getting proGres data", file = variable.name , sep = "\n", append = TRUE)
-      # cat("progrescase <- read.csv(paste0(mainDirroot,\"/data/progrescaseirq.csv\"), encoding = \"UTF-8\", na.strings = \"NA\")", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("## merge 2017/2018 arrival year", file = variable.name , sep = "\n", append = TRUE)
-      # cat("progrescase$YearArrivalCategory[progrescase$YearArrivalCategory == \"2018\" ] <- \"2017/2018\"", file = variable.name , sep = "\n", append = TRUE)
-      # cat("progrescase$YearArrivalCategory[progrescase$YearArrivalCategory == \"2017\" ] <- \"2017/2018\"", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("", file = variable.name , sep = "\n", append = TRUE)
-      # cat("## Join Survey & Registration", file = variable.name , sep = "\n", append = TRUE)
-      # cat("survey$CaseNo <- survey$demo.reg_question.unhcr_case_number", file = variable.name , sep = "\n", append = TRUE)
-      # cat("survey.pro <- join(x = survey, y = progrescase, by = \"CaseNo\", type = \"inner\")", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -2378,27 +2276,13 @@ kobo_Prediction_report <- function() {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("```", file = variable.name , sep = "\n", append = TRUE)
-      
-      
     }
-    
-    
-    
-    
-    
-    
-  }  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  ##Rendering the reports
-  
+
+  }
+
+
+  ## Rendering all  reports ###########
+
   for (i in 1:length(selected.predictVars)) {
     variablesname <- as.character(selected.predictVars[ i ])
     cat(paste(i, " - Render word output report for ",variablesname))
@@ -2408,17 +2292,11 @@ kobo_Prediction_report <- function() {
     ## Clean  memory
     gc()
   }
-  
-  
-  
-  #rmarkdown::render('report-tabulation.Rmd')
-  
+
   cat(" Done!! Reports are in the folder OUT - Review the report- Adjust your configuration files and you will be very soon ready to start the qualitative analysis and the analysis workshops...")
-}  
+}
 
-
-
-kobo_Prediction_report()
+NULL
 
 
 

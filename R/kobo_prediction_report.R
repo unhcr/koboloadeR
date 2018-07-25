@@ -2,87 +2,129 @@
 #' @rdname kobo_prediction_report
 #' @title  Generate prediction
 #'
-#' @description  Automatically produce a report of prediction
+#' @description  Automatically produce prediction reports
+#' containing elements of descriptive analysis, 
+#' information about the methods used 
+#' (such as regression and classification) and prediction results. 
+#' The configuration of the function is done in an xlsform. 
+#' The target variables are taken from the household surveys 
+#' and three types of outcome will be considered: 
+#' binary (going to school, marry children,...), 
+#' numeric (expenditure per capita,…) 
+#' and ordinal (level of agreement, support from local community,…). 
+#' Then the function will train different models 
+#' (using the inner joint between registration and household surveys as training data) 
+#' and select the most accurate one. 
 #'
-#'
+#'  
 #'
 #'
 #' @param  kobo or odk dataset to use
-#' @param  dico Generated from kobo_dico function
+#' 
 #'
 #' @author Damien Seite
 #'
-#' @examples
-#' kobo_prediction_report()
 #'
 #' @export kobo_prediction_report
 #'
 #' @examples
 #' \dontrun{
-#' kobo_prediction_report(frame, dico)
+#' kobo_prediction_report(household)
 #' }
 #'
 #'
-#'
-#'
-kobo_Prediction_report <- function(dico) {
 
 
-mainDir <- getwd()
-# mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 5)
-mainDirroot <- getwd()
-
-framename <- deparse(substitute(frame))
-# write.csv(frame, paste0("data/prediction-report-",framename,".csv"), row.names = FALSE, na = "")
-
-## Check that all those selectedVars are in the frame ####
-dico <- read.csv(paste0(mainDirroot,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
-
-check <- as.data.frame(names(framename))
-names(check)[1] <- "fullname"
-check$id <- row.names(check)
-
-selected.predict <- dico[ which(dico$predict == "yes" & dico$type %in% c("select_one","select_one_d",'integer')), ]
-selected.predict <- join(x = selected.predict, y = check, by = "fullname", type = "left")
-selected.predict <- subset(selected.predict, fullname %in% check$fullname)
 
 
-#selected.predict <- selected.predict[!is.na(selected.predict$id), ]
-selected.predictVars <- as.character(selected.predict[ , c("fullname")])
-#selected.clusterVars2 <- as.character(selected.cluster[ , c("name")])
-selected.predictVars2 <- str_replace_all(as.character(selected.predict[ , c("name")]), "_", ".")
 
 
-selected.id <- dico[ which(dico$predict == "id"), ]
-selected.id <- join(x = selected.id, y = check, by = "fullname", type = "left")
-selected.id <- selected.id[!is.na(selected.id$id),]
-selected.idVars <- as.character(selected.id[ , c("fullname")])
+kobo_Prediction_report <- function(frame) {
+  
 
-survey <- read.csv(paste0(mainDirroot,"/data/",framename,".csv"), encoding = "UTF-8", na.strings = "NA")
+  mainDirroot <- getwd()
+  # frame <- data.or
+  # framename <- "household"
+  #reg_question <- read.csv(paste0(mainDirroot,"/data/reg_question.csv"), encoding = "UTF-8", na.strings = c("","NA"))
+  
+  framename <- deparse(substitute(frame))
+  # write.csv(frame, paste0("data/prediction-report-",framename,".csv"), row.names = FALSE, na = "")
 
-### Getting proGres data
-progrescase <- read.csv(paste0(mainDirroot,"/data/progrescase.csv"), encoding = "UTF-8", na.strings = c("","NA"))
+  ## Check that all those selectedVars are in the frame ####
+  check <- as.data.frame(names(frame))
+  names(check)[1] <- "fullname"
+  check$id <- row.names(check)
+  
 
-## Join Survey & Registration
-survey$CaseNo <- survey$demo.reg_question.unhcr_case_number
-survey.pro <- join(x = survey, y = progrescase, by = "CaseNo", type = "inner")
+  
+  selected.predict <- dico[ which(dico$predict == "yes" & dico$type %in% c("select_one","select_one_d",'integer')), ]
+  selected.predict <- join(x = selected.predict, y = check, by = "fullname", type = "left")
+  selected.predict <- subset(selected.predict, fullname %in% check$fullname)
+  
+  library(stringr)
+  #selected.predict <- selected.predict[!is.na(selected.predict$id), ]
+  selected.predictVars <- as.character(selected.predict[ , c("fullname")])
+  #selected.clusterVars2 <- as.character(selected.cluster[ , c("name")])
+  selected.predictVars2 <- str_replace_all(as.character(selected.predict[ , c("name")]), "_", ".")
+  
+  
+  selected.id <- dico[ which(dico$predict == "id"), ]
+  selected.id <- join(x = selected.id, y = check, by = "fullname", type = "left")
+  selected.id <- selected.id[!is.na(selected.id$id),  ]
+  selected.idVars <- as.character(selected.id[ , c("fullname")])
+  
+ 
+  survey <- read.csv(paste0(mainDirroot,"/data/",framename,".csv"), encoding = "UTF-8", na.strings = "NA")
+  
+  ## Set up ordinal Variables
+  list.ordinal <- as.character(dico[ dico$listname == "vulnerability" & dico$type == "select_one_d", c("labelchoice") ])
+  survey$subj_assessment.observations <- factor(survey$subj_assessment.observations, levels = list.ordinal)
+  
 
-cat(round(nrow(survey.pro)/nrow(progrescase)*100, digits = 1),"%", "of registered people are also in the household survey dataset" )
+  ### Getting proGres data
+  ## If it doesn't exist, run the registration function to get it
+  try(progrescase <- read.csv(paste0(mainDirroot,"/data/progrescase.csv"), encoding = "UTF-8", na.strings = c("","NA")))
+  
+  library(qrmtools)
+  if(is.null(catch(read.csv(paste0(mainDirroot,"/data/progrescase.csv"), encoding = "UTF-8", na.strings = c("","NA"))))){
+    kobo_registration()}
+  detach("package:qrmtools", unload=TRUE)
+  
+  ## merge 2017/2018 arrival year
+  progrescase$YearArrivalCategory[progrescase$YearArrivalCategory == "2018" ] <- "2017/2018"
+  progrescase$YearArrivalCategory[progrescase$YearArrivalCategory == "2017" ] <- "2017/2018"
+  
+  
+  ## Join Survey & Registration
+  survey$CaseNo <- survey$demo.reg_question.unhcr_case_number
+  
+  survey.pro <- join(x = survey, y = progrescase, by = "CaseNo", type = "inner")
+ 
+  
+  cat (round(nrow(survey.pro)/nrow(progrescase)*100, digits = 1),"%", "of registered people are also in the household survey dataset" )
+  
+  
 
+  
+  if (nrow(selected.predict) == 0) { cat ("You have not selected variables to predict \n") } 
+  
+  
+  
+  #Generating a report for each variable in selected.predictVars
+  
+  
+  for (i in 1:length(selected.predictVars)){
+    
+    variablesname <- as.character(selected.predictVars[ i ])
+    cat(paste(i, " - Render chapter for ",as.character(selected.predictVars[ i ]),"\n" ))
+    variable.name <- paste("code/",i,"-", variablesname, "-chapter.Rmd", sep = "")
+    
+    
 
-if (nrow(selected.predict) == 0) { cat("You have not selected variables to predict \n") }
-
-# Generating a report for each variable in selected.predictVars #####
-for (i in 1:length(selected.predictVars)) {
-
-  variablesname <- as.character(selected.predictVars[ i ])
-  cat(paste(i, " - Render chapter for ",as.character(selected.predictVars[ i ]),"\n" ))
-  variable.name <- paste("code/",i,"-", variablesname, "-chapter.Rmd", sep = "")
-
-
-# Generating a report for ordinal variable  #####
-    if (selected.predictVars[i] %in% dico[ which(dico$fullname == selected.predictVars[i] & dico$variable == "ordinal"), ]$fullname) {
-
+    if(selected.predictVars[i] %in% dico[ which(dico$fullname == selected.predictVars[i] & dico$type == "select_one_d" | dico$listname == "yesnono"), ]$fullname){
+      
+      
+      
       cat("---", file = variable.name , sep = "\n", append = TRUE)
       cat("title: \"Prediction report\"", file = variable.name , sep = "\n", append = TRUE)
       cat("author: \"(Categorical outcome)\"", file = variable.name , sep = "\n", append = TRUE)
@@ -114,36 +156,34 @@ for (i in 1:length(selected.predictVars)) {
       cat("### Library ########", file = variable.name , sep = "\n", append = TRUE)
       cat("# load packages", file = variable.name , sep = "\n", append = TRUE)
       cat(" #library(RGtk2)", file = variable.name , sep = "\n", append = TRUE)
-      cat("library(ade4)", file = variable.name , sep = "\n", append = TRUE)
+      cat("#library(ade4)", file = variable.name , sep = "\n", append = TRUE)
       cat("library(\"ggplot2\")", file = variable.name , sep = "\n", append = TRUE)
       cat("#library(\"corrplot\")", file = variable.name , sep = "\n", append = TRUE)
       cat("library(\"ROCR\")", file = variable.name , sep = "\n", append = TRUE)
       cat("#library(\"caret\")", file = variable.name , sep = "\n", append = TRUE)
       cat("library(\"questionr\")", file = variable.name , sep = "\n", append = TRUE)
-      cat("library(effects)", file = variable.name , sep = "\n", append = TRUE)
+      cat("#library(effects)", file = variable.name , sep = "\n", append = TRUE)
       cat("#need to change the path to your Java location in order to find the jvm.dll file", file = variable.name , sep = "\n", append = TRUE)
       #cat(" Sys.setenv(JAVA_HOME='C:\\Program Files\\Java\\jre1.8.0_131') ", file = variable.name , sep = "\n", append = TRUE)
       cat(" #install.packages(\"rJava\")", file = variable.name , sep = "\n", append = TRUE)
       cat("# library(rJava)", file = variable.name , sep = "\n", append = TRUE)
       cat("# library(glmulti)", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("library(pls)", file = variable.name , sep = "\n", append = TRUE)
-      cat("library(xgboost)", file = variable.name , sep = "\n", append = TRUE)
-      cat("library(nnet)", file = variable.name , sep = "\n", append = TRUE)
-      cat("library(rpart)", file = variable.name , sep = "\n", append = TRUE)
+      #cat("library(pls)", file = variable.name , sep = "\n", append = TRUE)
+      #cat("library(xgboost)", file = variable.name , sep = "\n", append = TRUE)
+      #cat("library(nnet)", file = variable.name , sep = "\n", append = TRUE)
+      cat("#library(rpart)", file = variable.name , sep = "\n", append = TRUE)
       cat("library(caret)", file = variable.name , sep = "\n", append = TRUE)
-      cat("library(randomForest)", file = variable.name , sep = "\n", append = TRUE)
-      cat("library(glmnet)", file = variable.name , sep = "\n", append = TRUE)
+ 
+      #cat("library(glmnet)", file = variable.name , sep = "\n", append = TRUE)
       cat(" ", file = variable.name , sep = "\n", append = TRUE)
       cat("#detaching useless packages ", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("detach(\"package:pls\", unload=TRUE)", file = variable.name , sep = "\n", append = TRUE)
-      cat("detach(\"package:nnet\", unload=TRUE)", file = variable.name , sep = "\n", append = TRUE)
-      cat("detach(\"package:glmnet\", unload=TRUE)", file = variable.name , sep = "\n", append = TRUE)
+     # cat("detach(\"package:pls\", unload=TRUE)", file = variable.name , sep = "\n", append = TRUE)
+      #cat("detach(\"package:nnet\", unload=TRUE)", file = variable.name , sep = "\n", append = TRUE)
+      #cat("detach(\"package:glmnet\", unload=TRUE)", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("#SVM is a discriminative classifier that takes labeled training data and constructs a hyperplane to categorize new examples.", file = variable.name , sep = "\n", append = TRUE)
-      cat("# install.packages(\"e1071\")", file = variable.name , sep = "\n", append = TRUE)
-      cat("library(\"e1071\")", file = variable.name , sep = "\n", append = TRUE)
+
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("#Logistic regression is a simple classifier used to estimate the probability of a binary outcome based on several predictors and a logit function.", file = variable.name , sep = "\n", append = TRUE)
       cat("#library(\"MASS\")", file = variable.name , sep = "\n", append = TRUE)
@@ -155,14 +195,7 @@ for (i in 1:length(selected.predictVars)) {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("library(ROCR)", file = variable.name , sep = "\n", append = TRUE)
       cat("library(haven)", file = variable.name , sep = "\n", append = TRUE)
-      cat("#library(memisc)", file = variable.name , sep = "\n", append = TRUE)
-      cat("#library(pander)", file = variable.name , sep = "\n", append = TRUE)
-      cat("# install.packages(\"rpart\")", file = variable.name , sep = "\n", append = TRUE)
-      cat("#library(rpart)", file = variable.name , sep = "\n", append = TRUE)
-      cat("#library(rpart.plot)", file = variable.name , sep = "\n", append = TRUE)
-      cat("#library(RColorBrewer)", file = variable.name , sep = "\n", append = TRUE)
-      cat("#library(rattle)", file = variable.name , sep = "\n", append = TRUE)
-      cat("#library(classInt)", file = variable.name , sep = "\n", append = TRUE)
+
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -176,7 +209,7 @@ for (i in 1:length(selected.predictVars)) {
       cat("              \"edu_highestcat\", \"occupationcat\", \"dem_marriagecat\",\"dem_sex\",", file = variable.name , sep = "\n", append = TRUE)
       cat("              \"coal1Cat\", \"cool1Cat\",\"coal2Cat\", \"cool2Cat\", \"dependency\"  , \"female.ratio\",", file = variable.name , sep = "\n", append = TRUE)
       cat("              \"Num_Inds\", \"Case.size\" , \"Child_0_14\", \"Youth_15_17\" , \"Work_15_64\",", file = variable.name , sep = "\n", append = TRUE)
-      cat("              \"Eldern_65\", \"familyprofile\" , \"Case.size\", \"YearArrivalCategory\",variablesname)]", file = variable.name , sep = "\n", append = TRUE)
+      cat("              \"Eldern_65\", \"familyprofile\" , \"Case.size\", \"YearArrivalCategory\",\"dem_agegroup\",\"dem_ethn\",\"dem_religion\",variablesname)]", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -188,7 +221,7 @@ for (i in 1:length(selected.predictVars)) {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("train <- survey.pro1[ , c(\"edu_highestcat\", \"occupationcat\", \"dem_marriagecat\",\"dem_sex\",", file = variable.name , sep = "\n", append = TRUE)
       cat("                                    \"coal1Cat\", \"cool1Cat\",\"coal2Cat\", \"cool2Cat\", \"dependency\"  , \"female.ratio\",", file = variable.name , sep = "\n", append = TRUE)
-      cat("                                     \"Case.size\" , \"familyprofile\", \"YearArrivalCategory\",", file = variable.name , sep = "\n", append = TRUE)
+      cat("                                     \"Case.size\" , \"familyprofile\", \"YearArrivalCategory\",\"dem_agegroup\",\"dem_ethn\",\"dem_religion\",", file = variable.name , sep = "\n", append = TRUE)
       cat("                                variablesname)]", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -197,11 +230,8 @@ for (i in 1:length(selected.predictVars)) {
       cat("# var <- factor(var, labels=c(\"0\",\"1\"))", file = variable.name , sep = "\n", append = TRUE)
       cat("# var <- as.numeric(as.character(var))", file = variable.name , sep = "\n", append = TRUE)
       cat("train$var <- var", file = variable.name , sep = "\n", append = TRUE)
-      cat("train <- train[ , c(\"edu_highestcat\", \"occupationcat\", \"dem_marriagecat\",\"dem_sex\",", file = variable.name , sep = "\n", append = TRUE)
-      cat("                                    \"coal1Cat\", \"cool1Cat\",\"coal2Cat\", \"cool2Cat\", \"dependency\"  , \"female.ratio\",", file = variable.name , sep = "\n", append = TRUE)
-      cat("                                     \"Case.size\" , \"familyprofile\", \"YearArrivalCategory\",", file = variable.name , sep = "\n", append = TRUE)
-      cat("                                \"var\")]", file = variable.name , sep = "\n", append = TRUE)
-      cat("", file = variable.name , sep = "\n", append = TRUE)
+
+      cat("train[,ncol(train)-1] <- NULL", file = variable.name , sep = "\n", append = TRUE)
       cat("#rm(reg_question.pro1.wfp, reg_question.pro1, reg_question.pro,  reg_question)", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("### let's remove the unknownGTK", file = variable.name , sep = "\n", append = TRUE)
@@ -225,7 +255,7 @@ for (i in 1:length(selected.predictVars)) {
       cat("#                          \"Case.size\" , \"familyprofile\" , \"Case.size\", \"YearArrivalCategory\")]", file = variable.name , sep = "\n", append = TRUE)
       cat(" pred <- progrescase[ , c( \"edu_highestcat\", \"occupationcat\", \"dem_marriagecat\",\"dem_sex\",", file = variable.name , sep = "\n", append = TRUE)
       cat("                          \"coal1Cat\",\"cool1Cat\",\"coal2Cat\", \"cool2Cat\", \"dependency\"  , \"female.ratio\",", file = variable.name , sep = "\n", append = TRUE)
-      cat("                          \"Case.size\" , \"familyprofile\" , \"Case.size\", \"YearArrivalCategory\")]", file = variable.name , sep = "\n", append = TRUE)
+      cat("                          \"Case.size\" , \"familyprofile\" , \"Case.size\", \"YearArrivalCategory\",\"dem_agegroup\",\"dem_ethn\",\"dem_religion\")]", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat(" ", file = variable.name , sep = "\n", append = TRUE)
@@ -238,9 +268,9 @@ for (i in 1:length(selected.predictVars)) {
       cat("pred$cool1Cat <-  factor(pred$cool1Cat, levels = levels(train$cool1Cat))", file = variable.name , sep = "\n", append = TRUE)
       cat("pred$coal2Cat <-  factor(pred$coal2Cat, levels = levels(train$coal2Cat))", file = variable.name , sep = "\n", append = TRUE)
       cat("pred$cool2Cat <-  factor(pred$cool2Cat, levels = levels(train$cool2Cat))", file = variable.name , sep = "\n", append = TRUE)
-
-
-
+      
+      
+      
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("#install.packages(\"VIM\")", file = variable.name , sep = "\n", append = TRUE)
       cat("library(VIM)", file = variable.name , sep = "\n", append = TRUE)
@@ -263,7 +293,7 @@ for (i in 1:length(selected.predictVars)) {
       cat("pred2 <- pred[ is.na(pred$occupationcat) == FALSE, ]", file = variable.name , sep = "\n", append = TRUE)
       cat("pred2 <- pred2[ pred2$YearArrivalCategory != \"2018\", ]", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-
+      
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -292,7 +322,7 @@ for (i in 1:length(selected.predictVars)) {
       cat("### Data description", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("The variable that is to be predicted is" ,variablesname, ". The variables used for prediction are taken from the registration data:  education, origin, place of asylum, occupation, family profile, case size, female ratio,", file = variable.name , sep = "\n", append = TRUE)
-      cat("dependency, marital status and year of arrival in the country of asylum. The dataset gathers", nrow(reg_question)," individuals.", file = variable.name , sep = "\n", append = TRUE)
+      cat("dependency, marital status and year of arrival in the country of asylum. The dataset gathers", nrow(survey)," individuals.", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("### Methodology", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -356,11 +386,11 @@ for (i in 1:length(selected.predictVars)) {
       cat("test$var <- NULL", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("", file = variable.name , sep = "\n", append = TRUE)
+      cat("library(ade4)", file = variable.name , sep = "\n", append = TRUE)
       cat("train_dicho <- as.data.frame(c(acm.disjonctif(train[,sapply(train, is.factor)]), train[sapply(train, is.numeric)]))", file = variable.name , sep = "\n", append = TRUE)
       cat("test_dicho <- as.data.frame(c(acm.disjonctif(test[,sapply(test, is.factor)]), test[sapply(test, is.numeric)]))", file = variable.name , sep = "\n", append = TRUE)
-      cat("    ", file = variable.name , sep = "\n", append = TRUE)
-      cat("", file = variable.name , sep = "\n", append = TRUE)
+      cat("  detach(\"package:VIM\", unload = TRUE)  ", file = variable.name , sep = "\n", append = TRUE)
+      cat("detach(\"package:ade4\", unload = TRUE) ", file = variable.name , sep = "\n", append = TRUE)
       cat("```", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -402,7 +432,7 @@ for (i in 1:length(selected.predictVars)) {
       cat("}", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("####ajouter titres aux raph", file = variable.name , sep = "\n", append = TRUE)
-      cat("", file = variable.name , sep = "\n", append = TRUE)
+      cat("detach(\"package:rpart\", unload = TRUE) ", file = variable.name , sep = "\n", append = TRUE)
       cat("```", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -447,6 +477,7 @@ for (i in 1:length(selected.predictVars)) {
       cat("#Plotting variables according to their importance (mean decrease in node impurity)", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("varImpPlot(rf.model, 2)", file = variable.name , sep = "\n", append = TRUE)
+      cat("detach(\"package:randomForest\", unload=TRUE)", file = variable.name , sep = "\n", append = TRUE)
       cat("```", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -465,24 +496,23 @@ for (i in 1:length(selected.predictVars)) {
       cat("```{r MLR, include = FALSE, echo = FALSE, warning = FALSE, message = FALSE}", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("library(nnet)", file = variable.name , sep = "\n", append = TRUE)
-      cat("", file = variable.name , sep = "\n", append = TRUE)
+      cat("detach(\"package:caret\", unload= TRUE)", file = variable.name , sep = "\n", append = TRUE)
       cat("# Building the model", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("MLR_model <- multinom(train_Y ~., data = train)", file = variable.name , sep = "\n", append = TRUE)
+      cat("try(MLR_model <- multinom(train_Y ~., data = train))", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("MLR_model2 <- step(MLR_model, steps = 6)", file = variable.name , sep = "\n", append = TRUE)
+      cat("try(MLR_model2 <- step(MLR_model, steps = 6))", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("# Predicting the probabilities of being in each category using testing dataset", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("MLR_predict <- predict(MLR_model2, test)", file = variable.name , sep = "\n", append = TRUE)
+      cat("try(MLR_predict <- predict(MLR_model2, test))", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("try(ggcoef(MLR_model2, exponentiate = TRUE,conf.int=TRUE))", file = variable.name , sep = "\n", append = TRUE)
-      cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("", file = variable.name , sep = "\n", append = TRUE)
+      cat("detach(\"package:nnet\", unload= TRUE)", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("# rma.glmulti <- function(formula, data, ...)", file = variable.name , sep = "\n", append = TRUE)
       cat("#   rma(formula, vi,  data = data, method = \"ML\", ...)", file = variable.name , sep = "\n", append = TRUE)
@@ -563,7 +593,8 @@ for (i in 1:length(selected.predictVars)) {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("accuracy_lda <- accuracy(lda_predict)", file = variable.name , sep = "\n", append = TRUE)
       cat("accuracy_tree <- accuracy(rpart_predict)", file = variable.name , sep = "\n", append = TRUE)
-      cat("accuracy_MLR <- accuracy(MLR_predict)", file = variable.name , sep = "\n", append = TRUE)
+      cat("accuracy_MLR <- 0", file = variable.name , sep = "\n", append = TRUE)
+      cat("try(accuracy_MLR <- accuracy(MLR_predict))", file = variable.name , sep = "\n", append = TRUE)
       cat("accuracy_rf <- accuracy(rf_predict)", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -697,13 +728,15 @@ for (i in 1:length(selected.predictVars)) {
       cat("#install.packages(\"lintr\")", file = variable.name , sep = "\n", append = TRUE)
       cat("#library(lintr)", file = variable.name , sep = "\n", append = TRUE)
       cat("```", file = variable.name , sep = "\n", append = TRUE)
-
-
+      
+      
     }
+    
 
-
-# Generating a report for binary variable  #####
-    if (selected.predictVars[i] %in% dico[ which(dico$fullname == selected.predictVars[i] & dico$variable == "binary"), ]$fullname){
+      
+    
+    if(selected.predictVars[i] %in% dico[ which(dico$fullname == selected.predictVars[i] & dico$listname != "yesnono" & dico$type == "select_one"), ]$fullname){
+      
       cat("---", file = variable.name , sep = "\n", append = TRUE)
       cat("title: \"Prediction report\"", file = variable.name , sep = "\n", append = TRUE)
       cat("author: \"(Binary outcome)\"", file = variable.name , sep = "\n", append = TRUE)
@@ -734,36 +767,27 @@ for (i in 1:length(selected.predictVars)) {
       cat("### Library ########", file = variable.name , sep = "\n", append = TRUE)
       cat("# load packages", file = variable.name , sep = "\n", append = TRUE)
       cat(" #library(RGtk2)", file = variable.name , sep = "\n", append = TRUE)
-      cat("library(ade4)", file = variable.name , sep = "\n", append = TRUE)
+      cat("#library(ade4)", file = variable.name , sep = "\n", append = TRUE)
       cat("library(\"ggplot2\")", file = variable.name , sep = "\n", append = TRUE)
       cat("#library(\"corrplot\")", file = variable.name , sep = "\n", append = TRUE)
       cat("library(\"ROCR\")", file = variable.name , sep = "\n", append = TRUE)
       cat("#library(\"caret\")", file = variable.name , sep = "\n", append = TRUE)
       cat("library(\"questionr\")", file = variable.name , sep = "\n", append = TRUE)
-      cat("library(effects)", file = variable.name , sep = "\n", append = TRUE)
+      cat("#library(effects)", file = variable.name , sep = "\n", append = TRUE)
       cat("#need to change the path to your Java location in order to find the jvm.dll file", file = variable.name , sep = "\n", append = TRUE)
       #cat(" Sys.setenv(JAVA_HOME='C:\\Program Files\\Java\\jre1.8.0_131') ", file = variable.name , sep = "\n", append = TRUE)
       cat(" #install.packages(\"rJava\")", file = variable.name , sep = "\n", append = TRUE)
       cat("# library(rJava)", file = variable.name , sep = "\n", append = TRUE)
       cat("# library(glmulti)", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("library(pls)", file = variable.name , sep = "\n", append = TRUE)
       cat("library(xgboost)", file = variable.name , sep = "\n", append = TRUE)
-      cat("library(nnet)", file = variable.name , sep = "\n", append = TRUE)
       cat("library(rpart)", file = variable.name , sep = "\n", append = TRUE)
       cat("library(caret)", file = variable.name , sep = "\n", append = TRUE)
-      cat("library(randomForest)", file = variable.name , sep = "\n", append = TRUE)
-      cat("library(glmnet)", file = variable.name , sep = "\n", append = TRUE)
       cat(" ", file = variable.name , sep = "\n", append = TRUE)
       cat("#detaching useless packages ", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("detach(\"package:pls\", unload=TRUE)", file = variable.name , sep = "\n", append = TRUE)
-      cat("detach(\"package:nnet\", unload=TRUE)", file = variable.name , sep = "\n", append = TRUE)
-      cat("detach(\"package:glmnet\", unload=TRUE)", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("#SVM is a discriminative classifier that takes labeled training data and constructs a hyperplane to categorize new examples.", file = variable.name , sep = "\n", append = TRUE)
-      cat("# install.packages(\"e1071\")", file = variable.name , sep = "\n", append = TRUE)
-      cat("library(\"e1071\")", file = variable.name , sep = "\n", append = TRUE)
+
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("#Logistic regression is a simple classifier used to estimate the probability of a binary outcome based on several predictors and a logit function.", file = variable.name , sep = "\n", append = TRUE)
       cat("#library(\"MASS\")", file = variable.name , sep = "\n", append = TRUE)
@@ -796,7 +820,7 @@ for (i in 1:length(selected.predictVars)) {
       cat("              \"edu_highestcat\", \"occupationcat\", \"dem_marriagecat\",\"dem_sex\",", file = variable.name , sep = "\n", append = TRUE)
       cat("              \"coal1Cat\", \"cool1Cat\",\"coal2Cat\", \"cool2Cat\", \"dependency\"  , \"female.ratio\",", file = variable.name , sep = "\n", append = TRUE)
       cat("              \"Num_Inds\", \"Case.size\" , \"Child_0_14\", \"Youth_15_17\" , \"Work_15_64\",", file = variable.name , sep = "\n", append = TRUE)
-      cat("              \"Eldern_65\", \"familyprofile\" , \"Case.size\", \"YearArrivalCategory\",variablesname)]", file = variable.name , sep = "\n", append = TRUE)
+      cat("              \"Eldern_65\", \"familyprofile\" , \"Case.size\", \"YearArrivalCategory\",\"dem_agegroup\",\"dem_ethn\",\"dem_religion\",variablesname)]", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -808,20 +832,17 @@ for (i in 1:length(selected.predictVars)) {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("train <- survey.pro1[ , c(\"edu_highestcat\", \"occupationcat\", \"dem_marriagecat\",\"dem_sex\",", file = variable.name , sep = "\n", append = TRUE)
       cat("                                    \"coal1Cat\", \"cool1Cat\",\"coal2Cat\", \"cool2Cat\", \"dependency\"  , \"female.ratio\",", file = variable.name , sep = "\n", append = TRUE)
-      cat("                                     \"Case.size\" , \"familyprofile\", \"YearArrivalCategory\",", file = variable.name , sep = "\n", append = TRUE)
+      cat("                                     \"Case.size\" , \"familyprofile\", \"YearArrivalCategory\",\"dem_agegroup\",\"dem_ethn\",\"dem_religion\",", file = variable.name , sep = "\n", append = TRUE)
       cat("                                variablesname)]", file = variable.name , sep = "\n", append = TRUE)
-      #  cat("train <- hotdeck(train,imp_var = FALSE)", file = variable.name , sep = "\n", append = TRUE)
+      cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("var <- as.vector(train[,ncol(train)])", file = variable.name , sep = "\n", append = TRUE)
       cat("#var <- as.vector((subset(train, select = selected.predictVars))[,1])", file = variable.name , sep = "\n", append = TRUE)
       cat("var <- factor(var, labels=c(\"0\",\"1\"))", file = variable.name , sep = "\n", append = TRUE)
       cat("var <- as.numeric(as.character(var))", file = variable.name , sep = "\n", append = TRUE)
       cat("train$var <- var", file = variable.name , sep = "\n", append = TRUE)
-      cat("train <- train[ , c(\"edu_highestcat\", \"occupationcat\", \"dem_marriagecat\",\"dem_sex\",", file = variable.name , sep = "\n", append = TRUE)
-      cat("                                    \"coal1Cat\", \"cool1Cat\",\"coal2Cat\", \"cool2Cat\", \"dependency\"  , \"female.ratio\",", file = variable.name , sep = "\n", append = TRUE)
-      cat("                                     \"Case.size\" , \"familyprofile\", \"YearArrivalCategory\",", file = variable.name , sep = "\n", append = TRUE)
-      cat("                                \"var\")]", file = variable.name , sep = "\n", append = TRUE)
-      cat("", file = variable.name , sep = "\n", append = TRUE)
+
+      cat("train[,ncol(train)-1] <- NULL", file = variable.name , sep = "\n", append = TRUE)
       cat("#rm(reg_question.pro1.wfp, reg_question.pro1, reg_question.pro,  reg_question)", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -846,7 +867,7 @@ for (i in 1:length(selected.predictVars)) {
       cat("#                          \"Case.size\" , \"familyprofile\" , \"Case.size\", \"YearArrivalCategory\",\"food\")]", file = variable.name , sep = "\n", append = TRUE)
       cat(" pred <- progrescase[ , c( \"edu_highestcat\", \"occupationcat\", \"dem_marriagecat\",\"dem_sex\",", file = variable.name , sep = "\n", append = TRUE)
       cat("                          \"coal1Cat\",\"cool1Cat\",\"coal2Cat\", \"cool2Cat\", \"dependency\"  , \"female.ratio\",", file = variable.name , sep = "\n", append = TRUE)
-      cat("                          \"Case.size\" , \"familyprofile\" , \"Case.size\", \"YearArrivalCategory\")]", file = variable.name , sep = "\n", append = TRUE)
+      cat("                          \"Case.size\" , \"familyprofile\" , \"Case.size\", \"YearArrivalCategory\",\"dem_agegroup\",\"dem_ethn\",\"dem_religion\")]", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat(" ", file = variable.name , sep = "\n", append = TRUE)
@@ -916,7 +937,7 @@ for (i in 1:length(selected.predictVars)) {
       cat("### Data description", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("The variable that is to be predicted is" ,variablesname, ". The variables used for prediction are taken from the registration data:  education, origin, place of asylum, occupation, family profile, case size, female ratio,", file = variable.name , sep = "\n", append = TRUE)
-      cat("dependency, marital status and year of arrival in the country of asylum. The dataset gathers", nrow(reg_question)," individuals.", file = variable.name , sep = "\n", append = TRUE)
+      cat("dependency, marital status and year of arrival in the country of asylum. The dataset gathers", nrow(survey)," individuals.", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("### Methodology", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -950,9 +971,9 @@ for (i in 1:length(selected.predictVars)) {
       cat("train <- hotdeck(train, imp_var = FALSE)", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("###Creating dichotomized training and testing samples", file = variable.name , sep = "\n", append = TRUE)
-      cat("", file = variable.name , sep = "\n", append = TRUE)
+      cat("library(ade4)", file = variable.name , sep = "\n", append = TRUE)
       cat("train_dicho <- as.data.frame(c(acm.disjonctif(train[,sapply(train, is.factor)]), train[sapply(train, is.numeric)]))", file = variable.name , sep = "\n", append = TRUE)
-      cat("  ", file = variable.name , sep = "\n", append = TRUE)
+      cat(" detach(\"package:ade4\", unload = TRUE)  ", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -1117,7 +1138,9 @@ for (i in 1:length(selected.predictVars)) {
       cat("pred_values_xgb <- ifelse(pred.xgb > cut,1,0) #classify using cutoff probability", file = variable.name , sep = "\n", append = TRUE)
       cat("cm_xgb <- confusionMatrix(data = as.factor(pred_values_xgb), reference = as.factor(test_Y)) #obtain confusion matrix", file = variable.name , sep = "\n", append = TRUE)
       cat("draw_confusion_matrix(cm_xgb, auc_xgb@y.values, \"#3DB7E4\")  #Draw confusion matrix plot", file = variable.name , sep = "\n", append = TRUE)
-      cat("", file = variable.name , sep = "\n", append = TRUE)
+      cat("detach(\"package:xgboost\", unload=TRUE)", file = variable.name , sep = "\n", append = TRUE)
+      cat("detach(\"package:VIM\", unload=TRUE)", file = variable.name , sep = "\n", append = TRUE)
+      
       cat("```", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("### Decision tree ", file = variable.name , sep = "\n", append = TRUE)
@@ -1158,6 +1181,8 @@ for (i in 1:length(selected.predictVars)) {
       cat("draw_confusion_matrix(cm_tree, auc_tree@y.values, \"#69BE28\")", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
+      cat("detach(\"package:rpart\", unload=TRUE)", file = variable.name , sep = "\n", append = TRUE)
+      
       cat("```", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -1169,7 +1194,6 @@ for (i in 1:length(selected.predictVars)) {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("```{r random forest, echo = FALSE, warning = FALSE, message = FALSE}", file = variable.name , sep = "\n", append = TRUE)
-      cat("#install.packages(\"randomForest\")", file = variable.name , sep = "\n", append = TRUE)
       cat("library(randomForest)", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -1186,9 +1210,9 @@ for (i in 1:length(selected.predictVars)) {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("# Create a prediction object using previously saved results", file = variable.name , sep = "\n", append = TRUE)
       cat("ROCRpred_rf <- prediction(rf.model.predict, test_Y)", file = variable.name , sep = "\n", append = TRUE)
-      cat("", file = variable.name , sep = "\n", append = TRUE)
+      cat("detach(\"package:randomForest\", unload=TRUE)", file = variable.name , sep = "\n", append = TRUE)
       cat("# Confusion Matrix #################", file = variable.name , sep = "\n", append = TRUE)
-      cat("# draw SVM confusion matrix #####", file = variable.name , sep = "\n", append = TRUE)
+      cat("# draw RF confusion matrix #####", file = variable.name , sep = "\n", append = TRUE)
       cat("auc_rf <- performance(ROCRpred_rf, measure = \"auc\")", file = variable.name , sep = "\n", append = TRUE)
       cat("perf_rf <- performance(ROCRpred_rf, 'tpr','fpr')", file = variable.name , sep = "\n", append = TRUE)
       cat("cut <- get_cutoff_point(perf_rf, 0.5)", file = variable.name , sep = "\n", append = TRUE)
@@ -1209,6 +1233,8 @@ for (i in 1:length(selected.predictVars)) {
       cat("#train_dicho<-hotdeck(train_dicho, imp_var = FALSE)", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("# Training a SVM", file = variable.name , sep = "\n", append = TRUE)
+      cat("library(e1071)", file = variable.name , sep = "\n", append = TRUE)
+      
       cat("svm_model <- svm(var ~.,               # set model formula", file = variable.name , sep = "\n", append = TRUE)
       cat("               type = \"C-classification\",   # set classification machine", file = variable.name , sep = "\n", append = TRUE)
       cat("               gamma = 0.001668101,         # set gamma parameter", file = variable.name , sep = "\n", append = TRUE)
@@ -1223,7 +1249,7 @@ for (i in 1:length(selected.predictVars)) {
       cat("svm_model.predict <- predict(svm_model, test_dicho, probability = TRUE)", file = variable.name , sep = "\n", append = TRUE)
       cat("# Obtain the predicted probability for class 0/1", file = variable.name , sep = "\n", append = TRUE)
       cat("svm_model.prob <- attr(svm_model.predict,\"probabilities\")", file = variable.name , sep = "\n", append = TRUE)
-      cat("", file = variable.name , sep = "\n", append = TRUE)
+      cat("detach(\"package:e1071\", unload = TRUE)", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("# Create a prediction object using previously saved results", file = variable.name , sep = "\n", append = TRUE)
       cat("ROCRpred_svm <- prediction(svm_model.prob[,2], test_Y)", file = variable.name , sep = "\n", append = TRUE)
@@ -1271,7 +1297,7 @@ for (i in 1:length(selected.predictVars)) {
       cat("LR_model2 <- stepAIC(LR_model)", file = variable.name , sep = "\n", append = TRUE)
       cat("for (i in length(test)){ LR_model2$xlevels[i] <- levels(test[i])}", file = variable.name , sep = "\n", append = TRUE)
       cat("LR_model.predict <- predict(LR_model2, test, type = \"response\")", file = variable.name , sep = "\n", append = TRUE)
-      cat("LR_model<-LR_model2", file = variable.name , sep = "\n", append = TRUE)
+      cat("LR_model<-LR_model2", file = variable.name , sep = "\n", append = TRUE)       
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("#########mettre une limite", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -1573,13 +1599,15 @@ for (i in 1:length(selected.predictVars)) {
       cat("#install.packages(\"lintr\")", file = variable.name , sep = "\n", append = TRUE)
       cat("#library(lintr)", file = variable.name , sep = "\n", append = TRUE)
       cat("```", file = variable.name , sep = "\n", append = TRUE)
-
-
+      
+      
     }
+    
 
-
-# Generating a report for numeric variable  #####
-    if(selected.predictVars[i] %in% dico[ which(dico$fullname == selected.predictVars[i] & dico$variable == "number"), ]$fullname){
+    if(selected.predictVars[i] %in% dico[ which(dico$fullname == selected.predictVars[i] & dico$type == "integer"), ]$fullname){
+      
+      
+      
       cat("---", file = variable.name , sep = "\n", append = TRUE)
       cat("title: \"Prediction report\"", file = variable.name , sep = "\n", append = TRUE)
       cat("author: \"(Continous outcome)\"", file = variable.name , sep = "\n", append = TRUE)
@@ -1664,6 +1692,7 @@ for (i in 1:length(selected.predictVars)) {
       cat("#library(classInt)", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("## Provide below the name of the form in xsl form - format should be xls not xlsx", file = variable.name , sep = "\n", append = TRUE)
+
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -1676,7 +1705,7 @@ for (i in 1:length(selected.predictVars)) {
       cat("              \"edu_highestcat\", \"occupationcat\", \"dem_marriagecat\",\"dem_sex\",", file = variable.name , sep = "\n", append = TRUE)
       cat("              \"coal1Cat\", \"cool1Cat\",\"coal2Cat\", \"cool2Cat\", \"dependency\"  , \"female.ratio\",", file = variable.name , sep = "\n", append = TRUE)
       cat("              \"Num_Inds\", \"Case.size\" , \"Child_0_14\", \"Youth_15_17\" , \"Work_15_64\",", file = variable.name , sep = "\n", append = TRUE)
-      cat("              \"Eldern_65\", \"familyprofile\" , \"Case.size\", \"YearArrivalCategory\",variablesname)]", file = variable.name , sep = "\n", append = TRUE)
+      cat("              \"Eldern_65\", \"familyprofile\" , \"Case.size\", \"YearArrivalCategory\",\"dem_agegroup\",\"dem_ethn\",\"dem_religion\",variablesname)]", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -1688,7 +1717,7 @@ for (i in 1:length(selected.predictVars)) {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("train <- survey.pro1[ , c(\"edu_highestcat\", \"occupationcat\", \"dem_marriagecat\",\"dem_sex\",", file = variable.name , sep = "\n", append = TRUE)
       cat("                                    \"coal1Cat\", \"cool1Cat\",\"coal2Cat\", \"cool2Cat\", \"dependency\"  , \"female.ratio\",", file = variable.name , sep = "\n", append = TRUE)
-      cat("                                     \"Case.size\" , \"familyprofile\", \"YearArrivalCategory\",", file = variable.name , sep = "\n", append = TRUE)
+      cat("                                     \"Case.size\" , \"familyprofile\", \"YearArrivalCategory\",\"dem_agegroup\",\"dem_ethn\",\"dem_religion\",", file = variable.name , sep = "\n", append = TRUE)
       cat("                                variablesname)]", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -1697,11 +1726,8 @@ for (i in 1:length(selected.predictVars)) {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("var <- as.numeric(var)", file = variable.name , sep = "\n", append = TRUE)
       cat("train$var <- var", file = variable.name , sep = "\n", append = TRUE)
-      cat("train <- train[ , c(\"edu_highestcat\", \"occupationcat\", \"dem_marriagecat\",\"dem_sex\",", file = variable.name , sep = "\n", append = TRUE)
-      cat("                                    \"coal1Cat\", \"cool1Cat\",\"coal2Cat\", \"cool2Cat\", \"dependency\"  , \"female.ratio\",", file = variable.name , sep = "\n", append = TRUE)
-      cat("                                     \"Case.size\" , \"familyprofile\", \"YearArrivalCategory\",", file = variable.name , sep = "\n", append = TRUE)
-      cat("                                \"var\")]", file = variable.name , sep = "\n", append = TRUE)
-      cat("", file = variable.name , sep = "\n", append = TRUE)
+
+      cat("train[,ncol(train)-1] <- NULL", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("### let's remove the unknownGTK", file = variable.name , sep = "\n", append = TRUE)
       cat("train <- train[train$cool1Cat != \"Other.or.Unknown\", ]", file = variable.name , sep = "\n", append = TRUE)
@@ -1724,7 +1750,7 @@ for (i in 1:length(selected.predictVars)) {
       cat("#                          \"Case.size\" , \"familyprofile\" , \"Case.size\", \"YearArrivalCategory\")]", file = variable.name , sep = "\n", append = TRUE)
       cat(" pred <- progrescase[ , c( \"edu_highestcat\", \"occupationcat\", \"dem_marriagecat\",\"dem_sex\",", file = variable.name , sep = "\n", append = TRUE)
       cat("                          \"coal1Cat\",\"cool1Cat\",\"coal2Cat\", \"cool2Cat\", \"dependency\"  , \"female.ratio\",", file = variable.name , sep = "\n", append = TRUE)
-      cat("                          \"Case.size\" , \"familyprofile\", \"YearArrivalCategory\")]", file = variable.name , sep = "\n", append = TRUE)
+      cat("                          \"Case.size\" , \"familyprofile\", \"YearArrivalCategory\",\"dem_agegroup\",\"dem_ethn\",\"dem_religion\")]", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat(" ", file = variable.name , sep = "\n", append = TRUE)
@@ -1760,6 +1786,12 @@ for (i in 1:length(selected.predictVars)) {
       cat("pred2 <- pred2[ pred2$cool1Cat %in% as.character(unique(train$cool1Cat)), ]", file = variable.name , sep = "\n", append = TRUE)
       cat("pred2 <- pred2[ pred2$coal2Cat %in% as.character(unique(train$coal2Cat)), ]", file = variable.name , sep = "\n", append = TRUE)
       cat("pred2 <- pred2[ pred2$cool2Cat %in% as.character(unique(train$cool2Cat)), ]", file = variable.name , sep = "\n", append = TRUE)
+      cat("pred2 <- pred2[ pred2$dem_agegroup %in% as.character(unique(train$dem_agegroup)), ]", file = variable.name , sep = "\n", append = TRUE)
+      cat("pred2 <- pred2[ pred2$dem_ethn %in% as.character(unique(train$dem_ethn)), ]", file = variable.name , sep = "\n", append = TRUE)
+      cat("pred2 <- pred2[ pred2$dem_religion %in% as.character(unique(train$dem_religion)), ]", file = variable.name , sep = "\n", append = TRUE)
+      
+      
+      
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("### let's remove the unknownGTK", file = variable.name , sep = "\n", append = TRUE)
@@ -1799,7 +1831,7 @@ for (i in 1:length(selected.predictVars)) {
       cat("### Data description", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("The variable that is to be predicted is" ,variablesname, ". The variables used for prediction are taken from the registration data:  education, origin, place of asylum, occupation, family profile, case size, female ratio,", file = variable.name , sep = "\n", append = TRUE)
-      cat("dependency, marital status and year of arrival in the country of asylum. The dataset gathers", nrow(reg_question)," individuals.", file = variable.name , sep = "\n", append = TRUE)
+      cat("dependency, marital status and year of arrival in the country of asylum. The dataset gathers", nrow(survey)," individuals.", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("### Methodology", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -2276,13 +2308,27 @@ for (i in 1:length(selected.predictVars)) {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("```", file = variable.name , sep = "\n", append = TRUE)
+      
+      
     }
-
-  }
-
-
-  ## Rendering all  reports ###########
-
+    
+    
+    
+    
+    
+    
+  }  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  ##Rendering the reports
+  
   for (i in 1:length(selected.predictVars)) {
     variablesname <- as.character(selected.predictVars[ i ])
     cat(paste(i, " - Render word output report for ",variablesname))
@@ -2292,11 +2338,17 @@ for (i in 1:length(selected.predictVars)) {
     ## Clean  memory
     gc()
   }
-
+  
+  
+  
+  #rmarkdown::render('report-tabulation.Rmd')
+  
   cat(" Done!! Reports are in the folder OUT - Review the report- Adjust your configuration files and you will be very soon ready to start the qualitative analysis and the analysis workshops...")
-}
+}  
 
-NULL
+
+
+
 
 
 

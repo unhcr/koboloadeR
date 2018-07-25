@@ -11,7 +11,7 @@ library(koboloadeR)
 
 ### Load the data
 cat("\n\n Loading data. It is assumed that the cleaning, weighting & re-encoding has been done previously \n")
-household <- read.csv("data/data2.csv", encoding = "UTF-8", na.strings = "NA")
+household <- read.csv("data/data2.csv", encoding = "UTF-8", na.strings = "")
 
 ###Form##########################################
 ## Load form
@@ -116,7 +116,7 @@ for (i in 1:nrow(chapters) )
 
 
   ## TO DO: Use config file to load the different frame
-  cat("household <- read.csv(paste0(mainDirroot,\"/data/data2.csv\"), encoding = \"UTF-8\", na.strings = \"NA\")", file = chapter.name , sep = "\n", append = TRUE)
+  cat("household <- read.csv(paste0(mainDirroot,\"/data/data2.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = chapter.name , sep = "\n", append = TRUE)
 
   cat("\n", file = chapter.name , sep = "\n", append = TRUE)
   cat("## label Variables", file = chapter.name , sep = "\n", append = TRUE)

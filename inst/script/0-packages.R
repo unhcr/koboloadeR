@@ -47,6 +47,9 @@ packages <- unique(sort(c(
   #"ggplot2", ## advanced graphics
   # "stringr",
   "tidyverse",
+  "plyr",
+  "stringr",
+  "qrmtools",
 
   "ggrepel", ## getting nice labels in ggplot2
   "ggthemes", ## Customised themes for ggplot2: excel, stata, economist, tufte, wall street journal...
@@ -302,17 +305,17 @@ try(silent = TRUE,rm(packages,elpa,exc,packs,percent,mon_print,synth,manque,vrai
 # .libPaths()
 # gpclibPermit()
 
-library("tidyverse")
+#library("tidyverse")
 library("ggthemes")
 library("plyr")
-library("ggrepel")
+#library("ggrepel")
 library("viridis")
 library("RColorBrewer")
-library("classInt")
+#library("classInt")
 library("hexbin")
 
 library("DT")
-library("extrafont")
+#library("extrafont")
 library("corrplot")
 library("graphics")
 library("vcd")
@@ -322,12 +325,12 @@ library("stringi")
 library("zoo")
 library("reshape2")
 library("lubridate")
-library("date")
+#library("date")
 library("gdata")
 library("gridExtra")
 library("scales")
 
-library("survey")
+#library("survey")
 
 library("knitr")
 library("kableExtra")

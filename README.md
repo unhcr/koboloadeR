@@ -204,19 +204,26 @@ Column | Description
 `weight`| used to define weight for each answers in case it's used for some specific indicator calculation
 `recategorise`| used to recategorise quickly choices for a question
 
-### In a separate `analysis-plan` worksheet:
+### In a separate `indicator` worksheet:
 
-The idea is to map calculation necessary to create complex indicators from the variables defined in the `survey` worksheet. This will automate the generation of indicators.
+The idea is to map calculation necessary to create complex indicators from the variables defined in the `survey` worksheet. This will document and automate the generation of indicators (i.e. feature enginerring).
+This worksheet will allow to generate an additional elements to the data dictionnnary -- i.e. `dico` dataframe.
+
+Below are the minimum elements/column to document:
 
 Column | Description
 ------|--------------
-`indicator`| used to map the question with an indicator
-`indicatorgroup`| used to reference the the group the indicator should be associated to
-`indicatortype`| define wether the indicator is  `Measurement`: variable used to quantify other indicators, `Disaggregation`: variable that describes certain groups, `Predictor`: Indicator that describes the cause of a situation, `Outcome`: Indicator that describes the consequence of a situation or `Judgment`: indicator that translates a subjective assessment
-`indicatorlevel`| used to define the geographic aggregation to be used for indicator calculation
-`Indicatorexternal`| used to reference an external dataset to be used to calculate the indicators. Could be for instance a population dataset.
-`indicatorcalculation`| used to reference the calculation method to be used for the indicator: `Percentage`, `Sum`, `Max/Min`, `Average`, `Score`, `Denominator`, `Numerator`, `Numerator.external` (i.e. linked to an external value)
-`indicatornomalisation`| used to reference the normalisation method to be used for the indicator
+`type`| type of indicator select_one  or integer or numeric
+`name`| short name for the indicator
+`label`| label for the indicator
+`chapter`| chapter to include the indicator in
+`frame`| frame to use to append the idnicator to
+`calculation`| used to reference the calculation. This will be a precise R formula
+
+
+define wether the indicator is  `Measurement`: variable used to quantify other indicators, `Disaggregation`: variable that describes certain groups, `Predictor`: Indicator that describes the cause of a situation, `Outcome`: Indicator that describes the consequence of a situation or `Judgment`: indicator that translates a subjective assessment
+method to be used for the indicator: `Percentage`, `Sum`, `Max/Min`, `Average`, `Score`, `Denominator`, `Numerator`, `Numerator.external` (i.e. linked to an external value)
+
 
 
 ## Shiny Apps
@@ -289,24 +296,43 @@ kobo_data_downloader("123456", "username:password")
 
 This method should be used whenever Kobo or ODK forms are used as data collection tools and personal data is being collected. Even when personal data is not being collected it still may be appropriate to apply the methodology since quasi-identifiable data or other sensitive data could lead to personal identification or should not be shared.
 
+
+
 Type            | Description
 ----------------|--------------
 __Direct identifiers__      |	Can be directly used to identify an individual. E.g. Name, Address, Date of birth, Telephone number, GPS location
 __Quasi- identifiers__      |	Can be used to identify individuals when it is joined with other information. E.g. Age, Salary, Next of kin, School name, Place of work
 __Sensitive information__      | & Community identifiable information	Might not identify an individual but could put an individual or group at risk. E.g. Gender, Ethnicity, Religious belief
-__Meta data__      |	Data about who, where and how the data is collected is often stored separately to the main data and can be used identify individuals
+
 
 
 The following are different anonymisation actions that can be performed on sensitive fields. The type of anonymisation should be dictated by the desired use of the data. A good approach to follow is to start from the minimum data required, and then to identify if any of those fields should be obscured.
 
 The methods below can be referenced in the dedicated column within xlsform (cf above)
 
+### How to reference the anonymisation plan in the xlsfrom. 
+
+The `anonymise` column is used to reference the anonymisation plan. it can take the following values.
+
 Method          | Description
 ----------------|--------------
-  __Remove__    |	Variable is removed entirely from the data set. The Variable  is preserved in the original file.  
-__Reference__   |	Variable is removed entirely from the data set and is copied into a reference file. A random unique identifier field is added to the reference file and the data set so that they can be joined together in future.  The reference file is never shared and the Variable  is also preserved in the original file.  
-__Mask__        |	The Variable  values are replaced with meaningless values but the categories are preserved. A reference file is created to link the original value with the meaningless value. Typically applied to categorical Variable . For example, Town names could be masked with random combinations of letters. It would still be possible to perform statisitical analysis on the Variable  but the person running the analysis would not be able to identify the original values, they would only become meaningful when replaced with the original values. The reference file is never shared and the data is also preserved in the original file.  
-__Generalise__	| Continuous Variable  is turned into categorical or ordinal Variable  by summarising it into ranges. For example, Age could be turned into age ranges, Weight could be turned into ranges. It can also apply to categorical Variable  where parent groups are created. For example, illness is grouped into illness type. Generalised Variable  can also be masked for extra anonymisation. The Variable  is preserved in the original file.  
+__remove__      |	Variable is removed entirely from the data set. The Variable  is preserved in the original file.  
+__reference__   |	Variable is removed entirely from the data set and is copied into a reference file. A random unique identifier field is added to the reference file and the data set so that they can be joined together in future.  The reference file is never shared and the Variable  is also preserved in the original file.  
+__key__   |	Variable to be consisdered for k-anonymity & individual disclosure risk analysis (i.e. quasi-identifiers)
+__outlier__   |	Variable is removed entirely
+__sensitve__   |	Variable is removed entirely
+
+### Potential Good practices
+
+Data about who, where and how the data is collected is often stored separately to the main data and can be used identify individuals (i.e. metadata will be removed)
+
+Text variables likely to be removed as well... 
+
+The Variable  values are replaced with meaningless values but the categories are preserved. A reference file is created to link the original value with the meaningless value. Typically applied to categorical Variable . For example, Town names could be masked with random combinations of letters. It would still be possible to perform statisitical analysis on the Variable  but the person running the analysis would not be able to identify the original values, they would only become meaningful when replaced with the original values. The reference file is never shared and the data is also preserved in the original file.  
+
+Generalise
+
+Continuous Variable  is turned into categorical or ordinal Variable  by summarising it into ranges. For example, Age could be turned into age ranges, Weight could be turned into ranges. It can also apply to categorical Variable  where parent groups are created. For example, illness is grouped into illness type. Generalised Variable  can also be masked for extra anonymisation. The Variable  is preserved in the original file.  
 
 
 # Common Troubleshooting

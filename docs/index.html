@@ -347,10 +347,11 @@ kobo_projectinit() # Creates folders necessary and transfer files needed</code><
 </tbody>
 </table>
 </div>
-<div id="in-a-separate-analysis-plan-worksheet" class="section level3">
+<div id="in-a-separate-indicator-worksheet" class="section level3">
 <h3 class="hasAnchor">
-<a href="#in-a-separate-analysis-plan-worksheet" class="anchor"></a>In a separate <code>analysis-plan</code> worksheet:</h3>
-<p>The idea is to map calculation necessary to create complex indicators from the variables defined in the <code>survey</code> worksheet. This will automate the generation of indicators.</p>
+<a href="#in-a-separate-indicator-worksheet" class="anchor"></a>In a separate <code>indicator</code> worksheet:</h3>
+<p>The idea is to map calculation necessary to create complex indicators from the variables defined in the <code>survey</code> worksheet. This will document and automate the generation of indicators (i.e. feature enginerring). This worksheet will allow to generate an additional elements to the data dictionnnary – i.e. <code>dico</code> dataframe.</p>
+<p>Below are the minimum elements/column to document:</p>
 <table class="table">
 <colgroup>
 <col width="30%">
@@ -362,35 +363,32 @@ kobo_projectinit() # Creates folders necessary and transfer files needed</code><
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>indicator</code></td>
-<td>used to map the question with an indicator</td>
+<td><code>type</code></td>
+<td>type of indicator select_one or integer or numeric</td>
 </tr>
 <tr class="even">
-<td><code>indicatorgroup</code></td>
-<td>used to reference the the group the indicator should be associated to</td>
+<td><code>name</code></td>
+<td>short name for the indicator</td>
 </tr>
 <tr class="odd">
-<td><code>indicatortype</code></td>
-<td>define wether the indicator is <code>Measurement</code>: variable used to quantify other indicators, <code>Disaggregation</code>: variable that describes certain groups, <code>Predictor</code>: Indicator that describes the cause of a situation, <code>Outcome</code>: Indicator that describes the consequence of a situation or <code>Judgment</code>: indicator that translates a subjective assessment</td>
+<td><code>label</code></td>
+<td>label for the indicator</td>
 </tr>
 <tr class="even">
-<td><code>indicatorlevel</code></td>
-<td>used to define the geographic aggregation to be used for indicator calculation</td>
+<td><code>chapter</code></td>
+<td>chapter to include the indicator in</td>
 </tr>
 <tr class="odd">
-<td><code>Indicatorexternal</code></td>
-<td>used to reference an external dataset to be used to calculate the indicators. Could be for instance a population dataset.</td>
+<td><code>frame</code></td>
+<td>frame to use to append the idnicator to</td>
 </tr>
 <tr class="even">
-<td><code>indicatorcalculation</code></td>
-<td>used to reference the calculation method to be used for the indicator: <code>Percentage</code>, <code>Sum</code>, <code>Max/Min</code>, <code>Average</code>, <code>Score</code>, <code>Denominator</code>, <code>Numerator</code>, <code>Numerator.external</code> (i.e. linked to an external value)</td>
-</tr>
-<tr class="odd">
-<td><code>indicatornomalisation</code></td>
-<td>used to reference the normalisation method to be used for the indicator</td>
+<td><code>calculation</code></td>
+<td>used to reference the calculation. This will be a precise R formula</td>
 </tr>
 </tbody>
 </table>
+<p>define wether the indicator is <code>Measurement</code>: variable used to quantify other indicators, <code>Disaggregation</code>: variable that describes certain groups, <code>Predictor</code>: Indicator that describes the cause of a situation, <code>Outcome</code>: Indicator that describes the consequence of a situation or <code>Judgment</code>: indicator that translates a subjective assessment method to be used for the indicator: <code>Percentage</code>, <code>Sum</code>, <code>Max/Min</code>, <code>Average</code>, <code>Score</code>, <code>Denominator</code>, <code>Numerator</code>, <code>Numerator.external</code> (i.e. linked to an external value)</p>
 </div>
 </div>
 <div id="shiny-apps" class="section level2">
@@ -483,14 +481,14 @@ example("kobo_data_downloader")</code></pre>
 <td><strong>Sensitive information</strong></td>
 <td>&amp; Community identifiable information Might not identify an individual but could put an individual or group at risk. E.g. Gender, Ethnicity, Religious belief</td>
 </tr>
-<tr class="even">
-<td><strong>Meta data</strong></td>
-<td>Data about who, where and how the data is collected is often stored separately to the main data and can be used identify individuals</td>
-</tr>
 </tbody>
 </table>
 <p>The following are different anonymisation actions that can be performed on sensitive fields. The type of anonymisation should be dictated by the desired use of the data. A good approach to follow is to start from the minimum data required, and then to identify if any of those fields should be obscured.</p>
 <p>The methods below can be referenced in the dedicated column within xlsform (cf above)</p>
+<div id="how-to-reference-the-anonymisation-plan-in-the-xlsfrom-" class="section level3">
+<h3 class="hasAnchor">
+<a href="#how-to-reference-the-anonymisation-plan-in-the-xlsfrom-" class="anchor"></a>How to reference the anonymisation plan in the xlsfrom.</h3>
+<p>The <code>anonymise</code> column is used to reference the anonymisation plan. it can take the following values.</p>
 <table class="table">
 <colgroup>
 <col width="53%">
@@ -502,23 +500,37 @@ example("kobo_data_downloader")</code></pre>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><strong>Remove</strong></td>
+<td><strong>remove</strong></td>
 <td>Variable is removed entirely from the data set. The Variable is preserved in the original file.</td>
 </tr>
 <tr class="even">
-<td><strong>Reference</strong></td>
+<td><strong>reference</strong></td>
 <td>Variable is removed entirely from the data set and is copied into a reference file. A random unique identifier field is added to the reference file and the data set so that they can be joined together in future. The reference file is never shared and the Variable is also preserved in the original file.</td>
 </tr>
 <tr class="odd">
-<td><strong>Mask</strong></td>
-<td>The Variable values are replaced with meaningless values but the categories are preserved. A reference file is created to link the original value with the meaningless value. Typically applied to categorical Variable . For example, Town names could be masked with random combinations of letters. It would still be possible to perform statisitical analysis on the Variable but the person running the analysis would not be able to identify the original values, they would only become meaningful when replaced with the original values. The reference file is never shared and the data is also preserved in the original file.</td>
+<td><strong>key</strong></td>
+<td>Variable to be consisdered for k-anonymity &amp; individual disclosure risk analysis (i.e. quasi-identifiers)</td>
 </tr>
 <tr class="even">
-<td><strong>Generalise</strong></td>
-<td>Continuous Variable is turned into categorical or ordinal Variable by summarising it into ranges. For example, Age could be turned into age ranges, Weight could be turned into ranges. It can also apply to categorical Variable where parent groups are created. For example, illness is grouped into illness type. Generalised Variable can also be masked for extra anonymisation. The Variable is preserved in the original file.</td>
+<td><strong>outlier</strong></td>
+<td>Variable is removed entirely</td>
+</tr>
+<tr class="odd">
+<td><strong>sensitve</strong></td>
+<td>Variable is removed entirely</td>
 </tr>
 </tbody>
 </table>
+</div>
+<div id="potential-good-practices" class="section level3">
+<h3 class="hasAnchor">
+<a href="#potential-good-practices" class="anchor"></a>Potential Good practices</h3>
+<p>Data about who, where and how the data is collected is often stored separately to the main data and can be used identify individuals (i.e. metadata will be removed)</p>
+<p>Text variables likely to be removed as well…</p>
+<p>The Variable values are replaced with meaningless values but the categories are preserved. A reference file is created to link the original value with the meaningless value. Typically applied to categorical Variable . For example, Town names could be masked with random combinations of letters. It would still be possible to perform statisitical analysis on the Variable but the person running the analysis would not be able to identify the original values, they would only become meaningful when replaced with the original values. The reference file is never shared and the data is also preserved in the original file.</p>
+<p>Generalise</p>
+<p>Continuous Variable is turned into categorical or ordinal Variable by summarising it into ranges. For example, Age could be turned into age ranges, Weight could be turned into ranges. It can also apply to categorical Variable where parent groups are created. For example, illness is grouped into illness type. Generalised Variable can also be masked for extra anonymisation. The Variable is preserved in the original file.</p>
+</div>
 </div>
 </div>
 <div id="common-troubleshooting" class="section level1">

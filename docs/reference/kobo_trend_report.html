@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Format axis label — format_si • koboloadeR</title>
+<title>Generate trend report — kobo_trend_report • koboloadeR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,17 +30,9 @@
 
 
 
-<meta property="og:title" content="Format axis label — format_si" />
+<meta property="og:title" content="Generate trend report — kobo_trend_report" />
 
-<meta property="og:description" content="Helper function to format a vector of strings using
-  SI prefix notation" />
-
-<meta property="og:description" content="Format a vector of numeric values according
-to the International System of Units.
-http://en.wikipedia.org/wiki/SI_prefix
-Based on code by Ben Tupper
-https://stat.ethz.ch/pipermail/r-help/2012-January/299804.html
-Args:" />
+<meta property="og:description" content="Generate report with data aggregated by location &amp;amp; time" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -120,79 +112,51 @@ Args:" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Format axis label</h1>
-    <small class="dont-index">Source: <a href='https://github.com/unhcr/koboloadeR/blob/master/R/format_si.R'><code>R/format_si.R</code></a></small>
-    <div class="hidden name"><code>format_si.Rd</code></div>
+    <h1>Generate trend report</h1>
+    <small class="dont-index">Source: <a href='https://github.com/unhcr/koboloadeR/blob/master/R/kobo_trend_report.R'><code>R/kobo_trend_report.R</code></a></small>
+    <div class="hidden name"><code>kobo_trend_report.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Helper function to format a vector of strings using
-  SI prefix notation</p>
-
-    <p>Format a vector of numeric values according
-to the International System of Units.
-http://en.wikipedia.org/wiki/SI_prefix</p>
-<p>Based on code by Ben Tupper
-https://stat.ethz.ch/pipermail/r-help/2012-January/299804.html
-Args:</p>
+    <p>Generate report with data aggregated by location &amp; time</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>format_si</span>(<span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>kobo_trend_report</span>(<span class='no'>frame</span>, <span class='no'>dico</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>&#8230;</th>
-      <td><p>List of integer or numeric
-...: Args passed to format()</p></td>
+      <th>dico</th>
+      <td><p>Generated from kobo_dico function</p></td>
+    </tr>
+    <tr>
+      <th>kobo</th>
+      <td><p>or odk dataset to use</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>Formatted number.</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>format_si</span>()</div><div class='output co'>#&gt; function(x) {
-#&gt;     limits &lt;- c(1e-24, 1e-21, 1e-18, 1e-15, 1e-12,
-#&gt;                 1e-9,  1e-6,  1e-3,  1e0,   1e3,
-#&gt;                 1e6,   1e9,   1e12,  1e15,  1e18,
-#&gt;                 1e21,  1e24)
-#&gt;     prefix &lt;- c("y",   "z",   "a",   "f",   "p",
-#&gt;                 "n",   "",   "m",   " ",   "k",
-#&gt;                 "M",   "G",   "T",   "P",   "E",
-#&gt;                 "Z",   "Y")
-#&gt; 
-#&gt;     # Vector with array indices according to position in intervals
-#&gt;     i &lt;- findInterval(abs(x), limits)
-#&gt; 
-#&gt;     # Set prefix to " " for very small values &lt; 1e-24
-#&gt;     i &lt;- ifelse(i==0, which(limits == 1e0), i)
-#&gt; 
-#&gt;     paste(format(round(x/limits[i], 1),
-#&gt;                  trim=TRUE, scientific=FALSE, ...),
-#&gt;           prefix[i])
-#&gt;   }
-#&gt; &lt;environment: 0x55bc036f4250&gt;</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>kobo_trend_report</span>(<span class='no'>frame</span>, <span class='no'>dico</span>)</div><div class='output co'>#&gt; NULL</div><div class='input'>
+</div><span class='co'># NOT RUN {</span>
+<span class='fu'>kobo_trend_report</span>(<span class='no'>frame</span>, <span class='no'>dico</span>)
+<span class='co'># }</span><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-      
+            
       <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>
     
-Someone
+Edouard Legoupil
 
   </div>
 </div>

@@ -26,7 +26,7 @@
 
 kobo_anonymisation_report <- function(frame, dico) {
 
-  # frame <- data.or
+  # frame <- household
   # framename <- "household"
   framename <- deparse(substitute(frame))
   write.csv(frame, paste0("data/anomreport-",framename,".csv"), row.names = FALSE, na = "")
@@ -66,6 +66,7 @@ kobo_anonymisation_report <- function(frame, dico) {
         cat("title: \"Data Anonymization & Statistical Disclosure Risk Analysis Report\"", file = reportanom , sep = "\n", append = TRUE)
         cat("author: \"Generated with [Koboloader](https://github.com/unhcr/koboloadeR) and [sdcMicro](https://cran.r-project.org/web/packages/sdcMicro/sdcMicro.pdf)\"", file = reportanom , sep = "\n", append = TRUE)
         cat("date: \" `r format(Sys.Date(), '%d %B %Y')`\"", file = reportanom , sep = "\n", append = TRUE)
+        cat("always_allow_html: yes", file = reportanom , sep = "\n", append = TRUE)
         cat("output:", file = reportanom , sep = "\n", append = TRUE)
         cat("  word_document:", file = reportanom , sep = "\n", append = TRUE)
         cat("    fig_caption: yes", file = reportanom , sep = "\n", append = TRUE)

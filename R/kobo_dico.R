@@ -63,12 +63,26 @@ kobo_dico <- function(form) {
   {cat("3- No column `chapter` in your survey worksheet. Creating a dummy one for the moment ...\n");
     survey$chapter <- ""}
 
-  if ("structuralequation" %in% colnames(survey))
+  if ("structuralequation.risk" %in% colnames(survey))
   {
-    cat("4- Good: You have a column `structuralequation` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
+    cat("4- Good: You have a column `structuralequation.risk` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
   } else
-  {cat("4- No column `structuralequation` in your survey worksheet. Creating a dummy one for the moment...\n");
-    survey$structuralequation <- ""}
+  {cat("4- No column `structuralequation.risk` in your survey worksheet. Creating a dummy one for the moment...\n");
+    survey$structuralequation.risk <- ""}
+
+  if ("structuralequation.coping" %in% colnames(survey))
+  {
+    cat("4- Good: You have a column `structuralequation.coping` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
+  } else
+  {cat("4- No column `structuralequation.coping` in your survey worksheet. Creating a dummy one for the moment...\n");
+    survey$structuralequation.coping <- ""}
+
+  if ("structuralequation.resilience" %in% colnames(survey))
+  {
+    cat("4- Good: You have a column `structuralequation.resilience` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
+  } else
+  {cat("4- No column `structuralequation.resilience` in your survey worksheet. Creating a dummy one for the moment...\n");
+    survey$structuralequation.resilience <- ""}
 
 
   if ("anonymise" %in% colnames(survey))
@@ -124,7 +138,7 @@ kobo_dico <- function(form) {
   ## Avoid columns without names
   survey <- survey[ ,c("type",   "name" ,  "label",
                        #"repeatsummarize",
-                       "variable","disaggregation",  "chapter", "structuralequation","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
+                       "variable","disaggregation",  "chapter", "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
                       # "indicator","indicatorgroup","indicatortype",
                       # "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation"
                        #"indicator","select", "Comment", "indicatordirect", "indicatorgroup" ## This indicator reference
@@ -393,7 +407,7 @@ kobo_dico <- function(form) {
     #names(choices) -"type", "name", "namefull",  "labelfull", "listname", "qrepeat", "qlevel", "qgroup"
     ## not kept: "nameq"     "labelq"   ,"fullname", "label",
     #names(survey) - "type" "name",  "fullname", "label",  "listname", "qrepeat"m  "qlevel",   "qgroup"
-  choices2 <- choices[ ,c("type", "name", "namefull",  "labelfull", "chapter","disaggregation","correlate", "structuralequation","anonymise",
+  choices2 <- choices[ ,c("type", "name", "namefull",  "labelfull", "chapter","disaggregation","correlate", "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise",
                           "clean","cluster","predict","mappoint","mappoly",
                           "listname", "qrepeat","qrepeatlabel",  "qlevel", "qgroup", "labelchoice",
                          #"repeatsummarize",
@@ -406,7 +420,7 @@ kobo_dico <- function(form) {
   names(choices2)[names(choices2) == "labelfull"] <- "label"
 
 
-  survey2 <-    survey[,c("type", "name",  "fullname", "label", "chapter", "disaggregation","correlate",  "structuralequation","anonymise",
+  survey2 <-    survey[,c("type", "name",  "fullname", "label", "chapter", "disaggregation","correlate",  "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise",
                           "clean","cluster","predict","mappoint","mappoly",
                           "listname", "qrepeat","qrepeatlabel",  "qlevel",   "qgroup", "labelchoice",
                           #"repeatsummarize",

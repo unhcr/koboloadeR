@@ -14,6 +14,9 @@ round2(x, n)
 \value{
 rounded figure.
 }
+\description{
+Create roundup function
+}
 \examples{
 round2(x, n)
 

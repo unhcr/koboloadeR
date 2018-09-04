@@ -12,6 +12,9 @@ multresponse(x)
 \value{
 last part of question headings
 }
+\description{
+Helper function to concatenate multiple choices (select_mutiple type question) formatted TRUE / FALSE
+}
 \examples{
 multresponse(x)
 

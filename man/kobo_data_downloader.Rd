@@ -4,7 +4,8 @@
 \alias{kobo_data_downloader}
 \title{Retrieve the Data from a Specified Dataset}
 \usage{
-kobo_data_downloader(formid, user = NULL, api = "unhcr", check = TRUE)
+kobo_data_downloader(formid, user = NULL, api = "unhcr",
+  check = TRUE)
 }
 \arguments{
 \item{formid}{The ID of the form to be accessed (as a character string).}

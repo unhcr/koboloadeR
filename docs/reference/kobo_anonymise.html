@@ -21,9 +21,11 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
@@ -37,16 +39,17 @@ This method should be used whenever Kobo or ODK forms are used as data collectio
   https://jangorecki.github.io/blog/2014-11-07/Data-Anonymization-in-R.html
 
 TypeDescription---------------------------Direct identifiersCan be directly used to identify an individual. E.g. Name, Address, Date of birth, Telephone number, GPS location
-Quasi- identifiersCan be used to identify individuals when it is joined with other information. E.g. Age, Salary, Next of kin, School name, Place of workSensitive information&amp; Community identifiable information	Might not identify an individual but could put an individual or group at risk. E.g. Gender, Ethnicity, Religious beliefTypeDescription
+Quasi- identifiersCan be used to identify individuals when it is joined with other information. E.g. Age, Salary, Next of kin, School name, Place of workSensitive information&amp;amp; Community identifiable information	Might not identify an individual but could put an individual or group at risk. E.g. Gender, Ethnicity, Religious beliefMeta dataData about who, where and how the data is collected is often stored separately to the main data and can be used identify individuals
 " />
 
 <meta property="og:description" content="The following are different anonymisation actions that can be performed on sensitive fields. The type of anonymisation should be dictated by the desired use of the data. A good approach to follow is to start from the minimum data required, and then to identify if any of those fields should be obscured.
 The methods above can be reference in the column
 
 MethodDescription------------------------------RemoveData is removed entirely from the data set. The data is preserved in the original file.
-ReferenceData is removed entirely from the data set and is copied into a reference file. A random unique identifier field is added to the reference file and the data set so that they can be joined together in future.  The reference file is never shared and the data is also preserved in the original file.MaskThe data values are replaced with meaningless values but the categories are preserved. A reference file is created to link the original value with the meaningless value. Typically applied to categorical data. For example, Town names could be masked with random combinations of letters. It would still be possible to perform statisitical analysis on the data but the person running the analysis would not be able to identify the original values, they would only become meaningful when replaced with the original values. The reference file is never shared and the data is also preserved in the original file.MethodDescription
+ReferenceData is removed entirely from the data set and is copied into a reference file. A random unique identifier field is added to the reference file and the data set so that they can be joined together in future.  The reference file is never shared and the data is also preserved in the original file.MaskThe data values are replaced with meaningless values but the categories are preserved. A reference file is created to link the original value with the meaningless value. Typically applied to categorical data. For example, Town names could be masked with random combinations of letters. It would still be possible to perform statisitical analysis on the data but the person running the analysis would not be able to identify the original values, they would only become meaningful when replaced with the original values. The reference file is never shared and the data is also preserved in the original file.GeneraliseContinuous data is turned into categorical or ordinal data by summarising it into ranges. For example, Age could be turned into age ranges, Weight could be turned into ranges. It can also apply to categorical data where parent groups are created. For example, illness is grouped into illness type. Generalised data can also be masked for extra anonymisation. The data is preserved in the original file.
 " />
 <meta name="twitter:card" content="summary" />
+
 
 
 <!-- mathjax -->
@@ -138,14 +141,14 @@ ReferenceData is removed entirely from the data set and is copied into a referen
   https://jangorecki.github.io/blog/2014-11-07/Data-Anonymization-in-R.html</p>
 <table class='table'>
 <tr><td><strong>Type</strong></td><td><strong>Description</strong></td><td>----------------</td><td>-----------</td><td><strong>Direct identifiers</strong></td><td>Can be directly used to identify an individual. E.g. Name, Address, Date of birth, Telephone number, GPS location</td></tr>
-<tr><td><strong>Quasi- identifiers</strong></td><td>Can be used to identify individuals when it is joined with other information. E.g. Age, Salary, Next of kin, School name, Place of work</td><td><strong>Sensitive information</strong></td><td>&amp; Community identifiable information	Might not identify an individual but could put an individual or group at risk. E.g. Gender, Ethnicity, Religious belief</td><td><strong>Type</strong></td><td><strong>Description</strong></td></tr>
+<tr><td><strong>Quasi- identifiers</strong></td><td>Can be used to identify individuals when it is joined with other information. E.g. Age, Salary, Next of kin, School name, Place of work</td><td><strong>Sensitive information</strong></td><td>&amp; Community identifiable information	Might not identify an individual but could put an individual or group at risk. E.g. Gender, Ethnicity, Religious belief</td><td><strong>Meta data</strong></td><td>Data about who, where and how the data is collected is often stored separately to the main data and can be used identify individuals</td></tr>
 </table>
 
     <p>The following are different anonymisation actions that can be performed on sensitive fields. The type of anonymisation should be dictated by the desired use of the data. A good approach to follow is to start from the minimum data required, and then to identify if any of those fields should be obscured.</p>
 <p>The methods above can be reference in the column</p>
 <table class='table'>
 <tr><td><strong>Method</strong></td><td><strong>Description</strong></td><td>----------------</td><td>--------------</td><td><strong>Remove</strong></td><td>Data is removed entirely from the data set. The data is preserved in the original file.</td></tr>
-<tr><td><strong>Reference</strong></td><td>Data is removed entirely from the data set and is copied into a reference file. A random unique identifier field is added to the reference file and the data set so that they can be joined together in future.  The reference file is never shared and the data is also preserved in the original file.</td><td><strong>Mask</strong></td><td>The data values are replaced with meaningless values but the categories are preserved. A reference file is created to link the original value with the meaningless value. Typically applied to categorical data. For example, Town names could be masked with random combinations of letters. It would still be possible to perform statisitical analysis on the data but the person running the analysis would not be able to identify the original values, they would only become meaningful when replaced with the original values. The reference file is never shared and the data is also preserved in the original file.</td><td><strong>Method</strong></td><td><strong>Description</strong></td></tr>
+<tr><td><strong>Reference</strong></td><td>Data is removed entirely from the data set and is copied into a reference file. A random unique identifier field is added to the reference file and the data set so that they can be joined together in future.  The reference file is never shared and the data is also preserved in the original file.</td><td><strong>Mask</strong></td><td>The data values are replaced with meaningless values but the categories are preserved. A reference file is created to link the original value with the meaningless value. Typically applied to categorical data. For example, Town names could be masked with random combinations of letters. It would still be possible to perform statisitical analysis on the data but the person running the analysis would not be able to identify the original values, they would only become meaningful when replaced with the original values. The reference file is never shared and the data is also preserved in the original file.</td><td><strong>Generalise</strong></td><td>Continuous data is turned into categorical or ordinal data by summarising it into ranges. For example, Age could be turned into age ranges, Weight could be turned into ranges. It can also apply to categorical data where parent groups are created. For example, illness is grouped into illness type. Generalised data can also be masked for extra anonymisation. The data is preserved in the original file.</td></tr>
 </table>
     
     </div>

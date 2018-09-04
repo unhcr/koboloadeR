@@ -2,7 +2,7 @@
 % Please edit documentation in R/kobo_bar_one_facet_print.R
 \name{kobo_bar_one_facet_print}
 \alias{kobo_bar_one_facet_print}
-\title{Generate faceted frequency bar chart}
+\title{Generate faceted frequency bar chart  and save output as svg for illustrator}
 \usage{
 kobo_bar_one_facet_print(data, dico)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/kobo_bar_one_print.R
 \name{kobo_bar_one_print}
 \alias{kobo_bar_one_print}
-\title{Generate bar Chart - frequency - for select_one questions}
+\title{Generate bar Chart - frequency - for select_one questions and save output as svg for illustrator}
 \usage{
 kobo_bar_one_print(data, dico)
 }

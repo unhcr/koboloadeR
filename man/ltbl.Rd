@@ -16,6 +16,9 @@ ltbl(x, y, z)
 \value{
 last part of question headings
 }
+\description{
+Helper function to extract the last part of question headings
+}
 \examples{
 ltbl(x,y,z)
 

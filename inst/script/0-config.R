@@ -11,6 +11,7 @@ form <- "form.xls"
 ## Might need to be tweaked -- double check
 path.to.data <- "data/data.csv"
 
+
 #names(data.or)
 ### Need to replace slash by point in the variable name
 ## get variable name from data
@@ -88,3 +89,6 @@ indicator.calculation <- "no"
 #library(readxl)
 #indicator <- read_excel("data/form.xls", sheet = "indicator")
 
+
+##### 6. Path to registration data *********************
+path.to.progres <- "data/progrescase.csv"

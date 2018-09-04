@@ -2,7 +2,7 @@
 % Please edit documentation in R/kobo_bar_multi_facet.R
 \name{kobo_bar_multi_facet}
 \alias{kobo_bar_multi_facet}
-\title{Generate frequency bar chart for select_multiple variable}
+\title{Generate frequency bar chart for select_multiple variable and save output as svg for illustrator}
 \usage{
 kobo_bar_multi_facet(mainDir = "")
 }

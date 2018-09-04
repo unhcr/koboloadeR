@@ -30,4 +30,4 @@ Suggests:
     shiny
 URL: https://github.com/unhcr/koboloadeR
 BugReports: https://github.com/unhcr/koboloadeR/issues
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0

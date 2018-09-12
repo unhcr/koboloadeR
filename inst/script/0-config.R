@@ -4,13 +4,17 @@
 
 ### 1. Place the form in xslform format - saved as .xls - not xlsx - in the data folder ######
 
+
 form <- "form.xls"
 
 #### 2. flat file load *********************
 
 ## Might need to be tweaked -- double check
-path.to.data <- "data/data.csv"
+##Path to survey data
+path.to.data <- "data/household.csv"
 
+##Path to registration data
+path.to.progres <- "data/progrescase.csv"
 
 #names(data.or)
 ### Need to replace slash by point in the variable name
@@ -89,6 +93,3 @@ indicator.calculation <- "no"
 #library(readxl)
 #indicator <- read_excel("data/form.xls", sheet = "indicator")
 
-
-##### 6. Path to registration data *********************
-path.to.progres <- "data/progrescase.csv"

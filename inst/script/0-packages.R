@@ -79,7 +79,8 @@ packages <- unique(sort(c(
   # Assemble graphics together
   "grid", "gridExtra",
   "gtable", # Arrange 'Grobs' in Tables
-
+  "ggfortify",
+  "ggtern",   ##ternary plot with ggplot2
   "vcd",  # Visualisation of categorical data
   #Scale Functions for Visualization
   "scales",
@@ -177,8 +178,7 @@ packages <- unique(sort(c(
   #  "simFrame",
   "survey",  ##Analysis of Complex Survey Samples
 
-  ## Procedures for Psychological, Psychometric, and Personality Research ########
-    "psych",
+
 
   ## Benchmark and Frontier Analysis Using Data Envelopmenbt Aanalysis ########
   #  "Benchmarking",
@@ -221,6 +221,18 @@ packages <- unique(sort(c(
   "Rcpp", ## used to compile some pacckages
   "devtools", # package used to load packages hosted in github --
    # "parallel", ## Improve performance
+
+
+ ### Scoring & Composition Indicators
+ "polycor", # Polychoric and Polyserial Correlations
+ "psych",  #A package for personality, psychometric, and psychological research
+ "nFactors", ## Manipulate results of factor modeling
+ "moments", ## Moments, cumulants, skewness, kurtosis and related tests
+ "clusterSim", ## Searching for Optimal Clustering Procedure for a Data Set
+ "mice", # Multivariate Imputation by Chained Equations
+ "VIM", # Visualization and Imputation of Missing Values
+ "REdaS", # Companion Package to the Book 'R: Einfhrung durch angewandte Statistik'
+ "mirt", #multidimenisonal Item Response Theory
 
   ### GUI ########
   #"RGtk2",

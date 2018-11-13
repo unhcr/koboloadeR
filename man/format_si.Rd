@@ -18,6 +18,7 @@ Helper function to format a vector of strings using
   SI prefix notation
 
 
+
 Format a vector of numeric values according
 to the International System of Units.
 http://en.wikipedia.org/wiki/SI_prefix

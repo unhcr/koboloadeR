@@ -5,6 +5,7 @@
 #'   SI prefix notation
 #'
 #'
+#'
 #' Format a vector of numeric values according
 #' to the International System of Units.
 #' http://en.wikipedia.org/wiki/SI_prefix

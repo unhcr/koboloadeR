@@ -40,6 +40,10 @@
 kobo_prediction_report <- function( origin, location) {
 
 
+  percent <- function(x, digits = 0, format = "f", ...) {
+    paste0(formatC( x, format = format, digits = digits, ...), "%")
+  }
+
   frame <-household
   mainDirroot <- getwd()
   location <- location
@@ -63,30 +67,18 @@ kobo_prediction_report <- function( origin, location) {
   #selected.clusterVars2 <- as.character(selected.cluster[ , c("name")])
   selected.predictVars2 <- str_replace_all(as.character(selected.predict[ , c("name")]), "_", ".")
 
-
   selected.id <- dico[ which(dico$predict == "id"), ]
   selected.id <- join(x = selected.id, y = check, by = "fullname", type = "left")
   selected.id <- selected.id[!is.na(selected.id$id),  ]
   selected.idVars <- as.character(selected.id[ , c("fullname")])
 
-
   survey <- frame
 
-
-
-
-  ## Join Survey & Registration
+  ## Join Survey & Registration ######
 
   survey$demo.reg_question.unhcr_case_number <- as.character(subset(survey, select = selected.idVars)[,1])
-
-
   survey.pro <- join(x = survey, y = progrescase, by = "demo.reg_question.unhcr_case_number", type = "inner")
-
   cat(round(nrow(survey.pro)/nrow(progrescase)*100, digits = 1),"%", "of registered people are also in the household survey dataset" )
-
-  percent <- function(x, digits = 0, format = "f", ...) {
-    paste0(formatC( x, format = format, digits = digits, ...), "%")
-  }
 
   if (nrow(selected.predict) == 0) { cat("You have not selected variables to predict \n") }
 
@@ -98,10 +90,7 @@ kobo_prediction_report <- function( origin, location) {
     variable.name <- paste("code/",i,"-", variablesname, "-chapter.Rmd", sep = "")
 
     ## Categorical outcome #####
-
     if(selected.predictVars[i] %in% dico[ which(dico$fullname == selected.predictVars[i] & dico$type == "select_one" & dico$listname != "yesno" & dico$listname != "yesnono" & dico$listname != "yes_no"), ]$fullname){
-
-
 
       cat("---", file = variable.name , sep = "\n", append = TRUE)
       cat("title: \"Prediction report\"", file = variable.name , sep = "\n", append = TRUE)
@@ -268,7 +257,7 @@ kobo_prediction_report <- function( origin, location) {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("## Introduction", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("The purpose of this section of the package is to build predictions of the variables of interest using the registration data. In practice, this means operations can predict which households are more likely to possess a certain characteristic, based on certain things those households might have in common. So, for example, if the Child Protection Unit wants to identify households at risk of child marriage for an intervention. The package takes the variable “child marriage” and looks at all the households where this issue exists, and finds what those households have in common. When a sample is representative, the findings – in this case, the model – can be extrapolated", file = variable.name , sep = "\n", append = TRUE)
+      cat("The purpose of this section of the package is to build predictions of the variables of interest using the registration data. In practice, this means operations can predict which households are more likely to possess a certain characteristic, based on certain things those households might have in common. So, for example, if the Child Protection Unit wants to identify households at risk of child marriage for an intervention. The package takes the variable child marriage and looks at all the households where this issue exists, and finds what those households have in common. When a sample is representative, the findings, in this case, the model, can be extrapolated", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("### Data description", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -276,7 +265,7 @@ kobo_prediction_report <- function( origin, location) {
 
       cat(" The variables used for prediction are taken from the registration data:  education, origin, place of asylum, occupation, family profile, case size, female ratio,", file = variable.name , sep = "\n", append = TRUE)
       cat("dependency, marital status and year of arrival in the country of asylum. The dataset gathers ",nrow(survey)," individuals", file = variable.name , sep = "\n", append = TRUE)
-      cat("This variable is present in the household survey dataset, while the variables used for prediction are taken from the registration data (or proGres database). A statistical model called a “random forest model” was used to select the registration variables which most closely correlate to " ,variablesname, "(see annex).", file = variable.name , sep = "\n", append = TRUE)
+      cat("This variable is present in the household survey dataset, while the variables used for prediction are taken from the registration data (or proGres database). A statistical model called a random forest model was used to select the registration variables which most closely correlate to " ,variablesname, "(see annex).", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("### Methodology", file = variable.name , sep = "\n", append = TRUE)
       cat("The aim of predictive modelisation is to make a link between the variable that is to be predicted and a set of predictive variables called predictors. The original sample is divided into two datasets. A training one is used to build each model and a testing one is used to validate them The best model is chosen according to the accuracy of the prediction, that is, the proportion of predicted modalities that fit actual ones, using the testing dataset.", file = variable.name , sep = "\n", append = TRUE)
@@ -494,7 +483,7 @@ kobo_prediction_report <- function( origin, location) {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("#### Building predictions", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("Once the best model is chosen – due to its high accuracy, it can be applied to the whole registration dataset.", file = variable.name , sep = "\n", append = TRUE)
+      cat("Once the best model is chosen  due to its high accuracy, it can be applied to the whole registration dataset.", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -671,7 +660,7 @@ kobo_prediction_report <- function( origin, location) {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("###Decision tree", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("A decision tree is an algorithm that builds a tree-like graph to illustrate the possible outcomes of an event or question, here referred to as a “decision”. To build the tree, the algorithm first finds the predictive variable that does the best task of separating the data into two groups. Then, it repeats the above step with the other variables. This results in a tree graph, where each split represents a “decision”. The algorithm chooses the splits such that the maximum number of observations are classified correctly.", file = variable.name , sep = "\n", append = TRUE)
+      cat("A decision tree is an algorithm that builds a tree like graph to illustrate the possible outcomes of an event or question, here referred to as a decision. To build the tree, the algorithm first finds the predictive variable that does the best task of separating the data into two groups. Then, it repeats the above step with the other variables. This results in a tree graph, where each split represents a decision. The algorithm chooses the splits such that the maximum number of observations are classified correctly.", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("```{r tree graphs, echo = FALSE, warning = FALSE, message = FALSE}", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -727,6 +716,7 @@ kobo_prediction_report <- function( origin, location) {
     }
 
     ## Binary outcome #####
+
     if(selected.predictVars[i] %in% dico[ which(dico$fullname == selected.predictVars[i]  & dico$listname %in% c("yesno", "yesnono","yes_no") ), ]$fullname){
 
       cat("---", file = variable.name , sep = "\n", append = TRUE)
@@ -929,15 +919,14 @@ kobo_prediction_report <- function( origin, location) {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("## Introduction", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("The purpose of this section of the package is to build predictions of the variables of interest using the registration data. In practice, this means operations can predict which households are more likely to possess a certain characteristic, based on certain things those households might have in common. So, for example, if the Child Protection Unit wants to identify households at risk of child marriage for an intervention. The package takes the variable “child marriage” and looks at all the households where this issue exists, and finds what those households have in common. When a sample is representative, the findings – in this case, the model – can be extrapolated", file = variable.name , sep = "\n", append = TRUE)
+      cat("The purpose of this section of the package is to build predictions of the variables of interest using the registration data. In practice, this means operations can predict which households are more likely to possess a certain characteristic, based on certain things those households might have in common. So, for example, if the Child Protection Unit wants to identify households at risk of child marriage for an intervention. The package takes the variable child marriage and looks at all the households where this issue exists, and finds what those households have in common. When a sample is representative, the findings, in this case, the model, can be extrapolated", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("### Data description", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat(" The variables used for prediction are taken from the registration data:  education, origin, place of asylum, occupation, family profile, case size, female ratio,", file = variable.name , sep = "\n", append = TRUE)
       cat("dependency, marital status and year of arrival in the country of asylum. The dataset gathers ",nrow(survey)," individuals", file = variable.name , sep = "\n", append = TRUE)
-      cat("This variable is present in the household survey dataset, while the variables used for prediction are taken from the registration data (or proGres database). A statistical model called a “random forest model” was used to select the registration variables which most closely correlate to " ,variablesname, "(see annex).", file = variable.name , sep = "\n", append = TRUE)
-
+      cat("This variable is present in the household survey dataset, while the variables used for prediction are taken from the registration data (or proGres database). A statistical model called a random forest model was used to select the registration variables which most closely correlate to " ,variablesname, "(see annex).", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("### Methodology", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -1577,7 +1566,7 @@ kobo_prediction_report <- function( origin, location) {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("### Decision tree", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("A decision tree is an algorithm that builds a tree-like graph to illustrate the possible outcomes of an event or question, here referred to as a “decision”. To build the tree, the algorithm first finds the predictive variable that does the best task of separating the data into two groups. Then, it repeats the above step with the other variables. This results in a tree graph, where each split represents a “decision”. The algorithm chooses the splits such that the maximum number of observations are classified correctly.", file = variable.name , sep = "\n", append = TRUE)
+      cat("A decision tree is an algorithm that builds a tree-like graph to illustrate the possible outcomes of an event or question, here referred to as a decision. To build the tree, the algorithm first finds the predictive variable that does the best task of separating the data into two groups. Then, it repeats the above step with the other variables. This results in a tree graph, where each split represents a decision. The algorithm chooses the splits such that the maximum number of observations are classified correctly.", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("```{r tree graphs, echo = FALSE, warning = FALSE, message = FALSE}", file = variable.name , sep = "\n", append = TRUE)
@@ -1735,13 +1724,8 @@ kobo_prediction_report <- function( origin, location) {
     }
 
     ## Continuous outcome #####
+
     if(selected.predictVars[i] %in% dico[ which(dico$fullname == selected.predictVars[i] & dico$type == "integer" & dico$type != "select_one"), ]$fullname){
-
-
-
-
-
-
 
       cat("---", file = variable.name , sep = "\n", append = TRUE)
       cat("title: \"Prediction report\"", file = variable.name , sep = "\n", append = TRUE)
@@ -1953,7 +1937,7 @@ kobo_prediction_report <- function( origin, location) {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("## Introduction", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("The purpose of this section of the package is to build predictions of the variables of interest using the registration data. In practice, this means operations can predict which households are more likely to possess a certain characteristic, based on certain things those households might have in common. So, for example, if the Child Protection Unit wants to identify households at risk of child marriage for an intervention. The package takes the variable “child marriage” and looks at all the households where this issue exists, and finds what those households have in common. When a sample is representative, the findings – in this case, the model – can be extrapolated.", file = variable.name , sep = "\n", append = TRUE)
+      cat("The purpose of this section of the package is to build predictions of the variables of interest using the registration data. In practice, this means operations can predict which households are more likely to possess a certain characteristic, based on certain things those households might have in common. So, for example, if the Child Protection Unit wants to identify households at risk of child marriage for an intervention. The package takes the variable child marriage and looks at all the households where this issue exists, and finds what those households have in common. When a sample is representative, the findings, in this case, the model, can be extrapolated.", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("### Data description", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -1961,7 +1945,7 @@ kobo_prediction_report <- function( origin, location) {
 
       cat(" The variables used for prediction are taken from the registration data:  education, origin, place of asylum, occupation, family profile, case size, female ratio,", file = variable.name , sep = "\n", append = TRUE)
       cat("dependency, marital status and year of arrival in the country of asylum. The dataset gathers ",nrow(survey)," individuals", file = variable.name , sep = "\n", append = TRUE)
-      cat("The variable to be predicted is present in the household survey dataset, while the variables used for prediction are taken from the registration data (or proGres database). A statistical model called a “random forest model” was used to select the registration variables which most closely correlate to " ,variablesname, "(see annex).", file = variable.name , sep = "\n", append = TRUE)
+      cat("The variable to be predicted is present in the household survey dataset, while the variables used for prediction are taken from the registration data (or proGres database). A statistical model called a random forest model was used to select the registration variables which most closely correlate to " ,variablesname, "(see annex).", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -2453,7 +2437,7 @@ kobo_prediction_report <- function( origin, location) {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("### Decision tree", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("A decision tree is an algorithm that builds a tree-like graph to illustrate the possible outcomes of an event or question, here referred to as a “decision”. To build the tree, the algorithm first finds the predictive variable that does the best task of separating the data into two groups. Then, it repeats the above step with the other variables. This results in a tree graph, where each split represents a “decision”. The algorithm chooses the splits such that the maximum number of observations are classified correctly. ", file = variable.name , sep = "\n", append = TRUE)
+      cat("A decision tree is an algorithm that builds a tree-like graph to illustrate the possible outcomes of an event or question, here referred to as a decision. To build the tree, the algorithm first finds the predictive variable that does the best task of separating the data into two groups. Then, it repeats the above step with the other variables. This results in a tree graph, where each split represents a decision. The algorithm chooses the splits such that the maximum number of observations are classified correctly. ", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("```{r tree graphs, echo = FALSE, warning = FALSE, message = FALSE}", file = variable.name , sep = "\n", append = TRUE)
@@ -2483,22 +2467,12 @@ kobo_prediction_report <- function( origin, location) {
       cat("```", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-
-
     }
-
-
   }
 
 
 
-
-
-
-
-
-
-  ##Rendering the reports
+  ##  Rendering the reports #######
 
   for (i in 1:length(selected.predictVars)) {
     variablesname <- as.character(selected.predictVars[ i ])

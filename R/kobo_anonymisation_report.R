@@ -202,13 +202,13 @@ kobo_anonymisation_report <- function(frame, dico) {
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
         cat("Per default, it is assumed that __direct identifiers__ (such as name, progres ID, telephone, GPS locations) values are removed.", file = reportanom , sep = "\n", append = TRUE)
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
-        cat("Suppose a hypothetical intruder has access to some released microdata and attempts to identify or find out more information about a particular respondent. Disclosure, also known as “re-identification,” occurs when the intruder reveals previously unknown information about a respondent by using the released data. Three types of disclosure can be distinguished: ", file = reportanom , sep = "\n", append = TRUE)
+        cat("Suppose a hypothetical intruder has access to some released microdata and attempts to identify or find out more information about a particular respondent. Disclosure, also known as re-identification, occurs when the intruder reveals previously unknown information about a respondent by using the released data. Three types of disclosure can be distinguished: ", file = reportanom , sep = "\n", append = TRUE)
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
         cat(" * __Identity disclosure__ occurs if the intruder associates a known individual with a released data record. For example, the intruder links a released data record with external information, or identifies a respondent with extreme data values. In this case, an intruder can exploit a small subset of variables to make the linkage, and once the linkage is successful, the intruder has access to all other information in the released data related to the specific respondent.", file = reportanom , sep = "\n", append = TRUE)
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
         cat(" * __Attribute disclosure__ occurs if the intruder is able to determine some new characteristics of an individual based on the information available in the released data. For example, if a hospital publishes data showing that all female patients aged 56 to 60 have cancer, an intruder then knows the medical condition of any female patient aged 56 to 60 without having to identify the specific individual. ", file = reportanom , sep = "\n", append = TRUE)
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
-        cat(" * __Inferential disclosure__ occurs if the intruder is able to determine the value of some characteristic of an individual more accurately with the released data than otherwise would have been possible. For example, with a highly predictive regression model, an intruder may be able to infer a respondent’s sensitive income information using attributes recorded in the data, leading to inferential disclosure.", file = reportanom , sep = "\n", append = TRUE)
+        cat(" * __Inferential disclosure__ occurs if the intruder is able to determine the value of some characteristic of an individual more accurately with the released data than otherwise would have been possible. For example, with a highly predictive regression model, an intruder may be able to infer a respondent's sensitive income information using attributes recorded in the data, leading to inferential disclosure.", file = reportanom , sep = "\n", append = TRUE)
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
@@ -249,7 +249,7 @@ kobo_anonymisation_report <- function(frame, dico) {
 
         cat("## Categoric Key variables ", file = reportanom , sep = "\n", append = TRUE)
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
-        cat("Also called “_implicit identifiers_” or “_quasi-identifiers_”: Set of variables that, in combination, can be linked to external information to re-identify respondents in the released dataset (gender, age, occupation, specific needs, region..)", file = reportanom , sep = "\n", append = TRUE)
+        cat("Also called _implicit identifiers_ or _quasi-identifiers_: Set of variables that, in combination, can be linked to external information to re-identify respondents in the released dataset (gender, age, occupation, specific needs, region..)", file = reportanom , sep = "\n", append = TRUE)
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
         cat("```{r configkey, echo = FALSE, warning = FALSE, message = FALSE, eval= TRUE}", file = reportanom , sep = "\n", append = TRUE)
@@ -471,7 +471,7 @@ kobo_anonymisation_report <- function(frame, dico) {
         ## Local suppression to achieve basic anonymisation target #####
         cat("# Local suppression to achieve basic anonymisation target", file = reportanom , sep = "\n", append = TRUE)
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
-        cat("Based on a given threshold for disclosure risk, the “best” method to protect a microdata set is hard to  determine  in  general.  For  a  particular microdata  set  the  “best” SDC  method  depends  on  the  intended uses of the data by the users, the willingness of the statistical agency to disseminate this data set, the legal aspects  of  releasing  these  data,  and  on  the  structure  of  the  data.", file = reportanom , sep = "\n", append = TRUE)
+        cat("Based on a given threshold for disclosure risk, the best method to protect a microdata set is hard to  determine  in  general.  For  a  particular microdata  set  the  best SDC  method  depends  on  the  intended uses of the data by the users, the willingness of the statistical agency to disseminate this data set, the legal aspects  of  releasing  these  data,  and  on  the  structure  of  the  data.", file = reportanom , sep = "\n", append = TRUE)
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
         cat("Local suppression is a non-perturbative method that is typically applied to categorical variables to suppress certain values in at least one variable. Individual values are suppressed in a way that the set of variables with a specific pattern are increased. ", file = reportanom , sep = "\n", append = TRUE)
@@ -549,7 +549,7 @@ kobo_anonymisation_report <- function(frame, dico) {
         ## Annex : Disclosure Risk Control (SDC) treatment #####
         cat("# Annex: Disclosure Risk Control (SDC) treatment", file = reportanom , sep = "\n", append = TRUE)
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
-        cat("Based on a given threshold for disclosure risk, the “best” method to protect a microdata set is hard to  determine  in  general.  For  a  particular microdata  set  the  “best” SDC  method  depends  on  the  intended uses of the data by the users, the willingness of the statistical agency to disseminate this data set, the legal aspects  of  releasing  these  data,  and  on  the  structure  of  the  data.", file = reportanom , sep = "\n", append = TRUE)
+        cat("Based on a given threshold for disclosure risk, the best method to protect a microdata set is hard to  determine  in  general.  For  a  particular microdata  set  the  best SDC  method  depends  on  the  intended uses of the data by the users, the willingness of the statistical agency to disseminate this data set, the legal aspects  of  releasing  these  data,  and  on  the  structure  of  the  data.", file = reportanom , sep = "\n", append = TRUE)
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
 
         cat("## For categoric variables", file = reportanom , sep = "\n", append = TRUE)

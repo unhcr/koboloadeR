@@ -17,7 +17,7 @@
 #' and select the most accurate one.
 #' The user needs to have previously loaded the proGres, household and form files from the 0-config script.
 #' The function takes as arguments the names of the variables for origin and location of asylum, to be able
-#' to describe the predicted outcome. 
+#' to describe the predicted outcome.
 #'
 #'
 #'
@@ -75,11 +75,11 @@ kobo_prediction_report <- function( origin, location) {
 
 
 
-  ## Join Survey & Registration 
+  ## Join Survey & Registration
 
   survey$demo.reg_question.unhcr_case_number <- as.character(subset(survey, select = selected.idVars)[,1])
-  
-  
+
+
   survey.pro <- join(x = survey, y = progrescase, by = "demo.reg_question.unhcr_case_number", type = "inner")
 
   cat(round(nrow(survey.pro)/nrow(progrescase)*100, digits = 1),"%", "of registered people are also in the household survey dataset" )
@@ -92,17 +92,17 @@ kobo_prediction_report <- function( origin, location) {
 
   #Generating a report for each variable in selected.predictVars
   for (i in 1:length(selected.predictVars)){
-    
+
     variablesname <- as.character(selected.predictVars[ i ])
     cat(paste(i, " - Render chapter for ",as.character(selected.predictVars[ i ]),"\n" ))
     variable.name <- paste("code/",i,"-", variablesname, "-chapter.Rmd", sep = "")
-    
-    
-    
+
+    ## Categorical outcome #####
+
     if(selected.predictVars[i] %in% dico[ which(dico$fullname == selected.predictVars[i] & dico$type == "select_one" & dico$listname != "yesno" & dico$listname != "yesnono" & dico$listname != "yes_no"), ]$fullname){
-      
-      
-      
+
+
+
       cat("---", file = variable.name , sep = "\n", append = TRUE)
       cat("title: \"Prediction report\"", file = variable.name , sep = "\n", append = TRUE)
       cat("author: \"(Categorical outcome)\"", file = variable.name , sep = "\n", append = TRUE)
@@ -273,7 +273,7 @@ kobo_prediction_report <- function( origin, location) {
       cat("### Data description", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("The variable that is to be predicted is " ,variablesname, ".", file = variable.name , sep = "\n", append = TRUE)
-      
+
       cat(" The variables used for prediction are taken from the registration data:  education, origin, place of asylum, occupation, family profile, case size, female ratio,", file = variable.name , sep = "\n", append = TRUE)
       cat("dependency, marital status and year of arrival in the country of asylum. The dataset gathers ",nrow(survey)," individuals", file = variable.name , sep = "\n", append = TRUE)
       cat("This variable is present in the household survey dataset, while the variables used for prediction are taken from the registration data (or proGres database). A statistical model called a “random forest model” was used to select the registration variables which most closely correlate to " ,variablesname, "(see annex).", file = variable.name , sep = "\n", append = TRUE)
@@ -723,14 +723,12 @@ kobo_prediction_report <- function( origin, location) {
       cat("```{r clasiffy print,  echo = FALSE, warning = FALSE, message = FALSE}", file = variable.name , sep = "\n", append = TRUE)
       cat("print(sorting)", file = variable.name , sep = "\n", append = TRUE)
       cat("```", file = variable.name , sep = "\n", append = TRUE)
-      
+
     }
-    
-    
-    
-    
+
+    ## Binary outcome #####
     if(selected.predictVars[i] %in% dico[ which(dico$fullname == selected.predictVars[i]  & dico$listname %in% c("yesno", "yesnono","yes_no") ), ]$fullname){
-      
+
       cat("---", file = variable.name , sep = "\n", append = TRUE)
       cat("title: \"Prediction report\"", file = variable.name , sep = "\n", append = TRUE)
       cat("author: \"(Binary outcome)\"", file = variable.name , sep = "\n", append = TRUE)
@@ -939,7 +937,7 @@ kobo_prediction_report <- function( origin, location) {
       cat(" The variables used for prediction are taken from the registration data:  education, origin, place of asylum, occupation, family profile, case size, female ratio,", file = variable.name , sep = "\n", append = TRUE)
       cat("dependency, marital status and year of arrival in the country of asylum. The dataset gathers ",nrow(survey)," individuals", file = variable.name , sep = "\n", append = TRUE)
       cat("This variable is present in the household survey dataset, while the variables used for prediction are taken from the registration data (or proGres database). A statistical model called a “random forest model” was used to select the registration variables which most closely correlate to " ,variablesname, "(see annex).", file = variable.name , sep = "\n", append = TRUE)
-      
+
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("### Methodology", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -1497,7 +1495,7 @@ kobo_prediction_report <- function( origin, location) {
       cat("```{r origin 2 of the positive predicted indicator, echo = FALSE, warning = FALSE, message = FALSE}", file = variable.name , sep = "\n", append = TRUE)
       cat("pred$fitted.results.var <- pred2$fitted.results.var", file = variable.name , sep = "\n", append = TRUE)
       cat("positive <- subset(pred, pred$fitted.results.var==1)", file = variable.name , sep = "\n", append = TRUE)
-      
+
       cat("if(length(subset(positive, select= origin )[,1]) != 0){", file = variable.name , sep = "\n", append = TRUE)
       cat("table3 <- as.data.frame(prop.table(table(subset(positive, select= origin )[,1])))", file = variable.name , sep = "\n", append = TRUE)
       cat("## Format table", file = variable.name , sep = "\n", append = TRUE)
@@ -1517,9 +1515,9 @@ kobo_prediction_report <- function( origin, location) {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("####Location of the predicted outcome ", file = variable.name , sep = "\n", append = TRUE)
-      
+
       cat("```{r location of the positive predicted indicator, echo = FALSE, warning = FALSE, message = FALSE}", file = variable.name , sep = "\n", append = TRUE)
-      
+
       cat("if(length(subset(positive, select= location )[,1]) != 0){", file = variable.name , sep = "\n", append = TRUE)
       cat("table2 <- as.data.frame(prop.table(table(subset(positive, select= location )[,1])))", file = variable.name , sep = "\n", append = TRUE)
       cat("## Format table", file = variable.name , sep = "\n", append = TRUE)
@@ -1731,20 +1729,20 @@ kobo_prediction_report <- function( origin, location) {
       cat("```{r clasiffy print,  echo = FALSE, warning = FALSE, message = FALSE}", file = variable.name , sep = "\n", append = TRUE)
       cat("print(sorting)", file = variable.name , sep = "\n", append = TRUE)
       cat("```", file = variable.name , sep = "\n", append = TRUE)
-      
-      
-      
+
+
+
     }
-    
-    
+
+    ## Continuous outcome #####
     if(selected.predictVars[i] %in% dico[ which(dico$fullname == selected.predictVars[i] & dico$type == "integer" & dico$type != "select_one"), ]$fullname){
-      
-      
-      
-      
-      
-      
-      
+
+
+
+
+
+
+
       cat("---", file = variable.name , sep = "\n", append = TRUE)
       cat("title: \"Prediction report\"", file = variable.name , sep = "\n", append = TRUE)
       cat("author: \"(Continous outcome)\"", file = variable.name , sep = "\n", append = TRUE)
@@ -1851,7 +1849,7 @@ kobo_prediction_report <- function( origin, location) {
       cat("#var <- as.vector((subset(train, select = selected.predictVars))[,1])", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("var <- as.numeric(var)", file = variable.name , sep = "\n", append = TRUE)
-      
+
       cat("train$var <- var", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
@@ -1960,7 +1958,7 @@ kobo_prediction_report <- function( origin, location) {
       cat("### Data description", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("The variable that is to be predicted is " ,variablesname, ".", file = variable.name , sep = "\n", append = TRUE)
-      
+
       cat(" The variables used for prediction are taken from the registration data:  education, origin, place of asylum, occupation, family profile, case size, female ratio,", file = variable.name , sep = "\n", append = TRUE)
       cat("dependency, marital status and year of arrival in the country of asylum. The dataset gathers ",nrow(survey)," individuals", file = variable.name , sep = "\n", append = TRUE)
       cat("The variable to be predicted is present in the household survey dataset, while the variables used for prediction are taken from the registration data (or proGres database). A statistical model called a “random forest model” was used to select the registration variables which most closely correlate to " ,variablesname, "(see annex).", file = variable.name , sep = "\n", append = TRUE)
@@ -2485,27 +2483,23 @@ kobo_prediction_report <- function( origin, location) {
       cat("```", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      
-      
+
+
     }
-    
-    
-    
-    
-    
-    
-  }  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+  }
+
+
+
+
+
+
+
+
+
   ##Rendering the reports
-  
+
   for (i in 1:length(selected.predictVars)) {
     variablesname <- as.character(selected.predictVars[ i ])
     cat(paste(i, " - Render word output report for ",variablesname))
@@ -2515,13 +2509,13 @@ kobo_prediction_report <- function( origin, location) {
     ## Clean  memory
     gc()
   }
-  
-  
-  
+
+
+
   #rmarkdown::render('report-tabulation.Rmd')
-  
+
   cat(" Done!! Reports are in the folder OUT - Review the report- Adjust your configuration files and you will be very soon ready to start the qualitative analysis and the analysis workshops...")
-}  
+}
 
 
 

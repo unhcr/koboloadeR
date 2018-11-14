@@ -82,19 +82,20 @@
 <div id="introduction" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1></div>
-<p>koboloadeR is a R package to conduct data discovery and analysis for data collected through KoboToolbox. This package builds on the capacity of UNHCR Kobo server @ <a href="http://kobo.unhcr.org" class="uri">http://kobo.unhcr.org</a></p>
+<p>koboloadeR is a R package to conduct data discovery and analysis for data collected through <a href="https://www.kobotoolbox.org/">KoboToolbox</a>, <a href="https://opendatakit.org/">ODK</a>, <a href="https://ona.io/home/">ONA</a> or any <strong><a href="http://xlsform.org">xlsform</a></strong> compliant data collection platform. This package first builds on the capacity of UNHCR Kobo server @ <a href="http://kobo.unhcr.org" class="uri">http://kobo.unhcr.org</a> but it can also be used from any structured dataset.</p>
 </div>
 <div id="approach" class="section level1">
 <h1 class="hasAnchor">
 <a href="#approach" class="anchor"></a>Approach</h1>
-<p>The main concept behind the package is to implement a survey data analysis plan and configuration directly within the [xlsform] that has been used to develop the questionnaire. A few additional column are created in this excel document, the package read those column to generate a series of predefined report.</p>
+<p>The main concept behind the package is to implement a survey data analysis plan and configuration directly within the <a href="http://xlsform.org">xlsform</a> excel file that has been used to develop the questionnaire. A few additional column are created in this excel document, the package read those column to generate a series of predefined report.</p>
 <p><img src="https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow.png" alt="alt text"></p>
 <p>This approach has the following advantages:</p>
 <ul>
-<li><p>End users do not need to code in R and to gain advanced knowledge in the language;</p></li>
-<li><p>The data analysis plan is de facto fully documented and described;</p></li>
-<li><p>The resulting data cruncching reports are fully reproducibles;</p></li>
-<li><p>Best practises are enforced through the package.</p></li>
+<li><p>End users <strong>do not need to code</strong> in R and to gain advanced knowledge in the language;</p></li>
+<li><p>The data <strong>analysis plan</strong> is de facto fully documented and described;</p></li>
+<li><p>The resulting data crunching reports are fully <strong>reproducible</strong>;</p></li>
+<li><p>Analysis <strong>iterations</strong> are facilitated;</p></li>
+<li><p>good <strong>practises</strong> are enforced through the package.</p></li>
 </ul>
 <p>To go in more details, the suggested workflow is presented below (note that all of it is not yet fully implented - see <a href="https://github.com/unhcr/koboloadeR/issues">issue tracking for more details</a>)</p>
 <p><img src="https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow2.png" alt="alt text"></p>

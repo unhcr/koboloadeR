@@ -15,9 +15,7 @@
 #' Then the function will train different models
 #' (using the inner joint between registration and household surveys as training data)
 #' and select the most accurate one.
-#' The user needs to have previously loaded the proGres, household and form files from the 0-config script.
-#' The function takes as arguments the names of the variables for origin and location of asylum, to be able
-#' to describe the predicted outcome.
+#' The user needs to have previously loaded the registry, survey and form files
 #'
 #'
 #'
@@ -25,30 +23,36 @@
 #' @param  kobo or odk dataset to use
 #'
 #'
-#' @author Damien Seite
+#' @author Damien Seite, Edouard Legoupil
 #'
 #'
 #' @export kobo_prediction_report
 #'
 #'
+#' @examples
+#' kobo_prediction_report()
+#'
+#' @examples
+#' \dontrun{
+#' kobo_prediction_report("myform.xls")
+#' }
 #'
 
 
 
 
 
-kobo_prediction_report <- function( origin, location) {
+kobo_prediction_report <- function(dico, frame, registry) {
 
 
   percent <- function(x, digits = 0, format = "f", ...) {
     paste0(formatC( x, format = format, digits = digits, ...), "%")
   }
 
-  frame <-household
+  frame <- household
   mainDirroot <- getwd()
-  location <- location
-  origin <- origin
   framename <- deparse(substitute(frame))
+  progrescase <- deparse(substitute(registry))
   library(plyr)
   ## Check that all those selectedVars are in the frame ####
   check <- as.data.frame(names(frame))
@@ -77,8 +81,8 @@ kobo_prediction_report <- function( origin, location) {
   ## Join Survey & Registration ######
 
   survey$demo.reg_question.unhcr_case_number <- as.character(subset(survey, select = selected.idVars)[,1])
-  survey.pro <- join(x = survey, y = progrescase, by = "demo.reg_question.unhcr_case_number", type = "inner")
-  cat(round(nrow(survey.pro)/nrow(progrescase)*100, digits = 1),"%", "of registered people are also in the household survey dataset" )
+  surveypro <- join(x = survey, y = progrescase, by = "demo.reg_question.unhcr_case_number", type = "inner")
+  cat(round(nrow(surveypro)/nrow(progrescase)*100, digits = 1),"%", "of registered people are also in the household survey dataset" )
 
   if (nrow(selected.predict) == 0) { cat("You have not selected variables to predict \n") }
 
@@ -153,7 +157,7 @@ kobo_prediction_report <- function( origin, location) {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("train <- survey.pro", file = variable.name , sep = "\n", append = TRUE)
+      cat("train <- surveypro", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("#Isolating the variable of interest", file = variable.name , sep = "\n", append = TRUE)
       cat("var <- subset(train, select = variablesname)[,1]", file = variable.name , sep = "\n", append = TRUE)
@@ -790,7 +794,7 @@ kobo_prediction_report <- function( origin, location) {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("####Initializing the training dataset fo building the model", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("train <- survey.pro", file = variable.name , sep = "\n", append = TRUE)
+      cat("train <- surveypro", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("#Isolating the variable of interest", file = variable.name , sep = "\n", append = TRUE)
       cat("var <- subset(train, select = variablesname)[,1]", file = variable.name , sep = "\n", append = TRUE)
@@ -1810,7 +1814,7 @@ kobo_prediction_report <- function( origin, location) {
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
-      cat("train <- survey.pro", file = variable.name , sep = "\n", append = TRUE)
+      cat("train <- surveypro", file = variable.name , sep = "\n", append = TRUE)
       cat("", file = variable.name , sep = "\n", append = TRUE)
       cat("#Isolating the variable of interest", file = variable.name , sep = "\n", append = TRUE)
       cat("var <- subset(train, select = variablesname)[,1]", file = variable.name , sep = "\n", append = TRUE)

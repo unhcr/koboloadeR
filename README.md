@@ -20,6 +20,9 @@ This approach has the following advantages:
  
  * Best practises are enforced through the package.
 
+To go in more details, the suggested workflow is presented below (note that all of it is not yet fully implented - see [issue tracking for more details](https://github.com/unhcr/koboloadeR/issues))
+
+![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow2.png)
 
 # Features
 

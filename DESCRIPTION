@@ -26,9 +26,11 @@ Depends:
     digest,
     sdcMicro,
     xlsx,
+    ape,
+    sp,
     gdata
 Suggests:
     shiny
 URL: https://github.com/unhcr/koboloadeR
 BugReports: https://github.com/unhcr/koboloadeR/issues
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1

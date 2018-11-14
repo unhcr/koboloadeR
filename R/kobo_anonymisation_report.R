@@ -318,7 +318,9 @@ kobo_anonymisation_report <- function(frame, dico) {
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
         cat("Two approaches can be used to determine the global risk for a dataset using individual risks: ", file = reportanom , sep = "\n", append = TRUE)
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
-        cat(" * Benchmark: This approach counts the number of observations that can be considered risky and also have higher risk as the main part of the data. For example, we consider units with individual risks being both ≥ 0 : 1 and twice as large as the median of all individual risks + 2 times the median absolute deviation (MAD) of all unit risks. ", file = reportanom , sep = "\n", append = TRUE)
+
+        #cat(" * Benchmark: This approach counts the number of observations that can be considered risky and also have higher risk as the main part of the data. For example, we consider units with individual risks being both ≥ 0 : 1 and twice as large as the median of all individual risks + 2 times the median absolute deviation (MAD) of all unit risks. ", file = reportanom , sep = "\n", append = TRUE)
+
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
         cat(" * Global risk: The sum of the individual risks in the dataset gives the expected number of re-identifications.", file = reportanom , sep = "\n", append = TRUE)
         cat("\n", file = reportanom , sep = "\n", append = TRUE)

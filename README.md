@@ -3,6 +3,26 @@
 koboloadeR is a R package to conduct data discovery and analysis for data collected through  KoboToolbox.
 This package builds on the capacity of UNHCR Kobo server @ http://kobo.unhcr.org
 
+# Approach
+ 
+The main concept behind the package is to implement a survey data analysis plan and configuration directly within the [xlsform] that has been used to develop the questionnaire. A few additional column are created in this excel document, the package read those column to generate a series of predefined report.
+
+
+![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow.png)
+
+
+This approach has the following advantages:
+ * End users do not need to code in R and to gain advanced knowledge in the language;  
+ 
+ * The data analysis plan is de facto fully documented and described;  
+ 
+ * The resulting data cruncching reports are fully reproducibles;  
+ 
+ * Best practises are enforced through the package.
+
+
+# Features
+
 The `koboloadeR` package allows to:
 
 * connect to the [KoBo API (v1)](https://kc.kobotoolbox.org/api/v1/) for the [KoBo Toolbox](http://www.kobotoolbox.org/) project. 

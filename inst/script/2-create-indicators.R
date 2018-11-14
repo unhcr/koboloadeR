@@ -29,7 +29,7 @@ if (inherits(tried, "try-error")) {
   ## Run this only after data cleaning
   dico <- read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
   household <- read.csv("data/household.csv", encoding = "UTF-8", na.strings = "NA")
-  nbremenage <- read.csv("data/nbremenage.csv", encoding = "UTF-8", na.strings = "NA")
+ # nbremenage <- read.csv("data/nbremenage.csv", encoding = "UTF-8", na.strings = "NA")
 
 
   ## Create the dicotemp #############################################################################
@@ -71,6 +71,8 @@ if (inherits(tried, "try-error")) {
   ####Load data analysis plan#############################################################################
   #library(readxl)
   indicator <- read_excel(paste("data/",form,sep = ""), sheet = "indicator")
+
+## Need to check that all column are presents...
 
 
   ## Load indicator info #############################################################################

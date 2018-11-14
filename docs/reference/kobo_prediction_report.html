@@ -44,7 +44,10 @@ numeric (expenditure per capita,…)
 and ordinal (level of agreement, support from local community,…).
 Then the function will train different models
 (using the inner joint between registration and household surveys as training data)
-and select the most accurate one." />
+and select the most accurate one.
+The user needs to have previously loaded the proGres, household and form files from the 0-config script.
+The function takes as arguments the names of the variables for origin and location of asylum, to be able
+to describe the predicted outcome." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -143,11 +146,14 @@ numeric (expenditure per capita,…)
 and ordinal (level of agreement, support from local community,…).
 Then the function will train different models
 (using the inner joint between registration and household surveys as training data)
-and select the most accurate one.</p>
+and select the most accurate one.
+The user needs to have previously loaded the proGres, household and form files from the 0-config script.
+The function takes as arguments the names of the variables for origin and location of asylum, to be able
+to describe the predicted outcome.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>kobo_prediction_report</span>(<span class='no'>frame</span>, <span class='no'>origin</span>, <span class='no'>location</span>)</pre>
+    <pre class="usage"><span class='fu'>kobo_prediction_report</span>(<span class='no'>origin</span>, <span class='no'>location</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -159,20 +165,12 @@ and select the most accurate one.</p>
     </table>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='fu'>kobo_prediction_report</span>(<span class='no'>frame</span>)
-<span class='co'># }</span><div class='input'>
-
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-            
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+                </ul>
 
     <h2>Author</h2>
     

@@ -2,9 +2,10 @@ Package: koboloadeR
 Type: Package
 Title: Retrieve Data Using the KoBo Toolbox API & Automatise data exploration
 Version: 0.1.5
-Authors@R: c(person("Edouard", "Legoupil", role = c("aut", "cre"),
-                     email = "legoupil@unhcr.org"),
-              person("Elliott", "Messeiller", role = "aut", email = "elliott.messeiller@acted.org"))
+Authors@R: c(person("Edouard", "Legoupil", role = c("aut", "cre"),  email = "legoupil@unhcr.org"),
+              person("Maher", "Daoud", role = "aut", email = "daoudma@unhcr.org"),
+              person("Elliott", "Messeiller", role = "ctb", email = "elliott.messeiller@acted.org"),
+              person("Damien", "Seite", role = "ctb", email = "damien.seite@eleve.ensai.fr"))
 Maintainer: Edouard Legoupil <legoupil@unhcr.org>
 Description: This package facilitates the data crunching & exploration for dataset collected using xlsform.
 License: GPL-3

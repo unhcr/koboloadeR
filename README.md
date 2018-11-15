@@ -13,7 +13,7 @@ The main concept behind the package is to implement a survey data analysis plan 
 
 This approach has the following advantages: 
 
- * End users __do not need to code__ in R and to gain advanced knowledge in the language;  
+ * End users __do not need to code__ in R and to master the language in order to use the package;  
  
  * The data __analysis plan__ is de facto fully documented and described;  
  
@@ -21,7 +21,7 @@ This approach has the following advantages:
  
  * Analysis __iterations__ are facilitated;
  
- * good __practises__ are enforced through the package.
+ * Good __practises__ are enforced through the package.
 
 
 To go in more details, the suggested workflow is presented below (note that all of it is not yet fully implented - see [issue tracking for more details](https://github.com/unhcr/koboloadeR/issues))

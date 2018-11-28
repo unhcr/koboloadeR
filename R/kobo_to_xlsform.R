@@ -9,21 +9,24 @@
 #' Note that this function only works with \code{data.frames}. The function
 #' will throw an error for any other object types.
 #'
+#' @param form The full filename of the form to be accessed (xls or xlsx file).
+#' It is assumed that the form is stored in the data folder.
 #' @param n number of levels for a factor to be considered as a text
-#'
-#'
 #'
 #'
 #' @author Edouard Legoupil
 #'
-#' @export
 #' @examples
 #' data(iris)
 #' str(iris)
 #' kobo_to_xlsform(iris)
+#'
+#' @export kobo_to_xlsform
+#' 
+#' 
+#' 
 
-
-kobo_to_xlsform <- function(df,
+kobo_to_xlsform <- function(df, form = "form.xls",
                      n=100) {
 
   stopifnot(is.data.frame(df))
@@ -89,11 +92,20 @@ kobo_to_xlsform <- function(df,
     }   else {cat("This is not a factor \n")}
    }
 
-  # install.packages("WriteXLS")
-  library(WriteXLS)
-  WriteXLS("survey", "data/form-from-data.xls", AdjWidth = TRUE, BoldHeaderRow = TRUE, AutoFilter = TRUE, FreezeRow = 1)
-  #WriteXLS("choices", "data/form.xls", AdjWidth = TRUE, BoldHeaderRow = TRUE, AutoFilter = TRUE, FreezeRow = 1)
-  library(XLConnect)
-  writeWorksheetToFile(file = "data/form-from-data.xls", data = choices, sheet = "choices")
-
+  wb <- createWorkbook(type = "xls")
+  sheetname <- "survey"
+  surveySheet <- createSheet(wb, sheetname)
+  addDataFrame(survey, surveySheet, col.names=TRUE, row.names=FALSE)
+  
+  sheetname <- "choices"
+  choicesSheet <- createSheet(wb, sheetName=sheetname)
+  addDataFrame(choices, choicesSheet, col.names=TRUE, row.names=FALSE)
+  
+  
+  mainDir <- gsub("/inst/shiny_app", "",  getwd())
+  form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
+  
+  if (file.exists(form_tmp)) file.remove(form_tmp)
+  saveWorkbook(wb, form_tmp)
+  cat("XLS form has been successfully generated")
 }

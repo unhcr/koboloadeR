@@ -4,7 +4,6 @@
 #'
 #' @description    Create analysis project structure
 #'
-#'
 #' @return A structure of directory and scripts in order to set up quickly a project.
 #'
 #' @export kobo_projectinit
@@ -17,8 +16,8 @@
 
 
 kobo_projectinit <- function() {
-  
-  mainDir <- gsub("/inst/shiny_app", "",  getwd())
+  mainDir <- getwd()
+
 
   cat("Let's create various standard folders and copy some analysis script\n")
 

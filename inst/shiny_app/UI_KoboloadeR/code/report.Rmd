@@ -1,0 +1,92 @@
+---
+output:
+  word_document:
+    fig_caption: yes
+    fig_height: 5
+    fig_width: 10
+    toc: yes
+    toc_depth: 2
+    reference_docx: report_template.docx
+
+
+  
+---
+
+
+```{r setup, include=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+# Load project configuration parameters, data, dico, and form
+  library(koboloadeR)
+  mainDir=getwd()
+  mainDir= dirname(mainDir)
+  source(paste0(mainDir,"/code/0-config.R"), local=TRUE)
+  source(paste0(mainDir,"/code/0-packages.R"), local=TRUE)
+
+  data <- read_excel(path.to.data, sheet=sheet)
+  chapters_structure <- unique(dico[dico$type=="begin_group",])
+  questions_export <- dico[dico$formpart=="questions",]
+  type_treatable <- c("select_one","select_multiple_d","integer","decimal","calculate")
+  progress_chap <- nrow(chapters_structure)
+
+```
+
+---
+title: `r report_name`
+author: `r paste0(author,", ", organisation)`
+date: `r paste0(location,", ", Sys.Date())`
+output: 
+  word_document: 
+    fig_caption: yes
+    fig_height: 5
+    fig_width: 10
+    toc: yes
+    toc_depth: 2
+    reference_docx: report_template.docx
+
+---
+
+
+# Results
+
+```{r report, echo=FALSE, warning=FALSE, cache=FALSE, results='asis'}
+
+for (l in 1:nrow(chapters_structure)){
+  chapter_level <- as.character (chapters_structure[l,"qlevel"])
+  chapter_label <- as.character(chapters_structure[l,"label"])
+  chapter_name <- as.character(chapters_structure[l,"name"])
+  if (chapter_level=="level1"){
+      chapter_questions <- questions_export[questions_export$qgroup==chapter_name & questions_export$type%in%type_treatable,]
+      cat("\n")
+      cat(paste0("## ",chapter_label))
+      cat("\n")
+
+      
+  }
+else{ 
+      chapter_fullname <- as.character (chapters_structure[l,"fullname"])
+      chapter_fullname <- unlist(strsplit(chapter_fullname,"\\."))
+      chapter_fullname <- paste(chapter_fullname[1:length(chapter_fullname)-1], collapse = '.')
+      chapter_questions <- questions_export[questions_export$qgroup==chapter_fullname & questions_export$type%in%type_treatable,]
+      cat("\n")
+      cat(paste0("### ",chapter_label))
+      cat("\n")
+
+}
+  incProgress(1/nrow(chapters_structure),detail=paste(chapter_label))
+  for (k in 1:nrow(chapter_questions)){
+    question<- as.character(chapter_questions[k,"fullname"])
+    question_label <- as.character(chapter_questions[k,"label"])
+    cat("\n")
+    cat(paste0("#### ",question_label))
+    cat("\n")
+    kobo_question(question = question, mainDir=mainDir)
+    cat("\n")
+    
+    
+
+    
+  }
+}
+
+
+```
+

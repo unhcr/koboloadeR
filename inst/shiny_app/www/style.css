@@ -1,0 +1,111 @@
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+.warningBlock{
+  background-color: ghostwhite;
+  padding: 2px 15px 2px 15px;
+  border-left: 5px solid lightgray;
+  font-size: small;
+}
+.warningTitle{
+  font-size: medium;
+  font-weight: 500;
+  color:red;
+}
+.fa-14x{
+  font-size: 14em;
+  margin: 10px 0px;
+}
+.fa-14x-right{
+  font-size: 14em;
+  float:right;
+}
+.processButton, .processButton:active, .processButton:focus, .processButton:active:focus{
+    margin: 10px 0px;
+    border-radius: 200px;
+    height: 200px;
+    width: 200px;
+    color: white;
+    border-color: #3c8dbc;
+    font-size: medium;
+    font-weight: 600;
+    border-width: 10px;
+    background-color: #75aed0;
+}
+.processButton:hover{
+    margin: 10px 0px;
+    border-radius: 200px;
+    height: 200px;
+    width: 200px;
+    color: white;
+    border-color: #3c8dbc;
+    font-size: larger;
+    font-weight: 600;
+    border-width: 10px;
+    background-color: #75aed0;
+    opacity: 0.9;
+    box-shadow: 0 10px 10px rgba(0,0,0,.1);
+}
+.sweet-alert p{
+    text-align: left !important;
+    border-bottom: 1px solid lightgray !important;
+    border-top: 1px solid lightgray !important;
+    padding: 20px 10px !important;
+}
+
+#dataInputsUI{
+    height: 300px;
+    overflow-y: auto;
+    padding: 20px 10px;
+    background-color: whitesmoke;
+    border: 1px solid lightgray;
+}
+
+.uploadButton, .uploadButton:active, .uploadButton:focus, .uploadButton:active:focus{
+    width: 100%;
+    background-color: #009900;
+    color: white;
+    border-radius: 5px;
+}
+
+.uploadButton:hover{
+    opacity: 0.8;
+    width: 100%;
+    background-color: #009900;
+    color: white;
+    border-radius: 5px;
+}
+
+#doYouHaveDatasetsDiv > div > div > div.box-header, #recordSettingsDiv > div > div > div.box-header{
+    color: white; 
+    background-color: #3c8dbc; 
+}
+#generateAndPrepareBox{
+    border-bottom: 3px solid #3c8dbc;
+}
+.info-box{
+    box-shadow: 0 10px 10px rgba(0,0,0,.1);
+    border: 1px solid lightgray;
+}
+.info-box-icon{
+    height: 88px;
+}
+#recordSettingsBox{
+    margin-bottom: 250px;
+}

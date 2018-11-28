@@ -14,20 +14,17 @@
 #' @author Edouard Legoupil
 #'
 #' @examples
-#' kobo_anonymise()
+#' kobo_anonymisation_report()
 #'
 #' @export kobo_anonymisation_report
 #'
-#' @examples
-#' \dontrun{
-#' kobo_anonymisation_report(frame, dico)
-#' }
 #'
 
 kobo_anonymisation_report <- function(frame, dico) {
 
   # frame <- household
   # framename <- "household"
+  dico <- dico
   framename <- deparse(substitute(frame))
   write.csv(frame, paste0("data/anomreport-",framename,".csv"), row.names = FALSE, na = "")
 
@@ -42,7 +39,7 @@ kobo_anonymisation_report <- function(frame, dico) {
   selected.key <- join(x = selected.key, y = check, by = "fullname", type = "left")
   selected.key <- selected.key[!is.na(selected.key$id),  ]
 
-  if ( nrow(selected.key) == 0) { cat ("You have not selected key variables for your dataset! \n") } else {
+  if ( nrow(selected.key) == 0) { cat("You have not selected key variables for your dataset! \n") } else {
 
 
         selected.sensible <- dico[ which(dico$anonymise == "sensitive" & dico$type == "select_one" ), ]

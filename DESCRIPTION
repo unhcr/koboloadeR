@@ -11,6 +11,7 @@ Description: This package facilitates the data crunching & exploration for datas
 License: GPL-3
 LazyData: TRUE
 Depends:
+    utils,
     data.table (>= 1.9.4),
     curl,
     RCurl,

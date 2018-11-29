@@ -19,7 +19,7 @@
 kobo_projectinit <- function() {
   
   mainDir <- gsub("/inst/shiny_app", "",  getwd())
-  
+
   cat("Let's create various standard folders and copy some analysis script\n")
   
   

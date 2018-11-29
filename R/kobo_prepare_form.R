@@ -46,7 +46,7 @@ kobo_prepare_form <- function(form = "form.xls") {
   
   ### First review all questions from survey sheet #################################################
   survey <- tryCatch({
-    as.data.frame(xlsx::read_excel(form_tmp, sheet = "survey")) #read survey sheet from the form
+    as.data.frame(read_excel(form_tmp, sheet = "survey")) #read survey sheet from the form
   }, error = function(err) {
     data.frame( #if it doesn't exist, we need to create empty dataframe with those fields
       type = character(),
@@ -162,6 +162,8 @@ kobo_prepare_form <- function(form = "form.xls") {
   survey[is.na(survey)] <-  ""
   #################################Styling part for survey sheet##########################
   sheetname <- "survey"
+  if(!is.null(xlsx::getSheets(wb)[[sheetname]]))
+    xlsx::removeSheet(wb, sheetname)
   surveySheet <- xlsx::createSheet(wb, sheetname) #create survey sheet in wb
   xlsx::addDataFrame(survey, surveySheet, col.names=TRUE, row.names=FALSE) #add survey dataframe in the survey sheet
   #------------ add filters for each column in the survey sheet ------------#
@@ -175,22 +177,22 @@ kobo_prepare_form <- function(form = "form.xls") {
   headerSt <- xlsx::CellStyle(wb) +
     xlsx::Font(wb, isBold=TRUE, isItalic=FALSE, color="white", heightInPoints=13) + 
     xlsx::Fill(backgroundColor="GREY_50_PERCENT",foregroundColor="GREY_50_PERCENT",
-               pattern="SOLID_FOREGROUND")  + 
+         pattern="SOLID_FOREGROUND")  + 
     xlsx::Border(color="GREY_80_PERCENT", position=c("TOP", "BOTTOM"), "BORDER_THIN")  
   cs1 <- CellStyle(wb) +
     xlsx::Font(wb, isBold=TRUE, isItalic=FALSE, color="black") + 
     xlsx::Fill(backgroundColor="SKY_BLUE", foregroundColor="SKY_BLUE",
-               pattern="SOLID_FOREGROUND")   + 
+         pattern="SOLID_FOREGROUND")   + 
     xlsx::Border(color="SKY_BLUE", position=c("TOP", "BOTTOM"), "BORDER_THIN")  
   cs2 <- CellStyle(wb) +
     xlsx::Font(wb, isBold=TRUE, isItalic=FALSE, color="white") + 
     xlsx::Fill(backgroundColor="orange", foregroundColor="orange",
-               pattern="SOLID_FOREGROUND")    + 
+         pattern="SOLID_FOREGROUND")    + 
     xlsx::Border(color="orange", position=c("TOP", "BOTTOM"), "BORDER_THIN")
   rows <- xlsx::getRows(surveySheet) # get rows of survey Sheet 
   cells <- xlsx::getCells(rows) # get cells of survey Sheet 
   
-  values <- lapply(cells, getCellValue) # get all values of cells
+  values <- lapply(cells, xlsx::getCellValue) # get all values of cells
   
   #------------ apply cs1 style on cells with value equals to 'begin group' or 'end group' ------------#
   rowIndex <- c()
@@ -247,7 +249,7 @@ kobo_prepare_form <- function(form = "form.xls") {
   
   #################################### choices sheet ######################################
   choices <- tryCatch({
-    as.data.frame(xlsx::read_excel(form_tmp, sheet = "choices")) #read survey sheet from the form
+    as.data.frame(read_excel(form_tmp, sheet = "choices")) #read survey sheet from the form
   }, error = function(err) {
     data.frame( #if it doesn't exist, we need to create empty dataframe with those fields
       list_name = character(),
@@ -267,6 +269,8 @@ kobo_prepare_form <- function(form = "form.xls") {
     choices$order <- ""
   }
   sheetname <- "choices"
+  if(!is.null(xlsx::getSheets(wb)[[sheetname]]))
+    xlsx::removeSheet(wb, sheetname)
   choicesSheet <- xlsx::createSheet(wb, sheetName=sheetname)
   xlsx::addDataFrame(choices, choicesSheet, col.names=TRUE, row.names=FALSE)
   from <- "A1"
@@ -278,11 +282,11 @@ kobo_prepare_form <- function(form = "form.xls") {
   headerSt <- xlsx::CellStyle(wb) +
     xlsx::Font(wb, isBold=TRUE, isItalic=FALSE, color="white", heightInPoints=13) + 
     xlsx::Fill(backgroundColor="GREY_50_PERCENT",foregroundColor="GREY_50_PERCENT",
-               pattern="SOLID_FOREGROUND")  + 
+         pattern="SOLID_FOREGROUND")  + 
     xlsx::Border(color="GREY_80_PERCENT", position=c("TOP", "BOTTOM"), "BORDER_THIN")  
   highlight <- paste("1",c(1:length(choices)),sep = ".")
   lapply(names(cells[highlight]),
-         function(ii) setCellStyle(cells[[ii]], headerSt))
+         function(ii) xlsx::setCellStyle(cells[[ii]], headerSt))
   xlsx::autoSizeColumn(choicesSheet, 1:length(survey))
   xlsx::setColumnWidth(choicesSheet, 2:3, 30)
   cat("\n********************Choices sheet, ready to be used*********************\n \n")
@@ -290,7 +294,7 @@ kobo_prepare_form <- function(form = "form.xls") {
   #################################### indicator sheet ######################################
   cat("\n \n Checking now indicator sheet \n \n")
   indicator <- tryCatch({
-    as.data.frame(xlsx::read_excel(form_tmp, sheet = "indicator"))
+    as.data.frame(read_excel(form_tmp, sheet = "indicator"))
   }, error = function(err) {
     data.frame(
       type = character(),
@@ -438,6 +442,8 @@ kobo_prepare_form <- function(form = "form.xls") {
   )]
   
   sheetname <- "indicator"
+  if(!is.null(xlsx::getSheets(wb)[[sheetname]]))
+    xlsx::removeSheet(wb, sheetname)
   indicatorSheet <- xlsx::createSheet(wb, sheetName=sheetname)
   xlsx::addDataFrame(indicator, indicatorSheet, col.names=TRUE, row.names=FALSE)
   from <- "A1"
@@ -448,7 +454,7 @@ kobo_prepare_form <- function(form = "form.xls") {
   headerSt <- xlsx::CellStyle(wb) +
     xlsx::Font(wb, isBold=TRUE, isItalic=FALSE, color="white", heightInPoints=13) + 
     xlsx::Fill(backgroundColor="GREY_50_PERCENT",foregroundColor="GREY_50_PERCENT",
-               pattern="SOLID_FOREGROUND")  + 
+         pattern="SOLID_FOREGROUND")  + 
     xlsx::Border(color="GREY_80_PERCENT", position=c("TOP", "BOTTOM"), "BORDER_THIN")  
   highlight <- paste("1",c(1:length(indicator)),sep = ".")
   lapply(names(cells[highlight]),
@@ -459,7 +465,7 @@ kobo_prepare_form <- function(form = "form.xls") {
   #################################### settings sheet ######################################
   cat("\n \n Checking now settings sheet \n \n")
   settings <- tryCatch({
-    as.data.frame(xlsx::read_excel(form_tmp, sheet = "settings"))
+    as.data.frame(read_excel(form_tmp, sheet = "settings"))
   }, error = function(err) {
     data.frame(
       form_title = character(),
@@ -470,6 +476,8 @@ kobo_prepare_form <- function(form = "form.xls") {
   })
   
   sheetname <- "settings"
+  if(!is.null(xlsx::getSheets(wb)[[sheetname]]))
+    xlsx::removeSheet(wb, sheetname)
   settingsSheet <- xlsx::createSheet(wb, sheetName=sheetname) #create sheet with settings name
   xlsx::addDataFrame(settings, settingsSheet, col.names=TRUE, row.names=FALSE) #add settings data frame to this sheet
   from <- "A1"
@@ -480,7 +488,7 @@ kobo_prepare_form <- function(form = "form.xls") {
   headerSt <- xlsx::CellStyle(wb) +
     xlsx::Font(wb, isBold=TRUE, isItalic=FALSE, color="white", heightInPoints=13) + 
     xlsx::Fill(backgroundColor="GREY_50_PERCENT",foregroundColor="GREY_50_PERCENT",
-               pattern="SOLID_FOREGROUND")  + 
+         pattern="SOLID_FOREGROUND")  + 
     xlsx::Border(color="GREY_80_PERCENT", position=c("TOP", "BOTTOM"), "BORDER_THIN")  
   highlight <- paste("1",c(1:length(settings)),sep = ".")
   lapply(names(cells[highlight]),
@@ -494,3 +502,4 @@ kobo_prepare_form <- function(form = "form.xls") {
   
 }
 NULL
+

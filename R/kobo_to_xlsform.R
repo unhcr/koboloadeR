@@ -26,7 +26,7 @@
 #' 
 #' 
 
-kobo_to_xlsform <- function(df, form = "form.xls",
+kobo_to_xlsform <- function(df,form = "form.xls",
                             n=100) {
   
   stopifnot(is.data.frame(df))
@@ -91,7 +91,7 @@ kobo_to_xlsform <- function(df, form = "form.xls",
       ###
     }   else {cat("This is not a factor \n")}
   }
-  
+
   wb <- createWorkbook(type = "xls")
   sheetname <- "survey"
   surveySheet <- createSheet(wb, sheetname)

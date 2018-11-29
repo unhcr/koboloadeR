@@ -80,8 +80,8 @@ server <- shinyServer(function(input, output) {
           result <- kobo_get_begin_repeat()
           projectConfigurationInfo$data[["beginRepeatList"]] = c("data",result$names)
           projectConfigurationInfo$log[["beginRepeatList"]] = TRUE
-          tracker$value = tracker$value + 1
           projectConfigurationInfo$log[["isPrepared"]] <- FALSE
+          tracker$value = tracker$value + 1
         }
         if(file.exists(paste(mainDir(), "data", "/data.csv", sep = "/", collapse = "/")) ){
           dataFile <- read.csv( paste(mainDir(), "data", "/data.csv", sep = "/", collapse = "/")
@@ -89,6 +89,7 @@ server <- shinyServer(function(input, output) {
           projectConfigurationInfo$log[["data"]] <- TRUE
           projectConfigurationInfo$data[["data"]] <- dataFile
           projectConfigurationInfo$log[["isGenerated"]] <- FALSE
+          tracker$value = tracker$value + 1
         }
       }
     }, error = function(err) {
@@ -631,6 +632,17 @@ server <- shinyServer(function(input, output) {
   output$recordSettingsUI <- renderText({
     s <-""
     if(
+      sum(input$doYouHaveFormSelectInput == "No") &&
+      sum(input$doYouWantGenerateFormSelectInput == "Yes") &&
+      sum(input$doYouHaveDataSelectInput == "Yes") &&
+      projectConfigurationInfo$log[["data"]] == FALSE 
+    ){
+      s <- paste(infoBox(
+        width = 12,strong("Information"),h4("You need to upload the data file before starting configuration of Record Settings",align="center"), icon = icon("exclamation-triangle"),
+        color = "orange"
+      ), s ,sep="" )
+      return(s)
+    }else if(
       (sum(input$doYouHaveFormSelectInput == "No") &&
        sum(input$doYouWantGenerateFormSelectInput == "Yes") &&
        sum(input$doYouHaveDataSelectInput == "Yes") &&

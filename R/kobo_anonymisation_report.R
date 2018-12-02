@@ -14,20 +14,17 @@
 #' @author Edouard Legoupil
 #'
 #' @examples
-#' kobo_anonymise()
+#' kobo_anonymisation_report()
 #'
 #' @export kobo_anonymisation_report
 #'
-#' @examples
-#' \dontrun{
-#' kobo_anonymisation_report(frame, dico)
-#' }
 #'
 
 kobo_anonymisation_report <- function(frame, dico) {
 
   # frame <- household
   # framename <- "household"
+  dico <- dico
   framename <- deparse(substitute(frame))
   write.csv(frame, paste0("data/anomreport-",framename,".csv"), row.names = FALSE, na = "")
 
@@ -42,7 +39,7 @@ kobo_anonymisation_report <- function(frame, dico) {
   selected.key <- join(x = selected.key, y = check, by = "fullname", type = "left")
   selected.key <- selected.key[!is.na(selected.key$id),  ]
 
-  if ( nrow(selected.key) == 0) { cat ("You have not selected key variables for your dataset! \n") } else {
+  if ( nrow(selected.key) == 0) { cat("You have not selected key variables for your dataset! \n") } else {
 
 
         selected.sensible <- dico[ which(dico$anonymise == "sensitive" & dico$type == "select_one" ), ]
@@ -317,9 +314,14 @@ kobo_anonymisation_report <- function(frame, dico) {
         cat("Risk evaluation is based on the concept of uniqueness in the sample and/or in the population. The focus is on individual units that possess rare combinations of selected key variables.  The assumption is that units having rare combinations of key variables can be more easily identified and thus have a higher risk of re-identification/disclosure. It is possible to cross-tabulate all identifying variables and view their cast.  Keys possessed by only very few individuals are considered risky, especially if these observations also have small sampling weights. This means that the expected number of individuals with these patterns is expected to be low in the population as well.", file = reportanom , sep = "\n", append = TRUE)
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
         cat("Two approaches can be used to determine the global risk for a dataset using individual risks: ", file = reportanom , sep = "\n", append = TRUE)
-        cat("\n", file = reportanom , sep = "\n", append = TRUE)
-        cat(" * Benchmark: This approach counts the number of observations that can be considered risky and also have higher risk as the main part of the data. For example, we consider units with individual risks being both ≥ 0 : 1 and twice as large as the median of all individual risks + 2 times the median absolute deviation (MAD) of all unit risks. ", file = reportanom , sep = "\n", append = TRUE)
-        cat("\n", file = reportanom , sep = "\n", append = TRUE)
+
+        # cat("\n", file = reportanom , sep = "\n", append = TRUE)
+
+        #cat("Benchmark: This approach counts the number of observations that can be considered risky and also have higher risk as the main part of the data. For example, we consider units with individual risks being both >= 0 : 1 and twice as large as the median of all individual risks + 2 times the median absolute deviation (MAD) of all unit risks. ", file = reportanom , sep = "\n", append = TRUE)
+
+        #cat("\n", file = reportanom , sep = "\n", append = TRUE)
+
+
         cat(" * Global risk: The sum of the individual risks in the dataset gives the expected number of re-identifications.", file = reportanom , sep = "\n", append = TRUE)
         cat("\n", file = reportanom , sep = "\n", append = TRUE)
         cat("\n", file = reportanom , sep = "\n", append = TRUE)

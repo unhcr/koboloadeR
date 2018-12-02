@@ -44,7 +44,8 @@ numeric (expenditure per capita,…)
 and ordinal (level of agreement, support from local community,…).
 Then the function will train different models
 (using the inner joint between registration and household surveys as training data)
-and select the most accurate one." />
+and select the most accurate one.
+The user needs to have previously loaded the registry, survey and form files" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -143,11 +144,11 @@ numeric (expenditure per capita,…)
 and ordinal (level of agreement, support from local community,…).
 Then the function will train different models
 (using the inner joint between registration and household surveys as training data)
-and select the most accurate one.</p>
+and select the most accurate one.
+The user needs to have previously loaded the registry, survey and form files</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>kobo_prediction_report</span>(<span class='no'>frame</span>, <span class='no'>origin</span>, <span class='no'>location</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -160,10 +161,10 @@ and select the most accurate one.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='fu'>kobo_prediction_report</span>(<span class='no'>frame</span>)
+    <pre class="examples"><div class='input'><span class='fu'>kobo_prediction_report</span>()</div><div class='output co'>#&gt; <span class='error'>Error in kobo_prediction_report(): could not find function "kobo_prediction_report"</span></div><div class='input'>
+</div><span class='co'># NOT RUN {</span>
+<span class='fu'>kobo_prediction_report</span>(<span class='st'>"myform.xls"</span>)
 <span class='co'># }</span><div class='input'>
-
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -176,14 +177,14 @@ and select the most accurate one.</p>
 
     <h2>Author</h2>
     
-Damien Seite
+Damien Seite, Edouard Legoupil
 
   </div>
 </div>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Edouard Legoupil, Elliott Messeiller.</p>
+  <p>Developed by Edouard Legoupil, Maher Daoud.</p>
 </div>
 
 <div class="pkgdown">

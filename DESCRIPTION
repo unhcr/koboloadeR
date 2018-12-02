@@ -27,7 +27,11 @@ Depends:
     reshape2,
     digest,
     sdcMicro,
+    rJava,
     xlsx,
+    haven,
+    shinydashboard,
+    shinyalert,
     ape,
     sp,
     gdata

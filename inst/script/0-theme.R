@@ -27,9 +27,9 @@ theme.porttheme <-
   theme(plot.title = element_text(size = 24)) +
   theme(plot.subtitle = element_text(size = 18)) +
   theme(axis.title = element_text(size = 14)) +
-  theme(axis.title.y = element_text(angle = 0, vjust = .5, margin = margin(r = 15))) +
+  theme(axis.title.y = element_text(angle = 0, vjust = .5)) +
   theme(axis.text = element_text(size = 10)) +
-  theme(axis.title.x = element_text(margin = margin(t = 20))) +
+  theme(axis.title.x = element_text(angle = 0, vjust = .5)) +
   theme(legend.title = element_blank())
 
 

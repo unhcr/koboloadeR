@@ -44,31 +44,7 @@ kobo_map_int <- function(data,xmax,xmin,ymax,ymin, dico) {
     dir.create(file.path(mainDir, subDir))
   }
 
-  #First of all,  I define a generic theme that will be used as the basis for all of the following steps.
-  #It's based on `theme_minimal` and basically resets all the axes. It also defined a very subtle grid and a warmgrey background, which gives it some sort of paper map feeling, I find.
 
-  ##The font used here is `Ubuntu Regular` – adapt to your liking, but the font must be installed on your OS.
-
-  theme_map <- function(...) {
-    theme_minimal() +
-      theme(
-        text = element_text(family = "Ubuntu Regular", color = "#22211d"),
-        axis.line = element_blank(),
-        axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks = element_blank(),
-        axis.title.x = element_blank(),
-        axis.title.y = element_blank(),
-        # panel.grid.minor = element_line(color = "#ebebe5", size = 0.2),
-        panel.grid.major = element_line(color = "#ebebe5", size = 0.2),
-        panel.grid.minor = element_blank(),
-        plot.background = element_rect(fill = "#f5f5f2", color = NA),
-        panel.background = element_rect(fill = "#f5f5f2", color = NA),
-        legend.background = element_rect(fill = "#f5f5f2", color = NA),
-        panel.border = element_blank(),
-        ...
-      )
-  }
 
   ##### Selecting the variable to be mapped
 

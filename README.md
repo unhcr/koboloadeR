@@ -1,7 +1,35 @@
 # Introduction
 
-koboloadeR is a R package to conduct data discovery and analysis for data collected through  KoboToolbox.
-This package builds on the capacity of UNHCR Kobo server @ http://kobo.unhcr.org
+koboloadeR is a R package to conduct data discovery and analysis for data collected through  [KoboToolbox](https://www.kobotoolbox.org/), [ODK](https://opendatakit.org/), [ONA](https://ona.io/home/) or any __[xlsform](http://xlsform.org)__ compliant data collection platform.
+This package first builds on the capacity of UNHCR Kobo server @ http://kobo.unhcr.org but it can also be used from any structured dataset.
+
+# Approach
+ 
+The main concept behind the package is to implement a survey data analysis plan and configuration directly within the [xlsform](http://xlsform.org) excel file that has been used to develop the questionnaire. A few additional column are created in this excel document, the package read those column to generate a series of predefined report.
+
+
+![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow.png)
+
+
+This approach has the following advantages: 
+
+ * End users __do not need to code__ in R and to master the language in order to use the package;  
+ 
+ * The data __analysis plan__ is de facto fully documented and described;  
+ 
+ * The resulting data crunching reports are fully __reproducible__;  
+ 
+ * Analysis __iterations__ are facilitated;
+ 
+ * Good __practises__ are enforced through the package.
+
+
+To go in more details, the suggested workflow is presented below (note that all of it is not yet fully implented - see [issue tracking for more details](https://github.com/unhcr/koboloadeR/issues))
+
+
+![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow2.png)
+
+# Features
 
 The `koboloadeR` package allows to:
 

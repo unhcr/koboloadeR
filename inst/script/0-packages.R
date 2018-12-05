@@ -65,6 +65,7 @@ packages <- unique(sort(c(
   "data.table", ## Fast aggregation of large data (e.g. 100GB in RAM), fast ordered joins, fast add/modify/delete of columns
   "DT", # A Wrapper of the JavaScript Library 'DataTables
   "stringdist", "stringi", ## string manipulation
+  "forcats", ## Recoding cat
 
   ##### Visualisation ########
   #"lattice",
@@ -126,7 +127,7 @@ packages <- unique(sort(c(
     "car", ## ## Companion to Applied Regression
   #  "gbm", # Generalized Boosted Regression Models
   #  "rminer", "CORElearn",  # ordinal Regression
-  #  "caret", # Gradient Boosting & AdaBoost
+    "caret", # Gradient Boosting & AdaBoost
   #  "bigRR",  ## Classification
 
 
@@ -134,6 +135,11 @@ packages <- unique(sort(c(
   "e1071", #SVM (Support Vector Machine)
   "knncat", # KNN (K- Nearest Neighbors)
   "randomForest", # randomForest
+  "quantreg", #Quantile regression
+  "quantregForest", #Regression quantile forest
+  "xgboost",
+  "GGally",
+  "ROCR",
 
   ###  Recursive Partitioning and Regression Trees
   "rpart",
@@ -147,9 +153,11 @@ packages <- unique(sort(c(
 
   ###  Lasso and Elastic-Net Regularized Generalized Linear Models  ########
   #"glmnet",
-    "lme4", # Linear Mixed-Effects Models  #  "MASS",
+    "lme4", # Linear Mixed-Effects Models  #
+  "MASS",
   #"VGAM", #Vector Generalized Linear and Additive Models
   #"aod", ## Analysis of Overdispersed Data
+  "questionr",
 
   ### Cluster analysis #####
   #"cluster", "cba", "Rankcluster",
@@ -332,6 +340,7 @@ library("corrplot")
 library("graphics")
 library("vcd")
 library("stringi")
+library("forcats")
 
 
 library("zoo")

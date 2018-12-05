@@ -3,9 +3,6 @@
 \name{kobo_prediction_report}
 \alias{kobo_prediction_report}
 \title{Generate prediction}
-\usage{
-kobo_prediction_report(origin, location)
-}
 \arguments{
 \item{kobo}{or odk dataset to use}
 }
@@ -23,10 +20,16 @@ and ordinal (level of agreement, support from local community,…).
 Then the function will train different models
 (using the inner joint between registration and household surveys as training data)
 and select the most accurate one.
-The user needs to have previously loaded the proGres, household and form files from the 0-config script.
-The function takes as arguments the names of the variables for origin and location of asylum, to be able
-to describe the predicted outcome.
+The user needs to have previously loaded the registry, survey and form files
+}
+\examples{
+kobo_prediction_report()
+
+\dontrun{
+kobo_prediction_report("myform.xls")
+}
+
 }
 \author{
-Damien Seite
+Damien Seite, Edouard Legoupil
 }

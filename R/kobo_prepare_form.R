@@ -46,7 +46,8 @@ kobo_prepare_form <- function(form = "form.xls") {
   
   ### First review all questions from survey sheet #################################################
   survey <- tryCatch({
-    as.data.frame(read_excel(form_tmp, sheet = "survey")) #read survey sheet from the form
+    as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                  stringsAsFactors = FALSE) #read survey sheet from the form
   }, error = function(err) {
     data.frame( #if it doesn't exist, we need to create empty dataframe with those fields
       type = character(),
@@ -64,7 +65,8 @@ kobo_prepare_form <- function(form = "form.xls") {
       cluster = character(),
       predict = character(),
       mappoint = character(),
-      mappoly = character()
+      mappoly = character(),
+      stringsAsFactors = FALSE
     )
   })
   
@@ -200,7 +202,7 @@ kobo_prepare_form <- function(form = "form.xls") {
     if( is.na(values[[i]]) ){
       values[[i]] = " "
     }
-    if(values[[i]]=="begin group" || values[[i]]=="end group"){
+    if(values[[i]]=="begin group" || values[[i]]=="end group" || values[[i]]=="end_group" || values[[i]]=="begin_group" ){
       temp <- as.numeric(names(values[i]))
       temp <- floor(temp)
       rowIndex <- c(rowIndex,temp )
@@ -223,7 +225,7 @@ kobo_prepare_form <- function(form = "form.xls") {
     if( is.na(values[[i]]) ){
       values[[i]] = " "
     }
-    if(values[[i]]=="begin repeat" || values[[i]]=="end repeat"){
+    if(values[[i]]=="begin repeat" || values[[i]]=="end repeat" || values[[i]]=="end_repeat" || values[[i]]=="begin_repeat"){
       temp <- as.numeric(names(values[i]))
       temp <- floor(temp)
       rowIndex <- c(rowIndex,temp )
@@ -249,13 +251,15 @@ kobo_prepare_form <- function(form = "form.xls") {
   
   #################################### choices sheet ######################################
   choices <- tryCatch({
-    as.data.frame(read_excel(form_tmp, sheet = "choices")) #read survey sheet from the form
+    as.data.frame(read_excel(form_tmp, sheet = "choices"),
+                  stringsAsFactors = FALSE) #read survey sheet from the form
   }, error = function(err) {
     data.frame( #if it doesn't exist, we need to create empty dataframe with those fields
       list_name = character(),
       name = character(),
       label = character(),
-      order = character()
+      order = character(),
+      stringsAsFactors = FALSE
     )
   })
   
@@ -294,7 +298,7 @@ kobo_prepare_form <- function(form = "form.xls") {
   #################################### indicator sheet ######################################
   cat("\n \n Checking now indicator sheet \n \n")
   indicator <- tryCatch({
-    as.data.frame(read_excel(form_tmp, sheet = "indicator"))
+    as.data.frame(read_excel(form_tmp, sheet = "indicator"),stringsAsFactors = FALSE)
   }, error = function(err) {
     data.frame(
       type = character(),
@@ -313,7 +317,8 @@ kobo_prepare_form <- function(form = "form.xls") {
       structuralequation = character(),
       frame = character(),
       listname = character(),
-      calculation = character()
+      calculation = character(),
+      stringsAsFactors = FALSE
     )
   })
   
@@ -465,13 +470,15 @@ kobo_prepare_form <- function(form = "form.xls") {
   #################################### settings sheet ######################################
   cat("\n \n Checking now settings sheet \n \n")
   settings <- tryCatch({
-    as.data.frame(read_excel(form_tmp, sheet = "settings"))
+    as.data.frame(read_excel(form_tmp, sheet = "settings"),
+                  stringsAsFactors = FALSE)
   }, error = function(err) {
     data.frame(
-      form_title = character(),
-      form_id = character(),
-      default_language = character(),
-      version = character()
+      name = character(),
+      label = character(),
+      value = character(),
+      path = character(),
+      stringsAsFactors = FALSE
     )
   })
   

@@ -169,6 +169,8 @@ kobo_projectinit <- function() {
   destfile = paste0(mainDir,"/code/shiny_app/app_dataviewer.R")
   file.copy(paste(path_correct,"/koboloadeR/shiny_app/app_dataviewer.R", sep = ""), destfile, overwrite = TRUE)
   
+  destfile = paste0(mainDir,"/code/shiny_app/app_main_koboloadeR.R")
+  file.copy(paste(path_correct,"/koboloadeR/shiny_app/app_main_koboloadeR.R", sep = ""), destfile, overwrite = TRUE)
   
   ## WWW sub subfolder creation ####
   
@@ -190,8 +192,14 @@ kobo_projectinit <- function() {
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/bootstrap.min.css",sep = ""), destfile)
   }
-  
-  
+  destfile = paste0(mainDir,"/code/shiny_app/www/style.css")
+  if (!file.exists(destfile)) {
+    file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/style.css",sep = ""), destfile)
+  }
+  destfile = paste0(mainDir,"/code/shiny_app/www/background-lines.png")
+  if (!file.exists(destfile)) {
+    file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/style.css",sep = ""), destfile)
+  }
   
   ## HTML Template ####
   

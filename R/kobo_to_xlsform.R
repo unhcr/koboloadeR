@@ -102,7 +102,8 @@ kobo_to_xlsform <- function(df,form = "form.xls",
   addDataFrame(choices, choicesSheet, col.names=TRUE, row.names=FALSE)
   
   
-  mainDir <- gsub("/inst/shiny_app", "",  getwd())
+  mainDir <- gsub("/code/shiny_app", "",  getwd())
+  mainDir <- gsub("/inst/shiny_app", "",  mainDir) 
   form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
   
   if (file.exists(form_tmp)) file.remove(form_tmp)

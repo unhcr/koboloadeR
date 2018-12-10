@@ -41,7 +41,9 @@ kobo_prepare_form <- function(form = "form.xls") {
   
   cat("\n Your form should be placed within the `data` folder. \n \n")
   
-  mainDir <- gsub("/inst/shiny_app", "",  getwd())
+  mainDir <- gsub("/code/shiny_app", "",  getwd()) 
+  mainDir <- gsub("/inst/shiny_app", "",  mainDir) 
+  
   form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
   
   ### First review all questions from survey sheet #################################################
@@ -154,11 +156,27 @@ kobo_prepare_form <- function(form = "form.xls") {
     cat("11- No column `mappoly` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
     survey$mappoly <- ""
   }
+  namesOfSur <- c("type",   "name" ,  "label",
+                  "variable","disaggregation",  "chapter", "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
+                  
+  )
+  
+  if ("required" %in% colnames(survey)) {
+    namesOfSur <- c(namesOfSur,"required")
+  }
+  if ("relevant" %in% colnames(survey)) {
+    namesOfSur <- c(namesOfSur,"relevant")
+  }
+  if ("constraint" %in% colnames(survey)) {
+    namesOfSur <- c(namesOfSur,"constraint")
+  }
+  if ("calculate" %in% colnames(survey)) {
+    namesOfSur <- c(namesOfSur,"calculate")
+  }
   ## Avoid columns without names
-  survey <- survey[ ,c("type",   "name" ,  "label",
-                       "variable","disaggregation",  "chapter", "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
-                       
-  )]
+  survey <- survey[ ,namesOfSur]
+  
+  
   ## need to delete empty rows from the form
   survey <- as.data.frame(survey[!is.na(survey$type), ])
   survey[is.na(survey)] <-  ""

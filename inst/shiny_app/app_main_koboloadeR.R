@@ -10,6 +10,7 @@
 library(shiny)
 library(shinydashboard)
 library(shinyalert)
+library(DT)
 kobo_projectinit()
 header <- dashboardHeader(title = "koboloadeR Package",
                           titleWidth = 300
@@ -59,7 +60,7 @@ ui <- dashboardPage(
 server <- shinyServer(function(input, output) {
   options(shiny.maxRequestSize=10000*1024^2) #make the limit up to 10GB
   mainDir <- reactive({
-    gsub("/inst/shiny_app", "",  getwd())
+    gsub("/inst/shiny_app", "",  gsub("/code/shiny_app", "",  getwd())) 
   })
   
   projectConfigurationInfo <- reactiveValues(log = list(), data = list()) 
@@ -73,10 +74,12 @@ server <- shinyServer(function(input, output) {
   observe({#initial code that run to check if there is xls form and to upload it
     tryCatch({
       if(tracker$value == 0 ){
+        projectConfigurationInfo$log[["scenario"]] <- ""
         projectConfigurationInfo$log[["isPrepared"]] <- FALSE
         projectConfigurationInfo$log[["isGenerated"]] <- FALSE
         projectConfigurationInfo$log[["subAndMainfiles"]] <- FALSE
         projectConfigurationInfo$log[["isRecordSettingsSaved"]] <- FALSE
+        projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- FALSE
         if(file.exists(paste(mainDir(), "data", "/form.xls", sep = "/", collapse = "/"))  ){
           projectConfigurationInfo$log[["xlsForm"]] <- TRUE
           result <- kobo_get_begin_repeat()
@@ -93,6 +96,7 @@ server <- shinyServer(function(input, output) {
           projectConfigurationInfo$log[["isGenerated"]] <- FALSE
           tracker$value = tracker$value + 1
         }
+        tracker$value = tracker$value + 1
       }
     }, error = function(err) {
       shinyalert("Error",
@@ -110,7 +114,8 @@ server <- shinyServer(function(input, output) {
     projectConfigurationInfo$log[["doYouHaveFormSelectInput"]] <- input$doYouHaveFormSelectInput
     projectConfigurationInfo$log[["doYouWantGenerateFormSelectInput"]] <- input$doYouWantGenerateFormSelectInput
     projectConfigurationInfo$log[["doYouHaveDataSelectInput"]] <- input$doYouHaveDataSelectInput
-    projectConfigurationInfo$log[["doesFormNeedToPrepareSelectInput"]] <- input$doesFormNeedToPrepareSelectInput
+    projectConfigurationInfo$log[["formIncludeSettingsSelectInput"]] <- input$formIncludeSettingsSelectInput
+    projectConfigurationInfo$log[["doYouHaveDatasetsSelectInput"]] <- input$doYouHaveDatasetsSelectInput
     
     
     if(is.null(projectConfigurationInfo$log[["data"]])){
@@ -123,8 +128,23 @@ server <- shinyServer(function(input, output) {
     if(is.null(projectConfigurationInfo$log[["beginRepeatList"]])){
       projectConfigurationInfo$log[["beginRepeatList"]]  <- FALSE
     }
-
+    
+    if(sum(input$doYouHaveFormSelectInput=="Yes")==1 && sum(input$doYouHaveDatasetsSelectInput =="Yes")==1 && sum(input$formIncludeSettingsSelectInput =="Yes")==1 ){
+      projectConfigurationInfo$log[["scenario"]] <- "Scenario-1: has xls form, the main data file(s) and settings sheet"
+    
+    }else if(sum(input$doYouHaveFormSelectInput=="Yes")==1 && sum(input$doYouHaveDatasetsSelectInput =="Yes")==1 && sum(input$formIncludeSettingsSelectInput =="No")==1 ){
+      projectConfigurationInfo$log[["scenario"]] <- "Scenario-2: has xls form and the main data file(s). But, does not has settings sheet"
+    
+    }else if(sum(input$doYouHaveFormSelectInput=="No")==1 && sum(input$doYouWantGenerateFormSelectInput =="Yes")==1 && sum(input$doYouHaveDataSelectInput =="Yes")==1  ){
+      projectConfigurationInfo$log[["scenario"]] <- "Scenario-3: does not has xls form. But, has the main data file to generate xlsform."
+    }else{
+      projectConfigurationInfo$log[["scenario"]] <- ""
+    }
+    x<<-projectConfigurationInfo$log
   })
+  
+  ####################################### Project Configuration page ############################################
+  
   
   output$projectConfiguration <- renderUI({
     fluidRow(
@@ -248,29 +268,32 @@ server <- shinyServer(function(input, output) {
         box(id="doesFormNeedToPrepareBox",
             width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,
             column(width = projectConfigurationTheme$questionsWidth, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                   h4("Does xlsform include documented analysis plan & settings?")
+                   h4("Does xlsform include settings?")
             ),
             column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
-                   selectInput("doesFormNeedToPrepareSelectInput", label = NULL,choices = c("-- select --","Yes","No"))
+                   selectInput("formIncludeSettingsSelectInput", label = NULL,choices = c("-- select --","Yes","No"))
             )
         )
       ),
       conditionalPanel(
-        condition = "input.doYouHaveFormSelectInput == 'Yes' && input.doYouHaveDatasetsSelectInput == 'Yes' && input.doesFormNeedToPrepareSelectInput == 'Yes'",
-        uiOutput("informationBoxAboutNextStep")
-      ),
-      conditionalPanel(
-        condition = "input.doYouHaveDataSelectInput == 'No' || input.doYouWantGenerateFormSelectInput == 'No' || input.doYouHaveDatasetsSelectInput == 'No'",
+        condition = "input.doYouHaveDataSelectInput == 'No' || input.doYouHaveDatasetsSelectInput == 'No'",
         infoBox(
           width = 12,strong("Warning"),h4("You cannot proceed without data file",align="center")
           ,icon = icon("exclamation-triangle"),
           color = "yellow"
         )
       ),
-      
+      conditionalPanel(
+        condition = "input.doYouHaveFormSelectInput == 'No' && input.doYouWantGenerateFormSelectInput == 'No'",
+        infoBox(
+          width = 12,strong("Warning"),h4("You cannot proceed without xlsform",align="center")
+          ,icon = icon("exclamation-triangle"),
+          color = "yellow"
+        )
+      ),
       conditionalPanel(
         condition = "(input.doYouHaveFormSelectInput == 'No' && input.doYouWantGenerateFormSelectInput == 'Yes' && input.doYouHaveDataSelectInput == 'Yes') ||
-        (input.doYouHaveFormSelectInput == 'Yes' && input.doYouHaveDatasetsSelectInput == 'Yes' && input.doesFormNeedToPrepareSelectInput == 'No')",
+        (input.doYouHaveFormSelectInput == 'Yes' && input.doYouHaveDatasetsSelectInput == 'Yes' && input.formIncludeSettingsSelectInput == 'No')",
         
         box(id="generateAndPrepareBox",
             width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,
@@ -297,7 +320,7 @@ server <- shinyServer(function(input, output) {
       ),
       conditionalPanel(
         condition = "(input.doYouHaveFormSelectInput == 'No' && input.doYouWantGenerateFormSelectInput == 'Yes' && input.doYouHaveDataSelectInput == 'Yes') ||
-        (input.doYouHaveFormSelectInput == 'Yes' && input.doYouHaveDatasetsSelectInput == 'Yes' && input.doesFormNeedToPrepareSelectInput == 'No')",
+        (input.doYouHaveFormSelectInput == 'Yes' && input.doYouHaveDatasetsSelectInput == 'Yes' && input.formIncludeSettingsSelectInput == 'No')",
         div(id="recordSettingsDiv",
           box(id="recordSettingsBox", title = "Record Settings Configuration",
               width=12,status="primary", solidHeader = FALSE, collapsible = TRUE,
@@ -306,31 +329,58 @@ server <- shinyServer(function(input, output) {
               )
           )
         )
+      ),
+      
+      conditionalPanel(
+        condition = "(input.doYouHaveFormSelectInput == 'Yes' && input.doYouHaveDatasetsSelectInput == 'Yes') ||
+        (input.doYouHaveFormSelectInput == 'No' && input.doYouHaveDataSelectInput == 'Yes' && input.doYouWantGenerateFormSelectInput == 'Yes') ",
+        uiOutput("informationBoxAboutNextStep")
       )
-      
-      
-      
+
     )
   })
   
+  observeEvent(input$doYouHaveFormSelectInput,{
+    projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- FALSE
+  })
+  
+  observeEvent(input$formIncludeSettingsSelectInput, {
+    projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- FALSE
+    if(sum(input$formIncludeSettingsSelectInput=="No")==1){
+      if(sum(input$doYouHaveFormSelectInput == 'Yes')==1){
+        projectConfigurationInfo$log[["isPrepared"]] <- FALSE
+      }else if(sum(input$doYouHaveFormSelectInput == 'No')==1){
+        projectConfigurationInfo$log[["isPrepared"]] <- FALSE
+        projectConfigurationInfo$log[["isGenerated"]] <- FALSE
+      }
+    }
+    if(sum(input$formIncludeSettingsSelectInput=="Yes")==1 && projectConfigurationInfo$log[["xlsForm"]] && projectConfigurationInfo$log[["subAndMainfiles"]] ){
+      shinyalert("Wooooow",
+                 "You can start the Analysis Plan Configrution",
+                 type = "success",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#28A8E2",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    }
+      
+  })
+  
   output$informationBoxAboutNextStep <- renderText({
-    Sys.sleep(3);
     s <-""
-    if(projectConfigurationInfo$log[["xlsForm"]] && projectConfigurationInfo$log[["subAndMainfiles"]]){
+    if(
+      (sum(input$doYouHaveFormSelectInput == 'Yes')==1 && projectConfigurationInfo$log[["xlsForm"]] && projectConfigurationInfo$log[["subAndMainfiles"]] && (sum(input$formIncludeSettingsSelectInput == 'Yes') == 1 || (sum(input$formIncludeSettingsSelectInput == 'No') == 1 && projectConfigurationInfo$log[["isPrepared"]] && projectConfigurationInfo$log[["isRecordSettingsSaved"]]) ) ) ||
+      (sum(input$doYouHaveFormSelectInput == 'No')==1 && projectConfigurationInfo$log[["data"]] && projectConfigurationInfo$log[["isGenerated"]] && projectConfigurationInfo$log[["isPrepared"]] && projectConfigurationInfo$log[["isRecordSettingsSaved"]] && sum(input$doYouHaveFormSelectInput == 'No') == 1)
+       ){
+      
+      projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- TRUE
       s <- paste(
       div(
         infoBox(
-          width = 12,strong("Wooooow"),h4("You can start the Analysis Plan Configrution",align="center")
+          width = 12,strong("Perfect!"),h4("You can start the Analysis Plan Configrution",align="center")
           ,icon = icon("check"),
           color = "green"
-        ),
-        shinyalert("Wooooow",
-                   "You can start the Analysis Plan Configrution",
-                   type = "success",
-                   closeOnClickOutside = FALSE,
-                   confirmButtonCol = "#28A8E2",
-                   animation = FALSE,
-                   showConfirmButton = TRUE
         )
       )
       , s ,sep="" )
@@ -361,6 +411,7 @@ server <- shinyServer(function(input, output) {
                    showConfirmButton = TRUE
         )
         projectConfigurationInfo$log[["isPrepared"]] <- FALSE
+        projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- FALSE
         return(TRUE)
       }
       shinyalert("You have to select file before uploading process",
@@ -440,6 +491,7 @@ server <- shinyServer(function(input, output) {
       }
       updateProgress()
       projectConfigurationInfo$log[["subAndMainfiles"]] <- TRUE
+      projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- FALSE
       shinyalert("Done, all files have been successfully uploaded",
                  paste("You can find the files in",paste(mainDir(), "data", sep = "/", collapse = "/") )
                  ,
@@ -472,7 +524,7 @@ server <- shinyServer(function(input, output) {
         projectConfigurationInfo$log[["data"]] <- TRUE
         projectConfigurationInfo$data[["data"]] <- dataFile
         projectConfigurationInfo$log[["isGenerated"]] <- FALSE
-        
+        projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- FALSE
         shinyalert(paste ("Done,", inFile$name ,"has been successfully uploaded"),
                    paste("You can find the file in",paste(mainDir(), "data", sep = "/", collapse = "/") )
                    ,
@@ -542,6 +594,7 @@ server <- shinyServer(function(input, output) {
         projectConfigurationInfo$log[["isGenerated"]] <- TRUE
         projectConfigurationInfo$log[["isPrepared"]] <- FALSE
         projectConfigurationInfo$log[["isRecordSettingsSaved"]] <- FALSE
+        projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- FALSE
         shinyalert("Done, xlsform created using 'kobo_to_xlsform' function",
                    "You can creates and save a xlsform skeleton from a data file in your data folder\nThe form.xls will be saved in the data folder of your project",
                    type = "success",
@@ -589,7 +642,7 @@ server <- shinyServer(function(input, output) {
         
         (sum(input$doYouHaveFormSelectInput == "Yes") &&
          sum(input$doYouHaveDatasetsSelectInput == "Yes") &&
-         sum(input$doesFormNeedToPrepareSelectInput == "No") &&
+         sum(input$formIncludeSettingsSelectInput == "No") &&
          projectConfigurationInfo$log[["xlsForm"]])
       ){
         
@@ -628,6 +681,7 @@ server <- shinyServer(function(input, output) {
           
         projectConfigurationInfo$log[["isPrepared"]] <- TRUE
         projectConfigurationInfo$log[["isRecordSettingsSaved"]] <- FALSE
+        projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- FALSE
       }
     }, error = function(err) {
       shinyalert("Error",
@@ -717,9 +771,20 @@ server <- shinyServer(function(input, output) {
       }
       return(s)
     }else if(
+      sum(input$doYouHaveFormSelectInput == "Yes") &&
+      sum(input$doYouHaveDatasetsSelectInput == "Yes") &&
+      sum(input$formIncludeSettingsSelectInput == "No") &&
+      projectConfigurationInfo$log[["subAndMainfiles"]] == FALSE 
+    ){
+      s <- paste(infoBox(
+        width = 12,strong("Information"),h4("You have to upload all required data files before starting configuration of Record Settings",align="center"), icon = icon("exclamation-triangle"),
+        color = "orange"
+      ), s ,sep="" )
+      return(s)
+    }else if(
         sum(input$doYouHaveFormSelectInput == "Yes") &&
         sum(input$doYouHaveDatasetsSelectInput == "Yes") &&
-        sum(input$doesFormNeedToPrepareSelectInput == "No") &&
+        sum(input$formIncludeSettingsSelectInput == "No") &&
         projectConfigurationInfo$log[["isPrepared"]] == FALSE 
       ){
       s <- paste(infoBox(
@@ -1092,6 +1157,259 @@ server <- shinyServer(function(input, output) {
     })
   })
   
+  #######################################           End               ############################################
+  
+  ####################################### Analysis Plan Configuration page ############################################
+  sheets <- reactiveValues()
+  
+  output$analysisPlanConfiguration <- renderUI({
+    #if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
+    if(FALSE){
+      infoBox(
+        width = 12,strong("Warning"),h4("You cannot proceed without completing Project Configuration section",align="center")
+        ,icon = icon("exclamation-triangle"),
+        color = "yellow"
+      )
+    }else{
+      fluidRow(
+        box(id="doYouHaveAnalysisPlanBox",
+            width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,
+            column(width = projectConfigurationTheme$questionsWidth, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                   h4("Does xlsform include documented analysis plan?")
+            ),
+            column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
+                   selectInput("doYouHaveAnalysisPlanSelectInput", label = NULL,choices = c("-- select --","Yes","No"))
+            )
+        ),
+        conditionalPanel(
+          condition = "input.doYouHaveAnalysisPlanSelectInput=='No'",
+          
+          tabBox(width=12, id = "analysisPlanTab", title = "Documented Analysis Plan",height="600px",
+              tabPanel(id="surveySheetTab", "Survey Sheet", rHandsontableOutput("surveySheetUI")),
+              tabPanel(id="indicatorsSheetTab","Indicators Sheet", rHandsontableOutput("indicatorsSheetUI")),
+              tabPanel(id="choicesSheetTab","Choices Sheet", rHandsontableOutput("choicesSheetUI"))
+          ),
+          wellPanel(
+            actionButton("saveSheets", "Save Sheets", icon("save"), 
+                         style="width:100%; margin-top: 10px; margin-bottom: 15px; height: 60px;", class="uploadButton")
+          )  
+          
+        ),
+        conditionalPanel(
+          condition = "input.doYouHaveAnalysisPlanSelectInput=='No' || input.doYouHaveAnalysisPlanSelectInput=='Yes'",
+          box(id="decoAndCheckplanBox",
+              width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,
+              column(width = 2, align="left",
+                     icon("arrow-right", "fa-14x") 
+              ),
+              column(width = 3, align="center",
+                     actionButton("ProduceDataDictionnaryButton", "Produce a Data Dictionnary", class = "processButton")
+              ),
+              column(width = 2, align="center",
+                     icon("arrow-right", "fa-14x") 
+              ),
+              column(width = 3, align="center",
+                     actionButton("checkPlanButton", "Check the Plan", class = "processButton")
+              ),
+              column(width = 2, align="right",
+                     icon("arrow-down", "fa-14x") 
+              )
+          )
+        )
+      )
+    }
+  })
+  
+  output$surveySheetUI <- renderRHandsontable({
+    tryCatch({
+      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+      survey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                              stringsAsFactors = FALSE)
+      survey <- survey[c("type",   "name" ,  "label",
+                         "variable","disaggregation",  "chapter", "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
+                         
+      )]
+      survey$chapter <- as.character(survey$chapter)
+      survey <- survey[startsWith(tolower(survey$type), "integer") |
+                         startsWith(tolower(survey$type), "decimal") |
+                         startsWith(tolower(survey$type), "geopoint") |
+                         startsWith(tolower(survey$type), "calculate") |
+                         startsWith(tolower(survey$type), "text") |
+                         startsWith(tolower(survey$type), "barcode") |
+                         startsWith(tolower(survey$type), "select_multiple") |
+                         startsWith(tolower(survey$type), "select_one") |
+                         startsWith(tolower(survey$type), "date") |
+                         startsWith(tolower(survey$type), "time") |
+                         startsWith(tolower(survey$type), "datetime") 
+                       ,]
+      survey[tolower(survey$type) %in% c("integer") ,"variable"] = "integer"
+      survey[tolower(survey$type) %in% c("decimal","geopoint", "calculate") ,"variable"] = "numeric"
+      survey[tolower(survey$type) %in% c("text","barcode") ,"variable"] = "character"
+      survey[startsWith(survey$type,"select_multiple") ,"variable"] = "factor"
+      survey[tolower(survey$type) %in% c("date") ,"variable"] = "date"
+      survey[tolower(survey$type) %in% c("time") ,"variable"] = "time"
+      survey[tolower(survey$type) %in% c("datetime") ,"variable"] = "datetime"
+
+      
+      rhandsontable(survey, stretchH = "all", height = 550, useTypes = TRUE) %>%
+        hot_col("type", readOnly = TRUE, width = 200) %>%
+        hot_col("name", readOnly = TRUE, width = 200) %>%
+        hot_col("label", readOnly = TRUE, width = 200) %>%
+        hot_col("variable", type = "dropdown", source = c("integer","numeric","character","ordinal factor", "factor", "date", "time", "datetime"), width = 120) %>%
+        hot_col("chapter",  width = 200) %>%
+        hot_col("disaggregation",  width = 120, halign="htCenter") %>%
+        hot_col("structuralequation.risk",  width = 120, halign="htCenter") %>%
+        hot_col("structuralequation.coping",  width = 120, halign="htCenter") %>%
+        hot_col("structuralequation.resilience",  width = 120, halign="htCenter") %>%
+        hot_col("anonymise",  width = 120, halign="htCenter") %>%
+        hot_col("correlate",  width = 120, halign="htCenter") %>%
+        hot_col("clean",  width = 120, halign="htCenter") %>%
+        hot_col("cluster",  width = 120, halign="htCenter") %>%
+        hot_col("predict",  width = 120, halign="htCenter") %>%
+        hot_col("mappoint",  width = 120, halign="htCenter") %>%
+        hot_col("mappoly",  width = 120, halign="htCenter")
+        
+        
+        
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  
+  output$indicatorsSheetUI <- renderRHandsontable({
+    tryCatch({
+      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+      indicator <- as.data.frame(read_excel(form_tmp, sheet = "indicator"),
+                              stringsAsFactors = FALSE)
+      
+      
+      indicator <- indicator[c("type", "fullname", "label", "chapter", "disaggregation", "correlate", "sensitive",
+                               "anonymise", "cluster", "predict", "variable", "mappoint", "mappoly", "structuralequation", "frame", "listname", "calculation")]
+      
+      indicator$fullname <- as.character(indicator$fullname)
+      indicator$label <- as.character(indicator$label)
+      indicator$chapter <- as.character(indicator$chapter)
+      indicator$calculation <- as.character(indicator$calculation)
+      indicator$frame <- as.character(indicator$frame)
+      indicator$listname <- as.character(indicator$listname)
+      
+      
+      rhandsontable(indicator, stretchH = "all", height = 550, useTypes = TRUE) %>%
+        hot_col("type", width = 120, type = "dropdown", source = c("integer","numeric","select_one")) %>%
+        hot_col("fullname", width = 200) %>%
+        hot_col("label", width = 200) %>%
+        hot_col("chapter", width = 200) %>%
+        hot_col("disaggregation",  width = 120, halign="htCenter") %>%
+        hot_col("correlate",  width = 120, halign="htCenter") %>%
+        hot_col("sensitive",  width = 120, halign="htCenter") %>%
+        hot_col("anonymise", width = 120, type = "dropdown", source = c("key", "outlier", "sensitive", "remove", "reference")) %>%
+        hot_col("cluster",  width = 120, halign="htCenter") %>%
+        hot_col("predict",  width = 120, halign="htCenter") %>%
+        hot_col("variable",  width = 120, halign="htCenter") %>%
+        hot_col("mappoint",  width = 120, halign="htCenter") %>%
+        hot_col("mappoly",  width = 120, halign="htCenter") %>%
+        hot_col("structuralequation",  width = 120, halign="htCenter") %>%
+        hot_col("frame", width = 120, type = "dropdown", source = c("TODO")) %>%
+        hot_col("listname",  width = 120, type = "autocomplete", source = c("TODO")) %>%
+        hot_col("calculation",  width = 200) 
+      
+      
+      
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  output$choicesSheetUI <- renderUI({
+    
+  })
+  observeEvent(input$saveSheets, {
+    tryCatch({
+      ###################merge main survey with user survey#############
+      userSurvey <<- isolate(sheets[["survey"]])
+      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+      mainSurvey <<- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                              stringsAsFactors = FALSE)
+      if ("required" %in% colnames(mainSurvey)) {
+        userSurvey$required <- NA
+      }
+      if ("relevant" %in% colnames(mainSurvey)) {
+        userSurvey$relevant <- NA
+      }
+      if ("constraint" %in% colnames(mainSurvey)) {
+        userSurvey$constraint <- NA
+      }
+      if ("calculate" %in% colnames(mainSurvey)) {
+        userSurvey$calculate <- NA
+      }
+      
+      newSurvey <- rbind(mainSurvey[!rownames(mainSurvey) %in% rownames(userSurvey),],
+                      userSurvey
+                      )
+  
+      newSurvey <- newSurvey[ order(as.numeric(row.names(lv1))), ]
+
+      if ("required" %in% colnames(mainSurvey)) {
+        newSurvey$required <- mainSurvey$required
+      }
+      if ("relevant" %in% colnames(mainSurvey)) {
+        newSurvey$relevant <- mainSurvey$relevant
+      }
+      if ("constraint" %in% colnames(mainSurvey)) {
+        newSurvey$constraint <- mainSurvey$constraint
+      }
+      if ("calculate" %in% colnames(mainSurvey)) {
+        newSurvey$calculate <- mainSurvey$calculate
+      }
+
+      
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  
+  observe({
+    if (!is.null(input$surveySheetUI)) {
+      survey = hot_to_r(input$surveySheetUI)
+    } else {
+      if (is.null(sheets[["survey"]]))
+        survey <- data.frame()
+      else
+        survey <- sheets[["survey"]]
+    }
+    sheets[["survey"]] <- survey
+    
+    if (!is.null(input$indicatorsSheetUI)) {
+      indicator = hot_to_r(input$indicatorsSheetUI)
+    } else {
+      if (is.null(sheets[["indicator"]]))
+        indicator <- data.frame()
+      else
+        indicator <- sheets[["indicator"]]
+    }
+    sheets[["indicator"]] <- indicator
+    
+  })
 })
 
 # Run the application 

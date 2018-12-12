@@ -1225,10 +1225,24 @@ server <- shinyServer(function(input, output) {
       form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
       survey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
                               stringsAsFactors = FALSE)
-      survey <- survey[c("type",   "name" ,  "label",
-                         "variable","disaggregation",  "chapter", "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
-                         
-      )]
+      reqNames <- c("type",   "name" ,  "label",
+                    "variable","disaggregation",  "chapter", "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
+                    
+      )
+      if(sum(sapply(reqNames, function(x){x %in% colnames(survey)})) != length(reqNames)){
+        shinyalert("Error",
+                   paste("You need to make sure that all required fields are existing in survey sheet\n",
+                         reqNames
+                         ),
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      survey <- survey[reqNames]
       survey$chapter <- as.character(survey$chapter)
       survey <- survey[startsWith(tolower(survey$type), "integer") |
                          startsWith(tolower(survey$type), "decimal") |
@@ -1249,6 +1263,10 @@ server <- shinyServer(function(input, output) {
       survey[tolower(survey$type) %in% c("date") ,"variable"] = "date"
       survey[tolower(survey$type) %in% c("time") ,"variable"] = "time"
       survey[tolower(survey$type) %in% c("datetime") ,"variable"] = "datetime"
+      
+      if(nrow(survey)==0){
+        survey[nrow(survey)+1,] <- NA
+      }
 
       
       rhandsontable(survey, stretchH = "all", height = 550, useTypes = TRUE) %>%
@@ -1290,16 +1308,45 @@ server <- shinyServer(function(input, output) {
                               stringsAsFactors = FALSE)
       
       
-      indicator <- indicator[c("type", "fullname", "label", "chapter", "disaggregation", "correlate", "sensitive",
-                               "anonymise", "cluster", "predict", "variable", "mappoint", "mappoly", "structuralequation", "frame", "listname", "calculation")]
+      reqNames <- c("type", "fullname", "label", "chapter", "disaggregation", "correlate", "sensitive",
+                    "anonymise", "cluster", "predict", "variable", "mappoint", "mappoly", "structuralequation", "frame", "listname", "calculation")
+      
+      if(sum(sapply(reqNames, function(x){x %in% colnames(indicator)})) != length(reqNames)){
+        shinyalert("Error",
+                   paste("You need to make sure that all required fields are existing in indicator sheet\n",
+                         reqNames
+                   ),
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      indicator <- indicator[reqNames]
+      
       
       indicator$fullname <- as.character(indicator$fullname)
       indicator$label <- as.character(indicator$label)
       indicator$chapter <- as.character(indicator$chapter)
       indicator$calculation <- as.character(indicator$calculation)
-      indicator$frame <- as.character(indicator$frame)
       indicator$listname <- as.character(indicator$listname)
       
+      if(nrow(indicator)==0){
+        indicator[nrow(indicator)+1,] <- NA
+      }
+      
+      list_name <- c()
+      choices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
+                      stringsAsFactors = FALSE)
+      if ("list_name" %in% colnames(choices)) {
+        list_name <- choices$list_name
+        list_name <- list_name[!is.na(list_name) | trimws(list_name) != '']
+        list_name <- list_name[!duplicated(list_name)]
+        list_name <- sort(list_name)
+        yy<<-list_name
+      } 
       
       rhandsontable(indicator, stretchH = "all", height = 550, useTypes = TRUE) %>%
         hot_col("type", width = 120, type = "dropdown", source = c("integer","numeric","select_one")) %>%
@@ -1316,8 +1363,8 @@ server <- shinyServer(function(input, output) {
         hot_col("mappoint",  width = 120, halign="htCenter") %>%
         hot_col("mappoly",  width = 120, halign="htCenter") %>%
         hot_col("structuralequation",  width = 120, halign="htCenter") %>%
-        hot_col("frame", width = 120, type = "dropdown", source = c("TODO")) %>%
-        hot_col("listname",  width = 120, type = "autocomplete", source = c("TODO")) %>%
+        hot_col("frame", width = 120, type = "dropdown", source = projectConfigurationInfo$data[["beginRepeatList"]]) %>%
+        hot_col("listname",  width = 120, type = "dropdown", source = list_name) %>%
         hot_col("calculation",  width = 200) 
       
       
@@ -1333,15 +1380,17 @@ server <- shinyServer(function(input, output) {
       )
     })
   })
+  
   output$choicesSheetUI <- renderUI({
     
   })
+  
   observeEvent(input$saveSheets, {
     tryCatch({
       ###################merge main survey with user survey#############
-      userSurvey <<- isolate(sheets[["survey"]])
+      userSurvey <- isolate(sheets[["survey"]])
       form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
-      mainSurvey <<- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+      mainSurvey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
                               stringsAsFactors = FALSE)
       if ("required" %in% colnames(mainSurvey)) {
         userSurvey$required <- NA
@@ -1360,7 +1409,7 @@ server <- shinyServer(function(input, output) {
                       userSurvey
                       )
   
-      newSurvey <- newSurvey[ order(as.numeric(row.names(lv1))), ]
+      newSurvey <- newSurvey[ order(as.numeric(row.names(newSurvey))), ]
 
       if ("required" %in% colnames(mainSurvey)) {
         newSurvey$required <- mainSurvey$required
@@ -1375,6 +1424,8 @@ server <- shinyServer(function(input, output) {
         newSurvey$calculate <- mainSurvey$calculate
       }
 
+      newIndicators <<- isolate(sheets[["indicator"]])
+      
       
     }, error = function(err) {
       shinyalert("Error",

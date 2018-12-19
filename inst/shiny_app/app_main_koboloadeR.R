@@ -27,26 +27,26 @@ sidebar <- dashboardSidebar(width = 300,
 )
 
 body <- dashboardBody(useShinyalert(),
-  tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
-  ),                      
-  tabItems(
-    tabItem(tabName = "pc",
-            uiOutput("projectConfiguration")
-    ),
-    tabItem(tabName = "apc",
-            uiOutput("analysisPlanConfiguration")
-    ),
-    tabItem(tabName = "dp",
-            uiOutput("dataProcessing")
-    ),
-    tabItem(tabName = "rg",
-            uiOutput("reportsGeneration")
-    ),
-    tabItem(tabName = "dd",
-            uiOutput("dataDissemination")
-    )
-  )
+                      tags$head(
+                        tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
+                      ),                      
+                      tabItems(
+                        tabItem(tabName = "pc",
+                                uiOutput("projectConfiguration")
+                        ),
+                        tabItem(tabName = "apc",
+                                uiOutput("analysisPlanConfiguration")
+                        ),
+                        tabItem(tabName = "dp",
+                                uiOutput("dataProcessing")
+                        ),
+                        tabItem(tabName = "rg",
+                                uiOutput("reportsGeneration")
+                        ),
+                        tabItem(tabName = "dd",
+                                uiOutput("dataDissemination")
+                        )
+                      )
 )
 
 
@@ -57,7 +57,7 @@ ui <- dashboardPage(
 )
 
 # Define server logic required to draw a histogram
-server <- shinyServer(function(input, output) {
+server <- shinyServer(function(input, output, session) {
   options(shiny.maxRequestSize=10000*1024^2) #make the limit up to 10GB
   mainDir <- reactive({
     gsub("/inst/shiny_app", "",  gsub("/code/shiny_app", "",  getwd())) 
@@ -131,10 +131,10 @@ server <- shinyServer(function(input, output) {
     
     if(sum(input$doYouHaveFormSelectInput=="Yes")==1 && sum(input$doYouHaveDatasetsSelectInput =="Yes")==1 && sum(input$formIncludeSettingsSelectInput =="Yes")==1 ){
       projectConfigurationInfo$log[["scenario"]] <- "Scenario-1: has xls form, the main data file(s) and settings sheet"
-    
+      
     }else if(sum(input$doYouHaveFormSelectInput=="Yes")==1 && sum(input$doYouHaveDatasetsSelectInput =="Yes")==1 && sum(input$formIncludeSettingsSelectInput =="No")==1 ){
       projectConfigurationInfo$log[["scenario"]] <- "Scenario-2: has xls form and the main data file(s). But, does not has settings sheet"
-    
+      
     }else if(sum(input$doYouHaveFormSelectInput=="No")==1 && sum(input$doYouWantGenerateFormSelectInput =="Yes")==1 && sum(input$doYouHaveDataSelectInput =="Yes")==1  ){
       projectConfigurationInfo$log[["scenario"]] <- "Scenario-3: does not has xls form. But, has the main data file to generate xlsform."
     }else{
@@ -159,11 +159,11 @@ server <- shinyServer(function(input, output) {
           column(width = projectConfigurationTheme$warningBlockWidth, offset = 0,
                  if(file.exists(paste(mainDir(), "data", "/form.xls", sep = "/", collapse = "/"))){
                    div(class="warningBlock",
-                     span(class="warningTitle","WARNING!"),
-                     span(class="warningBody","Be careful, there is already xlsform file (form.xls) in the data directory, once you upload the new file, it will be overridden.")
+                       span(class="warningTitle","WARNING!"),
+                       span(class="warningBody","Be careful, there is already xlsform file (form.xls) in the data directory, once you upload the new file, it will be overridden.")
                    )
                  }
-                             
+                 
           ),
           column(width = 9,
                  conditionalPanel(
@@ -219,15 +219,15 @@ server <- shinyServer(function(input, output) {
                      condition = "input.doYouHaveDataSelectInput == 'Yes'",
                      column(width = 9,
                             fileInput('dataUploadedFile', 'Choose your Data file',
-                               accept=c('text/csv',
-                                        'text/comma-separated-values,text/plain', 
-                                        '.csv'))),
+                                      accept=c('text/csv',
+                                               'text/comma-separated-values,text/plain', 
+                                               '.csv'))),
                      column(width = 3, style = "border-left: 1px solid lightgray; margin-top: 10px;",
                             radioButtons('dataUploadedFileSep', 'Separator',
-                                  c(Comma=',',
-                                    Semicolon=';',
-                                    Tab='\t'),
-                                  ',', inline =TRUE)),
+                                         c(Comma=',',
+                                           Semicolon=';',
+                                           Tab='\t'),
+                                         ',', inline =TRUE)),
                      column(width = 12,
                             actionButton("dataUploadFileButton", "Upload file", icon("upload"), class="uploadButton",
                                          style="width:100%; margin-bottom: 20px; height:45px;")
@@ -239,28 +239,28 @@ server <- shinyServer(function(input, output) {
       conditionalPanel(
         condition = "input.doYouHaveFormSelectInput == 'Yes'",
         div(id="doYouHaveDatasetsDiv",
-          box(id="doYouHaveDatasetsBox", title = "File(s) related to project",
-              width=12,status="primary", solidHeader = FALSE, collapsible = TRUE,
-              column(width = projectConfigurationTheme$questionsWidth, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                     h4("Do you have the Data file(s)?")
-              ),
-              column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
-                     selectInput("doYouHaveDatasetsSelectInput", label = NULL,choices = c("-- select --","Yes","No"))
-              ),
-              
-              column(width = 12,
-                     conditionalPanel(
-                       condition = "input.doYouHaveDatasetsSelectInput == 'Yes'",
-                       column(width = 12,
-                              uiOutput("dataInputsUI")
-                       ),
-                       column(width = 12,
-                              actionButton("saveDataFilesButton", "Upload and Save files", icon("upload"), class="uploadButton", style="margin: 15px 0px; width:100%;")
+            box(id="doYouHaveDatasetsBox", title = "File(s) related to project",
+                width=12,status="primary", solidHeader = FALSE, collapsible = TRUE,
+                column(width = projectConfigurationTheme$questionsWidth, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                       h4("Do you have the Data file(s)?")
+                ),
+                column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
+                       selectInput("doYouHaveDatasetsSelectInput", label = NULL,choices = c("-- select --","Yes","No"))
+                ),
+                
+                column(width = 12,
+                       conditionalPanel(
+                         condition = "input.doYouHaveDatasetsSelectInput == 'Yes'",
+                         column(width = 12,
+                                uiOutput("dataInputsUI")
+                         ),
+                         column(width = 12,
+                                actionButton("saveDataFilesButton", "Upload and Save files", icon("upload"), class="uploadButton", style="margin: 15px 0px; width:100%;")
+                         )
+                         
                        )
-                       
-                     )
-              )
-          )
+                )
+            )
         )
       ),
       conditionalPanel(
@@ -322,12 +322,12 @@ server <- shinyServer(function(input, output) {
         condition = "(input.doYouHaveFormSelectInput == 'No' && input.doYouWantGenerateFormSelectInput == 'Yes' && input.doYouHaveDataSelectInput == 'Yes') ||
         (input.doYouHaveFormSelectInput == 'Yes' && input.doYouHaveDatasetsSelectInput == 'Yes' && input.formIncludeSettingsSelectInput == 'No')",
         div(id="recordSettingsDiv",
-          box(id="recordSettingsBox", title = "Record Settings Configuration",
-              width=12,status="primary", solidHeader = FALSE, collapsible = TRUE,
-              column(width = 12, align="left",
-                     uiOutput("recordSettingsUI")
-              )
-          )
+            box(id="recordSettingsBox", title = "Record Settings Configuration",
+                width=12,status="primary", solidHeader = FALSE, collapsible = TRUE,
+                column(width = 12, align="left",
+                       uiOutput("recordSettingsUI")
+                )
+            )
         )
       ),
       
@@ -336,8 +336,8 @@ server <- shinyServer(function(input, output) {
         (input.doYouHaveFormSelectInput == 'No' && input.doYouHaveDataSelectInput == 'Yes' && input.doYouWantGenerateFormSelectInput == 'Yes') ",
         uiOutput("informationBoxAboutNextStep")
       )
-
-    )
+      
+  )
   })
   
   observeEvent(input$doYouHaveFormSelectInput,{
@@ -364,7 +364,7 @@ server <- shinyServer(function(input, output) {
                  showConfirmButton = TRUE
       )
     }
-      
+    
   })
   
   output$informationBoxAboutNextStep <- renderText({
@@ -372,18 +372,18 @@ server <- shinyServer(function(input, output) {
     if(
       (sum(input$doYouHaveFormSelectInput == 'Yes')==1 && projectConfigurationInfo$log[["xlsForm"]] && projectConfigurationInfo$log[["subAndMainfiles"]] && (sum(input$formIncludeSettingsSelectInput == 'Yes') == 1 || (sum(input$formIncludeSettingsSelectInput == 'No') == 1 && projectConfigurationInfo$log[["isPrepared"]] && projectConfigurationInfo$log[["isRecordSettingsSaved"]]) ) ) ||
       (sum(input$doYouHaveFormSelectInput == 'No')==1 && projectConfigurationInfo$log[["data"]] && projectConfigurationInfo$log[["isGenerated"]] && projectConfigurationInfo$log[["isPrepared"]] && projectConfigurationInfo$log[["isRecordSettingsSaved"]] && sum(input$doYouHaveFormSelectInput == 'No') == 1)
-       ){
+    ){
       
       projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- TRUE
       s <- paste(
-      div(
-        infoBox(
-          width = 12,strong("Perfect!"),h4("You can start the Analysis Plan Configrution",align="center")
-          ,icon = icon("check"),
-          color = "green"
+        div(
+          infoBox(
+            width = 12,strong("Perfect!"),h4("You can start the Analysis Plan Configrution",align="center")
+            ,icon = icon("check"),
+            color = "green"
+          )
         )
-      )
-      , s ,sep="" )
+        , s ,sep="" )
       return(s)
     }
   })
@@ -475,7 +475,7 @@ server <- shinyServer(function(input, output) {
                    confirmButtonCol = "#28A8E2",
                    animation = FALSE,
                    showConfirmButton = TRUE
-                   )
+        )
         return(FALSE)
       }
       updateProgress()
@@ -622,7 +622,7 @@ server <- shinyServer(function(input, output) {
     tryCatch({
       if(!projectConfigurationInfo$log[["xlsForm"]] ||
          (sum(input$doYouWantGenerateFormSelectInput == "Yes") &&  projectConfigurationInfo$log[["isGenerated"]] == FALSE)
-         ){
+      ){
         shinyalert("Error",
                    "You can't run this function without uploading or generating xlsform file",
                    type = "error",
@@ -636,9 +636,9 @@ server <- shinyServer(function(input, output) {
       
       if(
         (sum(input$doYouHaveFormSelectInput == "No") &&
-        sum(input$doYouWantGenerateFormSelectInput == "Yes") &&
-        sum(input$doYouHaveDataSelectInput == "Yes") &&
-        projectConfigurationInfo$log[["xlsForm"]]) ||
+         sum(input$doYouWantGenerateFormSelectInput == "Yes") &&
+         sum(input$doYouHaveDataSelectInput == "Yes") &&
+         projectConfigurationInfo$log[["xlsForm"]]) ||
         
         (sum(input$doYouHaveFormSelectInput == "Yes") &&
          sum(input$doYouHaveDatasetsSelectInput == "Yes") &&
@@ -667,7 +667,7 @@ server <- shinyServer(function(input, output) {
         })
         projectConfigurationInfo$data[["xlsFormFields"]] <- survey[!survey$type %in% c("begin repeat", "end repeat", "end_repeat",  "begin_repeat",
                                                                                        "begin group", "end group", "end_group", "begin_group" 
-                                                                                       ), "name"]
+        ), "name"]
         
         #progress$close()
         shinyalert("Done, xlsform prepared using 'kobo_prepare_form' function",
@@ -678,7 +678,7 @@ server <- shinyServer(function(input, output) {
                    animation = FALSE,
                    showConfirmButton = TRUE
         )
-          
+        
         projectConfigurationInfo$log[["isPrepared"]] <- TRUE
         projectConfigurationInfo$log[["isRecordSettingsSaved"]] <- FALSE
         projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- FALSE
@@ -749,9 +749,9 @@ server <- shinyServer(function(input, output) {
        sum(input$doYouWantGenerateFormSelectInput == "Yes") &&
        sum(input$doYouHaveDataSelectInput == "Yes") &&
        (
-        projectConfigurationInfo$log[["isPrepared"]] == FALSE ||
-        projectConfigurationInfo$log[["isGenerated"]] == FALSE )
-       )
+         projectConfigurationInfo$log[["isPrepared"]] == FALSE ||
+         projectConfigurationInfo$log[["isGenerated"]] == FALSE )
+      )
     ){
       if(projectConfigurationInfo$log[["isPrepared"]] == FALSE  && projectConfigurationInfo$log[["isGenerated"]] == FALSE ){
         s <- paste(infoBox(
@@ -782,11 +782,11 @@ server <- shinyServer(function(input, output) {
       ), s ,sep="" )
       return(s)
     }else if(
-        sum(input$doYouHaveFormSelectInput == "Yes") &&
-        sum(input$doYouHaveDatasetsSelectInput == "Yes") &&
-        sum(input$formIncludeSettingsSelectInput == "No") &&
-        projectConfigurationInfo$log[["isPrepared"]] == FALSE 
-      ){
+      sum(input$doYouHaveFormSelectInput == "Yes") &&
+      sum(input$doYouHaveDatasetsSelectInput == "Yes") &&
+      sum(input$formIncludeSettingsSelectInput == "No") &&
+      projectConfigurationInfo$log[["isPrepared"]] == FALSE 
+    ){
       s <- paste(infoBox(
         width = 12,strong("Information"),h4("You have to run 'Prepare xlsform' function before starting configuration of Record Settings",align="center"), icon = icon("exclamation-triangle"),
         color = "orange"
@@ -795,93 +795,93 @@ server <- shinyServer(function(input, output) {
     }
     s <- paste(
       fluidRow(
-      
+        
         column(12, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px; margin-bottom: 20px; background-color: ghostwhite; padding-top: 20px;",
-          column(width = projectConfigurationTheme$questionsWidth, style = "border-bottom: 1px dotted lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-               h4("What sampling do you have?")
-          ),
-          column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
-                 selectInput("samplingSelectInput", label = NULL,choices = c("-- select --",
-                                                                             "No sampling(type 1)",
-                                                                             "Cluster sample (type 2)",
-                                                                             "Stratified sample (type 3)"
-                                                                             ))
-          
-            ),
-          conditionalPanel(
-            condition = "input.samplingSelectInput == 'Cluster sample (type 2)'",
-            column(width = 12, style="margin: 15px 0px 15px; border-top: 1px solid lightgray; padding: 20px 10px 0px;",
-                   column(width = 6, 
-                          selectizeInput("variableNameCluster", label = "Select the name of cluster variable",choices = projectConfigurationInfo$data[["xlsFormFields"]]
-                                         ,options = list(placeholder = '-- select --', onInitialize = I('function() { this.setValue(""); }'))
-                                         )
-                   ),
-                   column(width = 6,
-                          textInput("clusterIdTextInput", label = "Enter the clustre Id", placeholder = "Ex: 230948")
-                   ),
-                   column(width = 12,
-                          column(width = 9, style = "padding-left: 0px;",
-                                 fileInput('weightsClusterFileInput', 'Choose weights file for Cluster sample',
-                                           accept=c('text/csv',
-                                                    'text/comma-separated-values,text/plain', 
-                                                    '.csv'))),
-                          column(width = 3, style = "border-left: 1px solid lightgray; margin-top: 10px;",
-                                 radioButtons('weightsClusterSep', 'Separator',
-                                              c(Comma=',',
-                                                Semicolon=';',
-                                                Tab='\t'),
-                                              ',', inline =TRUE)),
-                          column(width = 3, offset = 9,
-                                 if(file.exists(paste(mainDir(), "data", "/weightsCluster.csv", sep = "/", collapse = "/"))){
-                                   div(class="warningBlock",
-                                       span(class="warningTitle","WARNING!"),
-                                       span(class="warningBody","Be careful, there is already weightsCluster.csv file in the data directory, once you upload the new file, it will be overridden.")
-                                   )
-                                 }
-                                 
-                          )
-                   )
-            )
-            
-          ),
-          conditionalPanel(
-            condition = "input.samplingSelectInput == 'Stratified sample (type 3)'",
-            column(width = 12, style="margin: 15px 0px 15px; border-top: 1px solid lightgray; padding: 20px 10px 0px;",
-                   column(width = 6, 
-                          selectizeInput("variableNameStratified", label = "Select the name of stratified variable",choices = projectConfigurationInfo$data[["xlsFormFields"]]
-                                         ,options = list(placeholder = '-- select --', onInitialize = I('function() { this.setValue(""); }'))
-                                         )
-                   ),
-                   column(width = 6,
-                          textInput("stratifiedIdTextInput", label = "Enter the stratified Id", placeholder = "Ex: 230948")
-                   ),
-                   column(width = 12,
-                          column(width = 9, style = "padding-left: 0px;",
-                                 fileInput('weightsStratifiedFileInput', 'Choose weights file for Stratified sample',
-                                           accept=c('text/csv',
-                                                    'text/comma-separated-values,text/plain', 
-                                                    '.csv'))),
-                          column(width = 3, style = "border-left: 1px solid lightgray; margin-top: 10px;",
-                                 radioButtons('weightsStratifiedSep', 'Separator',
-                                              c(Comma=',',
-                                                Semicolon=';',
-                                                Tab='\t'),
-                                              ',', inline =TRUE)),
-                          column(width = 3, offset = 9,
-                                 if(file.exists(paste(mainDir(), "data", "/weightsStratified.csv", sep = "/", collapse = "/"))){
-                                   div(class="warningBlock",
-                                       span(class="warningTitle","WARNING!"),
-                                       span(class="warningBody","Be careful, there is already weightsStratified.csv file in the data directory, once you upload the new file, it will be overridden.")
-                                   )
-                                 }
-                                 
-                          )
-                   )
-            )
-            
-          )
+               column(width = projectConfigurationTheme$questionsWidth, style = "border-bottom: 1px dotted lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                      h4("What sampling do you have?")
+               ),
+               column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
+                      selectInput("samplingSelectInput", label = NULL,choices = c("-- select --",
+                                                                                  "No sampling(type 1)",
+                                                                                  "Cluster sample (type 2)",
+                                                                                  "Stratified sample (type 3)"
+                      ))
+                      
+               ),
+               conditionalPanel(
+                 condition = "input.samplingSelectInput == 'Cluster sample (type 2)'",
+                 column(width = 12, style="margin: 15px 0px 15px; border-top: 1px solid lightgray; padding: 20px 10px 0px;",
+                        column(width = 6, 
+                               selectizeInput("variableNameCluster", label = "Select the name of cluster variable",choices = projectConfigurationInfo$data[["xlsFormFields"]]
+                                              ,options = list(placeholder = '-- select --', onInitialize = I('function() { this.setValue(""); }'))
+                               )
+                        ),
+                        column(width = 6,
+                               textInput("clusterIdTextInput", label = "Enter the clustre Id", placeholder = "Ex: 230948")
+                        ),
+                        column(width = 12,
+                               column(width = 9, style = "padding-left: 0px;",
+                                      fileInput('weightsClusterFileInput', 'Choose weights file for Cluster sample',
+                                                accept=c('text/csv',
+                                                         'text/comma-separated-values,text/plain', 
+                                                         '.csv'))),
+                               column(width = 3, style = "border-left: 1px solid lightgray; margin-top: 10px;",
+                                      radioButtons('weightsClusterSep', 'Separator',
+                                                   c(Comma=',',
+                                                     Semicolon=';',
+                                                     Tab='\t'),
+                                                   ',', inline =TRUE)),
+                               column(width = 3, offset = 9,
+                                      if(file.exists(paste(mainDir(), "data", "/weightsCluster.csv", sep = "/", collapse = "/"))){
+                                        div(class="warningBlock",
+                                            span(class="warningTitle","WARNING!"),
+                                            span(class="warningBody","Be careful, there is already weightsCluster.csv file in the data directory, once you upload the new file, it will be overridden.")
+                                        )
+                                      }
+                                      
+                               )
+                        )
+                 )
+                 
+               ),
+               conditionalPanel(
+                 condition = "input.samplingSelectInput == 'Stratified sample (type 3)'",
+                 column(width = 12, style="margin: 15px 0px 15px; border-top: 1px solid lightgray; padding: 20px 10px 0px;",
+                        column(width = 6, 
+                               selectizeInput("variableNameStratified", label = "Select the name of stratified variable",choices = projectConfigurationInfo$data[["xlsFormFields"]]
+                                              ,options = list(placeholder = '-- select --', onInitialize = I('function() { this.setValue(""); }'))
+                               )
+                        ),
+                        column(width = 6,
+                               textInput("stratifiedIdTextInput", label = "Enter the stratified Id", placeholder = "Ex: 230948")
+                        ),
+                        column(width = 12,
+                               column(width = 9, style = "padding-left: 0px;",
+                                      fileInput('weightsStratifiedFileInput', 'Choose weights file for Stratified sample',
+                                                accept=c('text/csv',
+                                                         'text/comma-separated-values,text/plain', 
+                                                         '.csv'))),
+                               column(width = 3, style = "border-left: 1px solid lightgray; margin-top: 10px;",
+                                      radioButtons('weightsStratifiedSep', 'Separator',
+                                                   c(Comma=',',
+                                                     Semicolon=';',
+                                                     Tab='\t'),
+                                                   ',', inline =TRUE)),
+                               column(width = 3, offset = 9,
+                                      if(file.exists(paste(mainDir(), "data", "/weightsStratified.csv", sep = "/", collapse = "/"))){
+                                        div(class="warningBlock",
+                                            span(class="warningTitle","WARNING!"),
+                                            span(class="warningBody","Be careful, there is already weightsStratified.csv file in the data directory, once you upload the new file, it will be overridden.")
+                                        )
+                                      }
+                                      
+                               )
+                        )
+                 )
+                 
+               )
         ),
-       
+        
         column(12, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px; margin-bottom: 20px;",
                column(width = projectConfigurationTheme$questionsWidth, style = "border-bottom: 1px dotted lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
                       h4("Do you have data cleaning log?")
@@ -912,16 +912,16 @@ server <- shinyServer(function(input, output) {
                                               Semicolon=';',
                                               Tab='\t'),
                                             ',', inline =TRUE))
-                      )
+                 )
                )
                
         ),
         column(12, style = "border: 1px solid lightgray; border-bottom-right-radius: 7px; margin-bottom: 20px; background-color: ghostwhite; padding-top: 0px;",
                actionButton("saveRecordSettingsConfigurationButton", "Save Settings", icon("upload"), class="uploadButton", style="margin: 15px 0px; height:45px; width:100%;")
         )
-      
-      
-    ), s ,sep="" )
+        
+        
+      ), s ,sep="" )
     
     return(s)
   })
@@ -933,7 +933,7 @@ server <- shinyServer(function(input, output) {
                                value = character(),
                                path = character(),
                                stringsAsFactors = FALSE
-                               )
+      )
       lastRow <- 1
       
       progress <- shiny::Progress$new()
@@ -947,7 +947,7 @@ server <- shinyServer(function(input, output) {
         progress$set(value = value, detail = detail)
       }
       updateProgress()
-    
+      
       if(sum(input$samplingSelectInput == "-- select --")){
         shinyalert("Error",
                    "You can't save the settings without selecting one of the sampling's options\n please select one.",
@@ -1160,11 +1160,20 @@ server <- shinyServer(function(input, output) {
   #######################################           End               ############################################
   
   ####################################### Analysis Plan Configuration page ############################################
+  observe({
+    if (!is.numeric(input$rowNumberForCalculationBuilder)) {
+      updateNumericInput(session, "rowNumberForCalculationBuilder", "Enter the row number for Calculation Builder tool", 1)
+    }else{
+      if (input$rowNumberForCalculationBuilder < 1) {
+        updateNumericInput(session, "rowNumberForCalculationBuilder", "Enter the row number for Calculation Builder tool", 1)
+      }
+    }
+  })
+  
   sheets <- reactiveValues()
   
   output$analysisPlanConfiguration <- renderUI({
-    #if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
-    if(FALSE){
+    if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
       infoBox(
         width = 12,strong("Warning"),h4("You cannot proceed without completing Project Configuration section",align="center")
         ,icon = icon("exclamation-triangle"),
@@ -1184,13 +1193,37 @@ server <- shinyServer(function(input, output) {
         conditionalPanel(
           condition = "input.doYouHaveAnalysisPlanSelectInput=='No'",
           
-          tabBox(width=12, id = "analysisPlanTab", title = "Documented Analysis Plan",height="600px",
-              tabPanel(id="surveySheetTab", "Survey Sheet", rHandsontableOutput("surveySheetUI")),
-              tabPanel(id="indicatorsSheetTab","Indicators Sheet", rHandsontableOutput("indicatorsSheetUI")),
-              tabPanel(id="choicesSheetTab","Choices Sheet", rHandsontableOutput("choicesSheetUI"))
+          tabBox(width=12, id = "analysisPlanTab", title = "Documented Analysis Plan",height="650px",
+                 tabPanel(id="surveySheetTab", "Survey Sheet", 
+                          column(width = 12,
+                                 rHandsontableOutput("surveySheetUI")
+                          )
+                        ),
+                 
+                 tabPanel(id="indicatorsSheetTab","Indicators Sheet", 
+                          column(width = 8,
+                                 actionButton("calculationBuilderButton", "For calculation part, you can use the query builder by clicking on the button and copy the result into calculation cell.", 
+                                              icon("hammer", "fa-2x"),
+                                              style="width:100%; margin-top: 10px; margin-bottom: 35px;; height: 50px;",
+                                              class="toolButton"
+                                              )
+                          ),
+                          column(width = 4,
+                                 numericInput("rowNumberForCalculationBuilder", "Enter the row number for Calculation Builder tool", 1, min = 1, max = NA, step = 1,
+                                              width = "100%")
+                          ),
+                          column(width = 12,
+                            rHandsontableOutput("indicatorsSheetUI")
+                          )
+                        ),
+                 tabPanel(id="choicesSheetTab","Choices Sheet", 
+                          column(width = 12,
+                                 rHandsontableOutput("choicesSheetUI")
+                          )
+                        )
           ),
           wellPanel(
-            actionButton("saveSheets", "Save Sheets", icon("save"), 
+            actionButton("saveSheets", "Save Sheets", icon("save", "fa-2x"), 
                          style="width:100%; margin-top: 10px; margin-bottom: 15px; height: 60px;", class="uploadButton")
           )  
           
@@ -1222,6 +1255,399 @@ server <- shinyServer(function(input, output) {
   
   output$surveySheetUI <- renderRHandsontable({
     tryCatch({
+      rhandsontable(sheets[["survey"]], stretchH = "all", height = 550, useTypes = TRUE) %>%
+        hot_col("type", readOnly = TRUE, width = 200) %>%
+        hot_col("name", readOnly = TRUE, width = 200) %>%
+        hot_col("label", readOnly = TRUE, width = 200) %>%
+        hot_col("variable", type = "dropdown", source = c("integer","numeric","character","ordinal factor", "factor", "date", "time", "datetime"), width = 120) %>%
+        hot_col("chapter",  width = 200) %>%
+        hot_col("disaggregation",  width = 120, halign="htCenter") %>%
+        hot_col("structuralequation.risk",  width = 200, halign="htCenter") %>%
+        hot_col("structuralequation.coping",  width = 200, halign="htCenter") %>%
+        hot_col("structuralequation.resilience",  width = 200, halign="htCenter") %>%
+        hot_col("anonymise",  width = 120, halign="htCenter") %>%
+        hot_col("correlate",  width = 120, halign="htCenter") %>%
+        hot_col("clean",  width = 120, halign="htCenter") %>%
+        hot_col("cluster",  width = 120, halign="htCenter") %>%
+        hot_col("predict",  width = 120, halign="htCenter") %>%
+        hot_col("mappoint",  width = 120, halign="htCenter") %>%
+        hot_col("mappoly",  width = 120, halign="htCenter") %>%
+        hot_context_menu(allowRowEdit = FALSE, allowColEdit = FALSE)
+      
+      
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  
+  output$indicatorsSheetUI <- renderRHandsontable({
+    tryCatch({
+      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+      
+      list_name <- c()
+      choices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
+                               stringsAsFactors = FALSE)
+      if ("list_name" %in% colnames(choices)) {
+        list_name <- choices$list_name
+        list_name <- list_name[!is.na(list_name) | trimws(list_name) != '']
+        list_name <- list_name[!duplicated(list_name)]
+        list_name <- sort(list_name)
+      } 
+      
+      
+      if(length(projectConfigurationInfo$data[["beginRepeatList"]])==1){
+        rhandsontable(sheets[["indicator"]], stretchH = "all", height = 450, useTypes = TRUE) %>%
+          hot_col("type", width = 120, type = "dropdown", source = c("integer","numeric","select_one")) %>%
+          hot_col("fullname", width = 200) %>%
+          hot_col("label", width = 200) %>%
+          hot_col("chapter", width = 200) %>%
+          hot_col("disaggregation",  width = 120, halign="htCenter") %>%
+          hot_col("correlate",  width = 120, halign="htCenter") %>%
+          hot_col("sensitive",  width = 120, halign="htCenter") %>%
+          hot_col("anonymise", width = 120, type = "dropdown", source = c("key", "outlier", "sensitive", "remove", "reference")) %>%
+          hot_col("cluster",  width = 120, halign="htCenter") %>%
+          hot_col("predict",  width = 120, halign="htCenter") %>%
+          hot_col("variable",  width = 120, halign="htCenter") %>%
+          hot_col("mappoint",  width = 120, halign="htCenter") %>%
+          hot_col("mappoly",  width = 120, halign="htCenter") %>%
+          hot_col("structuralequation",  width = 120, halign="htCenter") %>%
+          hot_col("frame", readOnly = TRUE, width = 120) %>%
+          hot_col("listname",  width = 120, type = "autocomplete", source = list_name) %>%
+          hot_col("calculation",  width = 200)
+      }else{
+        rhandsontable(sheets[["indicator"]], stretchH = "all", height = 450, useTypes = TRUE) %>%
+          hot_col("type", width = 120, type = "dropdown", source = c("integer","numeric","select_one")) %>%
+          hot_col("fullname", width = 200) %>%
+          hot_col("label", width = 200) %>%
+          hot_col("chapter", width = 200) %>%
+          hot_col("disaggregation",  width = 120, halign="htCenter") %>%
+          hot_col("correlate",  width = 120, halign="htCenter") %>%
+          hot_col("sensitive",  width = 120, halign="htCenter") %>%
+          hot_col("anonymise", width = 120, type = "dropdown", source = c("key", "outlier", "sensitive", "remove", "reference")) %>%
+          hot_col("cluster",  width = 120, halign="htCenter") %>%
+          hot_col("predict",  width = 120, halign="htCenter") %>%
+          hot_col("variable",  width = 120, halign="htCenter") %>%
+          hot_col("mappoint",  width = 120, halign="htCenter") %>%
+          hot_col("mappoly",  width = 120, halign="htCenter") %>%
+          hot_col("structuralequation",  width = 120, halign="htCenter") %>%
+          hot_col("frame", width = 120, type = "dropdown", source = projectConfigurationInfo$data[["beginRepeatList"]] ) %>%
+          hot_col("listname",  width = 120, type = "autocomplete", source = list_name) %>%
+          hot_col("calculation",  width = 200)
+      }
+      
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  
+  observeEvent(input$calculationBuilderButton,{
+    if (!is.numeric(input$rowNumberForCalculationBuilder)) {
+      shinyalert("Error",
+                 "Please make sure that row number input is a number and doesn't contains characters",
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+      return(FALSE)
+    }else{
+      if (input$rowNumberForCalculationBuilder < 1) {
+        shinyalert("Error",
+                   "Please make sure that row number input greater than 1",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+    }
+    if(!input$rowNumberForCalculationBuilder%in%rownames(sheets[["indicator"]])){
+      shinyalert("Error",
+                 "Please make sure that row number input equal to one of the rows number in Indicators Sheet",
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+      return(FALSE)
+    }
+    showModal(showCalculationBuilderTool(input$rowNumberForCalculationBuilder))
+  })
+  
+  showCalculationBuilderTool <- function(rowNumber) {
+    modalDialog(id="showCalculationBuilderToolPopUp", 
+                title = paste("Calculation Builder for row number:",rowNumber),
+                uiOutput("calculationBuilderToolBody"),
+                size = "l",
+                footer = tagList(
+                  modalButton("Cancel"),
+                  actionButton("queryConverterButton", "Get the calculation", class="toolButton", style="height: 35px;")
+                )
+    )
+  }
+  
+  output$calculationBuilderToolBody <- renderUI({
+    fluidRow(
+      column(
+          width=12,
+          column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                 h4("Select the case of this Indicator?")
+          ),
+          column(width = 6, offset = 0,
+                 selectInput("indicatorCaseSelectInput", label = NULL,choices = c("-- select --",
+                                                                                  "Discretize a value",
+                                                                                  "Re categorize a categorical variable by re coding modalities",
+                                                                                  "Sum up different numeric or integer variables",
+                                                                                  "Calculate min, max or avg value for multiple integer or numeric variables",
+                                                                                  "Set condition on specific variables",
+                                                                                  "Calculate ratio by dividing 2 numeric or integer variables",
+                                                                                  "Aggregate variables from nested frame"
+                                                                                  ),width = "100%")
+          )
+      ),
+      conditionalPanel(
+        condition = "input.indicatorCaseSelectInput == 'Discretize a value'",
+        column(
+          width=12,
+          column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                 h4("Select the frame that contains the variable?")
+          ),
+          column(width = 6, offset = 0,
+                 selectInput("frameDVSelectInput", label = NULL,choices = c("-- select --", projectConfigurationInfo$data[["beginRepeatList"]]),width = "100%")
+          )
+        )
+      ),
+      conditionalPanel(
+        condition = "input.frameDVSelectInput != '-- select --' && input.indicatorCaseSelectInput == 'Discretize a value'",
+        uiOutput("variableDVUI")
+      ),
+      conditionalPanel(
+        condition = "input.variableDVSelectInput != '-- select --' && input.frameDVSelectInput != '-- select --'  && input.indicatorCaseSelectInput == 'Discretize a value'",
+        uiOutput("breaksDVUI")
+      ),
+      conditionalPanel(
+        condition = "input.variableDVSelectInput != '-- select --' && input.frameDVSelectInput != '-- select --' && input.breaksDVTextInput != '' && input.indicatorCaseSelectInput == 'Discretize a value'",
+        uiOutput("resultDVUI")
+      )
+    )
+  })
+  
+  output$variableDVUI <- renderUI({
+    if(input$frameDVSelectInput != "-- select --"){
+      if(file.exists(paste(mainDir(), "data", paste("/",input$frameDVSelectInput, ".csv", sep=""), sep = "/", collapse = "/"))){
+        temp <- read.csv(
+          paste(mainDir(), "data", paste("/",input$frameDVSelectInput, ".csv", sep=""), sep = "/", collapse = "/"),
+          stringsAsFactors = FALSE, nrows = 1
+        )
+        selectedCol <- unlist(lapply(temp, is.numeric)) 
+        column(
+          width=12,
+          column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                 h4("Select the variable")
+          ),
+          column(width = 6, offset = 0,
+                 selectizeInput("variableDVSelectInput", label = NULL,choices = c("-- select --",
+                                                                                  colnames(temp[ , selectedCol])
+                 ),width = "100%")
+          )
+        )
+      }else{
+        infoBox(
+          width = 12,strong("Warning"),
+          h4(paste("You cannot proceed without",input$frameDVSelectInput,"file"),align="center")
+          ,icon = icon("exclamation-triangle"),
+          color = "yellow"
+        )
+      }
+
+    }
+  })
+  
+  output$breaksDVUI <- renderUI({
+    if(!is.null(input$variableDVSelectInput)){
+      if(input$variableDVSelectInput != "-- select --"){
+        column(
+          width=12,
+          column(width = 4, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                 h4("Enter the Breaks argument")
+          ),
+          column(width = 1,
+                 div(class="help-tip",
+                     p(
+                     span("Enter either a numeric vector of two or more unique cut points EX: 0,25,50,75,100",style="display: block;"),
+                     span("OR\n",style="display: block;text-align: center;margin: 20px 0px;font-weight: 900;border-top: 1px dotted white;line-height: 0px;
+                          font-size: 25px;color: #1aab8a;"),
+                     span("Single number as Interval length EX: 5, so the length of the interval will be equal to max(x)/5, where x is the variable.",style="display: block;")
+                     )
+                 )
+          ),
+          column(width = 7, offset = 0,
+                 textInput("breaksDVTextInput", label = NULL, width = "100%", placeholder="EX: 0,25,50,75,100 or 5")
+          )
+        )
+      }
+    }
+  })
+  
+  output$resultDVUI <- renderText({
+    s <- ""
+    if(!is.null(input$breaksDVTextInput)){
+      if(resultDVUIValue$text == "ERROR"){
+        s<- paste(
+          div(id="resultDVUIDivError",
+            column(style="margin-top: 20px;",
+                   width=12,
+                   box(id="resultDVUIBoxError",
+                       title="ERROR",
+                       style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
+                       width=12, solidHeader = FALSE, collapsible = FALSE,
+                       p("please make sure that breaks input contains only an integer value")
+                   )
+                   
+            )
+          ),s,sep = "")
+      }else if(input$breaksDVTextInput != "" && resultDVUIValue$text != ""){
+        s<- paste(
+          div(id="resultDVUIDivSuccess",
+            column(style="margin-top: 20px;",
+            width=12,
+            box(id="resultDVUIBoxSuccess",
+                title=paste("Copy the text and paste it into calculation column of row number:",input$rowNumberForCalculationBuilder),
+                style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
+                width=12, solidHeader = FALSE, collapsible = FALSE,
+                p(resultDVUIValue$text)
+            )
+  
+          )
+        ),s,sep = "")
+      }
+    }
+    return(s)
+  })
+  
+  resultDVUIValue <- reactiveValues(text="")
+  
+  observe({
+    if(!is.null(input$breaksDVTextInput)){
+      if(input$breaksDVTextInput == ""){
+        resultDVUIValue$text = ""
+      }
+    }
+  })
+  
+  observeEvent(input$queryConverterButton,{
+    if(input$indicatorCaseSelectInput=="Discretize a value"){
+      if(sum(is.na(as.numeric(strsplit(input$breaksDVTextInput,",")[[1]]))) == 1){
+        resultDVUIValue$text <- "ERROR"
+        return(FALSE)
+      }
+      bre <- paste( strsplit(input$breaksDVTextInput,",")[[1]] ,sep = "," ,collapse=",")
+      result <- "cut("
+      result <- paste(result,input$frameDVSelectInput,"$",input$variableDVSelectInput, " ", sep="")
+      result <- paste(result, ",c(", bre,"))" , sep = ""  )
+      resultDVUIValue$text <- result
+    }else if(input$indicatorCaseSelectInput=="Re categorize a categorical variable by re coding modalities"){
+      
+    }
+    
+  })
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  output$choicesSheetUI <- renderUI({
+    
+    
+  })
+  
+  observeEvent(input$saveSheets, {
+    tryCatch({
+      ###################merge main survey with user survey#############
+      userSurvey <- isolate(sheets[["survey"]])
+      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+      mainSurvey <<- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                                  stringsAsFactors = FALSE)
+      if ("required" %in% colnames(mainSurvey)) {
+        userSurvey$required <- NA
+      }
+      if ("relevant" %in% colnames(mainSurvey)) {
+        userSurvey$relevant <- NA
+      }
+      if ("constraint" %in% colnames(mainSurvey)) {
+        userSurvey$constraint <- NA
+      }
+      if ("calculate" %in% colnames(mainSurvey)) {
+        userSurvey$calculate <- NA
+      }
+      userSurvey <<- userSurvey
+      newSurvey <- rbind(mainSurvey[!rownames(mainSurvey) %in% rownames(userSurvey),],
+                         userSurvey
+      )
+      
+      newSurvey <- newSurvey[ order(as.numeric(row.names(newSurvey))), ]
+      
+      if ("required" %in% colnames(mainSurvey)) {
+        newSurvey$required <- mainSurvey$required
+      }
+      if ("relevant" %in% colnames(mainSurvey)) {
+        newSurvey$relevant <- mainSurvey$relevant
+      }
+      if ("constraint" %in% colnames(mainSurvey)) {
+        newSurvey$constraint <- mainSurvey$constraint
+      }
+      if ("calculate" %in% colnames(mainSurvey)) {
+        newSurvey$calculate <- mainSurvey$calculate
+      }
+      
+      newIndicators <- isolate(sheets[["indicator"]])
+      
+      
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  
+  observe({
+    if(FALSE){#if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
+      return(NULL)
+    }
+    indicator <- c()
+    survey <- c()
+    if (!is.null(input$surveySheetUI)) {
+      
+      survey = hot_to_r(input$surveySheetUI)#as.data.frame(do.call(rbind, input$surveySheetUI$data))
+    } 
+    else {
       form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
       survey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
                               stringsAsFactors = FALSE)
@@ -1233,7 +1659,7 @@ server <- shinyServer(function(input, output) {
         shinyalert("Error",
                    paste("You need to make sure that all required fields are existing in survey sheet\n",
                          reqNames
-                         ),
+                   ),
                    type = "error",
                    closeOnClickOutside = FALSE,
                    confirmButtonCol = "#ff4d4d",
@@ -1243,7 +1669,6 @@ server <- shinyServer(function(input, output) {
         return(FALSE)
       }
       survey <- survey[reqNames]
-      survey$chapter <- as.character(survey$chapter)
       survey <- survey[startsWith(tolower(survey$type), "integer") |
                          startsWith(tolower(survey$type), "decimal") |
                          startsWith(tolower(survey$type), "geopoint") |
@@ -1264,48 +1689,35 @@ server <- shinyServer(function(input, output) {
       survey[tolower(survey$type) %in% c("time") ,"variable"] = "time"
       survey[tolower(survey$type) %in% c("datetime") ,"variable"] = "datetime"
       
-      if(nrow(survey)==0){
-        survey[nrow(survey)+1,] <- NA
-      }
-
       
-      rhandsontable(survey, stretchH = "all", height = 550, useTypes = TRUE) %>%
-        hot_col("type", readOnly = TRUE, width = 200) %>%
-        hot_col("name", readOnly = TRUE, width = 200) %>%
-        hot_col("label", readOnly = TRUE, width = 200) %>%
-        hot_col("variable", type = "dropdown", source = c("integer","numeric","character","ordinal factor", "factor", "date", "time", "datetime"), width = 120) %>%
-        hot_col("chapter",  width = 200) %>%
-        hot_col("disaggregation",  width = 120, halign="htCenter") %>%
-        hot_col("structuralequation.risk",  width = 120, halign="htCenter") %>%
-        hot_col("structuralequation.coping",  width = 120, halign="htCenter") %>%
-        hot_col("structuralequation.resilience",  width = 120, halign="htCenter") %>%
-        hot_col("anonymise",  width = 120, halign="htCenter") %>%
-        hot_col("correlate",  width = 120, halign="htCenter") %>%
-        hot_col("clean",  width = 120, halign="htCenter") %>%
-        hot_col("cluster",  width = 120, halign="htCenter") %>%
-        hot_col("predict",  width = 120, halign="htCenter") %>%
-        hot_col("mappoint",  width = 120, halign="htCenter") %>%
-        hot_col("mappoly",  width = 120, halign="htCenter")
-        
-        
-        
-    }, error = function(err) {
-      shinyalert("Error",
-                 err$message,
-                 type = "error",
-                 closeOnClickOutside = FALSE,
-                 confirmButtonCol = "#ff4d4d",
-                 animation = FALSE,
-                 showConfirmButton = TRUE
-      )
-    })
-  })
-  
-  output$indicatorsSheetUI <- renderRHandsontable({
-    tryCatch({
+      survey$chapter <- as.character(survey$chapter)
+      survey$variable <- as.character(survey$variable)
+      
+      survey$disaggregation <- as.logical(survey$disaggregation)
+      survey$structuralequation.risk <- as.logical(survey$structuralequation.risk)
+      survey$structuralequation.coping <- as.logical(survey$structuralequation.coping)
+      survey$structuralequation.resilience <- as.logical(survey$structuralequation.resilience)
+      survey$anonymise <- as.logical(survey$anonymise)
+      survey$correlate <- as.logical(survey$correlate)
+      survey$clean <- as.logical(survey$clean)
+      survey$cluster <- as.logical(survey$cluster)
+      survey$predict <- as.logical(survey$predict)
+      survey$mappoint <- as.logical(survey$mappoint)
+      survey$mappoly <- as.logical(survey$mappoly)
+    }
+    survey <- survey[ order(as.numeric(row.names(survey))), ]
+    sheets[["survey"]] <- survey
+    if(nrow(survey)==0){
+      survey[nrow(survey)+1,] <- NA
+    }
+    
+    if (!is.null(input$indicatorsSheetUI)) {
+      indicator = hot_to_r(input$indicatorsSheetUI)#as.data.frame(do.call(rbind, input$indicatorsSheetUI$data))#
+    } 
+    else {
       form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
       indicator <- as.data.frame(read_excel(form_tmp, sheet = "indicator"),
-                              stringsAsFactors = FALSE)
+                                 stringsAsFactors = FALSE)
       
       
       reqNames <- c("type", "fullname", "label", "chapter", "disaggregation", "correlate", "sensitive",
@@ -1327,139 +1739,34 @@ server <- shinyServer(function(input, output) {
       indicator <- indicator[reqNames]
       
       
+      indicator$type <- as.character(indicator$type)
       indicator$fullname <- as.character(indicator$fullname)
       indicator$label <- as.character(indicator$label)
       indicator$chapter <- as.character(indicator$chapter)
-      indicator$calculation <- as.character(indicator$calculation)
+      indicator$anonymise <- as.character(indicator$anonymise)
       indicator$listname <- as.character(indicator$listname)
+      indicator$calculation <- as.character(indicator$calculation)
       
-      if(nrow(indicator)==0){
-        indicator[nrow(indicator)+1,] <- NA
-      }
+      indicator$disaggregation <- as.logical(indicator$disaggregation)
+      indicator$correlate <- as.logical(indicator$correlate)
+      indicator$sensitive <- as.logical(indicator$sensitive)
+      indicator$cluster <- as.logical(indicator$cluster)
+      indicator$predict <- as.logical(indicator$predict)
+      indicator$variable <- as.logical(indicator$variable)
+      indicator$mappoint <- as.logical(indicator$mappoint)
+      indicator$mappoly <- as.logical(indicator$mappoly)
+      indicator$structuralequation <- as.logical(indicator$structuralequation)
       
-      list_name <- c()
-      choices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
-                      stringsAsFactors = FALSE)
-      if ("list_name" %in% colnames(choices)) {
-        list_name <- choices$list_name
-        list_name <- list_name[!is.na(list_name) | trimws(list_name) != '']
-        list_name <- list_name[!duplicated(list_name)]
-        list_name <- sort(list_name)
-        yy<<-list_name
-      } 
-      
-      rhandsontable(indicator, stretchH = "all", height = 550, useTypes = TRUE) %>%
-        hot_col("type", width = 120, type = "dropdown", source = c("integer","numeric","select_one")) %>%
-        hot_col("fullname", width = 200) %>%
-        hot_col("label", width = 200) %>%
-        hot_col("chapter", width = 200) %>%
-        hot_col("disaggregation",  width = 120, halign="htCenter") %>%
-        hot_col("correlate",  width = 120, halign="htCenter") %>%
-        hot_col("sensitive",  width = 120, halign="htCenter") %>%
-        hot_col("anonymise", width = 120, type = "dropdown", source = c("key", "outlier", "sensitive", "remove", "reference")) %>%
-        hot_col("cluster",  width = 120, halign="htCenter") %>%
-        hot_col("predict",  width = 120, halign="htCenter") %>%
-        hot_col("variable",  width = 120, halign="htCenter") %>%
-        hot_col("mappoint",  width = 120, halign="htCenter") %>%
-        hot_col("mappoly",  width = 120, halign="htCenter") %>%
-        hot_col("structuralequation",  width = 120, halign="htCenter") %>%
-        hot_col("frame", width = 120, type = "dropdown", source = projectConfigurationInfo$data[["beginRepeatList"]]) %>%
-        hot_col("listname",  width = 120, type = "dropdown", source = list_name) %>%
-        hot_col("calculation",  width = 200) 
-      
-      
-      
-    }, error = function(err) {
-      shinyalert("Error",
-                 err$message,
-                 type = "error",
-                 closeOnClickOutside = FALSE,
-                 confirmButtonCol = "#ff4d4d",
-                 animation = FALSE,
-                 showConfirmButton = TRUE
-      )
-    })
-  })
-  
-  output$choicesSheetUI <- renderUI({
-    
-  })
-  
-  observeEvent(input$saveSheets, {
-    tryCatch({
-      ###################merge main survey with user survey#############
-      userSurvey <- isolate(sheets[["survey"]])
-      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
-      mainSurvey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
-                              stringsAsFactors = FALSE)
-      if ("required" %in% colnames(mainSurvey)) {
-        userSurvey$required <- NA
-      }
-      if ("relevant" %in% colnames(mainSurvey)) {
-        userSurvey$relevant <- NA
-      }
-      if ("constraint" %in% colnames(mainSurvey)) {
-        userSurvey$constraint <- NA
-      }
-      if ("calculate" %in% colnames(mainSurvey)) {
-        userSurvey$calculate <- NA
-      }
-      
-      newSurvey <- rbind(mainSurvey[!rownames(mainSurvey) %in% rownames(userSurvey),],
-                      userSurvey
-                      )
-  
-      newSurvey <- newSurvey[ order(as.numeric(row.names(newSurvey))), ]
-
-      if ("required" %in% colnames(mainSurvey)) {
-        newSurvey$required <- mainSurvey$required
-      }
-      if ("relevant" %in% colnames(mainSurvey)) {
-        newSurvey$relevant <- mainSurvey$relevant
-      }
-      if ("constraint" %in% colnames(mainSurvey)) {
-        newSurvey$constraint <- mainSurvey$constraint
-      }
-      if ("calculate" %in% colnames(mainSurvey)) {
-        newSurvey$calculate <- mainSurvey$calculate
-      }
-
-      newIndicators <<- isolate(sheets[["indicator"]])
-      
-      
-    }, error = function(err) {
-      shinyalert("Error",
-                 err$message,
-                 type = "error",
-                 closeOnClickOutside = FALSE,
-                 confirmButtonCol = "#ff4d4d",
-                 animation = FALSE,
-                 showConfirmButton = TRUE
-      )
-    })
-  })
-  
-  observe({
-    if (!is.null(input$surveySheetUI)) {
-      survey = hot_to_r(input$surveySheetUI)
-    } else {
-      if (is.null(sheets[["survey"]]))
-        survey <- data.frame()
-      else
-        survey <- sheets[["survey"]]
     }
-    sheets[["survey"]] <- survey
     
-    if (!is.null(input$indicatorsSheetUI)) {
-      indicator = hot_to_r(input$indicatorsSheetUI)
-    } else {
-      if (is.null(sheets[["indicator"]]))
-        indicator <- data.frame()
-      else
-        indicator <- sheets[["indicator"]]
+    if(nrow(indicator)==0){
+      indicator[nrow(indicator)+1,] <- NA
+    }
+    indicator <- indicator[ order(as.numeric(row.names(indicator))), ]
+    if(length(projectConfigurationInfo$data[["beginRepeatList"]])==1){
+      indicator$frame <- "data"
     }
     sheets[["indicator"]] <- indicator
-    
   })
 })
 

@@ -95,7 +95,7 @@
     background-color: whitesmoke;
     border: 1px solid lightgray;
 }
-
+/*
 .uploadButton, .uploadButton:focus, .uploadButton:active:focus{
     -moz-box-shadow: 0px 10px 14px -7px #276873;
   	-webkit-box-shadow: 0px 10px 14px -7px #276873;
@@ -138,7 +138,7 @@
     position:relative;
 	  top:1px;
 }
-
+*/
 #doYouHaveDatasetsDiv > div > div > div.box-header, #recordSettingsDiv > div > div > div.box-header{
     color: white; 
     background-color: #3c8dbc; 
@@ -161,4 +161,186 @@
 
 .htCenter{
   text-align: center;
+}
+
+#showCalculationBuilderToolPopUp{
+  min-height: 600px;
+}
+
+
+.toolButton, .toolButton:focus, .toolButton:active:focus{
+  background:#1AAB8A;
+  color:#fff;
+  border:none;
+  position:relative;
+  font-size:15px;
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+}
+.toolButton:hover{
+  background:#fff;
+  color:#1AAB8A;
+  border-left: 2px solid #1AAB8A;
+  border-right: 2px solid #1AAB8A;
+}
+.toolButton:before,.toolButton:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #1AAB8A;
+  transition:400ms ease all;
+}
+.toolButton:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.toolButton:hover:before,.toolButton:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+
+.uploadButton, .uploadButton:focus, .uploadButton:active:focus{
+  background:#599bb3;
+  color:#fff;
+  border:none;
+  position:relative;
+  font-size:15px;
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+  font-family: Arial;
+    font-size: smaller;
+    font-weight: bold;
+    padding: 9px 32px;
+  
+}
+.uploadButton:hover{
+  background:#fff;
+  color:#599bb3;
+  border-left: 2px solid #599bb3;
+  border-right: 2px solid #599bb3;
+}
+.uploadButton:before,.uploadButton:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #599bb3;
+  transition:400ms ease all;
+}
+.uploadButton:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.uploadButton:hover:before,.uploadButton:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+
+
+.help-tip{
+    position: absolute;
+    top: 0px;
+    left: 25px;
+    text-align: center;
+    background-color: black;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 35px;
+    font-weight: 100;
+    line-height: 40px;
+    cursor: help;
+}
+
+.help-tip:before{
+    content:'?';
+    font-weight: bold;
+    color:#fff;
+}
+
+.help-tip:hover p{
+    display:block;
+    transform-origin: 100% 0%;
+
+    -webkit-animation: fadeIn 0.3s ease-in-out;
+    animation: fadeIn 0.3s ease-in-out;
+
+}
+
+.help-tip p{    /* The tooltip */
+    display: none;
+    text-align: left;
+    background-color: #1E2021;
+    padding: 20px;
+    width: 300px;
+    position: absolute;
+    border-radius: 3px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+    right: -4px;
+    color: #FFF;
+    font-size: 13px;
+    line-height: 1.4;
+    z-index: 10;
+}
+
+.help-tip p:before{ /* The pointer of the tooltip */
+    position: absolute;
+    content: '';
+    width:0;
+    height: 0;
+    border:6px solid transparent;
+    border-bottom-color:#1E2021;
+    right:10px;
+    top:-12px;
+}
+
+.help-tip p:after{ /* Prevents the tooltip from being hidden */
+    width:100%;
+    height:40px;
+    content:'';
+    position: absolute;
+    top:-40px;
+    left:0;
+}
+
+/* CSS animation */
+
+@-webkit-keyframes fadeIn {
+    0% { 
+        opacity:0; 
+        transform: scale(0.6);
+    }
+
+    100% {
+        opacity:100%;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeIn {
+    0% { opacity:0; }
+    100% { opacity:100%; }
+}
+
+#resultDVUIDivSuccess > div > div > div > div.box-header{
+  background-color: #1aab8a;
+  color: white;
+}
+
+#resultDVUIDivError > div > div > div > div.box-header{
+  background-color: #ff3333;
+  color: white;
 }

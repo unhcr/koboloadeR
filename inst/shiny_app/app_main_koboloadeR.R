@@ -1428,7 +1428,7 @@ server <- shinyServer(function(input, output, session) {
         column(
           width=12,
           column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                 h4("Select the frame that contains the variable?")
+                 h4("Select the frame that contains the variable")
           ),
           column(width = 6, offset = 0,
                  selectInput("frameDVSelectInput", label = NULL,choices = c("-- select --", projectConfigurationInfo$data[["beginRepeatList"]]),width = "100%")
@@ -1446,104 +1446,170 @@ server <- shinyServer(function(input, output, session) {
       conditionalPanel(
         condition = "input.variableDVSelectInput != '-- select --' && input.frameDVSelectInput != '-- select --' && input.breaksDVTextInput != '' && input.indicatorCaseSelectInput == 'Discretize a value'",
         uiOutput("resultDVUI")
+      ),
+      conditionalPanel(
+        condition = "input.indicatorCaseSelectInput == 'Re categorize a categorical variable by re coding modalities'",
+        column(
+          width=12,
+          column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                 h4("Select the frame that contains the variable")
+          ),
+          column(width = 6, offset = 0,
+                 selectInput("frameFRSelectInput", label = NULL,choices = c("-- select --", projectConfigurationInfo$data[["beginRepeatList"]]),width = "100%")
+          )
+        )
+      ),
+      conditionalPanel(
+        condition = "frameFRSelectInput != '-- select --' && input.indicatorCaseSelectInput == 'Re categorize a categorical variable by re coding modalities'",
+        uiOutput("variableFRUI")
+      ),
+      
+      conditionalPanel(
+        condition = "input.variableFRSelectInput != '-- select --' && input.indicatorCaseSelectInput ==  'Re categorize a categorical variable by re coding modalities'",
+        uiOutput("listnameFRUI")
+      ),
+      conditionalPanel(
+        condition = "input.listnameFRSelectInput != '-- select --'  && input.indicatorCaseSelectInput == 'Re categorize a categorical variable by re coding modalities'",
+        uiOutput("factorValuesFRUI")
+      ),
+      conditionalPanel(
+        condition = "input.listnameFRSelectInput != '-- select --' && input.indicatorCaseSelectInput == 'Re categorize a categorical variable by re coding modalities'",
+        uiOutput("resultFRUI")
       )
     )
   })
   
+  ##########Discretize a value##################
+  
   output$variableDVUI <- renderUI({
-    if(input$frameDVSelectInput != "-- select --"){
-      if(file.exists(paste(mainDir(), "data", paste("/",input$frameDVSelectInput, ".csv", sep=""), sep = "/", collapse = "/"))){
-        temp <- read.csv(
-          paste(mainDir(), "data", paste("/",input$frameDVSelectInput, ".csv", sep=""), sep = "/", collapse = "/"),
-          stringsAsFactors = FALSE, nrows = 1
-        )
-        selectedCol <- unlist(lapply(temp, is.numeric)) 
-        column(
-          width=12,
-          column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                 h4("Select the variable")
-          ),
-          column(width = 6, offset = 0,
-                 selectizeInput("variableDVSelectInput", label = NULL,choices = c("-- select --",
-                                                                                  colnames(temp[ , selectedCol])
-                 ),width = "100%")
+    tryCatch({
+      if(input$frameDVSelectInput != "-- select --"){
+        if(file.exists(paste(mainDir(), "data", paste("/",input$frameDVSelectInput, ".csv", sep=""), sep = "/", collapse = "/"))){
+          temp <- read.csv(
+            paste(mainDir(), "data", paste("/",input$frameDVSelectInput, ".csv", sep=""), sep = "/", collapse = "/"),
+            stringsAsFactors = FALSE, nrows = 1
           )
-        )
-      }else{
-        infoBox(
-          width = 12,strong("Warning"),
-          h4(paste("You cannot proceed without",input$frameDVSelectInput,"file"),align="center")
-          ,icon = icon("exclamation-triangle"),
-          color = "yellow"
-        )
+          selectedCol <- unlist(lapply(temp, is.numeric)) 
+          column(
+            width=12,
+            column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                   h4("Select the variable")
+            ),
+            column(width = 6, offset = 0,
+                   selectizeInput("variableDVSelectInput", label = NULL,choices = c("-- select --",
+                                                                                    colnames(temp[ , selectedCol])
+                   ),width = "100%")
+            )
+          )
+        }else{
+          infoBox(
+            width = 12,strong("Warning"),
+            h4(paste("You cannot proceed without",input$frameDVSelectInput,"file"),align="center")
+            ,icon = icon("exclamation-triangle"),
+            color = "yellow"
+          )
+        }
+  
       }
-
-    }
+    }, error = function(err) {
+      infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      )
+    })
   })
   
   output$breaksDVUI <- renderUI({
-    if(!is.null(input$variableDVSelectInput)){
-      if(input$variableDVSelectInput != "-- select --"){
-        column(
-          width=12,
-          column(width = 4, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                 h4("Enter the Breaks argument")
-          ),
-          column(width = 1,
-                 div(class="help-tip",
-                     p(
-                     span("Enter either a numeric vector of two or more unique cut points EX: 0,25,50,75,100",style="display: block;"),
-                     span("OR\n",style="display: block;text-align: center;margin: 20px 0px;font-weight: 900;border-top: 1px dotted white;line-height: 0px;
-                          font-size: 25px;color: #1aab8a;"),
-                     span("Single number as Interval length EX: 5, so the length of the interval will be equal to max(x)/5, where x is the variable.",style="display: block;")
-                     )
-                 )
-          ),
-          column(width = 7, offset = 0,
-                 textInput("breaksDVTextInput", label = NULL, width = "100%", placeholder="EX: 0,25,50,75,100 or 5")
+    tryCatch({
+      if(!is.null(input$variableDVSelectInput)){
+        if(input$variableDVSelectInput != "-- select --"){
+          column(
+            width=12,
+            column(width = 4, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                   h4("Enter the Breaks argument")
+            ),
+            column(width = 1,
+                   div(class="help-tip",style="top: 0px;left: 25px;",
+                       p(
+                       span("Enter either a numeric vector of two or more unique cut points EX: 0,25,50,75,100",style="display: block;"),
+                       span("OR\n",style="display: block;text-align: center;margin: 20px 0px;font-weight: 900;border-top: 1px solid white;line-height: 0px;
+                            font-size: 25px;color: #1aab8a;"),
+                       span("Single number as Interval length EX: 5, so the length of the interval will be equal to max(x)/5, where x is the variable.",style="display: block;")
+                       )
+                   )
+            ),
+            column(width = 7, offset = 0,
+                   textInput("breaksDVTextInput", label = NULL, width = "100%", placeholder="EX: 0,25,50,75,100 or 5")
+            )
           )
-        )
+        }
       }
-    }
+    }, error = function(err) {
+      infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      )
+    })
   })
   
   output$resultDVUI <- renderText({
-    s <- ""
-    if(!is.null(input$breaksDVTextInput)){
-      if(resultDVUIValue$text == "ERROR"){
-        s<- paste(
-          div(id="resultDVUIDivError",
-            column(style="margin-top: 20px;",
-                   width=12,
-                   box(id="resultDVUIBoxError",
-                       title="ERROR",
-                       style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
-                       width=12, solidHeader = FALSE, collapsible = FALSE,
-                       p("please make sure that breaks input contains only an integer value")
-                   )
-                   
+    tryCatch({
+      s <- ""
+      if(!is.null(input$breaksDVTextInput)){
+        if(class(resultDVUIValue$text) == "try-error"){
+          s<- paste(
+            div(id="resultDVUIDivError",
+              column(style="margin-top: 20px;",
+                     width=12,
+                     box(id="resultDVUIBoxError",
+                         title="ERROR",
+                         style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
+                         width=12, solidHeader = FALSE, collapsible = FALSE,
+                         p(resultDVUIValue$text$message)
+                     )
+                     
+              )
+            ),s,sep = "")
+        }else if(input$breaksDVTextInput != "" && resultDVUIValue$text != ""){
+          s<- paste(
+            div(id="resultDVUIDivSuccess",
+              column(style="margin-top: 20px;",
+              width=12,
+              box(id="resultDVUIBoxSuccess",
+                  title=paste("Copy the text and paste it into calculation column of row number:",input$rowNumberForCalculationBuilder),
+                  style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
+                  width=12, solidHeader = FALSE, collapsible = FALSE,
+                  p(resultDVUIValue$text)
+              )
+    
             )
           ),s,sep = "")
-      }else if(input$breaksDVTextInput != "" && resultDVUIValue$text != ""){
-        s<- paste(
-          div(id="resultDVUIDivSuccess",
-            column(style="margin-top: 20px;",
-            width=12,
-            box(id="resultDVUIBoxSuccess",
-                title=paste("Copy the text and paste it into calculation column of row number:",input$rowNumberForCalculationBuilder),
-                style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
-                width=12, solidHeader = FALSE, collapsible = FALSE,
-                p(resultDVUIValue$text)
-            )
-  
-          )
-        ),s,sep = "")
+        }
       }
-    }
-    return(s)
+      return(s)
+    }, error = function(err) {
+      return(infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      ))
+    })
   })
   
   resultDVUIValue <- reactiveValues(text="")
+  
+  observeEvent(input$frameDVSelectInput,{
+    resultDVUIValue$text <- ""
+  })
+  
+  observeEvent(input$variableDVSelectInput,{
+    resultDVUIValue$text <- ""
+  })
   
   observe({
     if(!is.null(input$breaksDVTextInput)){
@@ -1552,31 +1618,286 @@ server <- shinyServer(function(input, output, session) {
       }
     }
   })
+  ##########-----END----------##################
   
-  observeEvent(input$queryConverterButton,{
-    if(input$indicatorCaseSelectInput=="Discretize a value"){
-      if(sum(is.na(as.numeric(strsplit(input$breaksDVTextInput,",")[[1]]))) == 1){
-        resultDVUIValue$text <- "ERROR"
-        return(FALSE)
+  
+  ##########Re categorize a categorical variable by re coding modalities##################
+  output$variableFRUI <- renderUI({
+    tryCatch({ 
+      if(input$frameFRSelectInput != "-- select --"){
+        if(file.exists(paste(mainDir(), "data", paste("/",input$frameFRSelectInput, ".csv", sep=""), sep = "/", collapse = "/"))){
+          temp <- read.csv(
+            paste(mainDir(), "data", paste("/",input$frameFRSelectInput, ".csv", sep=""), sep = "/", collapse = "/"),
+            stringsAsFactors = FALSE, nrows = 1
+          )
+          selectedCol <- unlist(lapply(temp, is.character)) 
+          column(
+            width=12,
+            column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                   h4("Select the variable")
+            ),
+            column(width = 6, offset = 0,
+                   selectizeInput("variableFRSelectInput", label = NULL,choices = c("-- select --",
+                                                                                    colnames(temp[ , selectedCol])
+                   ),width = "100%")
+            )
+          )
+        }else{
+          infoBox(
+            width = 12,strong("Warning"),
+            h4(paste("You cannot proceed without",input$frameDVSelectInput,"file"),align="center")
+            ,icon = icon("exclamation-triangle"),
+            color = "yellow"
+          )
+        }
       }
-      bre <- paste( strsplit(input$breaksDVTextInput,",")[[1]] ,sep = "," ,collapse=",")
-      result <- "cut("
-      result <- paste(result,input$frameDVSelectInput,"$",input$variableDVSelectInput, " ", sep="")
-      result <- paste(result, ",c(", bre,"))" , sep = ""  )
-      resultDVUIValue$text <- result
-    }else if(input$indicatorCaseSelectInput=="Re categorize a categorical variable by re coding modalities"){
-      
-    }
-    
+    }, error = function(err) {
+      infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      )
+    })
   })
   
+  choicesSheetFR <- reactive({
+    tryCatch({ 
+    form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+    choices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
+                             stringsAsFactors = FALSE)
+    choices <- choices[!is.na(choices$list_name),]
+    choices <- choices[trimws(choices$list_name)!="",]
+    choices
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+      data.frame(
+        name = character(),
+        label = character(),
+        value = character(),
+        path = character(),
+        stringsAsFactors = FALSE
+      )
+    })
+  })
   
+  output$listnameFRUI <- renderText({
+    tryCatch({ 
+      if(!is.null(input$variableFRSelectInput)){
+        if(input$variableFRSelectInput != "-- select --"){
+          s <- ""
+          s<-paste(
+          column(
+            width=12,
+            column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                   h4("Select the listname that represent the factor")
+            ),
+            column(width = 6, offset = 0,
+                   selectizeInput("listnameFRSelectInput", label = NULL,choices = c("-- select --",
+                                                                                    choicesSheetFR()$list_name
+                                                                                 ),width = "100%")
+            )
+          ),s,sep = "")
+          return(s)
+        }
+      }
+      return("")
+    }, error = function(err) {
+      return(infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      ))
+    })
+  })
   
+  output$factorValuesFRUI <- renderText({
+    tryCatch({ 
+      if(!is.null(input$listnameFRSelectInput)){
+        if(input$listnameFRSelectInput != "-- select --"){
+          factorValues <- choicesSheetFR()[choicesSheetFR()$list_name==input$listnameFRSelectInput,c("list_name", "name", "label")]
+          
+          s <- column(width = 2,offset=10,style="margin-bottom:50px;",
+                      div(class="help-tip",style="top: 0px;left: 25px;",
+                          p(
+                            span("Enter the new name of level",style="display: block;"),
+                            span("OR\n",style="display: block;text-align: center;margin: 20px 0px;font-weight: 900;border-top: 1px solid white;line-height: 0px;
+                                 font-size: 25px;color: #1aab8a;"),
+                            span("Keep it as is",style="display: block;"),
+                            span("OR\n",style="display: block;text-align: center;margin: 20px 0px;font-weight: 900;border-top: 1px solid white;line-height: 0px;
+                                 font-size: 25px;color: #1aab8a;"),
+                            span("Replace it with 'NULL' value to remove it",style="display: block;")
+                            )
+                      )
+          )
+          
+          
+          s <- paste(s,
+             column(width = 12,offset = 0,style="margin-bottom: 10px;",
+              column(width = 3, style="background-color: black;color: white;text-align: center;border-right: 1px solid white;",
+                     h4("list_name")),
+              column(width = 5, style="background-color: black;color: white;text-align: center;border-right: 1px solid white;",
+                     h4("label")),
+              column(width = 4, style="background-color: black;color: white;text-align: center;",
+                     h4("name"))
+              ),sep="")
+          for(i in 1:nrow(factorValues)){
+            s <- paste(s,
+            column(width = 12,offset = 0,
+              column(width = 3,
+                     h5(factorValues[i,"list_name"]) ),
+              column(width = 5,style="border-left: 2px solid #1aab8a;border-right: 2px solid #1aab8a;",
+                     h5(factorValues[i,"label"]) ),
+              column(width = 4,
+                     textInput(paste(i,factorValues[i,"name"],sep = "-"),
+                               label = NULL,
+                               value = factorValues[i,"name"],
+                               placeholder = factorValues[i,"name"],
+                               width = "100%"
+                               ) 
+                     )
+            )
+              ,sep = "")
+          }
+          return(s)
+        }
+      }
+    }, error = function(err) {
+      return(infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      ))
+    })
+  })
   
+  output$resultFRUI <- renderText({
+    tryCatch({ 
+      s <- ""
+      if(!is.null(input$listnameFRSelectInput)){
+        if(class(resultFRUIValue$text) == "try-error"){
+          s<- paste(
+            div(id="resultDVUIDivError",
+                column(style="margin-top: 20px;",
+                       width=12,
+                       box(id="resultDVUIBoxError",
+                           title="ERROR",
+                           style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
+                           width=12, solidHeader = FALSE, collapsible = FALSE,
+                           p(resultFRUIValue$text$message)
+                       )
+                       
+                )
+            ),s,sep = "")
+        }else if(resultFRUIValue$text != ""){
+          s<- paste(
+            div(id="resultDVUIDivSuccess",
+                column(style="margin-top: 20px;",
+                       width=12,
+                       box(id="resultDVUIBoxSuccess",
+                           title=paste("Copy the text and paste it into calculation column of row number:",input$rowNumberForCalculationBuilder),
+                           style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
+                           width=12, solidHeader = FALSE, collapsible = FALSE,
+                           p(resultFRUIValue$text)
+                       )
+                       
+                )
+            ),s,sep = "")
+        }
+      }
+      return(s)
+    }, error = function(err) {
+      return(infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      ))
+    })
+  })
   
+  resultFRUIValue <- reactiveValues(text="")
   
+  observeEvent(input$frameFRSelectInput,{
+    resultFRUIValue$text <- ""
+  })
   
+  observeEvent(input$variableFRSelectInput,{
+    resultFRUIValue$text <- ""
+  })
   
+  observeEvent(input$listnameFRSelectInput,{
+    resultFRUIValue$text <- ""
+  })
+  ##########-----END----------##################
+  
+  observeEvent(input$queryConverterButton,{
+    if(input$indicatorCaseSelectInput=="Discretize a value" && input$breaksDVTextInput !="" ){
+      tryCatch({ 
+        pre<-as.numeric(strsplit(input$breaksDVTextInput,",")[[1]])
+        pre <- pre[!is.na(pre)]
+        pre <- paste( pre ,sep = "," ,collapse=",")
+        if(pre==""){
+          resultDVUIValue$text <- ""
+          shinyalert("Info",
+                     "Only numerical values are allowed",
+                     type = "info",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#28A8E2",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          return(FALSE)
+        }
+        result <- "cut("
+        result <- paste(result,input$frameDVSelectInput,"$",input$variableDVSelectInput, " ", sep="")
+        result <- paste(result, ",c(", pre,"))" , sep = ""  )
+        resultDVUIValue$text <- result
+      }, error = function(err) {
+        resultDVUIValue$text <- structure(c, class = "try-error")
+      })
+    }else if(input$indicatorCaseSelectInput=="Discretize a value" && input$breaksDVTextInput == "" ){ 
+      resultDVUIValue$text <- ""
+      shinyalert("Info",
+                 "Breaks input is required",
+                 type = "info",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#28A8E2",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    }else if(input$listnameFRSelectInput != "-- select --"  && input$indicatorCaseSelectInput=="Re categorize a categorical variable by re coding modalities"){
+      tryCatch({ 
+        result <- "fct_recode("
+        result <- paste(result,input$frameFRSelectInput,"$",input$variableFRSelectInput, ", ", sep="")
+        factorValues <- choicesSheetFR()[choicesSheetFR()$list_name==input$listnameFRSelectInput,c("list_name", "name", "label")]
+        for(i in 1:nrow(factorValues)){
+          
+          temp <- input[[paste(i,factorValues[i,"name"],sep = "-")]]
+          
+          result <- paste(result,"\"",temp,"\""," = ","\"",factorValues[i,"name"],"\"",sep = "")
+          
+          if(i!=nrow(factorValues)){
+            result <- paste(result,", ",sep = "")
+          }
+        }
+        result <- paste(result,")",sep = "")
+        resultFRUIValue$text <- result
+      }, error = function(err) {
+        resultFRUIValue$text <- structure(c, class = "try-error")
+      })
+    }
+      
+  })
   
   output$choicesSheetUI <- renderUI({
     
@@ -1588,7 +1909,7 @@ server <- shinyServer(function(input, output, session) {
       ###################merge main survey with user survey#############
       userSurvey <- isolate(sheets[["survey"]])
       form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
-      mainSurvey <<- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+      mainSurvey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
                                   stringsAsFactors = FALSE)
       if ("required" %in% colnames(mainSurvey)) {
         userSurvey$required <- NA

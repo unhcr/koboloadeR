@@ -283,6 +283,10 @@ kobo_prepare_form <- function(form = "form.xls") {
   
   cat("\n \n Checking now choices sheet \n \n")
   
+  ## Rename the variable label
+  names(choices)[names(choices) == "label::English"] <- "label"
+  names(choices)[tolower(names(choices)) == "label::english"] <- "label"
+  
   ### add column if not present #################################################
   if ("order" %in% colnames(choices)) {
     cat("1- Good: You have a column `order` in your choices worksheet.\n");

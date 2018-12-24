@@ -486,7 +486,7 @@ server <- shinyServer(function(input, output, session) {
           
           fileName <- paste("/",projectConfigurationInfo$data[["beginRepeatList"]][i], ".csv", sep="")
           
-          write.csv(dataFile,  paste(mainDir(), "data", fileName, sep = "/", collapse = "/"))
+          write.csv(dataFile,  paste(mainDir(), "data", fileName, sep = "/", collapse = "/"), row.names = FALSE)
         }
       }
       updateProgress()
@@ -520,7 +520,7 @@ server <- shinyServer(function(input, output, session) {
       inFile <- input$dataUploadedFile
       if (!is.null(inFile)){
         dataFile <- read.csv(inFile$datapath, header=TRUE, sep=input$dataUploadedFileSep, stringsAsFactors = FALSE)
-        write.csv(dataFile,  paste(mainDir(), "data", "/data.csv", sep = "/", collapse = "/"))
+        write.csv(dataFile,  paste(mainDir(), "data", "/data.csv", sep = "/", collapse = "/"), row.names = FALSE)
         projectConfigurationInfo$log[["data"]] <- TRUE
         projectConfigurationInfo$data[["data"]] <- dataFile
         projectConfigurationInfo$log[["isGenerated"]] <- FALSE
@@ -803,7 +803,7 @@ server <- shinyServer(function(input, output, session) {
                column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
                       selectInput("samplingSelectInput", label = NULL,choices = c("-- select --",
                                                                                   "No sampling(type 1)",
-                                                                                  "Cluster sample (type 2)",
+                                                                                  "Cluster(type 2)",
                                                                                   "Stratified sample (type 3)"
                       ))
                       
@@ -812,7 +812,7 @@ server <- shinyServer(function(input, output, session) {
                  condition = "input.samplingSelectInput == 'Cluster sample (type 2)'",
                  column(width = 12, style="margin: 15px 0px 15px; border-top: 1px solid lightgray; padding: 20px 10px 0px;",
                         column(width = 6, 
-                               selectizeInput("variableNameCluster", label = "Select the name of cluster variable",choices = projectConfigurationInfo$data[["xlsFormFields"]]
+                               selectInput("variableNameCluster", label = "Select the name of cluster variable",choices = projectConfigurationInfo$data[["xlsFormFields"]]
                                               ,options = list(placeholder = '-- select --', onInitialize = I('function() { this.setValue(""); }'))
                                )
                         ),
@@ -848,7 +848,7 @@ server <- shinyServer(function(input, output, session) {
                  condition = "input.samplingSelectInput == 'Stratified sample (type 3)'",
                  column(width = 12, style="margin: 15px 0px 15px; border-top: 1px solid lightgray; padding: 20px 10px 0px;",
                         column(width = 6, 
-                               selectizeInput("variableNameStratified", label = "Select the name of stratified variable",choices = projectConfigurationInfo$data[["xlsFormFields"]]
+                               selectInput("variableNameStratified", label = "Select the name of stratified variable",choices = projectConfigurationInfo$data[["xlsFormFields"]]
                                               ,options = list(placeholder = '-- select --', onInitialize = I('function() { this.setValue(""); }'))
                                )
                         ),
@@ -1015,7 +1015,7 @@ server <- shinyServer(function(input, output, session) {
           return(FALSE)
         }else if(!is.null(inFileWeightsCluster)){
           dataFile <- read.csv(inFileWeightsCluster$datapath, header=TRUE, sep=input$weightsClusterSep, stringsAsFactors = FALSE)
-          write.csv(dataFile,  paste(mainDir(), "data", "/weightsCluster.csv", sep = "/", collapse = "/"))
+          write.csv(dataFile,  paste(mainDir(), "data", "/weightsCluster.csv", sep = "/", collapse = "/"), row.names = FALSE)
           lastRow <- lastRow+1
           settingsDF[lastRow,"name"] <- "weights_cluster"
           settingsDF[lastRow,"label"] <- "Weights that will be used in cluster sample"
@@ -1072,7 +1072,7 @@ server <- shinyServer(function(input, output, session) {
           return(FALSE)
         }else if(!is.null(inFileWeightsStratified)){
           dataFile <- read.csv(inFileWeightsStratified$datapath, header=TRUE, sep=input$weightsStratifiedSep, stringsAsFactors = FALSE)
-          write.csv(dataFile,  paste(mainDir(), "data", "/weightsStratified.csv", sep = "/", collapse = "/"))
+          write.csv(dataFile,  paste(mainDir(), "data", "/weightsStratified.csv", sep = "/", collapse = "/"), row.names = FALSE)
           lastRow <- lastRow+1
           settingsDF[lastRow,"name"] <- "weights_stratified"
           settingsDF[lastRow,"label"] <- "Weights that will be used in Stratified sample"
@@ -1111,7 +1111,7 @@ server <- shinyServer(function(input, output, session) {
           return(FALSE)
         }else if(!is.null(inFilecleaningLog) && sum(input$cleaningLogSelectInput == "Yes")){
           dataFile <- read.csv(inFilecleaningLog$datapath, header=TRUE, sep=input$cleaningLogSep, stringsAsFactors = FALSE)
-          write.csv(dataFile,  paste(mainDir(), "data", "/cleaningLog.csv", sep = "/", collapse = "/"))
+          write.csv(dataFile,  paste(mainDir(), "data", "/cleaningLog.csv", sep = "/", collapse = "/"), row.names = FALSE)
           lastRow <- lastRow+1
           settingsDF[lastRow,"name"] <- "cleaning_log"
           settingsDF[lastRow,"label"] <- "cleaning log plan for the project"
@@ -1173,8 +1173,9 @@ server <- shinyServer(function(input, output, session) {
   sheets <- reactiveValues()
   
   output$analysisPlanConfiguration <- renderUI({
-    if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
-      infoBox(
+    #if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
+    if(FALSE){ 
+     infoBox(
         width = 12,strong("Warning"),h4("You cannot proceed without completing Project Configuration section",align="center")
         ,icon = icon("exclamation-triangle"),
         color = "yellow"
@@ -1447,6 +1448,8 @@ server <- shinyServer(function(input, output, session) {
         condition = "input.variableDVSelectInput != '-- select --' && input.frameDVSelectInput != '-- select --' && input.breaksDVTextInput != '' && input.indicatorCaseSelectInput == 'Discretize a value'",
         uiOutput("resultDVUI")
       ),
+      
+      
       conditionalPanel(
         condition = "input.indicatorCaseSelectInput == 'Re categorize a categorical variable by re coding modalities'",
         column(
@@ -1475,7 +1478,40 @@ server <- shinyServer(function(input, output, session) {
       conditionalPanel(
         condition = "input.listnameFRSelectInput != '-- select --' && input.indicatorCaseSelectInput == 'Re categorize a categorical variable by re coding modalities'",
         uiOutput("resultFRUI")
+      ),
+      
+      
+      conditionalPanel(
+        condition = "input.indicatorCaseSelectInput == 'Sum up different numeric or integer variables'",
+        column(
+          width=12,
+          column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                 h4("Select the frame that contains the variable(s)")
+          ),
+          column(width = 6, offset = 0,
+                 selectInput("frameSUSelectInput", label = NULL,choices = c("-- select --", projectConfigurationInfo$data[["beginRepeatList"]]),width = "100%")
+          )
+        )
+      ),
+      conditionalPanel(
+        condition = "input.frameSUSelectInput != '-- select --' && input.indicatorCaseSelectInput == 'Sum up different numeric or integer variables'",
+        column(
+          width=12, style="margin-top: 20px; border-top: 1px solid #e5e5e5; padding-top: 30px;",
+          conditionalPanel(
+            condition = "input.frameSUSelectInput != '-- select --' && input.indicatorCaseSelectInput == 'Sum up different numeric or integer variables'",
+            uiOutput("mainTwoVariablesSUUI")
+          ),
+          conditionalPanel(
+            condition = "input.frameSUSelectInput != '-- select --' && input.indicatorCaseSelectInput == 'Sum up different numeric or integer variables'",
+            uiOutput("otherVariablesSUUI")
+          )
+        )
+      ),
+      conditionalPanel(
+        condition = "input.frameSUSelectInput != '-- select --' && input.indicatorCaseSelectInput == 'Sum up different numeric or integer variables'",
+        uiOutput("resultSUUI")
       )
+      
     )
   })
   
@@ -1496,7 +1532,7 @@ server <- shinyServer(function(input, output, session) {
                    h4("Select the variable")
             ),
             column(width = 6, offset = 0,
-                   selectizeInput("variableDVSelectInput", label = NULL,choices = c("-- select --",
+                   selectInput("variableDVSelectInput", label = NULL,choices = c("-- select --",
                                                                                     colnames(temp[ , selectedCol])
                    ),width = "100%")
             )
@@ -1637,7 +1673,7 @@ server <- shinyServer(function(input, output, session) {
                    h4("Select the variable")
             ),
             column(width = 6, offset = 0,
-                   selectizeInput("variableFRSelectInput", label = NULL,choices = c("-- select --",
+                   selectInput("variableFRSelectInput", label = NULL,choices = c("-- select --",
                                                                                     colnames(temp[ , selectedCol])
                    ),width = "100%")
             )
@@ -1700,7 +1736,7 @@ server <- shinyServer(function(input, output, session) {
                    h4("Select the listname that represent the factor")
             ),
             column(width = 6, offset = 0,
-                   selectizeInput("listnameFRSelectInput", label = NULL,choices = c("-- select --",
+                   selectInput("listnameFRSelectInput", label = NULL,choices = c("-- select --",
                                                                                     choicesSheetFR()$list_name
                                                                                  ),width = "100%")
             )
@@ -1840,6 +1876,220 @@ server <- shinyServer(function(input, output, session) {
   })
   ##########-----END----------##################
   
+  
+  
+  ##########Sum up different numeric or integer variables##################
+  variablesToUseSU <- reactiveValues(col=NULL,counterOfVar=2, otherVariablesSUUI="", idOfVar=c())
+  resultSUUIValue <- reactiveValues(text="")
+  
+  observeEvent(input$frameSUSelectInput,{
+    tryCatch({ 
+      if(sum(input$frameSUSelectInput != "-- select --") ){
+        temp <- read.csv(
+          paste(mainDir(), "data", paste("/",input$frameSUSelectInput, ".csv", sep=""), sep = "/", collapse = "/"),
+          stringsAsFactors = FALSE, nrows = 1
+        )
+        selectedCol <- unlist(lapply(temp, is.numeric)) 
+        selectedCol <- colnames(temp[ , selectedCol])
+        selectedCol <- sort(selectedCol)
+        variablesToUseSU$col <- selectedCol
+      }
+    }, error = function(err) {
+      return(infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      ))
+    })
+  })
+  
+  output$mainTwoVariablesSUUI <- renderUI({
+    column(
+      width=12,
+      column(width = 1, offset = 0,align="center",
+             icon("flag", "fa-2x")
+      ),
+      column(width = 3, offset = 0,align="center",
+             selectInput("varSU1", label = NULL,choices = variablesToUseSU$col,width = "100%", selected = 1)
+      ),
+      column(width = 1, offset = 0,align="center",
+             icon("plus", "fa-2x")
+      ),
+      column(width = 4, offset = 0,align="center",
+             selectInput("varSU2", label = NULL,choices = variablesToUseSU$col,width = "100%", selected = 15)
+      ),
+      column(width = 3, offset = 0,align="center",
+             actionButton("addVariablesSU", "Add Variable", class="toolButton", style="height: 35px;", icon = icon("plus-circle","fa-1x"))
+      )
+    )
+  })
+  
+  output$otherVariablesSUUI <- renderText({
+    variablesToUseSU$otherVariablesSUUI
+  })
+  
+  observeEvent(input$addVariablesSU,{
+    tryCatch({ 
+      resultSUUIValue$text <- ""
+      if(length(variablesToUseSU$idOfVar)==0 || variablesToUseSU$idOfVar==0){
+        variablesToUseSU$counterOfVar <- variablesToUseSU$counterOfVar + 1
+        variablesToUseSU$idOfVar <- c(variablesToUseSU$counterOfVar)
+      }else{
+        variablesToUseSU$counterOfVar <- variablesToUseSU$counterOfVar + 1
+        variablesToUseSU$idOfVar <- c(variablesToUseSU$idOfVar, variablesToUseSU$counterOfVar)
+      }
+      
+      if( length(variablesToUseSU$idOfVar) > length(variablesToUseSU$col) ){
+        shinyalert("Info",
+                   "You can't add more variables, because you have enough inputs that cover all variables",
+                   type = "info",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        variablesToUseSU$counterOfVar <- variablesToUseSU$counterOfVar-1
+        return(NULL)
+      }
+      
+      s <- ""
+      for(i in variablesToUseSU$idOfVar){
+        tempVal<-1
+        
+        if(!is.null(input[[paste("varSU", i, sep = "")]])){
+          tempVal <- input[[paste("varSU", i, sep = "")]]
+        }
+       
+        s <- paste(s,
+        column(
+          width=12,
+          column(width = 1, offset = 0,align="center",
+                 icon("plus", "fa-2x")
+          ),
+          column(width = 8, offset = 0,align="center",
+                 selectInput(paste("varSU", i, sep = ""), label = NULL,choices = variablesToUseSU$col,width = "100%", selected = tempVal)
+          ),
+          column(width = 2, offset = 0,align="center",
+                 actionButton(paste("deleteVariableSU", i ,sep = ""), NULL, class="toolButtonDelete", style="height: 35px;", icon = icon("times","fa-2x"))
+          )
+        ),sep="")
+      }
+      
+      
+      lapply(1:length(variablesToUseSU$idOfVar), function(j) {
+        observeEvent(input[[paste("deleteVariableSU", variablesToUseSU$idOfVar[j] ,sep = "")]] , {
+          resultSUUIValue$text <- ""
+          variablesToUseSU$idOfVar <- variablesToUseSU$idOfVar[ variablesToUseSU$idOfVar != variablesToUseSU$idOfVar[j] ]
+          variablesToUseSU$idOfVar <- sort(variablesToUseSU$idOfVar)
+  
+          
+          if(length(variablesToUseSU$idOfVar)==0 || variablesToUseSU$idOfVar==0){
+            variablesToUseSU$idOfVar <- c()
+          }
+          
+          s <- ""
+          for(i in variablesToUseSU$idOfVar){
+            tempVal<-1
+            
+            if(!is.null(input[[paste("varSU", i, sep = "")]])){
+              tempVal <- input[[paste("varSU", i, sep = "")]]
+            }
+            
+            s <- paste(s,
+                       column(
+                         width=12,
+                         column(width = 1, offset = 0,align="center",
+                                icon("plus", "fa-2x")
+                         ),
+                         column(width = 8, offset = 0,align="center",
+                                selectInput(paste("varSU", i, sep = ""), label = NULL,choices = variablesToUseSU$col,width = "100%", selected = tempVal)
+                         ),
+                         column(width = 2, offset = 0,align="center",
+                                actionButton(paste("deleteVariableSU", i ,sep = ""), NULL, class="toolButtonDelete", style="height: 35px;", icon = icon("times","fa-2x"))
+                         )
+                       ),sep="")
+          }
+          
+          variablesToUseSU$otherVariablesSUUI <- s
+        
+      }, ignoreInit = TRUE,once = TRUE)
+    })
+    
+    
+    variablesToUseSU$otherVariablesSUUI <- s
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  
+  output$resultSUUI <- renderText({
+    tryCatch({
+      s <- ""
+      if(class(resultSUUIValue$text) == "try-error"){
+        s<- paste(
+          div(id="resultDVUIDivError",
+              column(style="margin-top: 20px;",
+                     width=12,
+                     box(id="resultDVUIBoxError",
+                         title="ERROR",
+                         style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
+                         width=12, solidHeader = FALSE, collapsible = FALSE,
+                         p(resultSUUIValue$text$message)
+                     )
+                     
+              )
+          ),s,sep = "")
+      }else if(resultSUUIValue$text != ""){
+        s<- paste(
+          div(id="resultDVUIDivSuccess",
+              column(style="margin-top: 20px;",
+                     width=12,
+                     box(id="resultDVUIBoxSuccess",
+                         title=paste("Copy the text and paste it into calculation column of row number:",input$rowNumberForCalculationBuilder),
+                         style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
+                         width=12, solidHeader = FALSE, collapsible = FALSE,
+                         p(resultSUUIValue$text)
+                     )
+                     
+              )
+          ),s,sep = "")
+      }
+      return(s)
+    }, error = function(err) {
+      return(infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      ))
+    })
+  })
+  
+  observeEvent(input$varSU1,{
+    resultSUUIValue$text <- ""
+  })
+  
+  observeEvent(input$varSU2,{
+    resultSUUIValue$text <- ""
+  })
+  
+  observeEvent(input$frameSUSelectInput,{
+    resultSUUIValue$text <- ""
+  })
+  
+  observeEvent(input$indicatorCaseSelectInput,{
+    resultSUUIValue$text <- ""
+  })
+  
+  ##########-----END----------##################
   observeEvent(input$queryConverterButton,{
     if(input$indicatorCaseSelectInput=="Discretize a value" && input$breaksDVTextInput !="" ){
       tryCatch({ 
@@ -1865,7 +2115,8 @@ server <- shinyServer(function(input, output, session) {
       }, error = function(err) {
         resultDVUIValue$text <- structure(c, class = "try-error")
       })
-    }else if(input$indicatorCaseSelectInput=="Discretize a value" && input$breaksDVTextInput == "" ){ 
+    }
+    else if(input$indicatorCaseSelectInput=="Discretize a value" && input$breaksDVTextInput == "" ){ 
       resultDVUIValue$text <- ""
       shinyalert("Info",
                  "Breaks input is required",
@@ -1875,7 +2126,8 @@ server <- shinyServer(function(input, output, session) {
                  animation = FALSE,
                  showConfirmButton = TRUE
       )
-    }else if(input$listnameFRSelectInput != "-- select --"  && input$indicatorCaseSelectInput=="Re categorize a categorical variable by re coding modalities"){
+    }
+    else if(input$listnameFRSelectInput != "-- select --"  && input$indicatorCaseSelectInput=="Re categorize a categorical variable by re coding modalities"){
       tryCatch({ 
         result <- "fct_recode("
         result <- paste(result,input$frameFRSelectInput,"$",input$variableFRSelectInput, ", ", sep="")
@@ -1896,7 +2148,44 @@ server <- shinyServer(function(input, output, session) {
         resultFRUIValue$text <- structure(c, class = "try-error")
       })
     }
-      
+    else if(input$frameSUSelectInput != "-- select --"  && input$indicatorCaseSelectInput=="Sum up different numeric or integer variables"){
+      tryCatch({ 
+        result <- "psum("
+        result <- paste(result,
+                        input$frameSUSelectInput,
+                        "$",
+                        input$varSU1,
+                        ", ",
+                        input$frameSUSelectInput,
+                        "$",
+                        input$varSU2,
+                        ifelse(length(variablesToUseSU$idOfVar)>0,
+                        ", ",""), sep="")
+        
+        
+        
+        counter <- 1
+        for(i in variablesToUseSU$idOfVar){
+          val <- input[[paste("varSU", i, sep = "")]]
+          result <- paste(result,
+                          input$frameSUSelectInput,
+                          "$",
+                          val
+                          , sep="")
+          
+          if(counter != length(variablesToUseSU$idOfVar)){
+            result <- paste(result,", ", sep="")
+          }
+          counter <- counter + 1
+        }
+
+        
+        result <- paste(result,")",sep = "")
+        resultSUUIValue$text <- result
+      }, error = function(err) {
+        resultSUUIValue$text <- structure(c, class = "try-error")
+      })
+    }
   })
   
   output$choicesSheetUI <- renderUI({

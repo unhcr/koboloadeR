@@ -344,3 +344,41 @@
   background-color: #ff3333;
   color: white;
 }
+
+.toolButtonDelete, .toolButtonDelete:focus, .toolButtonDelete:active:focus{
+  background:#ff4d4d;
+  color:#fff;
+  border:none;
+  position:relative;
+  /*font-size:15px;*/
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+}
+.toolButtonDelete:hover{
+  background:#fff;
+  color:#ff4d4d;
+  border-left: 2px solid #ff4d4d;
+  border-right: 2px solid #ff4d4d;
+}
+.toolButtonDelete:before,.toolButtonDelete:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #ff4d4d;
+  transition:400ms ease all;
+}
+.toolButtonDelete:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.toolButtonDelete:hover:before,.toolButtonDelete:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}

@@ -803,7 +803,7 @@ server <- shinyServer(function(input, output, session) {
                column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
                       selectInput("samplingSelectInput", label = NULL,choices = c("-- select --",
                                                                                   "No sampling(type 1)",
-                                                                                  "Cluster(type 2)",
+                                                                                  "Cluster sample (type 2)",
                                                                                   "Stratified sample (type 3)"
                       ))
                       
@@ -812,7 +812,7 @@ server <- shinyServer(function(input, output, session) {
                  condition = "input.samplingSelectInput == 'Cluster sample (type 2)'",
                  column(width = 12, style="margin: 15px 0px 15px; border-top: 1px solid lightgray; padding: 20px 10px 0px;",
                         column(width = 6, 
-                               selectInput("variableNameCluster", label = "Select the name of cluster variable",choices = projectConfigurationInfo$data[["xlsFormFields"]]
+                               selectizeInput("variableNameCluster", label = "Select the name of cluster variable",choices = projectConfigurationInfo$data[["xlsFormFields"]]
                                               ,options = list(placeholder = '-- select --', onInitialize = I('function() { this.setValue(""); }'))
                                )
                         ),
@@ -848,7 +848,7 @@ server <- shinyServer(function(input, output, session) {
                  condition = "input.samplingSelectInput == 'Stratified sample (type 3)'",
                  column(width = 12, style="margin: 15px 0px 15px; border-top: 1px solid lightgray; padding: 20px 10px 0px;",
                         column(width = 6, 
-                               selectInput("variableNameStratified", label = "Select the name of stratified variable",choices = projectConfigurationInfo$data[["xlsFormFields"]]
+                               selectizeInput("variableNameStratified", label = "Select the name of stratified variable",choices = projectConfigurationInfo$data[["xlsFormFields"]]
                                               ,options = list(placeholder = '-- select --', onInitialize = I('function() { this.setValue(""); }'))
                                )
                         ),

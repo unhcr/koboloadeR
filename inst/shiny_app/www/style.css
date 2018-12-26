@@ -335,12 +335,12 @@
     100% { opacity:100%; }
 }
 
-#resultDVUIDivSuccess > div > div > div > div.box-header{
+#resultUIDivSuccess > div > div > div > div.box-header{
   background-color: #1aab8a;
   color: white;
 }
 
-#resultDVUIDivError > div > div > div > div.box-header{
+#resultUIDivError > div > div > div > div.box-header{
   background-color: #ff3333;
   color: white;
 }

@@ -1510,10 +1510,38 @@ server <- shinyServer(function(input, output, session) {
       conditionalPanel(
         condition = "input.frameSUSelectInput != '-- select --' && input.indicatorCaseSelectInput == 'Sum up different numeric or integer variables'",
         uiOutput("resultSUUI")
+      ),
+      
+      
+      conditionalPanel(
+        condition = "input.indicatorCaseSelectInput == 'Calculate min, max or avg value for multiple integer or numeric variables'",
+        column(
+          width=12,
+          column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                 h4("Select the frame that contains the variable")
+          ),
+          column(width = 6, offset = 0,
+                 selectInput("frameMMASelectInput", label = NULL,choices = c("-- select --", projectConfigurationInfo$data[["beginRepeatList"]]),width = "100%")
+          )
+        )
+      ),
+      conditionalPanel(
+        condition = "input.frameMMASelectInput != '-- select --' && input.indicatorCaseSelectInput == 'Calculate min, max or avg value for multiple integer or numeric variables'",
+        uiOutput("variableMMAUI")
+      ),
+      conditionalPanel(
+        condition = "input.variableMMASelectInput != '-- select --' && input.frameMMASelectInput != '-- select --' && input.indicatorCaseSelectInput == 'Calculate min, max or avg value for multiple integer or numeric variables'",
+        uiOutput("statisticalFunctionsMMAUI")
+      ),
+      conditionalPanel(
+        condition = "input.statisticalFunctionsMMASelectInput != '-- select --' && input.variableMMASelectInput != '-- select --' && input.frameMMASelectInput != '-- select --' && input.indicatorCaseSelectInput == 'Calculate min, max or avg value for multiple integer or numeric variables'",
+        uiOutput("resultMMAUI")
       )
+      
       
     )
   })
+  
   
   ##########Discretize a value##################
   
@@ -1598,10 +1626,10 @@ server <- shinyServer(function(input, output, session) {
       if(!is.null(input$breaksDVTextInput)){
         if(class(resultDVUIValue$text) == "try-error"){
           s<- paste(
-            div(id="resultDVUIDivError",
+            div(id="resultUIDivError",
               column(style="margin-top: 20px;",
                      width=12,
-                     box(id="resultDVUIBoxError",
+                     box(id="resultUIBoxError",
                          title="ERROR",
                          style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
                          width=12, solidHeader = FALSE, collapsible = FALSE,
@@ -1612,10 +1640,10 @@ server <- shinyServer(function(input, output, session) {
             ),s,sep = "")
         }else if(input$breaksDVTextInput != "" && resultDVUIValue$text != ""){
           s<- paste(
-            div(id="resultDVUIDivSuccess",
+            div(id="resultUIDivSuccess",
               column(style="margin-top: 20px;",
               width=12,
-              box(id="resultDVUIBoxSuccess",
+              box(id="resultUIBoxSuccess",
                   title=paste("Copy the text and paste it into calculation column of row number:",input$rowNumberForCalculationBuilder),
                   style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
                   width=12, solidHeader = FALSE, collapsible = FALSE,
@@ -1644,6 +1672,10 @@ server <- shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$variableDVSelectInput,{
+    resultDVUIValue$text <- ""
+  })
+  
+  observeEvent(input$indicatorCaseSelectInput,{
     resultDVUIValue$text <- ""
   })
   
@@ -1822,10 +1854,10 @@ server <- shinyServer(function(input, output, session) {
       if(!is.null(input$listnameFRSelectInput)){
         if(class(resultFRUIValue$text) == "try-error"){
           s<- paste(
-            div(id="resultDVUIDivError",
+            div(id="resultUIDivError",
                 column(style="margin-top: 20px;",
                        width=12,
-                       box(id="resultDVUIBoxError",
+                       box(id="resultUIBoxError",
                            title="ERROR",
                            style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
                            width=12, solidHeader = FALSE, collapsible = FALSE,
@@ -1836,10 +1868,10 @@ server <- shinyServer(function(input, output, session) {
             ),s,sep = "")
         }else if(resultFRUIValue$text != ""){
           s<- paste(
-            div(id="resultDVUIDivSuccess",
+            div(id="resultUIDivSuccess",
                 column(style="margin-top: 20px;",
                        width=12,
-                       box(id="resultDVUIBoxSuccess",
+                       box(id="resultUIBoxSuccess",
                            title=paste("Copy the text and paste it into calculation column of row number:",input$rowNumberForCalculationBuilder),
                            style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
                            width=12, solidHeader = FALSE, collapsible = FALSE,
@@ -1874,8 +1906,12 @@ server <- shinyServer(function(input, output, session) {
   observeEvent(input$listnameFRSelectInput,{
     resultFRUIValue$text <- ""
   })
-  ##########-----END----------##################
   
+  observeEvent(input$indicatorCaseSelectInput,{
+    resultFRUIValue$text <- ""
+  })
+  
+  ##########-----END----------##################
   
   
   ##########Sum up different numeric or integer variables##################
@@ -2035,10 +2071,10 @@ server <- shinyServer(function(input, output, session) {
       s <- ""
       if(class(resultSUUIValue$text) == "try-error"){
         s<- paste(
-          div(id="resultDVUIDivError",
+          div(id="resultUIDivError",
               column(style="margin-top: 20px;",
                      width=12,
-                     box(id="resultDVUIBoxError",
+                     box(id="resultUIBoxError",
                          title="ERROR",
                          style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
                          width=12, solidHeader = FALSE, collapsible = FALSE,
@@ -2049,10 +2085,10 @@ server <- shinyServer(function(input, output, session) {
           ),s,sep = "")
       }else if(resultSUUIValue$text != ""){
         s<- paste(
-          div(id="resultDVUIDivSuccess",
+          div(id="resultUIDivSuccess",
               column(style="margin-top: 20px;",
                      width=12,
-                     box(id="resultDVUIBoxSuccess",
+                     box(id="resultUIBoxSuccess",
                          title=paste("Copy the text and paste it into calculation column of row number:",input$rowNumberForCalculationBuilder),
                          style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
                          width=12, solidHeader = FALSE, collapsible = FALSE,
@@ -2090,9 +2126,185 @@ server <- shinyServer(function(input, output, session) {
   })
   
   ##########-----END----------##################
+  
+  ##########Calculate min, max or avg value for multiple integer or numeric variables##################
+  resultMMAUIValue <- reactiveValues(text="")
+  
+  output$variableMMAUI <- renderUI({
+    tryCatch({
+      if(sum(input$frameMMASelectInput != "-- select --")){
+        if(file.exists(paste(mainDir(), "data", paste("/",input$frameMMASelectInput, ".csv", sep=""), sep = "/", collapse = "/"))){
+          temp <- read.csv(
+            paste(mainDir(), "data", paste("/",input$frameMMASelectInput, ".csv", sep=""), sep = "/", collapse = "/"),
+            stringsAsFactors = FALSE, nrows = 1
+          )
+          selectedCol <- unlist(lapply(temp, is.numeric)) 
+          column(
+            width=12,
+            column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                   h4("Select the variable")
+            ),
+            column(width = 6, offset = 0,
+                   selectInput("variableMMASelectInput", label = NULL,choices = c("-- select --",
+                                                                                 colnames(temp[ , selectedCol])
+                   ),width = "100%")
+            )
+          )
+        }else{
+          infoBox(
+            width = 12,strong("Warning"),
+            h4(paste("You cannot proceed without",input$frameMMASelectInput,"file"),align="center")
+            ,icon = icon("exclamation-triangle"),
+            color = "yellow"
+          )
+        }
+        
+      }
+    }, error = function(err) {
+      infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      )
+    })
+  })
+  
+  output$statisticalFunctionsMMAUI <- renderUI({
+    tryCatch({
+      if(input$variableMMASelectInput != "-- select --"){
+        column(
+          width=12,
+          column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                 h4("Select the Statistical Function")
+          ),
+          column(width = 6, offset = 0,
+                 selectInput("statisticalFunctionsMMASelectInput", label = NULL,choices = c("-- select --",
+                                                                                            "Minimum",
+                                                                                            "Maximum",
+                                                                                            "Average",
+                                                                                            "Median",
+                                                                                            "Mode",
+                                                                                            "Standard Deviation",
+                                                                                            "Interquartile Range"
+                                                                                            )
+                             ,width = "100%")
+                 )
+          )
+      
+      }
+    }, error = function(err) {
+      infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      )
+    })
+  })
+  
+  output$resultMMAUI <- renderText({
+    tryCatch({
+      s <- ""
+      if(class(resultMMAUIValue$text) == "try-error"){
+        s<- paste(
+          div(id="resultUIDivError",
+              column(style="margin-top: 20px;",
+                     width=12,
+                     box(id="resultUIBoxError",
+                         title="ERROR",
+                         style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
+                         width=12, solidHeader = FALSE, collapsible = FALSE,
+                         p(resultMMAUIValue$text$message)
+                     )
+                     
+              )
+          ),s,sep = "")
+      }else if(input$statisticalFunctionsMMASelectInput != "-- select --" && resultMMAUIValue$text != ""){
+        s<- paste(
+          div(id="resultUIDivSuccess",
+              column(style="margin-top: 20px;",
+                     width=12,
+                     box(id="resultUIBoxSuccess",
+                         title=paste("Copy the text and paste it into calculation column of row number:",input$rowNumberForCalculationBuilder),
+                         style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
+                         width=12, solidHeader = FALSE, collapsible = FALSE,
+                         p(resultMMAUIValue$text)
+                     )
+                     
+              )
+          ),s,sep = "")
+      }
+        
+      return(s)
+    }, error = function(err) {
+      return(infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      ))
+    })
+  })
+  
+  observeEvent(input$frameMMASelectInput,{
+    resultMMAUIValue$text <- ""
+  })
+  
+  observeEvent(input$variableMMASelectInput,{
+    resultMMAUIValue$text <- ""
+  })
+  
+  observeEvent(input$variableMMASelectInput,{
+    resultMMAUIValue$text <- ""
+  })
+  
+  observeEvent(input$indicatorCaseSelectInput,{
+    resultMMAUIValue$text <- ""
+  })
+  
+  observeEvent(input$statisticalFunctionsMMASelectInput,{
+    resultMMAUIValue$text <- ""
+  })
+  ##########-----END----------##################
+  
+  
   observeEvent(input$queryConverterButton,{
-    if(input$indicatorCaseSelectInput=="Discretize a value" && input$breaksDVTextInput !="" ){
+    if(sum(input$indicatorCaseSelectInput == "-- select --")){
+      shinyalert("Error",
+                 "Please make sure that you select the Indicator.",
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+      resultDVUIValue$text <- ""
+      return(FALSE)
+    }
+    
+    if(sum(input$indicatorCaseSelectInput=="Discretize a value")){
       tryCatch({ 
+        ############################        Validation        ############################
+        if (
+          sum(input$frameDVSelectInput == "-- select --") ||
+          sum(input$variableDVSelectInput == "-- select --") ||
+          sum(input$breaksDVTextInput == "")
+        ) {
+          shinyalert("Error",
+                     "Please make sure that you enter all required inputs.",
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          resultDVUIValue$text <- ""
+          return(FALSE)
+        }
+        ############################        END        ############################
+        
+        
         pre<-as.numeric(strsplit(input$breaksDVTextInput,",")[[1]])
         pre <- pre[!is.na(pre)]
         pre <- paste( pre ,sep = "," ,collapse=",")
@@ -2116,19 +2328,27 @@ server <- shinyServer(function(input, output, session) {
         resultDVUIValue$text <- structure(c, class = "try-error")
       })
     }
-    else if(input$indicatorCaseSelectInput=="Discretize a value" && input$breaksDVTextInput == "" ){ 
-      resultDVUIValue$text <- ""
-      shinyalert("Info",
-                 "Breaks input is required",
-                 type = "info",
-                 closeOnClickOutside = FALSE,
-                 confirmButtonCol = "#28A8E2",
-                 animation = FALSE,
-                 showConfirmButton = TRUE
-      )
-    }
-    else if(input$listnameFRSelectInput != "-- select --"  && input$indicatorCaseSelectInput=="Re categorize a categorical variable by re coding modalities"){
+    else if(sum(input$indicatorCaseSelectInput=="Re categorize a categorical variable by re coding modalities")){
       tryCatch({ 
+        ############################        Validation        ############################
+        if (
+          sum(input$frameFRSelectInput == "-- select --") ||
+          sum(input$variableFRSelectInput == "-- select --") ||
+          sum(input$listnameFRSelectInput == "-- select --")
+        ) {
+          shinyalert("Error",
+                     "Please make sure that you enter all required inputs.",
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          resultFRUIValue$text <- ""
+          return(FALSE)
+        }
+        ############################        END        ############################
+        
         result <- "fct_recode("
         result <- paste(result,input$frameFRSelectInput,"$",input$variableFRSelectInput, ", ", sep="")
         factorValues <- choicesSheetFR()[choicesSheetFR()$list_name==input$listnameFRSelectInput,c("list_name", "name", "label")]
@@ -2148,8 +2368,25 @@ server <- shinyServer(function(input, output, session) {
         resultFRUIValue$text <- structure(c, class = "try-error")
       })
     }
-    else if(input$frameSUSelectInput != "-- select --"  && input$indicatorCaseSelectInput=="Sum up different numeric or integer variables"){
+    else if(sum(input$indicatorCaseSelectInput=="Sum up different numeric or integer variables") ){
       tryCatch({ 
+        ############################        Validation        ############################
+        if (
+          sum(input$frameSUSelectInput == "-- select --")
+        ) {
+          shinyalert("Error",
+                     "Please make sure that you enter all required inputs.",
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          resultSUUIValue$text <- ""
+          return(FALSE)
+        }
+        ############################        END        ############################
+        
         result <- "psum("
         result <- paste(result,
                         input$frameSUSelectInput,
@@ -2186,6 +2423,50 @@ server <- shinyServer(function(input, output, session) {
         resultSUUIValue$text <- structure(c, class = "try-error")
       })
     }
+    else if(sum(input$indicatorCaseSelectInput=="Calculate min, max or avg value for multiple integer or numeric variables")){
+      tryCatch({ 
+        ############################        Validation        ############################
+        if (
+          sum(input$frameMMASelectInput == "-- select --") ||
+          sum(input$variableMMASelectInput == "-- select --") ||
+          sum(input$statisticalFunctionsMMASelectInput == "-- select --")
+          ) {
+          shinyalert("Error",
+                     "Please make sure that you enter all required inputs.",
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          resultMMAUIValue$text <- ""
+          return(FALSE)
+        }
+        ############################        END        ############################
+        
+        
+        varFrame <- paste(input$frameMMASelectInput,"$",input$variableMMASelectInput, sep="")
+        if(sum(input$statisticalFunctionsMMASelectInput=="Minimum")){
+          result <- paste("min(",varFrame," ,na.rm = TRUE)",sep = "")
+        }else if(sum(input$statisticalFunctionsMMASelectInput=="Maximum")){
+          result <- paste("max(",varFrame," ,na.rm = TRUE)",sep = "")
+        }else if(sum(input$statisticalFunctionsMMASelectInput=="Average")){
+          result <- paste("mean(",varFrame," ,na.rm = TRUE)",sep = "")
+        }else if(sum(input$statisticalFunctionsMMASelectInput=="Median")){
+          result <- paste("median(",varFrame," ,na.rm = TRUE)",sep = "")
+        }else if(sum(input$statisticalFunctionsMMASelectInput=="Mode")){
+          result <- paste("uniqv[which.max(tabulate(match(",varFrame, ", unique(",varFrame,"))))",sep = "")
+        }else if(sum(input$statisticalFunctionsMMASelectInput=="Standard Deviation")){
+          result <- paste("sd(",varFrame," ,na.rm = TRUE)",sep = "")
+        }else if(sum(input$statisticalFunctionsMMASelectInput=="Interquartile Range")){
+          result <- paste("IQR(",varFrame," ,na.rm = TRUE)",sep = "")
+        }
+        resultMMAUIValue$text <- result
+      }, error = function(err) {
+        resultMMAUIValue$text <- structure(c, class = "try-error")
+      })
+    }
+  
   })
   
   output$choicesSheetUI <- renderUI({

@@ -2280,6 +2280,9 @@ server <- shinyServer(function(input, output, session) {
                  showConfirmButton = TRUE
       )
       resultDVUIValue$text <- ""
+      resultFRUIValue$text <- ""
+      resultSUUIValue$text <- ""
+      resultMMAUIValue$text <- ""
       return(FALSE)
     }
     
@@ -2476,11 +2479,23 @@ server <- shinyServer(function(input, output, session) {
   
   observeEvent(input$saveSheets, {
     tryCatch({
+      progress <- shiny::Progress$new()
+      progress$set(message = "Saving sheets in progress...", value = 0)
+      on.exit(progress$close())
+      updateProgress <- function(value = NULL, detail = NULL) {
+        if (is.null(value)) {
+          value <- progress$getValue()
+          value <- value + (progress$getMax() - value) / 5
+        }
+        progress$set(value = value, detail = detail)
+      }
+      updateProgress()
       ###################merge main survey with user survey#############
       userSurvey <- isolate(sheets[["survey"]])
       form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
       mainSurvey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
                                   stringsAsFactors = FALSE)
+      updateProgress()
       if ("required" %in% colnames(mainSurvey)) {
         userSurvey$required <- NA
       }
@@ -2493,11 +2508,12 @@ server <- shinyServer(function(input, output, session) {
       if ("calculate" %in% colnames(mainSurvey)) {
         userSurvey$calculate <- NA
       }
+      updateProgress()
       userSurvey <<- userSurvey
       newSurvey <- rbind(mainSurvey[!rownames(mainSurvey) %in% rownames(userSurvey),],
                          userSurvey
       )
-      
+      updateProgress()
       newSurvey <- newSurvey[ order(as.numeric(row.names(newSurvey))), ]
       
       if ("required" %in% colnames(mainSurvey)) {
@@ -2512,10 +2528,19 @@ server <- shinyServer(function(input, output, session) {
       if ("calculate" %in% colnames(mainSurvey)) {
         newSurvey$calculate <- mainSurvey$calculate
       }
-      
+      updateProgress()
       newIndicators <- isolate(sheets[["indicator"]])
       
-      
+      kobo_edit_form(survey = newSurvey, indicator = newIndicators)
+      updateProgress()
+      shinyalert("Done!",
+                 "The sheets have been successfully saved in the xlsform file",
+                 type = "success",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#28A8E2",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
     }, error = function(err) {
       shinyalert("Error",
                  err$message,

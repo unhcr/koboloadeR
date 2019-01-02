@@ -621,7 +621,7 @@ server <- shinyServer(function(input, output, session) {
   observeEvent(input$prepareFormButton, {
     tryCatch({
       if(!projectConfigurationInfo$log[["xlsForm"]] ||
-         (sum(input$doYouWantGenerateFormSelectInput == "Yes") &&  projectConfigurationInfo$log[["isGenerated"]] == FALSE)
+         (sum(input$doYouHaveFormSelectInput == "No") &&  sum(input$doYouWantGenerateFormSelectInput == "Yes") && projectConfigurationInfo$log[["isGenerated"]] == FALSE)
       ){
         shinyalert("Error",
                    "You can't run this function without uploading or generating xlsform file",
@@ -1355,6 +1355,39 @@ server <- shinyServer(function(input, output, session) {
     })
   })
   
+  output$choicesSheetUI <- renderRHandsontable({
+    form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+    list_name <- c()
+    choices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
+                             stringsAsFactors = FALSE)
+    if ("list_name" %in% colnames(choices)) {
+      list_name <- choices$list_name
+      list_name <- list_name[!is.na(list_name) | trimws(list_name) != '']
+      list_name <- list_name[!duplicated(list_name)]
+      list_name <- sort(list_name)
+      list_name <- c("-- select --",list_name)
+    }
+    if ("name" %in% colnames(choices)) {
+      nameC <- choices$name
+      nameC <- nameC[!is.na(nameC) | trimws(nameC) != '']
+      nameC <- nameC[!duplicated(nameC)]
+      nameC <- sort(nameC)
+      nameC <- c("-- select --",nameC)
+    } 
+    if ("label" %in% colnames(choices)) {
+      label <- choices$label
+      label <- label[!is.na(label) | trimws(label) != '']
+      label <- label[!duplicated(label)]
+      label <- sort(label)
+      label <- c("-- select --",label)
+    } 
+    rhandsontable(sheets[["choices"]], stretchH = "all", height = 550, useTypes = TRUE) %>%
+      hot_col("list_name",  width = 120, type = "autocomplete", source = list_name) %>% 
+      hot_col("name",  width = 120, type = "autocomplete", source = nameC) %>% 
+      hot_col("label",  width = 120, type = "autocomplete", source = label) %>% 
+      hot_col("order",  width = 120, type = "autocomplete", source = 1:100 ) 
+  })
+  
   observeEvent(input$calculationBuilderButton,{
     if (!is.numeric(input$rowNumberForCalculationBuilder)) {
       shinyalert("Error",
@@ -1399,7 +1432,7 @@ server <- shinyServer(function(input, output, session) {
                 uiOutput("calculationBuilderToolBody"),
                 size = "l",
                 footer = tagList(
-                  modalButton("Cancel"),
+                  modalButton("Exit", icon("sign-out-alt")),
                   actionButton("queryConverterButton", "Get the calculation", class="toolButton", style="height: 35px;")
                 )
     )
@@ -1536,9 +1569,29 @@ server <- shinyServer(function(input, output, session) {
       conditionalPanel(
         condition = "input.statisticalFunctionsMMASelectInput != '-- select --' && input.variableMMASelectInput != '-- select --' && input.frameMMASelectInput != '-- select --' && input.indicatorCaseSelectInput == 'Calculate min, max or avg value for multiple integer or numeric variables'",
         uiOutput("resultMMAUI")
+      ),
+      
+      
+      conditionalPanel(
+        condition = "input.indicatorCaseSelectInput == 'Calculate ratio by dividing 2 numeric or integer variables'",
+        column(
+          width=12,
+          column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                 h4("Select the frame that contains the variable")
+          ),
+          column(width = 6, offset = 0,
+                 selectInput("frameD2SelectInput", label = NULL,choices = c("-- select --", projectConfigurationInfo$data[["beginRepeatList"]]),width = "100%")
+          )
+        )
+      ),
+      conditionalPanel(
+        condition = "input.frameD2SelectInput != '-- select --' && input.indicatorCaseSelectInput == 'Calculate ratio by dividing 2 numeric or integer variables'",
+        uiOutput("variablesD2AUI")
+      ),
+      conditionalPanel(
+        condition = "input.frameD2SelectInput != '-- select --' && input.variableD2SelectInput1 != '-- select --' && input.variableD2SelectInput2 != '-- select --' && input.indicatorCaseSelectInput == 'Calculate ratio by dividing 2 numeric or integer variables'",
+        uiOutput("resultD2UI")
       )
-      
-      
     )
   })
   
@@ -1672,10 +1725,6 @@ server <- shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$variableDVSelectInput,{
-    resultDVUIValue$text <- ""
-  })
-  
-  observeEvent(input$indicatorCaseSelectInput,{
     resultDVUIValue$text <- ""
   })
   
@@ -1907,10 +1956,6 @@ server <- shinyServer(function(input, output, session) {
     resultFRUIValue$text <- ""
   })
   
-  observeEvent(input$indicatorCaseSelectInput,{
-    resultFRUIValue$text <- ""
-  })
-  
   ##########-----END----------##################
   
   
@@ -2121,11 +2166,8 @@ server <- shinyServer(function(input, output, session) {
     resultSUUIValue$text <- ""
   })
   
-  observeEvent(input$indicatorCaseSelectInput,{
-    resultSUUIValue$text <- ""
-  })
-  
   ##########-----END----------##################
+  
   
   ##########Calculate min, max or avg value for multiple integer or numeric variables##################
   resultMMAUIValue <- reactiveValues(text="")
@@ -2259,15 +2301,119 @@ server <- shinyServer(function(input, output, session) {
     resultMMAUIValue$text <- ""
   })
   
-  observeEvent(input$indicatorCaseSelectInput,{
-    resultMMAUIValue$text <- ""
-  })
-  
   observeEvent(input$statisticalFunctionsMMASelectInput,{
     resultMMAUIValue$text <- ""
   })
   ##########-----END----------##################
   
+  ##########Calculate ratio by dividing 2 numeric or integer variables##################
+  resultD2UIValue <- reactiveValues(text="")
+  
+  output$variablesD2AUI <- renderUI({
+    tryCatch({
+      if(sum(input$frameD2SelectInput != "-- select --")){
+        if(file.exists(paste(mainDir(), "data", paste("/",input$frameD2SelectInput, ".csv", sep=""), sep = "/", collapse = "/"))){
+          temp <- read.csv(
+            paste(mainDir(), "data", paste("/",input$frameD2SelectInput, ".csv", sep=""), sep = "/", collapse = "/"),
+            stringsAsFactors = FALSE, nrows = 1
+          )
+          selectedCol <- unlist(lapply(temp, is.numeric)) 
+          column(
+            width=12,
+            column(width = 12, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                   h4("Select the variables or enter numeric or integer value")
+            ),
+            column(width = 12,style="margin-top: 15px;",
+              column(width = 5, offset = 0, align="center",style="margin-top: 15px;",
+                     selectizeInput("variableD2SelectInput1", label = NULL,choices = c("-- select --",
+                                                                                    colnames(temp[ , selectedCol])
+                     ),width = "100%",options = list(create = TRUE))
+              ),
+              column(width = 2, offset = 0, align="center",
+                     h3("/")
+              ),
+              column(width = 5, offset = 0, align="center",style="margin-top: 15px;",
+                     selectizeInput("variableD2SelectInput2", label = NULL,choices = c("-- select --",
+                                                                                       colnames(temp[ , selectedCol])
+                     ),width = "100%")
+              )
+            )
+          )
+        }else{
+          infoBox(
+            width = 12,strong("Warning"),
+            h4(paste("You cannot proceed without",input$frameD2SelectInput,"file"),align="center")
+            ,icon = icon("exclamation-triangle"),
+            color = "yellow"
+          )
+        }
+        
+      }
+    }, error = function(err) {
+      infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      )
+    })
+  })
+  
+  output$resultD2UI <- renderText({
+    tryCatch({
+      s <- ""
+      if(class(resultD2UIValue$text) == "try-error"){
+        s<- paste(
+          div(id="resultUIDivError",
+              column(style="margin-top: 20px;",
+                     width=12,
+                     box(id="resultUIBoxError",
+                         title="ERROR",
+                         style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
+                         width=12, solidHeader = FALSE, collapsible = FALSE,
+                         p(resultD2UIValue$text$message)
+                     )
+                     
+              )
+          ),s,sep = "")
+      }else if(resultD2UIValue$text != ""){
+        s<- paste(
+          div(id="resultUIDivSuccess",
+              column(style="margin-top: 20px;",
+                     width=12,
+                     box(id="resultUIBoxSuccess",
+                         title=paste("Copy the text and paste it into calculation column of row number:",input$rowNumberForCalculationBuilder),
+                         style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
+                         width=12, solidHeader = FALSE, collapsible = FALSE,
+                         p(resultD2UIValue$text)
+                     )
+                     
+              )
+          ),s,sep = "")
+      }
+      return(s)
+    }, error = function(err) {
+      return(infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      ))
+    })
+  })
+  
+  observeEvent(input$frameD2SelectInput,{
+    resultD2UIValue$text <- ""
+  })
+  
+  observeEvent(input$variableD2SelectInput1,{
+    resultD2UIValue$text <- ""
+  })
+  
+  observeEvent(input$variableD2SelectInput2,{
+    resultD2UIValue$text <- ""
+  })
+  ##########-----END----------##################
   
   observeEvent(input$queryConverterButton,{
     if(sum(input$indicatorCaseSelectInput == "-- select --")){
@@ -2283,6 +2429,7 @@ server <- shinyServer(function(input, output, session) {
       resultFRUIValue$text <- ""
       resultSUUIValue$text <- ""
       resultMMAUIValue$text <- ""
+      resultD2UIValue$text <- ""
       return(FALSE)
     }
     
@@ -2469,12 +2616,44 @@ server <- shinyServer(function(input, output, session) {
         resultMMAUIValue$text <- structure(c, class = "try-error")
       })
     }
-  
+    else if(sum(input$indicatorCaseSelectInput=="Calculate ratio by dividing 2 numeric or integer variables")){
+      tryCatch({ 
+        ############################        Validation        ############################
+        if (
+          sum(input$frameD2SelectInput == "-- select --") ||
+          sum(input$variableD2SelectInput1 == "-- select --") ||
+          sum(input$variableD2SelectInput2 == "-- select --")
+        ) {
+          shinyalert("Error",
+                     "Please make sure that you enter all required inputs.",
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          resultD2UIValue$text <- ""
+          return(FALSE)
+        }
+        ############################        END        ############################
+        
+        
+      
+        result <- paste(input$frameD2SelectInput,"$",input$variableD2SelectInput1, " / ", sep="")
+        result <- paste(result, input$frameD2SelectInput,"$",input$variableD2SelectInput2, sep="")
+        resultD2UIValue$text <- result
+      }, error = function(err) {
+        resultD2UIValue$text <- structure(c, class = "try-error")
+      })
+    }
   })
   
-  output$choicesSheetUI <- renderUI({
-    
-    
+  observeEvent(input$indicatorCaseSelectInput,{
+    resultDVUIValue$text <- ""
+    resultFRUIValue$text <- ""
+    resultSUUIValue$text <- ""
+    resultMMAUIValue$text <- ""
+    resultD2UIValue$text <- ""
   })
   
   observeEvent(input$saveSheets, {
@@ -2531,7 +2710,9 @@ server <- shinyServer(function(input, output, session) {
       updateProgress()
       newIndicators <- isolate(sheets[["indicator"]])
       
-      kobo_edit_form(survey = newSurvey, indicator = newIndicators)
+      newchoices <- isolate(sheets[["choices"]])
+      
+      kobo_edit_form(survey = newSurvey, indicator = newIndicators, choices = newchoices)
       updateProgress()
       shinyalert("Done!",
                  "The sheets have been successfully saved in the xlsform file",
@@ -2559,8 +2740,8 @@ server <- shinyServer(function(input, output, session) {
     }
     indicator <- c()
     survey <- c()
+    choices <- c()
     if (!is.null(input$surveySheetUI)) {
-      
       survey = hot_to_r(input$surveySheetUI)#as.data.frame(do.call(rbind, input$surveySheetUI$data))
     } 
     else {
@@ -2678,11 +2859,53 @@ server <- shinyServer(function(input, output, session) {
     if(nrow(indicator)==0){
       indicator[nrow(indicator)+1,] <- NA
     }
-    indicator <- indicator[ order(as.numeric(row.names(indicator))), ]
+    indicator <- indicator[order(as.numeric(row.names(indicator))), ]
     if(length(projectConfigurationInfo$data[["beginRepeatList"]])==1){
       indicator$frame <- "data"
     }
     sheets[["indicator"]] <- indicator
+    
+    
+    
+    if (!is.null(input$choicesSheetUI)) {
+      choices = hot_to_r(input$choicesSheetUI)#as.data.frame(do.call(rbind, input$indicatorsSheetUI$data))#
+    } 
+    else {
+      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+      choices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
+                                 stringsAsFactors = FALSE)
+      
+      
+      reqNames <- c("list_name", "name", "label", "order")
+      
+      if(sum(sapply(reqNames, function(x){x %in% colnames(choices)})) != length(reqNames)){
+        shinyalert("Error",
+                   paste("You need to make sure that all required fields are existing in choices sheet\n",
+                         reqNames
+                   ),
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      choices <- choices[reqNames]
+      
+      
+      choices$list_name <- as.character(choices$list_name)
+      choices$name <- as.character(choices$name)
+      choices$label <- as.character(choices$label)
+      choices$order <- as.integer(choices$order)
+      
+    }
+    
+    if(nrow(choices)==0){
+      choices[nrow(choices)+1,] <- NA
+    }
+    choices <- choices[order(as.numeric(row.names(choices))), ]
+    sheets[["choices"]] <- choices
   })
 })
 

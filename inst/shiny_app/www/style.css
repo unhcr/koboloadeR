@@ -345,6 +345,11 @@
   color: white;
 }
 
+#resultUIBoxSuccess{
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
 .toolButtonDelete, .toolButtonDelete:focus, .toolButtonDelete:active:focus{
   background:#ff4d4d;
   color:#fff;

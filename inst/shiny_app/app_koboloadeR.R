@@ -160,7 +160,7 @@ server <- function(input, output,session) {
     cat("\n")
     cat(paste('sheet <- "',inFile_sheet,'"', sep = ""))
     cat("\n")
-    cat(paste0('data <- read_excel("', inFile_data$name,'", sheet = "',inFile_sheet,'")\n\n') )
+    cat(paste0('data <- read_excel("', mainDir,'/data/',inFile_data$name,'", sheet = "',inFile_sheet,'")\n\n') )
     cat("\n")
 
     cat("### 1. Weighting system   ###\n")
@@ -194,7 +194,7 @@ server <- function(input, output,session) {
 
   observeEvent(input$dico,{
     isolate({source(paste0(mainDir,"/code/0-config.R"), local = TRUE)})
-    kobo_dico(mainDir)
+    kobo_dico(form)
     if (input$analysis_plan == 'y') {
       kobo_indicator(mainDir)
     }

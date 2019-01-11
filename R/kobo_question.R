@@ -23,6 +23,7 @@
 #'
 
 kobo_question <- function(question,mainDir='') {
+  library(stringr)
   # Source project config parameters
   if (mainDir==''){
     mainDir <- getwd()
@@ -91,8 +92,7 @@ kobo_question <- function(question,mainDir='') {
                     frequ[,1] <- selectchoices_questions$labelchoice[match(frequ[,1], selectchoices_questions$name)]
                     frequ[,1] <- factor(frequ[,1])
 
-                }
-                else{
+                }else{
                   frequ<-data.frame(table(data.single[1]))
                 }
                 names(frequ)<- c("Var1","Freq")
@@ -671,7 +671,7 @@ kobo_question <- function(question,mainDir='') {
     } else{
 
       selectinteger <- as.character(select_question[, c("fullname")])
-      data.integer <- data [selectinteger  ]
+      data.integer <- data [selectinteger]
 
       selectfacet <- as.character(select_question[select_question$disaggregation!="" , c("fullname")])
       selectfacet <- selectfacet[!is.na(selectfacet)]
@@ -685,7 +685,7 @@ kobo_question <- function(question,mainDir='') {
         title <- select_question$label
 
         ## Ensure that the variable is recognised as numeric
-        select.data.integer <- data.frame(as.numeric(na.omit(data.integer[ ,1])))
+        data.integer[,question] <- as.numeric(data.integer[,question])
         #str(data.integer[ , i])
 
         totalanswer <- nrow(data.integer)
@@ -698,7 +698,7 @@ kobo_question <- function(question,mainDir='') {
 
 
         # trendline on histogram by adding geom_density
-        histograms <- ggplot(data=select.data.integer, aes(select.data.integer)) +
+        histograms <- ggplot(data=data.integer, aes(x = data.integer[,question])) +
           geom_histogram(aes(y =..density..), fill="#2a87c8", alpha = .6, binwidth=0.5) +
           geom_density(adjust=2) +
           scale_x_continuous(expand = c(0,0)) +
@@ -708,9 +708,9 @@ kobo_question <- function(question,mainDir='') {
         print(histograms)
         cat("\n")
         cat("\n")
-        names(select.data.integer) <- select_question$label
+        names(data.integer) <- select_question$label
         cat("\n")
-        print(summary(select.data.integer))
+        print(summary(data.integer))
         cat("\n")
         cat(paste0("Out of ", totalanswer," respondents, ", count_replied," (",percentresponse,")"," answered to this question."))
         cat("\n")

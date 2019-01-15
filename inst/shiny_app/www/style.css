@@ -1,6 +1,6 @@
 /* width */
 ::-webkit-scrollbar {
-    width: 5px;
+    width: 10px;
 }
 
 /* Track */
@@ -17,6 +17,59 @@
 ::-webkit-scrollbar-thumb:hover {
     background: #555; 
 }
+body > div > div > section > nav > div > div.navbar-header{
+  height: 70px;
+  background-color: white;
+  padding-left: 20px;
+}
+body > div > div > section > nav > div > div.navbar-collapse.collapse{
+  background-color: #003d66;
+}
+.container-fluid{
+  padding-right: 0px; 
+  padding-left: 0px; 
+}
+body > div.wrapper > div > section > nav{
+  border-bottom: 1px solid lightgray;
+}
+
+/* Extra Small Devices, Phones */ 
+@media only screen and (max-width : 767px) {
+  body > div > div > section > div{
+        margin-top: 85px !important;
+  }
+}
+
+/* Small Devices, Tablets */
+@media only screen and (min-width : 768px) {
+  body > div > div > section > div{
+        margin-top: 200px !important;
+  }
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (min-width : 1045px) {
+  body > div > div > section > div{
+        margin-top: 145px !important;
+  }
+}
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width : 1340px) {
+  body > div > div > section > div{
+        margin-top: 90px !important;
+  }
+}
+
+
+body > div > div > section > nav > div > div.navbar-header > span{
+  min-width: 300px;
+  font-size: 20px;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+
 .warningBlock{
   background-color: ghostwhite;
   padding: 2px 15px 2px 15px;
@@ -387,3 +440,265 @@
   width:100%;
   transition:800ms ease all;
 }
+
+.handsontable .htCheckboxRendererInput.noValue{
+  height: 30px;
+    width: 20px;
+}
+
+.handsontable .htCheckboxRendererInput{
+  height: 30px;
+    width: 20px;
+}
+.numberStep{
+    border: 1px solid;
+    padding: 5px 10px;
+    margin-right: 8px;
+    border-radius: 35px;
+}
+
+#wellMenuForAPC > div > div.col-sm-2 > form{
+    min-height: 20px;
+    padding: 0px;
+    margin-bottom: 20px;
+    background-color: #f5f5f5;
+    border: 0px solid #3c8dbc;
+    border-top: 5px solid #3c8dbc;
+    border-bottom: 5px solid #3c8dbc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+    color: black;
+    background-color: white;
+}
+.skin-blue .sidebar-menu>li>a{
+  border-bottom: 1px solid lightgray;
+}
+
+
+/************************************************/
+.navbar-default .navbar-nav>li>a{
+  line-height: 40px !important;
+}
+/**************active************************************************/
+#navbar > li.active > a {
+    position: relative;
+    box-shadow: 15px 15px 35px -5px darkgrey;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+/************************child(1)*****************************/
+
+#navbar > li:nth-child(1) > a {
+    position: relative;
+    background: #80ccff;
+    color:white;
+}
+#navbar > li:nth-child(1) > a:before {
+    content: "";
+    position: absolute;
+    right: -15px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 15px solid #80ccff;
+    border-top: 35px solid transparent;
+    border-bottom: 35px solid transparent;
+}
+#navbar > li:nth-child(1) > a:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 10px solid white;
+}
+#navbar > li:nth-child(1) > a > div > span:nth-child(1){
+    border: 1px solid;
+    padding: 10px 15px;
+    border-radius: 100px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+/************************child(2)*****************************/
+
+#navbar > li:nth-child(2) > a {
+    position: relative;
+    background: #1aa3ff;
+    color:white;
+}
+#navbar > li:nth-child(2) > a:before {
+    content: "";
+    position: absolute;
+    right: -15px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 15px solid #1aa3ff;
+    border-top: 35px solid transparent;
+    border-bottom: 35px solid transparent;
+}
+#navbar > li:nth-child(2) > a:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 15px solid #80ccff;
+    border-top: 35px solid transparent;
+    border-bottom: 35px solid transparent;
+}
+#navbar > li:nth-child(2) > a > div > span:nth-child(1){
+    border: 1px solid;
+    padding: 10px 15px;
+    border-radius: 100px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+/************************child(3)*****************************/
+
+#navbar > li:nth-child(3) > a {
+    position: relative;
+    background: #008ae6;
+    color:white;
+}
+#navbar > li:nth-child(3) > a:before {
+    content: "";
+    position: absolute;
+    right: -15px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 15px solid #008ae6;
+    border-top: 35px solid transparent;
+    border-bottom: 35px solid transparent;
+}
+#navbar > li:nth-child(3) > a:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 15px solid #1aa3ff;
+    border-top: 35px solid transparent;
+    border-bottom: 35px solid transparent;
+}
+#navbar > li:nth-child(3) > a > div > span:nth-child(1){
+    border: 1px solid;
+    padding: 10px 15px;
+    border-radius: 100px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+/************************child(4)*****************************/
+#navbar > li:nth-child(4) > a {
+    position: relative;
+    background: #005c99;
+    color:white;
+}
+#navbar > li:nth-child(4) > a:before {
+    content: "";
+    position: absolute;
+    right: -15px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 15px solid #005c99;
+    border-top: 35px solid transparent;
+    border-bottom: 35px solid transparent;
+}
+#navbar > li:nth-child(4) > a:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 15px solid #008ae6;
+    border-top: 35px solid transparent;
+    border-bottom: 35px solid transparent;
+}
+#navbar > li:nth-child(4) > a > div > span:nth-child(1){
+    border: 1px solid;
+    padding: 10px 15px;
+    border-radius: 100px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+/************************child(5)*****************************/
+#navbar > li:nth-child(5) > a {
+    position: relative;
+    background: #003d66;
+    color:white;
+}
+#navbar > li:nth-child(5) > a:before {
+    content: "";
+    position: absolute;
+    right: -15px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 15px solid #003d66;
+    border-top: 35px solid #003d66;
+    border-bottom: 35px solid #003d66;
+}
+#navbar > li:nth-child(5) > a:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 15px solid #005c99;
+    border-top: 35px solid transparent;
+    border-bottom: 35px solid transparent;
+}
+#navbar > li:nth-child(5) > a > div > span:nth-child(1){
+    border: 1px solid;
+    padding: 10px 15px;
+    border-radius: 100px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+#analysisPlanTab{
+    background-image: url(analysis-plan-configuration.png);
+    height: 650px;
+    width: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: aliceblue;
+    margin-bottom: 40px;
+}
+
+#wellMenuForAPC > div > div.col-sm-2 > form > ul > li:nth-child(13) > a{
+    text-align: center;
+    padding: 0px 25px 0px 0px;
+    border-bottom: 0px solid;
+    color: white;
+    font-size: 30px;
+    background-color:#003d66;
+}
+
+#wellMenuForAPC > div > div.col-sm-2 > form > ul > li:nth-child(13).active > a{
+    text-align: center;
+    padding: 0px 25px 0px 0px;
+    border-bottom: 0px solid;
+    color: white;
+    font-size: 30px;
+    background-color: black;
+}
+
+#relabelingSurveyTable{
+  border-bottom: 1px solid lightgray;
+}
+

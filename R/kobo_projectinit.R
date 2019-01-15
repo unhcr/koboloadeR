@@ -201,6 +201,10 @@ kobo_projectinit <- function() {
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/style.css",sep = ""), destfile)
   }
+  destfile = paste0(mainDir,"/code/shiny_app/www/analysis-plan-configuration.png")
+  if (!file.exists(destfile)) {
+    file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/style.css",sep = ""), destfile)
+  }
   
   ## HTML Template ####
   

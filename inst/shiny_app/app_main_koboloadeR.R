@@ -7,45 +7,57 @@
 #    http://shiny.rstudio.com/
 #
 
-library(shiny)
-library(shinydashboard)
-library(shinyalert)
-library(DT)
+
 kobo_projectinit()
-header <- dashboardHeader(title = "koboloadeR Package",
-                          titleWidth = 300
+
+
+header <- dashboardHeader(title = NULL, disable = TRUE,
+                          titleWidth = 0
 )
 
-sidebar <- dashboardSidebar(width = 300,
-                            sidebarMenu(
-                              menuItem("Project Configuration", icon = icon("braille", class = "fa-1x"), tabName = "pc"),
-                              menuItem("Analysis Plan Configuration", icon = icon("cogs", class = "fa-1x"), tabName = "apc"),
-                              menuItem("Data Processing", icon = icon("table", class = "fa-1x"), tabName = "dp"),
-                              menuItem("Reports Generation", icon = icon("microchip", class = "fa-1x"), tabName = "rg"),
-                              menuItem("Data Dissemination", icon = icon("file", class = "fa-1x"), tabName = "dd")
-                            )
+sidebar <- dashboardSidebar(width = 0, disable = TRUE, collapsed = TRUE                  
 )
 
 body <- dashboardBody(useShinyalert(),
-                      tags$head(
-                        tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
-                      ),                      
-                      tabItems(
-                        tabItem(tabName = "pc",
-                                uiOutput("projectConfiguration")
-                        ),
-                        tabItem(tabName = "apc",
-                                uiOutput("analysisPlanConfiguration")
-                        ),
-                        tabItem(tabName = "dp",
-                                uiOutput("dataProcessing")
-                        ),
-                        tabItem(tabName = "rg",
-                                uiOutput("reportsGeneration")
-                        ),
-                        tabItem(tabName = "dd",
-                                uiOutput("dataDissemination")
-                        )
+                      navbarPage(id = "navbar", title = "koboloadeR Package", 
+                                 position = c("fixed-top"), inverse=FALSE, collapsible=TRUE,
+                                 #theme = "bootstrap.css",
+                                 header = tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "style.css")),
+                                 
+                                 # Project Configuration --------------------------------------------
+                                 
+                                 tabPanel(value = "pc", title = div(span("1"),span("Project Configuration"), class="arrow_box"),
+                                          uiOutput("projectConfiguration")
+                                 ),
+                                 
+                                 # Analysis Plan Configuration --------------------------------------------
+                                 
+                                 tabPanel(value = "apc", title = div(span("2"),span("Analysis Plan Configuration"), class="arrow_box"),
+                                          uiOutput("analysisPlanConfiguration")
+                                          
+                                 ),
+                                 
+                                 # Data Processing ----------------------------------------
+                                 
+                                 tabPanel(value = "dp", title = div(span("3"),span("Data Processing"), class="arrow_box"),
+                                          uiOutput("dataProcessing")
+                                          
+                                 ),
+                                 
+                                 # Reports Generation ----------------------------------------
+                                 
+                                 tabPanel(value = "rg", title = div(span("4"),span("Reports Generation"), class="arrow_box"), 
+                                          uiOutput("reportsGeneration")
+                                          
+                                 ),
+                                 
+                                 # Reports Generation ----------------------------------------
+                                 
+                                 tabPanel(value = "dd", title = div(span("5"),span("Data Dissemination"), class="arrow_box"),
+                                          uiOutput("dataDissemination")
+                                          
+                                 )
+                                 
                       )
 )
 
@@ -55,6 +67,7 @@ ui <- dashboardPage(
   sidebar=sidebar,
   body=body
 )
+
 
 # Define server logic required to draw a histogram
 server <- shinyServer(function(input, output, session) {
@@ -150,7 +163,7 @@ server <- shinyServer(function(input, output, session) {
     fluidRow(
       box(id="doYouHaveFormBox",
           width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,
-          column(width = projectConfigurationTheme$questionsWidth, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+          column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
                  h4("Do you have the xlsform?")
           ),
           column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
@@ -186,7 +199,7 @@ server <- shinyServer(function(input, output, session) {
             width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,
             conditionalPanel(
               condition = "input.doYouHaveFormSelectInput == 'No'",
-              column(width = projectConfigurationTheme$questionsWidth, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+              column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
                      h4("Do you want to generate xlsform from your Data file?")
               ),
               column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
@@ -199,7 +212,7 @@ server <- shinyServer(function(input, output, session) {
         condition = "input.doYouHaveFormSelectInput != 'Yes' && input.doYouWantGenerateFormSelectInput == 'Yes' && input.doYouHaveFormSelectInput != '-- select --'",
         box(id="doYouHaveDataBox",
             width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,
-            column(width = projectConfigurationTheme$questionsWidth, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+            column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
                    h4("Do you have the Data file?")
             ),
             column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
@@ -241,7 +254,7 @@ server <- shinyServer(function(input, output, session) {
         div(id="doYouHaveDatasetsDiv",
             box(id="doYouHaveDatasetsBox", title = "File(s) related to project",
                 width=12,status="primary", solidHeader = FALSE, collapsible = TRUE,
-                column(width = projectConfigurationTheme$questionsWidth, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
                        h4("Do you have the Data file(s)?")
                 ),
                 column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
@@ -267,7 +280,7 @@ server <- shinyServer(function(input, output, session) {
         condition = "input.doYouHaveFormSelectInput == 'Yes' && input.doYouHaveDatasetsSelectInput == 'Yes'",
         box(id="doesFormNeedToPrepareBox",
             width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,
-            column(width = projectConfigurationTheme$questionsWidth, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+            column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
                    h4("Does xlsform include settings?")
             ),
             column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
@@ -797,7 +810,7 @@ server <- shinyServer(function(input, output, session) {
       fluidRow(
         
         column(12, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px; margin-bottom: 20px; background-color: ghostwhite; padding-top: 20px;",
-               column(width = projectConfigurationTheme$questionsWidth, style = "border-bottom: 1px dotted lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px dotted lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
                       h4("What sampling do you have?")
                ),
                column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
@@ -883,7 +896,7 @@ server <- shinyServer(function(input, output, session) {
         ),
         
         column(12, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px; margin-bottom: 20px;",
-               column(width = projectConfigurationTheme$questionsWidth, style = "border-bottom: 1px dotted lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px dotted lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
                       h4("Do you have data cleaning log?")
                ),
                column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
@@ -1184,7 +1197,7 @@ server <- shinyServer(function(input, output, session) {
       fluidRow(
         box(id="doYouHaveAnalysisPlanBox",
             width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,
-            column(width = projectConfigurationTheme$questionsWidth, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+            column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
                    h4("Does xlsform include documented analysis plan?")
             ),
             column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
@@ -1194,40 +1207,74 @@ server <- shinyServer(function(input, output, session) {
         conditionalPanel(
           condition = "input.doYouHaveAnalysisPlanSelectInput=='No'",
           
-          tabBox(width=12, id = "analysisPlanTab", title = "Documented Analysis Plan",height="650px",
-                 tabPanel(id="surveySheetTab", "Survey Sheet", 
-                          column(width = 12,
-                                 rHandsontableOutput("surveySheetUI")
-                          )
-                        ),
-                 
-                 tabPanel(id="indicatorsSheetTab","Indicators Sheet", 
-                          column(width = 8,
-                                 actionButton("calculationBuilderButton", "For calculation part, you can use the query builder by clicking on the button and copy the result into calculation cell.", 
-                                              icon("hammer", "fa-2x"),
-                                              style="width:100%; margin-top: 10px; margin-bottom: 35px;; height: 50px;",
-                                              class="toolButton"
-                                              )
-                          ),
-                          column(width = 4,
-                                 numericInput("rowNumberForCalculationBuilder", "Enter the row number for Calculation Builder tool", 1, min = 1, max = NA, step = 1,
-                                              width = "100%")
-                          ),
-                          column(width = 12,
-                            rHandsontableOutput("indicatorsSheetUI")
-                          )
-                        ),
-                 tabPanel(id="choicesSheetTab","Choices Sheet", 
-                          column(width = 12,
-                                 rHandsontableOutput("choicesSheetUI")
+          column(width = 12,
+          div(id="wellMenuForAPC",
+            sidebarLayout(
+              sidebarPanel(width = 2,
+                sidebarMenu(id="sidebarMenuForAP",
+                  menuItem(div(span("1",class="numberStep"),span("Re-Labeling Survey Sheet")), tabName = "relabelingSurvey"),
+                  menuItem(div(span("2",class="numberStep"),span("Re-Labeling Choices Sheet")), tabName = "relabelingChoices"),
+                  menuItem(div(span("3",class="numberStep"),span("Text type")), tabName = "textType"),
+                  menuItem(div(span("4",class="numberStep"),span("Select_one type")), tabName = "selectOneType"),
+                  menuItem(div(span("5",class="numberStep"),span("Order Ordinal Variables")), tabName = "orderOrdinalVariables"),
+                  menuItem(div(span("6",class="numberStep"),span("Select_multiple type")), tabName = "selectMultipleType"),
+                  menuItem(div(span("7",class="numberStep"),span("Calculate type")), tabName = "calculateType"),
+                  menuItem(div(span("8",class="numberStep"),span("Integer type")), tabName = "integerType"),
+                  menuItem(div(span("9",class="numberStep"),span("Date type")), tabName = "dateType"),
+                  menuItem(div(span("10",class="numberStep"),span("Decimal type")), tabName = "decimalType"),
+                  menuItem(div(span("11",class="numberStep"),span("Indicators Sheet")), tabName = "indicatorsSheet"),
+                  menuItem(div(span("12",class="numberStep"),span("Chapter")), tabName = "chapter"),
+                  menuItem(NULL, icon = icon("info-circle"), tabName = "infoAPC")
+                )
+              ),
+              mainPanel(width = 10,
+                        div(id = "analysisPlanTab",
+                          tabItems(
+                            tabItem(tabName = "relabelingSurvey",
+                                    uiOutput("relabelingSurveyUI")
+                            ),
+                            tabItem(tabName = "relabelingChoices",
+                                    uiOutput("relabelingChoicesUI")
+                            ),
+                            tabItem(tabName = "textType",
+                                    uiOutput("textTypeUI")
+                            ),
+                            tabItem(tabName = "selectOneType",
+                                    uiOutput("selectOneTypeUI")
+                            ),
+                            tabItem(tabName = "orderOrdinalVariables",
+                                    uiOutput("orderOrdinalVariablesUI")
+                            ),
+                            tabItem(tabName = "selectMultipleType",
+                                    uiOutput("selectMultipleTypeUI")
+                            ),
+                            tabItem(tabName = "calculateType",
+                                    uiOutput("calculateTypeUI")
+                            ),
+                            tabItem(tabName = "integerType",
+                                    uiOutput("integerTypeUI")
+                            ),
+                            tabItem(tabName = "dateType",
+                                    uiOutput("dateTypeUI")
+                            ),
+                            tabItem(tabName = "decimalType",
+                                    uiOutput("decimalTypeUI")
+                            ),
+                            tabItem(tabName = "indicatorsSheet",
+                                    uiOutput("indicatorsSheetUI")
+                            ),
+                            tabItem(tabName = "chapter",
+                                    uiOutput("chapterUI")
+                            ),
+                            tabItem(tabName = "infoAPC",
+                                    uiOutput("infoAPCUI")
+                            )
                           )
                         )
-          ),
-          wellPanel(
-            actionButton("saveSheets", "Save Sheets", icon("save", "fa-2x"), 
-                         style="width:100%; margin-top: 10px; margin-bottom: 15px; height: 60px;", class="uploadButton")
-          )  
-          
+                  )
+            )
+          )
+         )
         ),
         conditionalPanel(
           condition = "input.doYouHaveAnalysisPlanSelectInput=='No' || input.doYouHaveAnalysisPlanSelectInput=='Yes'",
@@ -1253,6 +1300,106 @@ server <- shinyServer(function(input, output, session) {
       )
     }
   })
+  
+  observe({
+    if(is.null(input$sidebarMenuForAP)){
+      uiOutput("relabelingSurveyUI")
+    }
+  })
+  
+  output$relabelingSurveyUI <- renderUI({
+    box(id="relabelingSurveyTableBox",
+        width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,height = 650,
+           rHandsontableOutput("relabelingSurveyTable")
+           )
+  })
+  output$relabelingSurveyTable <- renderRHandsontable({
+    tryCatch({
+      temp <- rhandsontable(sheets[["relabelingSurvey"]], stretchH = "all", height = 600, useTypes = TRUE) %>%
+        hot_col("type", readOnly = TRUE, width = 200) %>%
+        hot_col("name", readOnly = TRUE, width = 200) %>%
+        hot_context_menu(allowRowEdit = FALSE, allowColEdit = FALSE)
+      
+      
+      if("label::English" %in% colnames(sheets[["relabelingSurvey"]])){
+        temp <- temp %>% hot_col("label::English", readOnly = TRUE, width = 200) %>%
+          hot_col("label::Report", width = 400, allowInvalid = FALSE,
+                  validator = "
+           function (value, callback) {
+            setTimeout(function(){
+              if(value.length >= 80){
+                alert('Please make sure that the length of the string less than 80 characters');
+              }
+              if(value.length <= 0){
+                alert('Please make sure that the length of the string greater than 0 characters');
+              }
+              callback(value.length < 80 && value.length > 0);
+            }, 700)
+           }")
+      }else{
+        temp <- temp %>% hot_col("label::Report", width = 400, allowInvalid = FALSE,
+                                 validator = "
+                                 function (value, callback) {
+                                 setTimeout(function(){
+                                 if(value.length >= 80){
+                                 alert('Please make sure that the length of the string less than 80 characters');
+                                 }
+                                 callback(value.length < 80);
+                                 }, 700)
+                                 }"
+                                 )
+      }
+      
+      if("hint::English" %in% colnames(sheets[["relabelingSurvey"]])){
+        temp <- temp %>% hot_col("hint::English", readOnly = TRUE, width = 200) %>%
+          hot_col("hint::Report", width = 400, allowInvalid = FALSE,
+                  validator = "
+                  function (value, callback) {
+                  setTimeout(function(){
+                  if(value.length >= 80){
+                  alert('Please make sure that the length of the string less than 80 characters');
+                  }
+                  if(value.length <= 0){
+                  alert('Please make sure that the length of the string greater than 0 characters');
+                  }
+                  callback(value.length < 80 && value.length > 0);
+                  }, 700)
+                  }")
+      }else{
+        temp <- temp %>% hot_col("hint::Report", width = 400, allowInvalid = FALSE,
+                                 validator = "
+                                 function (value, callback) {
+                                 setTimeout(function(){
+                                 if(value.length >= 80){
+                                 alert('Please make sure that the length of the string less than 80 characters');
+                                 }
+                                 callback(value.length < 80);
+                                 }, 700)
+                                 }"
+                                 )
+      }
+      temp
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   output$surveySheetUI <- renderRHandsontable({
     tryCatch({
@@ -1385,10 +1532,10 @@ server <- shinyServer(function(input, output, session) {
       hot_col("list_name",  width = 120, type = "autocomplete", source = list_name) %>% 
       hot_col("name",  width = 120, type = "autocomplete", source = nameC) %>% 
       hot_col("label",  width = 120, type = "autocomplete", source = label) %>% 
-      hot_col("order",  width = 120, type = "autocomplete", source = 1:100 ) 
+      hot_col("order",  width = 30, type = "autocomplete", source = 1:100 ) 
   })
   
-  observeEvent(input$calculationBuilderButton,{
+  observeEvent(input$addNewIndicator,{
     if (!is.numeric(input$rowNumberForCalculationBuilder)) {
       shinyalert("Error",
                  "Please make sure that row number input is a number and doesn't contains characters",
@@ -2738,9 +2885,64 @@ server <- shinyServer(function(input, output, session) {
     if(FALSE){#if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
       return(NULL)
     }
+    relabelingSurvey <- c()
     indicator <- c()
     survey <- c()
     choices <- c()
+    #################################relabeling#######################################
+    if (!is.null(input$relabelingSurveyTable)) {
+      survey = hot_to_r(input$relabelingSurveyTable)
+    } 
+    else{
+      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+      survey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                              stringsAsFactors = FALSE)
+      names(survey)[tolower(names(survey)) == "label"] <- "label::English"
+      names(survey)[tolower(names(survey)) == "hint"] <- "hint::English"
+      reqNames <- c("type", "name")
+      if("label::English" %in% colnames(survey)){
+        reqNames <- c(reqNames, "label::English", "label::Report")
+      }else{
+        reqNames <- c(reqNames, "label::Report")
+      }    
+      
+      if("hint::English" %in% colnames(survey)){
+        reqNames <- c(reqNames, "hint::English", "hint::Report")
+      }else{
+        reqNames <- c(reqNames, "hint::Report")
+      } 
+      
+      if ("label::Report" %in% colnames(survey)) {
+        survey["label::Report"] = substr(survey[,"label::Report"],1,80)
+      }
+      if (!"label::Report" %in% colnames(survey)) {
+        if("label::English" %in% colnames(survey)){
+          survey["label::Report"] = substr(survey[,"label::English"],1,80)
+        }else{
+          survey["label::Report"] = ""
+        }
+      }
+      if ("hint::Report" %in% colnames(survey)) {
+        survey["hint::Report"] = substr(survey[,"hint::Report"],1,80)
+      }
+      if (!"hint::Report" %in% colnames(survey)) {
+        if("hint::English" %in% colnames(survey)){
+          survey["hint::Report"] = substr(survey[,"hint::English"],1,80)
+        }else{
+          survey["hint::Report"] = ""
+        }
+      }
+      survey <- survey[reqNames]
+    }
+    
+    survey <- survey[ order(as.numeric(row.names(survey))), ]
+    if(nrow(survey)==0){
+      survey[nrow(survey)+1,] <- NA
+    }
+    sheets[["relabelingSurvey"]] <- survey
+    
+    ################################################################################
+    
     if (!is.null(input$surveySheetUI)) {
       survey = hot_to_r(input$surveySheetUI)#as.data.frame(do.call(rbind, input$surveySheetUI$data))
     } 

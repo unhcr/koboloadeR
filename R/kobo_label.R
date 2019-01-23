@@ -42,7 +42,7 @@ kobo_label <- function(datalabel, dico) {
       listName <- as.character(data.label[data.label$fullname == variablename, "listname"])
       choicesLabel <- unlist(dico[dico$listname == listName & dico$formpart == "answers", "label"])
       choicesName <- unlist(dico[dico$listname == listName & dico$formpart == "answers", "name"])
-      datalabel[[i]] <- mapvalues(datalabel[[i]], from = choicesName, to = choicesLabel, warn_missing = FALSE)
+      datalabel[[variablename]] <- mapvalues(datalabel[[variablename]], from = as.character(choicesName), to = as.character(choicesLabel), warn_missing = FALSE)
     }
   }
   test <- data.label[ !(is.na(data.label$name)), ]

@@ -40,8 +40,7 @@ kobo_label <- function(datalabel, dico) {
       variablename <- data.label$fullname[i]
       variableLabel <- as.character(data.label[ i, c("label")])
       listName <- as.character(data.label[data.label$fullname == variablename, "listname"])
-      choicesLabel <- dico[dico$listname == listName & dico$formpart == "answers", "label"]
-      choicesLabel <- unlist(gsub(pattern = paste0(variableLabel, ": "), "", choicesLabel))
+      choicesLabel <- unlist(dico[dico$listname == listName & dico$formpart == "answers", "label"])
       choicesName <- unlist(dico[dico$listname == listName & dico$formpart == "answers", "name"])
       datalabel[[i]] <- mapvalues(datalabel[[i]], from = choicesName, to = choicesLabel, warn_missing = FALSE)
     }
@@ -51,6 +50,6 @@ kobo_label <- function(datalabel, dico) {
     cat (paste0("you have ",nrow(data.label), " variables in you frame but only ",nrow(test) ," were relabeled.\n"))
     cat(" You may double check that the form and the data are matching \n")
     cat("Double check as well that you did download the data with the correct header (i.e. full path with point delimiters) \n")
-  } else { cat ("All variables were mapped. great \n")}
+  }
   return(datalabel)
 }

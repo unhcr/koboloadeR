@@ -12,7 +12,7 @@ kobo_label(datalabel, dico)
 \item{data}{.}
 }
 \value{
-A "data.table" with the full data.label. To be used for graphs generation.
+A "data.table" with the full data.label, and choices labels. To be used for graphs generation.
 }
 \description{
 Insert the full label in data frame based on dictionnary

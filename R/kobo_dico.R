@@ -28,8 +28,10 @@ kobo_dico <- function(form) {
   #kobo_form(formid, user = user, api = api)
   cat("\n Your form should be placed within the `data` folder. \n \n")
   # read the survey tab of ODK from
-  form_tmp <- paste0(mainDir,"/data/",form)
-  
+  mainDir <- gsub("/code/shiny_app", "",  getwd()) 
+  mainDir <- gsub("/inst/shiny_app", "",  mainDir) 
+  form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
+
   
   ### First review all questions from survey sheet #################################################
   survey <- read_excel(form_tmp, sheet = "survey")
@@ -397,7 +399,7 @@ kobo_dico <- function(form) {
   
   names(choices)[9] <- "nameq"
   names(choices)[10] <- "labelq"
-  choices$labelfull <- paste0(choices$labelq, sep = ": ", choices$labelchoice)
+  choices$labelfull <- paste0(choices$labelchoice)
   choices$namefull <- paste0(choices$fullname, sep = ".", choices$name)
   
   

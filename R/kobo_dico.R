@@ -173,7 +173,7 @@ kobo_dico <- function(form) {
                                           paste0( substr(survey$type , (regexpr("select_multiple", survey$type , ignore.case=FALSE, fixed=TRUE))+16,250)),survey$listname ))
   
   
-  survey$type <- with(survey, ifelse(grepl("select_multiple", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  survey$type), paste0("select_multiple_d"),survey$type))
+  survey$type <- with(survey, ifelse(grepl("select_multiple", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  survey$type), paste0("select_multiple"),survey$type))
   
   ## handle case where we have "or_other"
   #survey$listname <- with(survey, ifelse(grepl("or_other", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  survey$listname) ,
@@ -393,8 +393,8 @@ kobo_dico <- function(form) {
   choices$type <- with(choices, ifelse(grepl("select_one", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  choices$type),
                                        paste0("select_one_d"),choices$type))
   
-  choices$type <- with(choices, ifelse(grepl("select_multiple_d", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  choices$type),
-                                       paste0("select_multiple"),choices$type))
+  choices$type <- with(choices, ifelse(grepl("select_multiple", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  choices$type),
+                                       paste0("select_multiple_d"),choices$type))
   
   
   names(choices)[9] <- "nameq"

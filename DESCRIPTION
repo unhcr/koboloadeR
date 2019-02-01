@@ -10,6 +10,7 @@ Maintainer: Edouard Legoupil <legoupil@unhcr.org>
 Description: This package facilitates the data crunching & exploration for dataset collected using xlsform.
 License: GPL-3
 LazyData: TRUE
+Encoding: UTF-8
 Depends:
     utils,
     data.table (>= 1.9.4),

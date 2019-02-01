@@ -342,9 +342,22 @@ kobo_dico <- function(form) {
   survey$score <- ""
   survey$recategorise <- ""
   
+  ## Relabelling disaggregation with fullname
   
-  
-  ####
+  for (i in 1:nrow(survey)){
+    name <- as.character(survey[i,"disaggregation"])
+    if(name != "" && is.na(name)== FALSE){
+      if(name %in% survey[,"fullname"]){
+        survey[i, "disaggregation"] <- name
+      }else{
+         survey[i, "disaggregation"] <- as.character(survey[survey$name == name & is.na(survey$name) == FALSE, "fullname"])
+      }
+    }else{
+      survey[i, "disaggregation"] <- NA
+    }
+  }
+
+    ####
   #### Now looking at choices --#########################################################################################################
   #rm(choices)
   choices <- read_excel(form_tmp, sheet = "choices")

@@ -145,6 +145,14 @@ kobo_projectinit <- function() {
   if (!file.exists(destfile)) {
     file.copy(paste(path_correct,"/koboloadeR/script/XLSform_template.xlsx", sep = ""), destfile)
   }
+  destfile = paste0(mainDir,"/code/data_koboloadeR.xlsx")
+  if (!file.exists(destfile)) {
+    file.copy(paste(path_correct,"/koboloadeR/script/data_koboloadeR.xlsx", sep = ""), destfile)
+  }
+  destfile = paste0(mainDir,"/code/form_koboloadeR.xls")
+  if (!file.exists(destfile)) {
+    file.copy(paste(path_correct,"/koboloadeR/script/form_koboloadeR.xls", sep = ""), destfile)
+  }
   
   
   ## shiny_app Subfolder creation ####

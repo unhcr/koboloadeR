@@ -370,6 +370,7 @@ Before anything else, try to restart the R session:
 * "Restart R"
 
 ## Can not install the package
+
 Note that in case you get the following error:
 
 ```
@@ -409,6 +410,18 @@ Sys.sleep(2)
 
 ```
 
+## Error in strptime(xx, f, tz = tz) :  unable to identify current timezone 'C':    please set environment variable 'TZ'
+
+```
+
+## enter this commaned to set up the time zone - you may change it to another anotherone.
+Sys.setenv(TZ='GMT')
+
+## Now you can check...
+Sys.timezone()
+Sys.getenv("TZ")
+
+```
 
 ### The application crashed
 If the application (graphic interface) crashes, make sure that all packages necessary are loaded with:

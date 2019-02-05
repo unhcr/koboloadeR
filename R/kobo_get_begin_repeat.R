@@ -27,7 +27,7 @@
 
 kobo_get_begin_repeat <- function(form = "form.xls") {
   
-  mainDir <- gsub("/inst/shiny_app", "",  getwd())
+  mainDir <- kobo_getMainDirectory()
   form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
   
   ### First review all questions from survey sheet #################################################

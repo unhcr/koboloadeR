@@ -139,6 +139,7 @@ body > div > div > section > nav > div > div.navbar-header > span{
     border-bottom: 1px solid lightgray !important;
     border-top: 1px solid lightgray !important;
     padding: 20px 10px !important;
+    overflow: auto !important;
 }
 
 #dataInputsUI{
@@ -148,50 +149,7 @@ body > div > div > section > nav > div > div.navbar-header > span{
     background-color: whitesmoke;
     border: 1px solid lightgray;
 }
-/*
-.uploadButton, .uploadButton:focus, .uploadButton:active:focus{
-    -moz-box-shadow: 0px 10px 14px -7px #276873;
-  	-webkit-box-shadow: 0px 10px 14px -7px #276873;
-  	box-shadow: 0px 10px 14px -7px #276873;
-  	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #599bb3), color-stop(1, #408c99));
-  	background:-moz-linear-gradient(top, #599bb3 5%, #408c99 100%);
-  	background:-webkit-linear-gradient(top, #599bb3 5%, #408c99 100%);
-  	background:-o-linear-gradient(top, #599bb3 5%, #408c99 100%);
-  	background:-ms-linear-gradient(top, #599bb3 5%, #408c99 100%);
-  	background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
-  	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#599bb3', endColorstr='#408c99',GradientType=0);
-  	background-color:#599bb3;
-  	-moz-border-radius:8px;
-  	-webkit-border-radius:8px;
-    border-radius: 8px;
-    display: inline-block;
-    cursor: pointer;
-    color: #ffffff;
-    font-family: Arial;
-    font-size: smaller;
-    font-weight: bold;
-    padding: 9px 32px;
-    text-decoration: none;
-    text-shadow: 0px 1px 0px #3d768a;
-    border: 1px solid transparent;
-}
 
-.uploadButton:hover{
-    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #408c99), color-stop(1, #599bb3));
-  	background:-moz-linear-gradient(top, #408c99 5%, #599bb3 100%);
-  	background:-webkit-linear-gradient(top, #408c99 5%, #599bb3 100%);
-  	background:-o-linear-gradient(top, #408c99 5%, #599bb3 100%);
-  	background:-ms-linear-gradient(top, #408c99 5%, #599bb3 100%);
-  	background:linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
-  	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#408c99', endColorstr='#599bb3',GradientType=0);
-  	background-color:#408c99;
-    border: 1px solid transparent;
-}
-.uploadButton:active{
-    position:relative;
-	  top:1px;
-}
-*/
 #doYouHaveDatasetsDiv > div > div > div.box-header, #recordSettingsDiv > div > div > div.box-header{
     color: white; 
     background-color: #3c8dbc; 
@@ -301,6 +259,47 @@ body > div > div > section > nav > div > div.navbar-header > span{
   width:100%;
   transition:800ms ease all;
 }
+
+
+
+.deleteButton, .deleteButton:focus, .deleteButton:active:focus{
+  background:#ff3333;
+  color:#fff;
+  border:none;
+  position:relative;
+  font-size:15px;
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+}
+.deleteButton:hover{
+  background:#fff;
+  color:#ff3333;
+  border-left: 2px solid #ff3333;
+  border-right: 2px solid #ff3333;
+}
+.deleteButton:before,.deleteButton:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #ff3333;
+  transition:400ms ease all;
+}
+.deleteButton:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.deleteButton:hover:before,.deleteButton:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+
 
 
 .help-tip{
@@ -464,7 +463,6 @@ body > div > div > section > nav > div > div.navbar-header > span{
     background-color: #f5f5f5;
     border: 0px solid #3c8dbc;
     border-top: 5px solid #3c8dbc;
-    border-bottom: 5px solid #3c8dbc;
     border-radius: 4px;
     -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
     box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
@@ -680,25 +678,61 @@ body > div > div > section > nav > div > div.navbar-header > span{
     margin-bottom: 40px;
 }
 
-#wellMenuForAPC > div > div.col-sm-2 > form > ul > li:nth-child(13) > a{
-    text-align: center;
-    padding: 0px 25px 0px 0px;
-    border-bottom: 0px solid;
-    color: white;
-    font-size: 30px;
-    background-color:#003d66;
+a[data-value="infoAPC"]{
+    text-align: center !important;
+    padding: 0px 25px 0px 0px !important;
+    border-bottom: 0px solid !important;
+    color: white !important;
+    font-size: 30px !important;
+    background-color: #003d66 !important;
 }
 
-#wellMenuForAPC > div > div.col-sm-2 > form > ul > li:nth-child(13).active > a{
-    text-align: center;
-    padding: 0px 25px 0px 0px;
-    border-bottom: 0px solid;
-    color: white;
-    font-size: 30px;
-    background-color: black;
+li.active > a[data-value="infoAPC"]{
+    text-align: center !important;
+    padding: 0px 25px 0px 0px !important;
+    border-bottom: 0px solid !important;
+    color: white !important;
+    font-size: 30px !important;
+    background-color: black !important;
 }
 
 #relabelingSurveyTable{
   border-bottom: 1px solid lightgray;
 }
+#wellMenuForAPC > div > div.col-sm-2 > form > ul > li:nth-child(10){
+  margin-top: 130px;
+}
 
+.tagInd{
+  font-size: medium;
+  margin: 10px 10px;
+  line-height: 50px;
+  background-color: aliceblue;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.titleTagInd{
+  font-size: x-large;
+}
+
+.tagVar{
+  font-size: medium;
+  margin: 10px 10px;
+  line-height: 50px;
+  background-color: aliceblue;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.titleTagVar{
+  font-size: x-large;
+}
+
+.divInd, .divVar{
+  margin: 10px 0px;
+  padding: 10px 0px 20px;
+  border-bottom: 1px solid ghostwhite;
+  max-height: 100px;
+  overflow: auto;
+}

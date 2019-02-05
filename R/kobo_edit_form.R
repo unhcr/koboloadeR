@@ -2,7 +2,7 @@
 #' @rdname kobo_edit_form
 #' @title  Edit XLS form
 #'
-#' @description  This function used to change the data of sheets in the xlsform and apply all required styles for each sheet by calling kobo_prepare_form function
+#' @description  This function used to change the data of sheets in the xlsform and apply all required styles for each sheet 
 #'
 #' @param form The full filename of the form to be accessed (xls or xlsx file).
 #' It is assumed that the form is stored in the data folder.
@@ -29,12 +29,9 @@
 
 kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, indicator = NULL, settings = NULL) {
   
-  mainDir <- gsub("/code/shiny_app", "",  getwd()) 
-  mainDir <- gsub("/inst/shiny_app", "",  mainDir) 
-  
-  form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
-  
   wb <- xlsx::createWorkbook(type = "xls") #create xls workbook
+  mainDir <- kobo_getMainDirectory()
+  form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
   
   if(is.null(survey)){
     survey <- tryCatch({
@@ -154,9 +151,6 @@ kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, ind
   
   if (file.exists(form_tmp)) file.remove(form_tmp)
   xlsx::saveWorkbook(wb, form_tmp)
-  
-  #Call kobo_prepare_form function for styling and checking if all required columns are there
-  kobo_prepare_form(form = form)
   
 }
 NULL

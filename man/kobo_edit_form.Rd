@@ -23,7 +23,7 @@ It is assumed that the form is stored in the data folder.}
 No return, this function edit the original XLSform directly
 }
 \description{
-This function used to change the data of sheets in the xlsform and apply all required styles for each sheet by calling kobo_prepare_form function
+This function used to change the data of sheets in the xlsform and apply all required styles for each sheet
 }
 \examples{
 kobo_edit_form()

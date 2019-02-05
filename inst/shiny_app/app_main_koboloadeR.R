@@ -73,7 +73,7 @@ ui <- dashboardPage(
 server <- shinyServer(function(input, output, session) {
   options(shiny.maxRequestSize=10000*1024^2) #make the limit up to 10GB
   mainDir <- reactive({
-    gsub("/inst/shiny_app", "",  gsub("/code/shiny_app", "",  getwd())) 
+    kobo_getMainDirectory()
   })
   
   projectConfigurationInfo <- reactiveValues(log = list(), data = list()) 
@@ -1173,17 +1173,8 @@ server <- shinyServer(function(input, output, session) {
   #######################################           End               ############################################
   
   ####################################### Analysis Plan Configuration page ############################################
-  observe({
-    if (!is.numeric(input$rowNumberForCalculationBuilder)) {
-      updateNumericInput(session, "rowNumberForCalculationBuilder", "Enter the row number for Calculation Builder tool", 1)
-    }else{
-      if (input$rowNumberForCalculationBuilder < 1) {
-        updateNumericInput(session, "rowNumberForCalculationBuilder", "Enter the row number for Calculation Builder tool", 1)
-      }
-    }
-  })
-  
   sheets <- reactiveValues()
+  lastMenuItem <- reactiveValues(v=NULL)
   
   output$analysisPlanConfiguration <- renderUI({
     #if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
@@ -1214,18 +1205,20 @@ server <- shinyServer(function(input, output, session) {
                 sidebarMenu(id="sidebarMenuForAP",
                   menuItem(div(span("1",class="numberStep"),span("Re-Labeling Survey Sheet")), tabName = "relabelingSurvey"),
                   menuItem(div(span("2",class="numberStep"),span("Re-Labeling Choices Sheet")), tabName = "relabelingChoices"),
-                  menuItem(div(span("3",class="numberStep"),span("Text type")), tabName = "textType"),
-                  menuItem(div(span("4",class="numberStep"),span("Select_one type")), tabName = "selectOneType"),
-                  menuItem(div(span("5",class="numberStep"),span("Order Ordinal Variables")), tabName = "orderOrdinalVariables"),
-                  menuItem(div(span("6",class="numberStep"),span("Select_multiple type")), tabName = "selectMultipleType"),
-                  menuItem(div(span("7",class="numberStep"),span("Calculate type")), tabName = "calculateType"),
-                  menuItem(div(span("8",class="numberStep"),span("Integer type")), tabName = "integerType"),
-                  menuItem(div(span("9",class="numberStep"),span("Date type")), tabName = "dateType"),
-                  menuItem(div(span("10",class="numberStep"),span("Decimal type")), tabName = "decimalType"),
-                  menuItem(div(span("11",class="numberStep"),span("Indicators Sheet")), tabName = "indicatorsSheet"),
-                  menuItem(div(span("12",class="numberStep"),span("Chapter")), tabName = "chapter"),
+                  #menuItem(div(span("3",class="numberStep"),span("Text type")), tabName = "textType"),
+                  menuItem(div(span("3",class="numberStep"),span("Select_one type")), tabName = "selectOneType"),
+                  menuItem(div(span("4",class="numberStep"),span("Order Ordinal Variables")), tabName = "orderOrdinalVariables"),
+                  menuItem(div(span("5",class="numberStep"),span("Select_multiple type")), tabName = "selectMultipleType"),
+                  menuItem(div(span("6",class="numberStep"),span("Numeric type")), tabName = "numericType"),
+                  #menuItem(div(span("8",class="numberStep"),span("Integer type")), tabName = "integerType"),
+                  menuItem(div(span("7",class="numberStep"),span("Date type")), tabName = "dateType"),
+                  #menuItem(div(span("10",class="numberStep"),span("Decimal type")), tabName = "decimalType"),
+                  menuItem(div(span("8",class="numberStep"),span("Indicators Sheet")), tabName = "indicatorsSheet"),
+                  menuItem(div(span("9",class="numberStep"),span("Chapter")), tabName = "chapter"),
                   menuItem(NULL, icon = icon("info-circle"), tabName = "infoAPC")
-                )
+                ),
+                div(id="styleFormDiv", style="background-color: #ecf0f5;",
+                    actionButton("styleFormButton", "Add style to xlsform", style="width: 100%; margin: 10px 0% 0px; line-height: 35px;", class="uploadButton"))
               ),
               mainPanel(width = 10,
                         div(id = "analysisPlanTab",
@@ -1236,9 +1229,6 @@ server <- shinyServer(function(input, output, session) {
                             tabItem(tabName = "relabelingChoices",
                                     uiOutput("relabelingChoicesUI")
                             ),
-                            tabItem(tabName = "textType",
-                                    uiOutput("textTypeUI")
-                            ),
                             tabItem(tabName = "selectOneType",
                                     uiOutput("selectOneTypeUI")
                             ),
@@ -1248,17 +1238,11 @@ server <- shinyServer(function(input, output, session) {
                             tabItem(tabName = "selectMultipleType",
                                     uiOutput("selectMultipleTypeUI")
                             ),
-                            tabItem(tabName = "calculateType",
-                                    uiOutput("calculateTypeUI")
-                            ),
-                            tabItem(tabName = "integerType",
-                                    uiOutput("integerTypeUI")
+                            tabItem(tabName = "numericType",
+                                    uiOutput("numericTypeUI")
                             ),
                             tabItem(tabName = "dateType",
                                     uiOutput("dateTypeUI")
-                            ),
-                            tabItem(tabName = "decimalType",
-                                    uiOutput("decimalTypeUI")
                             ),
                             tabItem(tabName = "indicatorsSheet",
                                     uiOutput("indicatorsSheetUI")
@@ -1300,15 +1284,48 @@ server <- shinyServer(function(input, output, session) {
       )
     }
   })
-  
-  observe({
-    if(is.null(input$sidebarMenuForAP)){
-      uiOutput("relabelingSurveyUI")
-    }
+  observeEvent(input$styleFormButton, {
+    tryCatch({
+        progress <- shiny::Progress$new()
+        progress$set(message = "Styling xlsform in progress...", value = 0)
+        on.exit(progress$close())
+        updateProgress <- function(value = NULL, detail = NULL) {
+          if (is.null(value)) {
+            value <- progress$getValue()
+            value <- value + (progress$getMax() - value) / 5
+          }
+          progress$set(value = value, detail = detail)
+        }
+        updateProgress()
+        kobo_prepare_form()
+        updateProgress()
+    
+        shinyalert("Done, xlsform styled using 'kobo_prepare_form' function",
+                   "Prepare XLSform by adding chapter, disaggregation, correlate, variable, anonymise, structuralequation, clean, cluster, predict, mappoint, mappoly in case if those fields are not exist; the function will create dummy column for each one. Also, coloring all rows that have type equal to 'begin group', 'end group', 'begin repeat' or 'end repeat'.",
+                   type = "success",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#28A8E2",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        
+      
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
   })
   
+  
+  #####################relabeling Survey#############################
   output$relabelingSurveyUI <- renderUI({
-    box(id="relabelingSurveyTableBox",
+    box(id="relabelingSurveyBox",
         width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,height = 650,
            rHandsontableOutput("relabelingSurveyTable")
            )
@@ -1321,8 +1338,8 @@ server <- shinyServer(function(input, output, session) {
         hot_context_menu(allowRowEdit = FALSE, allowColEdit = FALSE)
       
       
-      if("label::English" %in% colnames(sheets[["relabelingSurvey"]])){
-        temp <- temp %>% hot_col("label::English", readOnly = TRUE, width = 200) %>%
+      if("label" %in% colnames(sheets[["relabelingSurvey"]])){
+        temp <- temp %>% hot_col("label", readOnly = TRUE, width = 200) %>%
           hot_col("label::Report", width = 400, allowInvalid = FALSE,
                   validator = "
            function (value, callback) {
@@ -1350,8 +1367,8 @@ server <- shinyServer(function(input, output, session) {
                                  )
       }
       
-      if("hint::English" %in% colnames(sheets[["relabelingSurvey"]])){
-        temp <- temp %>% hot_col("hint::English", readOnly = TRUE, width = 200) %>%
+      if("hint" %in% colnames(sheets[["relabelingSurvey"]])){
+        temp <- temp %>% hot_col("hint", readOnly = TRUE, width = 200) %>%
           hot_col("hint::Report", width = 400, allowInvalid = FALSE,
                   validator = "
                   function (value, callback) {
@@ -1390,14 +1407,792 @@ server <- shinyServer(function(input, output, session) {
       )
     })
   })
+  ###################################################################
+  
+  #####################relabeling Choices#############################
+  output$relabelingChoicesUI <- renderUI({
+    box(id="relabelingChoicesBox",
+        width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,height = 650,
+        rHandsontableOutput("relabelingChoicesTable")
+    )
+  })
+  output$relabelingChoicesTable <- renderRHandsontable({
+    tryCatch({
+      temp <- rhandsontable(sheets[["relabelingChoices"]], stretchH = "all", height = 600, useTypes = TRUE) %>%
+        hot_col("list_name", readOnly = TRUE, width = 200) %>%
+        hot_col("name", readOnly = TRUE, width = 200) %>%
+        hot_context_menu(allowRowEdit = FALSE, allowColEdit = FALSE)
+      
+      
+      if("label" %in% colnames(sheets[["relabelingChoices"]])){
+        temp <- temp %>% hot_col("label", readOnly = TRUE, width = 200) %>%
+          hot_col("label::Report", width = 400, allowInvalid = FALSE,
+                  validator = "
+                  function (value, callback) {
+                  setTimeout(function(){
+                  if(value.length >= 80){
+                  alert('Please make sure that the length of the string less than 80 characters');
+                  }
+                  if(value.length <= 0){
+                  alert('Please make sure that the length of the string greater than 0 characters');
+                  }
+                  callback(value.length < 80 && value.length > 0);
+                  }, 700)
+                  }")
+      }
+      else{
+        temp <- temp %>% hot_col("label::Report", width = 400, allowInvalid = FALSE,
+                                 validator = "
+                                 function (value, callback) {
+                                 setTimeout(function(){
+                                 if(value.length >= 80){
+                                 alert('Please make sure that the length of the string less than 80 characters');
+                                 }
+                                 callback(value.length < 80);
+                                 }, 700)
+                                 }"
+                                 )
+      }
+      temp
+      }, error = function(err) {
+        shinyalert("Error",
+                   err$message,
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+      })
+    })
+  ###################################################################
   
   
+  #####################selectOne Type#############################
+  output$selectOneTypeUI <- renderUI({
+    box(id="selectOneTypeBox",
+        width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,height = 650,
+        #uiOutput("selectOneTypeBody")
+        rHandsontableOutput("selectOneTypeTable")
+    )
+  })
+
+  output$selectOneTypeBody <- renderUI({
+    
+    if(is.null(sheets[["selectOneType"]])){
+      return(FALSE)
+    }
+    if(nrow(sheets[["selectOneType"]])>0){
+      rHandsontableOutput("selectOneTypeTable")
+    }else{
+      infoBox(
+        width = 12,strong("Info"),
+        h4("There is no select_one type, you can start with the next step",align="center")
+        ,icon = icon("exclamation-triangle"),
+        color = "yellow"
+      )
+    }
+    
+  })
+  
+  output$selectOneTypeTable <- renderRHandsontable({
+    tryCatch({
+      temp <- rhandsontable(sheets[["selectOneType"]], stretchH = "all", height = 600, useTypes = TRUE) %>%
+        hot_col("type", readOnly = TRUE, width = 200) %>%
+        hot_col("name", readOnly = TRUE, width = 200) %>%
+        hot_col("label", readOnly = TRUE, width = 200) %>%
+        hot_col("variable", type = "dropdown", source = c("ordinal factor", "factor"), width = 120) %>%
+        #hot_col("chapter",  width = 200) %>%
+        hot_col("disaggregation",  width = 120, halign="htCenter") %>%
+        hot_col("structuralequation.risk",  width = 200, halign="htCenter") %>%
+        hot_col("structuralequation.coping",  width = 200, halign="htCenter") %>%
+        hot_col("structuralequation.resilience",  width = 200, halign="htCenter") %>%
+        hot_col("anonymise", type = "dropdown", source = c("default-non-anonymised", "remove", "reference", "scramble"), width = 120) %>%
+        hot_col("correlate",  width = 120, halign="htCenter") %>%
+        hot_col("clean",  width = 120, halign="htCenter") %>%
+        hot_col("cluster",  width = 120, halign="htCenter") %>%
+        hot_col("predict",  width = 120, halign="htCenter") %>%
+        hot_col("mappoint",  width = 120, halign="htCenter") %>%
+        hot_col("mappoly",  width = 120, halign="htCenter") %>%
+        hot_context_menu(allowRowEdit = FALSE, allowColEdit = FALSE)
+
+      temp
+      }, error = function(err) {
+        shinyalert("Error",
+                   err$message,
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+      })
+    })
+  ###################################################################
+  
+
+  #####################Order Ordinal Variables#############################
+  output$orderOrdinalVariablesUI <- renderUI({
+    box(id="orderOrdinalVariablesBox",
+        width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,height = 650,
+        #uiOutput("orderOrdinalVariablesBody")
+        rHandsontableOutput("orderOrdinalVariablesTable")
+    )
+  })
+  output$orderOrdinalVariablesBody <- renderUI({
+    
+    if(is.null(sheets[["selectOneType"]])){
+      return(FALSE)
+    }
+    if(nrow(sheets[["selectOneType"]])>0){
+      rHandsontableOutput("orderOrdinalVariablesTable")
+    }else{
+      infoBox(
+        width = 12,strong("Info"),
+        h4("There is no select_one type, you can start with the next step",align="center")
+        ,icon = icon("exclamation-triangle"),
+        color = "yellow"
+      )
+    }
+    
+  })
+  
+  output$orderOrdinalVariablesTable <- renderRHandsontable({
+    tryCatch({
+      temp <- rhandsontable(sheets[["orderOrdinalVariables"]], stretchH = "all", height = 600, useTypes = TRUE) %>%
+        hot_col("list_name", readOnly = TRUE, width = 200) %>% 
+        hot_col("name", readOnly = TRUE, width = 200) %>% 
+        hot_col("label", readOnly = TRUE, width = 200) %>% 
+        hot_col("order",  width = 30, type = "autocomplete", source = 1:100 ) %>% 
+        hot_context_menu(allowRowEdit = FALSE, allowColEdit = FALSE)
+      
+      temp
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  ###################################################################
   
   
+  #####################Select_multiple type#############################
+  output$selectMultipleTypeUI <- renderUI({
+    box(id="selectMultipleTypeBox",
+        width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,height = 650,
+        #uiOutput("selectMultipleTypeBody")
+        rHandsontableOutput("selectMultipleTypeTable")
+    )
+  })
+  output$selectMultipleTypeBody <- renderUI({
+    
+    if(is.null(sheets[["selectMultipleType"]])){
+      return(FALSE)
+    }
+    if(nrow(sheets[["selectMultipleType"]])>0){
+      rHandsontableOutput("selectMultipleTypeTable")
+    }else{
+      infoBox(
+        width = 12,strong("Info"),
+        h4("There is no select_Multiple type, you can start with the next step",align="center")
+        ,icon = icon("exclamation-triangle"),
+        color = "yellow"
+      )
+    }
+    
+  })
+  
+  output$selectMultipleTypeTable <- renderRHandsontable({
+    tryCatch({
+      temp <- rhandsontable(sheets[["selectMultipleType"]], stretchH = "all", height = 600, useTypes = TRUE) %>%
+        hot_col("type", readOnly = TRUE, width = 200) %>%
+        hot_col("name", readOnly = TRUE, width = 200) %>%
+        hot_col("label", readOnly = TRUE, width = 200) %>%
+        hot_col("variable", readOnly = TRUE, width = 200) %>%
+        #hot_col("chapter",  width = 200) %>%
+        hot_col("disaggregation",  width = 120, halign="htCenter") %>%
+        hot_col("structuralequation.risk",  width = 200, halign="htCenter") %>%
+        hot_col("structuralequation.coping",  width = 200, halign="htCenter") %>%
+        hot_col("structuralequation.resilience",  width = 200, halign="htCenter") %>%
+        hot_col("anonymise", type = "dropdown", source = c("default-non-anonymised", "remove", "reference", "scramble"), width = 120) %>%
+        hot_col("correlate",  width = 120, halign="htCenter") %>%
+        hot_col("clean",  width = 120, halign="htCenter") %>%
+        hot_col("cluster",  width = 120, halign="htCenter") %>%
+        hot_col("predict",  width = 120, halign="htCenter") %>%
+        hot_col("mappoint",  width = 120, halign="htCenter") %>%
+        hot_col("mappoly",  width = 120, halign="htCenter") %>%
+        hot_context_menu(allowRowEdit = FALSE, allowColEdit = FALSE)
+      
+      temp
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  ###################################################################
   
   
+  #####################Numeric type#############################
+  output$numericTypeUI <- renderUI({
+    box(id="numericTypeBox",
+        width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,height = 650,
+        #uiOutput("numericTypeBody")
+        rHandsontableOutput("numericTypeTable")
+    )
+  })
+  output$numericTypeBody <- renderUI({
+    
+    if(is.null(sheets[["numericType"]])){
+      return(FALSE)
+    }
+    if(nrow(sheets[["numericType"]])>0){
+      rHandsontableOutput("selectMultipleTypeTable")
+    }else{
+      infoBox(
+        width = 12,strong("Info"),
+        h4("There is no Numeric type, you can start with the next step",align="center")
+        ,icon = icon("exclamation-triangle"),
+        color = "yellow"
+      )
+    }
+    
+  })
+  
+  output$numericTypeTable <- renderRHandsontable({
+    tryCatch({
+      temp <- rhandsontable(sheets[["numericType"]], stretchH = "all", height = 600, useTypes = TRUE) %>%
+        hot_col("type", readOnly = TRUE, width = 200) %>%
+        hot_col("name", readOnly = TRUE, width = 200) %>%
+        hot_col("label", readOnly = TRUE, width = 200) %>%
+        hot_col("variable", readOnly = TRUE, width = 200) %>%
+        #hot_col("chapter",  width = 200) %>%
+        hot_col("disaggregation",  width = 120, halign="htCenter") %>%
+        hot_col("structuralequation.risk",  width = 200, halign="htCenter") %>%
+        hot_col("structuralequation.coping",  width = 200, halign="htCenter") %>%
+        hot_col("structuralequation.resilience",  width = 200, halign="htCenter") %>%
+        hot_col("anonymise", type = "dropdown", source = c("default-non-anonymised", "remove", "reference", "scramble"), width = 120) %>%
+        hot_col("correlate",  width = 120, halign="htCenter") %>%
+        hot_col("clean",  width = 120, halign="htCenter") %>%
+        hot_col("cluster",  width = 120, halign="htCenter") %>%
+        hot_col("predict",  width = 120, halign="htCenter") %>%
+        hot_col("mappoint",  width = 120, halign="htCenter") %>%
+        hot_col("mappoly",  width = 120, halign="htCenter") %>%
+        hot_context_menu(allowRowEdit = FALSE, allowColEdit = FALSE)
+      
+      temp
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  ###################################################################
   
   
+  #####################Date type#############################
+  output$dateTypeUI <- renderUI({
+    box(id="dateTypeBox",
+        width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,height = 650,
+        #uiOutput("dateTypeBody")
+        rHandsontableOutput("dateTypeTable")
+    )
+  })
+  output$dateTypeBody <- renderUI({
+    
+    if(is.null(sheets[["dateType"]])){
+      return(FALSE)
+    }
+    if(nrow(sheets[["dateType"]])>0){
+      rHandsontableOutput("dateTypeTable")
+    }else{
+      infoBox(
+        width = 12,strong("Info"),
+        h4("There is no Date type, you can start with the next step",align="center")
+        ,icon = icon("exclamation-triangle"),
+        color = "yellow"
+      )
+    }
+    
+  })
+  
+  output$dateTypeTable <- renderRHandsontable({
+    tryCatch({
+      temp <- rhandsontable(sheets[["dateType"]], stretchH = "all", height = 600, useTypes = TRUE) %>%
+        hot_col("type", readOnly = TRUE, width = 200) %>%
+        hot_col("name", readOnly = TRUE, width = 200) %>%
+        hot_col("label", readOnly = TRUE, width = 200) %>%
+        hot_col("variable", readOnly = TRUE, width = 200) %>%
+        #hot_col("chapter",  width = 200) %>%
+        hot_col("disaggregation",  width = 120, halign="htCenter") %>%
+        hot_col("structuralequation.risk",  width = 200, halign="htCenter") %>%
+        hot_col("structuralequation.coping",  width = 200, halign="htCenter") %>%
+        hot_col("structuralequation.resilience",  width = 200, halign="htCenter") %>%
+        hot_col("anonymise", type = "dropdown", source = c("default-non-anonymised", "remove", "reference", "scramble"), width = 120) %>%
+        hot_col("correlate",  width = 120, halign="htCenter") %>%
+        hot_col("clean",  width = 120, halign="htCenter") %>%
+        hot_col("cluster",  width = 120, halign="htCenter") %>%
+        hot_col("predict",  width = 120, halign="htCenter") %>%
+        hot_col("mappoint",  width = 120, halign="htCenter") %>%
+        hot_col("mappoly",  width = 120, halign="htCenter") %>%
+        hot_context_menu(allowRowEdit = FALSE, allowColEdit = FALSE)
+      
+      temp
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  ###################################################################
+  
+  
+  #####################    Chapter      #############################
+  output$chapterUI <- renderUI({
+    box(id="chapterBox",
+        width=12, solidHeader = FALSE, collapsible = FALSE,height = 650,
+        column(width = 12,style="border-bottom: 1px solid lightgray; margin: 10px 0px 35px;",
+               actionButton("addChapterButton", "Add Chapter", icon = icon("plus"), class="uploadButton", style="height: 50px; margin-bottom:20px;font-size: large;", width="100%")
+        ),
+        column(width = 12,style="overflow: auto; height: 500px;",
+               uiOutput("chaptersBoxes")
+        )
+    )
+  })
+  
+  output$chaptersBoxes <- renderText({
+    chaptersDF <- chaptersDataFrame[["data"]]
+    s <- ""
+    cahpters <- unique(chaptersDF[,"chapter"])
+    for (chp in cahpters) {
+      varSur <- chaptersDF[chaptersDF$chapter == chp & chaptersDF$sheet == "survey", "var"]
+      ind <- chaptersDF[chaptersDF$chapter == chp & chaptersDF$sheet == "indicator", "var"]
+      
+      
+      
+      if(length(varSur)==0){
+        textSur <- span("there is no variables for this chapter")
+      }else{
+        textSur <- ""
+        for(vs in varSur){
+          textSur <- paste(textSur,
+                           span(vs,class='tagVar')
+                           ,sep=" ")
+        }
+        textSur<-HTML(textSur)
+      }
+      
+      if(length(ind)==0){
+        textInd <- span("there is no indicators for this chapter")
+      }else{
+        textInd <- ""
+        for(inde in ind){
+          textInd <- paste(textInd,
+                           span(inde,class='tagInd')
+                           ,sep=" ")
+        }
+        textInd<-HTML(textInd)
+      }
+      
+
+      s <- paste(s,
+                 box(id=paste("box",chp,sep = ""), title = chp, status="primary",
+                     width=12, solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
+                     div(span("Variables: ", class="titleTagVar"),
+                         textSur , class="divVar"
+                     ),
+                     div(span("Indicators: ", class="titleTagInd"),
+                         textInd , class="divInd"
+                     ),
+                     column(width = 7,
+                            actionButton(paste("editChapterButton", chp, sep = ""), "Edit Chapter", icon = icon("edit"), class="toolButton", style="height: 50px; margin-bottom:20px;", width="100%")
+                     ),
+                     column(width = 5,
+                            actionButton(paste("deleteChapterButton", chp, sep = ""), "Delete Chapter", icon = icon("trash-alt"), class="deleteButton", style="height: 50px; margin-bottom:20px;", width="100%")
+                     )
+                 )
+                 ,sep="")
+    }
+    s
+  })
+  
+  chaptersDataFrame <- reactiveValues(data=NULL)
+  
+  observe({
+    form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+    survey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                                      stringsAsFactors = FALSE)
+    indicator <- as.data.frame(read_excel(form_tmp, sheet = "indicator"),
+                            stringsAsFactors = FALSE)
+    survey <- survey[!is.na(survey$chapter),]
+    indicator <- indicator[!is.na(indicator$chapter),]
+    
+    surveyDataFrame <- data.frame(
+      chapter = survey$chapter,
+      sheet = "survey",
+      var = survey$name,
+      stringsAsFactors=FALSE
+    )
+    indicatorDataFrame <- data.frame(
+      chapter = indicator$chapter,
+      sheet = "indicator",
+      var = indicator$fullname,
+      stringsAsFactors=FALSE
+    )
+    
+    chaptersDataFrame[["data"]] <- rbind(surveyDataFrame, indicatorDataFrame)
+  })
+  
+  ###################################################################
+  
+  
+  ###########################Saving Unit for Settings#######################
+  observeEvent(input$sidebarMenuForAP,{
+    tryCatch({
+      las <- lastMenuItem$v
+      lastMenuItem$v <-input$sidebarMenuForAP
+      if(is.null(las)){
+        return(FALSE)
+      }
+      if(las == "relabelingSurvey"){
+        userRelabelingSurvey <- sheets[["relabelingSurvey"]]
+        form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+        mainSurvey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                                    stringsAsFactors = FALSE)
+        
+        if(identical(as.character(mainSurvey["label::Report"]),as.character(userRelabelingSurvey["label::Report"])) &
+           identical(as.character(mainSurvey["hint::Report"]),as.character(userRelabelingSurvey["hint::Report"]))
+           ){
+          return(FALSE)
+        }
+        
+        progress <- shiny::Progress$new()
+        progress$set(message = "Saving sheet in progress...", value = 0)
+        on.exit(progress$close())
+        updateProgress <- function(value = NULL, detail = NULL) {
+          if (is.null(value)) {
+            value <- progress$getValue()
+            value <- value + (progress$getMax() - value) / 5
+          }
+          progress$set(value = value, detail = detail)
+        }
+        updateProgress()
+        
+        mainSurvey["label::Report"] = userRelabelingSurvey["label::Report"]
+        mainSurvey["hint::Report"] = userRelabelingSurvey["hint::Report"]
+
+        kobo_edit_form(survey = mainSurvey)
+        updateProgress()
+      }
+      else if(las == "relabelingChoices"){
+        userRelabelingChoices <- sheets[["relabelingChoices"]]
+        form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+        mainChoices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
+                                    stringsAsFactors = FALSE)
+        
+        if(identical(as.character(mainChoices["label::Report"]),as.character(userRelabelingChoices["label::Report"]))){
+          return(FALSE)
+        }
+        
+        progress <- shiny::Progress$new()
+        progress$set(message = "Saving sheet in progress...", value = 0)
+        on.exit(progress$close())
+        updateProgress <- function(value = NULL, detail = NULL) {
+          if (is.null(value)) {
+            value <- progress$getValue()
+            value <- value + (progress$getMax() - value) / 5
+          }
+          progress$set(value = value, detail = detail)
+        }
+        updateProgress()
+        
+        mainChoices["label::Report"] <- userRelabelingChoices["label::Report"]
+        
+        kobo_edit_form(choices = mainChoices)
+        updateProgress()
+      }
+      else if(las == "selectOneType"){
+        userSurvey <- sheets[["selectOneType"]]
+        form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+        mainSurvey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                                    stringsAsFactors = FALSE)
+        
+        origin <- mainSurvey[rownames(mainSurvey) %in% rownames(userSurvey),colnames(userSurvey)]
+        newSur <- userSurvey 
+        origin <- as.data.frame(sapply(origin,as.character),stringsAsFactors = F)
+        newSur <- as.data.frame(sapply(newSur,as.character),stringsAsFactors = F)
+        
+        if(identical(origin,newSur)){
+          return(FALSE)
+        }
+        
+        progress <- shiny::Progress$new()
+        progress$set(message = "Saving sheet in progress...", value = 0)
+        on.exit(progress$close())
+        updateProgress <- function(value = NULL, detail = NULL) {
+          if (is.null(value)) {
+            value <- progress$getValue()
+            value <- value + (progress$getMax() - value) / 5
+          }
+          progress$set(value = value, detail = detail)
+        }
+        updateProgress()
+        
+        
+        
+        columnsMainNotUser <- colnames(mainSurvey)[!colnames(mainSurvey) %in% colnames(userSurvey)]
+        userSurvey[,columnsMainNotUser]<-NA
+        userSurvey<-userSurvey[colnames(mainSurvey)]
+        
+        updateProgress()
+       
+        
+        newSurvey <- rbind(mainSurvey[!rownames(mainSurvey) %in% rownames(userSurvey),],
+                           userSurvey
+        )
+        newSurvey <- newSurvey[ order(as.numeric(row.names(newSurvey))), ]
+        updateProgress()
+        
+        for (field in columnsMainNotUser) {
+          newSurvey[,field] <- mainSurvey[,field]
+        }
+        
+        updateProgress()
+        kobo_edit_form(survey = newSurvey)
+      }
+      else if(las == "orderOrdinalVariables"){
+        userChoices <- c()
+        if (!is.null(input$orderOrdinalVariablesTable)) {
+          userChoices <- hot_to_r(input$orderOrdinalVariablesTable)#as.data.frame(do.call(rbind, input$indicatorsSheetUI$data))#
+        }
+        
+        form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+        mainChoices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
+                                    stringsAsFactors = FALSE)
+        
+        origin <- mainChoices[rownames(mainChoices) %in% rownames(userChoices),colnames(userChoices)]
+        newCho <- userChoices 
+        origin <- as.data.frame(sapply(origin,as.character),stringsAsFactors = F)
+        newCho <- as.data.frame(sapply(newCho,as.character),stringsAsFactors = F)
+        
+        if(identical(origin,newCho)){
+          return(FALSE)
+        }
+        
+        progress <- shiny::Progress$new()
+        progress$set(message = "Saving sheet in progress...", value = 0)
+        on.exit(progress$close())
+        updateProgress <- function(value = NULL, detail = NULL) {
+          if (is.null(value)) {
+            value <- progress$getValue()
+            value <- value + (progress$getMax() - value) / 5
+          }
+          progress$set(value = value, detail = detail)
+        }
+        updateProgress()
+        
+        
+        
+        columnsMainNotUser <- colnames(mainChoices)[!colnames(mainChoices) %in% colnames(userChoices)]
+        userChoices[,columnsMainNotUser]<-NA
+        userChoices<-userChoices[colnames(mainChoices)]
+        
+        updateProgress()
+        
+        
+        newChoices <- rbind(mainChoices[!rownames(mainChoices) %in% rownames(userChoices),],
+                           userChoices
+        )
+        newChoices <- newChoices[ order(as.numeric(row.names(newChoices))), ]
+        updateProgress()
+        
+        for (field in columnsMainNotUser) {
+          newChoices[,field] <- mainChoices[,field]
+        }
+        
+        updateProgress()
+        kobo_edit_form(choices = newChoices)
+      }
+      else if(las == "selectMultipleType"){
+        userSurvey <- sheets[["selectMultipleType"]]
+        form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+        mainSurvey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                                    stringsAsFactors = FALSE)
+        
+        origin <- mainSurvey[rownames(mainSurvey) %in% rownames(userSurvey),colnames(userSurvey)]
+        newSur <- userSurvey 
+        origin <- as.data.frame(sapply(origin,as.character),stringsAsFactors = F)
+        newSur <- as.data.frame(sapply(newSur,as.character),stringsAsFactors = F)
+        
+        if(identical(origin,newSur)){
+          return(FALSE)
+        }
+        
+        progress <- shiny::Progress$new()
+        progress$set(message = "Saving sheet in progress...", value = 0)
+        on.exit(progress$close())
+        updateProgress <- function(value = NULL, detail = NULL) {
+          if (is.null(value)) {
+            value <- progress$getValue()
+            value <- value + (progress$getMax() - value) / 5
+          }
+          progress$set(value = value, detail = detail)
+        }
+        updateProgress()
+        
+        
+        
+        columnsMainNotUser <- colnames(mainSurvey)[!colnames(mainSurvey) %in% colnames(userSurvey)]
+        userSurvey[,columnsMainNotUser]<-NA
+        userSurvey<-userSurvey[colnames(mainSurvey)]
+        
+        updateProgress()
+        
+        
+        newSurvey <- rbind(mainSurvey[!rownames(mainSurvey) %in% rownames(userSurvey),],
+                           userSurvey
+        )
+        newSurvey <- newSurvey[ order(as.numeric(row.names(newSurvey))), ]
+        updateProgress()
+        
+        for (field in columnsMainNotUser) {
+          newSurvey[,field] <- mainSurvey[,field]
+        }
+        
+        updateProgress()
+        kobo_edit_form(survey = newSurvey)
+      }
+      else if(las == "numericType"){
+        userSurvey <- sheets[["numericType"]]
+        form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+        mainSurvey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                                    stringsAsFactors = FALSE)
+        
+        origin <- mainSurvey[rownames(mainSurvey) %in% rownames(userSurvey),colnames(userSurvey)]
+        newSur <- userSurvey 
+        origin <- as.data.frame(sapply(origin,as.character),stringsAsFactors = F)
+        newSur <- as.data.frame(sapply(newSur,as.character),stringsAsFactors = F)
+        
+        if(identical(origin,newSur)){
+          return(FALSE)
+        }
+        
+        progress <- shiny::Progress$new()
+        progress$set(message = "Saving sheet in progress...", value = 0)
+        on.exit(progress$close())
+        updateProgress <- function(value = NULL, detail = NULL) {
+          if (is.null(value)) {
+            value <- progress$getValue()
+            value <- value + (progress$getMax() - value) / 5
+          }
+          progress$set(value = value, detail = detail)
+        }
+        updateProgress()
+        
+        
+        
+        columnsMainNotUser <- colnames(mainSurvey)[!colnames(mainSurvey) %in% colnames(userSurvey)]
+        userSurvey[,columnsMainNotUser]<-NA
+        userSurvey<-userSurvey[colnames(mainSurvey)]
+        
+        updateProgress()
+        
+        
+        newSurvey <- rbind(mainSurvey[!rownames(mainSurvey) %in% rownames(userSurvey),],
+                           userSurvey
+        )
+        newSurvey <- newSurvey[ order(as.numeric(row.names(newSurvey))), ]
+        updateProgress()
+        
+        for (field in columnsMainNotUser) {
+          newSurvey[,field] <- mainSurvey[,field]
+        }
+        
+        updateProgress()
+        kobo_edit_form(survey = newSurvey)
+      }
+      else if(las == "dateType"){
+        userSurvey <- sheets[["dateType"]]
+        form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+        mainSurvey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                                    stringsAsFactors = FALSE)
+        
+        origin <- mainSurvey[rownames(mainSurvey) %in% rownames(userSurvey),colnames(userSurvey)]
+        newSur <- userSurvey 
+        origin <- as.data.frame(sapply(origin,as.character),stringsAsFactors = F)
+        newSur <- as.data.frame(sapply(newSur,as.character),stringsAsFactors = F)
+        
+        if(identical(origin,newSur)){
+          return(FALSE)
+        }
+        
+        progress <- shiny::Progress$new()
+        progress$set(message = "Saving sheet in progress...", value = 0)
+        on.exit(progress$close())
+        updateProgress <- function(value = NULL, detail = NULL) {
+          if (is.null(value)) {
+            value <- progress$getValue()
+            value <- value + (progress$getMax() - value) / 5
+          }
+          progress$set(value = value, detail = detail)
+        }
+        updateProgress()
+        
+        
+        
+        columnsMainNotUser <- colnames(mainSurvey)[!colnames(mainSurvey) %in% colnames(userSurvey)]
+        userSurvey[,columnsMainNotUser]<-NA
+        userSurvey<-userSurvey[colnames(mainSurvey)]
+        
+        updateProgress()
+        
+        
+        newSurvey <- rbind(mainSurvey[!rownames(mainSurvey) %in% rownames(userSurvey),],
+                           userSurvey
+        )
+        newSurvey <- newSurvey[ order(as.numeric(row.names(newSurvey))), ]
+        updateProgress()
+        
+        for (field in columnsMainNotUser) {
+          newSurvey[,field] <- mainSurvey[,field]
+        }
+        
+        updateProgress()
+        kobo_edit_form(survey = newSurvey)
+      }
+      
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  #############################################################################
   
   
   
@@ -2882,78 +3677,174 @@ server <- shinyServer(function(input, output, session) {
   })
   
   observe({
-    if(FALSE){#if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
-      return(NULL)
-    }
-    relabelingSurvey <- c()
-    indicator <- c()
-    survey <- c()
-    choices <- c()
-    #################################relabeling#######################################
-    if (!is.null(input$relabelingSurveyTable)) {
-      survey = hot_to_r(input$relabelingSurveyTable)
-    } 
-    else{
-      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
-      survey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
-                              stringsAsFactors = FALSE)
-      names(survey)[tolower(names(survey)) == "label"] <- "label::English"
-      names(survey)[tolower(names(survey)) == "hint"] <- "hint::English"
-      reqNames <- c("type", "name")
-      if("label::English" %in% colnames(survey)){
-        reqNames <- c(reqNames, "label::English", "label::Report")
-      }else{
-        reqNames <- c(reqNames, "label::Report")
-      }    
+    tryCatch({
+      if(FALSE){#if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
+        return(NULL)
+      }
+      relabelingSurvey <- c()
+      relabelingChoices <- c()
+      selectOneType <- c()
+      selectMultipleType <- c()
+      orderOrdinalVariables <- c()
+      numericType <- c()
+      dateType <- c()
       
-      if("hint::English" %in% colnames(survey)){
-        reqNames <- c(reqNames, "hint::English", "hint::Report")
-      }else{
-        reqNames <- c(reqNames, "hint::Report")
+
+      #################################relabeling Survey#######################################
+      if (!is.null(input$relabelingSurveyTable)) {
+        relabelingSurvey = hot_to_r(input$relabelingSurveyTable)
       } 
+      else{
+        form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+        relabelingSurvey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                                stringsAsFactors = FALSE)
+        names(relabelingSurvey)[tolower(names(relabelingSurvey)) == "label::english"] <- "label"
+        names(relabelingSurvey)[tolower(names(relabelingSurvey)) == "hint::english"] <- "hint"
+        reqNames <- c("type", "name")
+        if("label" %in% colnames(relabelingSurvey)){
+          reqNames <- c(reqNames, "label", "label::Report")
+          relabelingSurvey[,"label"] <- as.character(relabelingSurvey[,"label"])
+        }else{
+          reqNames <- c(reqNames, "label::Report")
+        }    
+        
+        if("hint" %in% colnames(relabelingSurvey)){
+          reqNames <- c(reqNames, "hint", "hint::Report")
+          relabelingSurvey[,"hint"] <- as.character(survey[,"hint"])
+        }else{
+          reqNames <- c(reqNames, "hint::Report")
+        } 
+        
+        if ("label::Report" %in% colnames(relabelingSurvey)) {
+          relabelingSurvey["label::Report"] = substr(relabelingSurvey[,"label::Report"],1,80)
+        }
+        if (!"label::Report" %in% colnames(relabelingSurvey)) {
+          if("label" %in% colnames(relabelingSurvey)){
+            relabelingSurvey["label::Report"] = substr(relabelingSurvey[,"label"],1,80)
+          }else{
+            relabelingSurvey["label::Report"] = ""
+          }
+        }
+        if ("hint::Report" %in% colnames(relabelingSurvey)) {
+          relabelingSurvey["hint::Report"] = substr(relabelingSurvey[,"hint::Report"],1,80)
+        }
+        if (!"hint::Report" %in% colnames(relabelingSurvey)) {
+          if("hint" %in% colnames(relabelingSurvey)){
+            relabelingSurvey["hint::Report"] = substr(relabelingSurvey[,"hint"],1,80)
+          }else{
+            relabelingSurvey["hint::Report"] = ""
+          }
+        }
+        relabelingSurvey[,"label::Report"] <- as.character(relabelingSurvey[,"label::Report"])
+        relabelingSurvey[,"hint::Report"] <- as.character(relabelingSurvey[,"hint::Report"])
+        relabelingSurvey <- relabelingSurvey[reqNames]
+      }
       
-      if ("label::Report" %in% colnames(survey)) {
-        survey["label::Report"] = substr(survey[,"label::Report"],1,80)
+      relabelingSurvey <- relabelingSurvey[ order(as.numeric(row.names(relabelingSurvey))), ]
+      if(nrow(relabelingSurvey)==0){
+        relabelingSurvey[nrow(relabelingSurvey)+1,] <- NA
       }
-      if (!"label::Report" %in% colnames(survey)) {
-        if("label::English" %in% colnames(survey)){
-          survey["label::Report"] = substr(survey[,"label::English"],1,80)
+      sheets[["relabelingSurvey"]] <- relabelingSurvey
+      
+      ################################################################################
+      
+      
+      #################################relabeling Choices#######################################
+      if (!is.null(input$relabelingChoicesTable)) {
+        relabelingChoices = hot_to_r(input$relabelingChoicesTable)
+      } 
+      else{
+        form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+        relabelingChoices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
+                                          stringsAsFactors = FALSE)
+        names(relabelingChoices)[tolower(names(relabelingChoices)) == "label::english"] <- "label"
+        reqNames <- c("list_name", "name")
+        if("label" %in% colnames(relabelingChoices)){
+          reqNames <- c(reqNames, "label", "label::Report")
+          relabelingChoices[,"label"] <- as.character(relabelingChoices[,"label"])
         }else{
-          survey["label::Report"] = ""
+          reqNames <- c(reqNames, "label::Report")
+        }    
+  
+        if ("label::Report" %in% colnames(relabelingChoices)) {
+          relabelingChoices["label::Report"] = substr(relabelingChoices[,"label::Report"],1,80)
         }
-      }
-      if ("hint::Report" %in% colnames(survey)) {
-        survey["hint::Report"] = substr(survey[,"hint::Report"],1,80)
-      }
-      if (!"hint::Report" %in% colnames(survey)) {
-        if("hint::English" %in% colnames(survey)){
-          survey["hint::Report"] = substr(survey[,"hint::English"],1,80)
-        }else{
-          survey["hint::Report"] = ""
+        if (!"label::Report" %in% colnames(relabelingChoices)) {
+          if("label" %in% colnames(relabelingChoices)){
+            relabelingChoices["label::Report"] = substr(relabelingChoices[,"label"],1,80)
+          }else{
+            relabelingChoices["label::Report"] = ""
+          }
         }
+        relabelingChoices[,"label::Report"] <- as.character(relabelingChoices[,"label::Report"])
+        relabelingChoices <- relabelingChoices[reqNames]
       }
-      survey <- survey[reqNames]
-    }
-    
-    survey <- survey[ order(as.numeric(row.names(survey))), ]
-    if(nrow(survey)==0){
-      survey[nrow(survey)+1,] <- NA
-    }
-    sheets[["relabelingSurvey"]] <- survey
-    
-    ################################################################################
-    
-    if (!is.null(input$surveySheetUI)) {
-      survey = hot_to_r(input$surveySheetUI)#as.data.frame(do.call(rbind, input$surveySheetUI$data))
-    } 
-    else {
+      relabelingChoices <- relabelingChoices[ order(as.numeric(row.names(relabelingChoices))), ]
+      if(nrow(relabelingChoices)==0){
+        relabelingChoices[nrow(relabelingChoices)+1,] <- NA
+      }
+      sheets[["relabelingChoices"]] <- relabelingChoices
+      
+      ################################################################################
+      
+      #################################selectOne Type#######################################
+      if (!is.null(input$selectOneTypeTable)) {
+        selectOneType = hot_to_r(input$selectOneTypeTable)
+      } 
+      else {
+        form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+        selectOneType <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                                stringsAsFactors = FALSE)
+        reqNames <- c("type",   "name" ,  "label", "variable",
+                      "disaggregation", #"chapter",
+                      "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
+                      
+        )
+        if(sum(sapply(reqNames, function(x){x %in% colnames(selectOneType)})) != length(reqNames)){
+          shinyalert("Error",
+                     paste("You need to make sure that all required fields are existing in survey sheet\n",
+                           reqNames
+                     ),
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          return(FALSE)
+        }
+        selectOneType <- selectOneType[reqNames]
+        selectOneType <- selectOneType[startsWith(tolower(selectOneType$type), "select_one"),]
+        
+        
+        #selectOneType$chapter <- as.character(selectOneType$chapter)
+        selectOneType$variable <- as.character(selectOneType$variable)
+        
+        selectOneType$disaggregation <- as.logical(selectOneType$disaggregation)
+        selectOneType$structuralequation.risk <- as.logical(selectOneType$structuralequation.risk)
+        selectOneType$structuralequation.coping <- as.logical(selectOneType$structuralequation.coping)
+        selectOneType$structuralequation.resilience <- as.logical(selectOneType$structuralequation.resilience)
+        selectOneType$anonymise <- as.logical(selectOneType$anonymise)
+        selectOneType$correlate <- as.logical(selectOneType$correlate)
+        selectOneType$clean <- as.logical(selectOneType$clean)
+        selectOneType$cluster <- as.logical(selectOneType$cluster)
+        selectOneType$predict <- as.logical(selectOneType$predict)
+        selectOneType$mappoint <- as.logical(selectOneType$mappoint)
+        selectOneType$mappoly <- as.logical(selectOneType$mappoly)
+      }
+      selectOneType <- selectOneType[ order(as.numeric(row.names(selectOneType))), ]
+      sheets[["selectOneType"]] <- selectOneType
+      
+      ################################################################################
+      
+      
+      ###############################Order Ordinal Variables##########################
+
       form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
-      survey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
-                              stringsAsFactors = FALSE)
-      reqNames <- c("type",   "name" ,  "label",
-                    "variable","disaggregation",  "chapter", "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
-                    
-      )
+      survey <- sheets[["selectOneType"]]
+      reqNames <- c("type",  "variable")
+      
+      
       if(sum(sapply(reqNames, function(x){x %in% colnames(survey)})) != length(reqNames)){
         shinyalert("Error",
                    paste("You need to make sure that all required fields are existing in survey sheet\n",
@@ -2968,118 +3859,18 @@ server <- shinyServer(function(input, output, session) {
         return(FALSE)
       }
       survey <- survey[reqNames]
-      survey <- survey[startsWith(tolower(survey$type), "integer") |
-                         startsWith(tolower(survey$type), "decimal") |
-                         startsWith(tolower(survey$type), "geopoint") |
-                         startsWith(tolower(survey$type), "calculate") |
-                         startsWith(tolower(survey$type), "text") |
-                         startsWith(tolower(survey$type), "barcode") |
-                         startsWith(tolower(survey$type), "select_multiple") |
-                         startsWith(tolower(survey$type), "select_one") |
-                         startsWith(tolower(survey$type), "date") |
-                         startsWith(tolower(survey$type), "time") |
-                         startsWith(tolower(survey$type), "datetime") 
-                       ,]
-      survey[tolower(survey$type) %in% c("integer") ,"variable"] = "integer"
-      survey[tolower(survey$type) %in% c("decimal","geopoint", "calculate") ,"variable"] = "numeric"
-      survey[tolower(survey$type) %in% c("text","barcode") ,"variable"] = "character"
-      survey[startsWith(survey$type,"select_multiple") ,"variable"] = "factor"
-      survey[tolower(survey$type) %in% c("date") ,"variable"] = "date"
-      survey[tolower(survey$type) %in% c("time") ,"variable"] = "time"
-      survey[tolower(survey$type) %in% c("datetime") ,"variable"] = "datetime"
       
+      survey <- survey[!is.na(survey[,"variable"]),]
+      survey <- survey[survey["variable"]=="ordinal factor",]
+      survey <- survey[startsWith(tolower(survey[,"type"]), "select_one"),]
       
-      survey$chapter <- as.character(survey$chapter)
-      survey$variable <- as.character(survey$variable)
-      
-      survey$disaggregation <- as.logical(survey$disaggregation)
-      survey$structuralequation.risk <- as.logical(survey$structuralequation.risk)
-      survey$structuralequation.coping <- as.logical(survey$structuralequation.coping)
-      survey$structuralequation.resilience <- as.logical(survey$structuralequation.resilience)
-      survey$anonymise <- as.logical(survey$anonymise)
-      survey$correlate <- as.logical(survey$correlate)
-      survey$clean <- as.logical(survey$clean)
-      survey$cluster <- as.logical(survey$cluster)
-      survey$predict <- as.logical(survey$predict)
-      survey$mappoint <- as.logical(survey$mappoint)
-      survey$mappoly <- as.logical(survey$mappoly)
-    }
-    survey <- survey[ order(as.numeric(row.names(survey))), ]
-    sheets[["survey"]] <- survey
-    if(nrow(survey)==0){
-      survey[nrow(survey)+1,] <- NA
-    }
-    
-    if (!is.null(input$indicatorsSheetUI)) {
-      indicator = hot_to_r(input$indicatorsSheetUI)#as.data.frame(do.call(rbind, input$indicatorsSheetUI$data))#
-    } 
-    else {
-      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
-      indicator <- as.data.frame(read_excel(form_tmp, sheet = "indicator"),
-                                 stringsAsFactors = FALSE)
-      
-      
-      reqNames <- c("type", "fullname", "label", "chapter", "disaggregation", "correlate", "sensitive",
-                    "anonymise", "cluster", "predict", "variable", "mappoint", "mappoly", "structuralequation", "frame", "listname", "calculation")
-      
-      if(sum(sapply(reqNames, function(x){x %in% colnames(indicator)})) != length(reqNames)){
-        shinyalert("Error",
-                   paste("You need to make sure that all required fields are existing in indicator sheet\n",
-                         reqNames
-                   ),
-                   type = "error",
-                   closeOnClickOutside = FALSE,
-                   confirmButtonCol = "#ff4d4d",
-                   animation = FALSE,
-                   showConfirmButton = TRUE
-        )
-        return(FALSE)
-      }
-      indicator <- indicator[reqNames]
-      
-      
-      indicator$type <- as.character(indicator$type)
-      indicator$fullname <- as.character(indicator$fullname)
-      indicator$label <- as.character(indicator$label)
-      indicator$chapter <- as.character(indicator$chapter)
-      indicator$anonymise <- as.character(indicator$anonymise)
-      indicator$listname <- as.character(indicator$listname)
-      indicator$calculation <- as.character(indicator$calculation)
-      
-      indicator$disaggregation <- as.logical(indicator$disaggregation)
-      indicator$correlate <- as.logical(indicator$correlate)
-      indicator$sensitive <- as.logical(indicator$sensitive)
-      indicator$cluster <- as.logical(indicator$cluster)
-      indicator$predict <- as.logical(indicator$predict)
-      indicator$variable <- as.logical(indicator$variable)
-      indicator$mappoint <- as.logical(indicator$mappoint)
-      indicator$mappoly <- as.logical(indicator$mappoly)
-      indicator$structuralequation <- as.logical(indicator$structuralequation)
-      
-    }
-    
-    if(nrow(indicator)==0){
-      indicator[nrow(indicator)+1,] <- NA
-    }
-    indicator <- indicator[order(as.numeric(row.names(indicator))), ]
-    if(length(projectConfigurationInfo$data[["beginRepeatList"]])==1){
-      indicator$frame <- "data"
-    }
-    sheets[["indicator"]] <- indicator
-    
-    
-    
-    if (!is.null(input$choicesSheetUI)) {
-      choices = hot_to_r(input$choicesSheetUI)#as.data.frame(do.call(rbind, input$indicatorsSheetUI$data))#
-    } 
-    else {
-      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+      varOfOrder <- sapply(survey[,"type"], function(x) {
+        strsplit(x," ")[[1]][2]
+      }, simplify = TRUE, USE.NAMES = FALSE)
+  
       choices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
-                                 stringsAsFactors = FALSE)
-      
-      
-      reqNames <- c("list_name", "name", "label", "order")
-      
+                               stringsAsFactors = FALSE)
+      reqNames <- c("list_name",  "name", "label", "order")
       if(sum(sapply(reqNames, function(x){x %in% colnames(choices)})) != length(reqNames)){
         shinyalert("Error",
                    paste("You need to make sure that all required fields are existing in choices sheet\n",
@@ -3094,20 +3885,200 @@ server <- shinyServer(function(input, output, session) {
         return(FALSE)
       }
       choices <- choices[reqNames]
+      choices <- choices[choices[,"list_name"] %in% varOfOrder,]
       
       
       choices$list_name <- as.character(choices$list_name)
       choices$name <- as.character(choices$name)
       choices$label <- as.character(choices$label)
       choices$order <- as.integer(choices$order)
+      orderOrdinalVariables = choices  
+
+      orderOrdinalVariables <- orderOrdinalVariables[ order(as.numeric(row.names(orderOrdinalVariables))), ]
+      sheets[["orderOrdinalVariables"]] <- orderOrdinalVariables
       
-    }
+      ################################################################################
+      
+      
+      #################################Select_multiple Type#######################################
+      if (!is.null(input$selectMultipleTypeTable)) {
+        selectMultipleType = hot_to_r(input$selectMultipleTypeTable)
+      } 
+      else {
+        form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+        selectMultipleType <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                                       stringsAsFactors = FALSE)
+        reqNames <- c("type",   "name" ,  "label", "variable",
+                      "disaggregation", #"chapter",
+                      "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
+                      
+        )
+        if(sum(sapply(reqNames, function(x){x %in% colnames(selectMultipleType)})) != length(reqNames)){
+          shinyalert("Error",
+                     paste("You need to make sure that all required fields are existing in survey sheet\n",
+                           reqNames
+                     ),
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          return(FALSE)
+        }
+        selectMultipleType <- selectMultipleType[reqNames]
+        selectMultipleType <- selectMultipleType[startsWith(tolower(selectMultipleType$type), "select_multiple"),]
+        
+        selectMultipleType[startsWith(selectMultipleType$type,"select_multiple") ,"variable"] = "factor"
+        
+        #selectMultipleType$chapter <- as.character(selectMultipleType$chapter)
+        selectMultipleType$variable <- as.character(selectMultipleType$variable)
+        
+        selectMultipleType$disaggregation <- as.logical(selectMultipleType$disaggregation)
+        selectMultipleType$structuralequation.risk <- as.logical(selectMultipleType$structuralequation.risk)
+        selectMultipleType$structuralequation.coping <- as.logical(selectMultipleType$structuralequation.coping)
+        selectMultipleType$structuralequation.resilience <- as.logical(selectMultipleType$structuralequation.resilience)
+        selectMultipleType$anonymise <- as.logical(selectMultipleType$anonymise)
+        selectMultipleType$correlate <- as.logical(selectMultipleType$correlate)
+        selectMultipleType$clean <- as.logical(selectMultipleType$clean)
+        selectMultipleType$cluster <- as.logical(selectMultipleType$cluster)
+        selectMultipleType$predict <- as.logical(selectMultipleType$predict)
+        selectMultipleType$mappoint <- as.logical(selectMultipleType$mappoint)
+        selectMultipleType$mappoly <- as.logical(selectMultipleType$mappoly)
+      }
+      selectMultipleType <- selectMultipleType[ order(as.numeric(row.names(selectMultipleType))), ]
+      sheets[["selectMultipleType"]] <- selectMultipleType
+      
+      ################################################################################
+      
+      
+      #################################Numeric type#######################################
+      if (!is.null(input$numericTypeTable)) {
+        numericType = hot_to_r(input$numericTypeTable)
+      } 
+      else {
+        form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+        numericType <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                                            stringsAsFactors = FALSE)
+        reqNames <- c("type",   "name" ,  "label", "variable",
+                      "disaggregation", #"chapter",
+                      "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
+                      
+        )
+        if(sum(sapply(reqNames, function(x){x %in% colnames(numericType)})) != length(reqNames)){
+          shinyalert("Error",
+                     paste("You need to make sure that all required fields are existing in survey sheet\n",
+                           reqNames
+                     ),
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          return(FALSE)
+        }
+        numericType <- numericType[reqNames]
+        numericType <- numericType[startsWith(tolower(numericType$type), "integer") |
+                           startsWith(tolower(numericType$type), "decimal") |
+                           startsWith(tolower(numericType$type), "geopoint") |
+                           startsWith(tolower(numericType$type), "calculate") 
+                         ,]
+        
+        numericType[tolower(numericType$type) %in% c("integer") ,"variable"] = "integer"
+        numericType[tolower(numericType$type) %in% c("decimal","geopoint", "calculate") ,"variable"] = "numeric"
+
+        
+        #numericType$chapter <- as.character(numericType$chapter)
+        numericType$variable <- as.character(numericType$variable)
+        
+        numericType$disaggregation <- as.logical(numericType$disaggregation)
+        numericType$structuralequation.risk <- as.logical(numericType$structuralequation.risk)
+        numericType$structuralequation.coping <- as.logical(numericType$structuralequation.coping)
+        numericType$structuralequation.resilience <- as.logical(numericType$structuralequation.resilience)
+        numericType$anonymise <- as.logical(numericType$anonymise)
+        numericType$correlate <- as.logical(numericType$correlate)
+        numericType$clean <- as.logical(numericType$clean)
+        numericType$cluster <- as.logical(numericType$cluster)
+        numericType$predict <- as.logical(numericType$predict)
+        numericType$mappoint <- as.logical(numericType$mappoint)
+        numericType$mappoly <- as.logical(numericType$mappoly)
+      }
+      numericType <- numericType[ order(as.numeric(row.names(numericType))), ]
+      sheets[["numericType"]] <- numericType
+      
+      ################################################################################
+      
+      
+      #################################Date type#######################################
+      if (!is.null(input$dateTypeTable)) {
+        dateType = hot_to_r(input$dateTypeTable)
+      } 
+      else {
+        form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+        dateType <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                                     stringsAsFactors = FALSE)
+        reqNames <- c("type",   "name" ,  "label", "variable",
+                      "disaggregation", #"chapter",
+                      "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
+                      
+        )
+        if(sum(sapply(reqNames, function(x){x %in% colnames(dateType)})) != length(reqNames)){
+          shinyalert("Error",
+                     paste("You need to make sure that all required fields are existing in survey sheet\n",
+                           reqNames
+                     ),
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          return(FALSE)
+        }
+        dateType <- dateType[reqNames]
+        dateType <- dateType[startsWith(tolower(dateType$type), "date") |
+                                     startsWith(tolower(dateType$type), "time") |
+                                     startsWith(tolower(dateType$type), "datetime") 
+                                   ,]
+        
+        dateType[tolower(dateType$type) %in% c("date") ,"variable"] = "date"
+        dateType[tolower(dateType$type) %in% c("time") ,"variable"] = "time"
+        dateType[tolower(dateType$type) %in% c("datetime") ,"variable"] = "datetime"
+        
+        
+        #dateType$chapter <- as.character(dateType$chapter)
+        dateType$variable <- as.character(dateType$variable)
+        
+        dateType$disaggregation <- as.logical(dateType$disaggregation)
+        dateType$structuralequation.risk <- as.logical(dateType$structuralequation.risk)
+        dateType$structuralequation.coping <- as.logical(dateType$structuralequation.coping)
+        dateType$structuralequation.resilience <- as.logical(dateType$structuralequation.resilience)
+        dateType$anonymise <- as.logical(dateType$anonymise)
+        dateType$correlate <- as.logical(dateType$correlate)
+        dateType$clean <- as.logical(dateType$clean)
+        dateType$cluster <- as.logical(dateType$cluster)
+        dateType$predict <- as.logical(dateType$predict)
+        dateType$mappoint <- as.logical(dateType$mappoint)
+        dateType$mappoly <- as.logical(dateType$mappoly)
+      }
+      dateType <- dateType[ order(as.numeric(row.names(dateType))), ]
+      sheets[["dateType"]] <- dateType
+      
+      ################################################################################
+      
+
     
-    if(nrow(choices)==0){
-      choices[nrow(choices)+1,] <- NA
-    }
-    choices <- choices[order(as.numeric(row.names(choices))), ]
-    sheets[["choices"]] <- choices
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
   })
 })
 

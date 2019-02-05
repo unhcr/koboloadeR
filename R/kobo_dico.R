@@ -28,7 +28,9 @@ kobo_dico <- function(form) {
   #kobo_form(formid, user = user, api = api)
   cat("\n Your form should be placed within the `data` folder. \n \n")
   # read the survey tab of ODK from
-  form_tmp <- paste0("data/",form)
+  mainDir <- kobo_getMainDirectory()
+  
+  form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
 
 
   ### First review all questions from survey sheet #################################################

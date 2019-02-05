@@ -41,8 +41,7 @@ kobo_prepare_form <- function(form = "form.xls") {
   
   cat("\n Your form should be placed within the `data` folder. \n \n")
   
-  mainDir <- gsub("/code/shiny_app", "",  getwd()) 
-  mainDir <- gsub("/inst/shiny_app", "",  mainDir) 
+  mainDir <- kobo_getMainDirectory()
   
   form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
   
@@ -55,6 +54,7 @@ kobo_prepare_form <- function(form = "form.xls") {
       type = character(),
       name = character(),
       label = character(),
+      "label::Report" = character(),
       variable = character(),
       disaggregation = character(),
       chapter = character(),
@@ -68,98 +68,139 @@ kobo_prepare_form <- function(form = "form.xls") {
       predict = character(),
       mappoint = character(),
       mappoly = character(),
-      stringsAsFactors = FALSE
+      stringsAsFactors = FALSE,
+      check.names = F
     )
   })
   
+  namesOfSur <- c("type", "name" , "label")
+  
   ## Rename the variable label
-  names(survey)[names(survey) == "label::English"] <- "label"
   names(survey)[tolower(names(survey)) == "label::english"] <- "label"
+  names(survey)[tolower(names(survey)) == "hint::english"] <- "hint"
   cat("Checking now for additional information within your xlsform. Note that you can insert them in the xls and re-run the function! \n \n ")
   ### add column if not present #################################################
-  if ("disaggregation" %in% colnames(survey)) {
-    cat("1- Good: You have a column `disaggregation` in your survey worksheet.\n");
+  if ("label::Report" %in% colnames(survey)) {
+    cat("1- Good: You have a column `label::Report` in your survey worksheet.\n");
   } else {
-    cat("1- No column `disaggregation` in your survey worksheet. Creating a dummy one for the moment...\n");
+    cat("1- No column `label::Report` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
+    survey["label::Report"] <- ""
+  }
+  namesOfSur <- c(namesOfSur,"label::Report")
+  
+  if ("variable" %in% colnames(survey)) {
+    cat("2- Good: You have a column `variable` in your survey worksheet. This will be used to flag ordinal variable.\n");
+  } else {
+    cat("2- No column `variable` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
+    survey$variable <- ""
+  }
+  namesOfSur <- c(namesOfSur,"variable")
+  
+  if ("disaggregation" %in% colnames(survey)) {
+    cat("3- Good: You have a column `disaggregation` in your survey worksheet.\n");
+  } else {
+    cat("3- No column `disaggregation` in your survey worksheet. Creating a dummy one for the moment...\n");
     survey$disaggregation <- ""
   }
-  if ("correlate" %in% colnames(survey)) {
-    cat("2- Good: You have a column `correlate` in your survey worksheet. This will be used to define the variables that should be checked for correlation between each others.\n");
-  } else {
-    cat("2- No column `correlate` in your survey worksheet. Creating a dummy one for the moment...\n");
-    survey$correlate <- ""
-  }
+  namesOfSur <- c(namesOfSur,"disaggregation")
+  
   if ("chapter" %in% colnames(survey)) {
-    cat("3- Good: You have a column `chapter` in your survey worksheet. This will be used to breakdown the generated report\n");
+    cat("4- Good: You have a column `chapter` in your survey worksheet. This will be used to breakdown the generated report\n");
   } else {
-    cat("3- No column `chapter` in your survey worksheet. Creating a dummy one for the moment ...\n");
+    cat("4- No column `chapter` in your survey worksheet. Creating a dummy one for the moment ...\n");
     survey$chapter <- ""
   }
+  namesOfSur <- c(namesOfSur,"chapter")
+  
   if ("structuralequation.risk" %in% colnames(survey)) {
-    cat("4- Good: You have a column `structuralequation.risk` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
+    cat("5- Good: You have a column `structuralequation.risk` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
   } else {
-    cat("4- No column `structuralequation.risk` in your survey worksheet. Creating a dummy one for the moment...\n");
+    cat("5- No column `structuralequation.risk` in your survey worksheet. Creating a dummy one for the moment...\n");
     survey$structuralequation.risk <- ""
   }
   if ("structuralequation.coping" %in% colnames(survey)) {
-    cat("4- Good: You have a column `structuralequation.coping` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
+    cat("5- Good: You have a column `structuralequation.coping` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
   } else {
-    cat("4- No column `structuralequation.coping` in your survey worksheet. Creating a dummy one for the moment...\n");
+    cat("5- No column `structuralequation.coping` in your survey worksheet. Creating a dummy one for the moment...\n");
     survey$structuralequation.coping <- ""
   }
   if ("structuralequation.resilience" %in% colnames(survey)) {
-    cat("4- Good: You have a column `structuralequation.resilience` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
-  } else {cat("4- No column `structuralequation.resilience` in your survey worksheet. Creating a dummy one for the moment...\n");
+    cat("5- Good: You have a column `structuralequation.resilience` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
+  } else {cat("5- No column `structuralequation.resilience` in your survey worksheet. Creating a dummy one for the moment...\n");
     survey$structuralequation.resilience <- ""
   }
+  namesOfSur <- c(namesOfSur,"structuralequation.risk","structuralequation.coping","structuralequation.resilience")
+  
   if ("anonymise" %in% colnames(survey)) {
-    cat("5- Good: You have a column `anonymise` in your survey worksheet. This will be used to anonymise the dataset.\n");
+    cat("6- Good: You have a column `anonymise` in your survey worksheet. This will be used to anonymise the dataset.\n");
   } else {
-    cat("5- No column `anonymise` in your survey worksheet. Creating a dummy one for the moment filled as `non-anonymised`. Other options to record are `Remove`, `Reference`, `Mask`, `Generalise` (see readme file) ...\n");
+    cat("6- No column `anonymise` in your survey worksheet. Creating a dummy one for the moment filled as `non-anonymised`. Other options to record are `Remove`, `Reference`, `Mask`, `Generalise` (see readme file) ...\n");
     survey$anonymise <- "default-non-anonymised"
   }
-  if ("variable" %in% colnames(survey)) {
-    cat("6- Good: You have a column `variable` in your survey worksheet. This will be used to flag ordinal variable.\n");
+  namesOfSur <- c(namesOfSur,"anonymise")
+  
+  if ("correlate" %in% colnames(survey)) {
+    cat("7- Good: You have a column `correlate` in your survey worksheet. This will be used to define the variables that should be checked for correlation between each others.\n");
   } else {
-    cat("6- No column `variable` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
-    survey$variable <- ""
+    cat("7- No column `correlate` in your survey worksheet. Creating a dummy one for the moment...\n");
+    survey$correlate <- ""
   }
+  namesOfSur <- c(namesOfSur,"correlate")
+  
   ## Adding 	clean cluster	predict
   if ("clean" %in% colnames(survey)) {
-    cat("7- Good: You have a column `clean` in your survey worksheet. This will be used to flag variables that shoudl be clean with kobo_clean function.\n");
+    cat("8- Good: You have a column `clean` in your survey worksheet. This will be used to flag variables that shoudl be clean with kobo_clean function.\n");
   } else {
-    cat("7- No column `clean` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
+    cat("8- No column `clean` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
     survey$clean <- "no"
   }
+  namesOfSur <- c(namesOfSur,"clean")
+  
   if ("cluster" %in% colnames(survey)) {
-    cat("8- Good: You have a column `cluster` in your survey worksheet. This will be used to flag variables to be used for clustering exploration.\n");
+    cat("9- Good: You have a column `cluster` in your survey worksheet. This will be used to flag variables to be used for clustering exploration.\n");
   } else {
-    cat("8- No column `cluster` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
+    cat("9- No column `cluster` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
     survey$cluster <- ""
   }
+  namesOfSur <- c(namesOfSur,"cluster")
   
   if ("predict" %in% colnames(survey)) {
-    cat("9- Good: You have a column `predict` in your survey worksheet. This will be used to flag variables to be used for clustering exploration.\n");
+    cat("10- Good: You have a column `predict` in your survey worksheet. This will be used to flag variables to be used for clustering exploration.\n");
   } else {
-    cat("9- No column `predict` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
+    cat("10- No column `predict` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
     survey$predict <- ""
   }
+  namesOfSur <- c(namesOfSur,"predict")
+  
   if ("mappoint" %in% colnames(survey)) {
-    cat("10- Good: You have a column `mappoint` in your survey worksheet. This will be used to flag variables to be used for clustering exploration.\n");
+    cat("11- Good: You have a column `mappoint` in your survey worksheet. This will be used to flag variables to be used for clustering exploration.\n");
   } else {
-    cat("10- No column `mappoint` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
+    cat("11- No column `mappoint` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
     survey$mappoint <- ""
   }
+  namesOfSur <- c(namesOfSur,"mappoint")
+  
   if ("mappoly" %in% colnames(survey)) {
-    cat("11- Good: You have a column `mappoly` in your survey worksheet. This will be used to flag variables to be used for clustering exploration.\n");
+    cat("12- Good: You have a column `mappoly` in your survey worksheet. This will be used to flag variables to be used for clustering exploration.\n");
   } else {
-    cat("11- No column `mappoly` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
+    cat("12- No column `mappoly` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
     survey$mappoly <- ""
   }
-  namesOfSur <- c("type",   "name" ,  "label",
-                  "variable","disaggregation",  "chapter", "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
+  namesOfSur <- c(namesOfSur,"mappoly")
+  
+  if ("hint" %in% colnames(survey)) {
+    cat("13- Good: You have a column `hint` in your survey worksheet.\n");
+    namesOfSur <- c(namesOfSur,"hint")
+  }
+  
+  if ("hint::Report" %in% colnames(survey)) {
+    cat("14- Good: You have a column `hint::Report` in your survey worksheet.\n");
+  } else {
+    cat("14- No column `hint::Report` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
+    survey["hint::Report"] <- ""
+  }
+  namesOfSur <- c(namesOfSur,"hint::Report")
                   
-  )
   
   if ("required" %in% colnames(survey)) {
     namesOfSur <- c(namesOfSur,"required")
@@ -276,15 +317,16 @@ kobo_prepare_form <- function(form = "form.xls") {
       list_name = character(),
       name = character(),
       label = character(),
+      "label::Report" = character(),
       order = character(),
-      stringsAsFactors = FALSE
+      stringsAsFactors = FALSE,
+      check.names = F
     )
   })
   
   cat("\n \n Checking now choices sheet \n \n")
   
   ## Rename the variable label
-  names(choices)[names(choices) == "label::English"] <- "label"
   names(choices)[tolower(names(choices)) == "label::english"] <- "label"
   
   ### add column if not present #################################################
@@ -294,6 +336,16 @@ kobo_prepare_form <- function(form = "form.xls") {
     cat("1- No column `order` in your choices worksheet. Creating a dummy one for the moment...\n");
     choices$order <- ""
   }
+  if ("label::Report" %in% colnames(choices)) {
+    cat("2- Good: You have a column `label::Report` in your choices worksheet.\n");
+  } else {
+    cat("2- No column `label::Report` in your choices worksheet. Creating a dummy one for the moment...\n");
+    choices["label::Report"] <- ""
+  }
+  
+  namesOfCho <- c("list_name", "name", "label", "label::Report", "order")
+  choices <- choices[ ,namesOfCho]
+  
   sheetname <- "choices"
   if(!is.null(xlsx::getSheets(wb)[[sheetname]]))
     xlsx::removeSheet(wb, sheetname)
@@ -448,25 +500,8 @@ kobo_prepare_form <- function(form = "form.xls") {
     cat("17- No column `calculation` in your indicator worksheet. Creating a dummy one for the moment...\n");
     indicator$calculation <- ""
   }
-  indicator <- indicator[ ,c(
-    "type",
-    "fullname",
-    "label",
-    "chapter",
-    "disaggregation",
-    "correlate",
-    "sensitive",
-    "anonymise",
-    "cluster",
-    "predict",
-    "variable",
-    "mappoint",
-    "mappoly",
-    "structuralequation",
-    "frame",
-    "listname",
-    "calculation"
-  )]
+  indicator <- indicator[ ,c("type","fullname","label", "chapter", "disaggregation", "correlate", "sensitive",
+    "anonymise", "cluster", "predict", "variable", "mappoint", "mappoly", "structuralequation", "frame", "listname","calculation")]
   
   sheetname <- "indicator"
   if(!is.null(xlsx::getSheets(wb)[[sheetname]]))

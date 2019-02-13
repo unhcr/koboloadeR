@@ -736,3 +736,50 @@ li.active > a[data-value="infoAPC"]{
   max-height: 100px;
   overflow: auto;
 }
+
+#showChapterToolPopUp{
+  min-height: 650px;
+}
+#showIndicatorToolPopUp{
+  max-height: 650px;
+  min-height: 650px;
+  overflow: auto;
+}
+.big-info-circle{
+  font-size: 300px;
+}
+
+.colNameInd{
+    font-size: large;
+    background-color: aliceblue;
+    padding: 12px 10px;
+}
+
+.colValInd{
+    margin-left: 10px;
+    font-size: medium;
+}
+
+.divOFIndRow{
+  margin: 10px 0px;
+  padding: 10px 15px 20px;
+  border-bottom: 1px solid ghostwhite;
+  max-height: 250px;
+  overflow: auto;
+}
+
+#calculationBuilderToolBody{
+    background-color: ghostwhite;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-top: 10px;
+    border: 1px solid lightgray;
+    padding: 20px 10px 10px;
+}
+
+
+@media (min-width: 992px){
+  .modal-lg {
+      width: 1085px !important;
+  }
+}

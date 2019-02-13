@@ -1284,6 +1284,7 @@ server <- shinyServer(function(input, output, session) {
       )
     }
   })
+  
   observeEvent(input$styleFormButton, {
     tryCatch({
         progress <- shiny::Progress$new()
@@ -1767,12 +1768,693 @@ server <- shinyServer(function(input, output, session) {
   ###################################################################
   
   
+  ##################### Indicators Sheet ############################
+  indicatorsInfo <- reactiveValues(data=NULL, selectedIndicator=NULL, operationType=NULL)
+  
+  output$indicatorsSheetUI <- renderUI({
+    box(id="indicatorsSheetBox",
+        width=12, solidHeader = FALSE, collapsible = FALSE,height = 650,
+        column(width = 12,style="border-bottom: 1px solid lightgray; margin: 10px 0px 35px;",
+               actionButton("addIndicatorButton", "Add Indicator", icon = icon("plus"), class="uploadButton",
+                            style="height: 50px; margin-bottom:20px; font-size: large; margin-left: 1%; margin-right: 1%;", width="98%")
+        ),
+        column(width = 12,style="overflow: auto; height: 500px;",
+               uiOutput("indicatorsBoxes")
+        )
+    )
+  })
+  
+  output$indicatorsBoxes <- renderText({
+    tryCatch({
+      indicatorsIF <- indicatorsInfo[["data"]]
+      s <- ""
+      indicators <- indicatorsIF[,"fullname"]
+      for (ind in indicators) {
+        
+        rowInd <- indicatorsIF[indicatorsIF$fullname == ind, ]
+        
+  
+        textInfoOfRow <- ""
+        for(curCol in colnames(rowInd)){
+          textInfoOfRow <- paste(textInfoOfRow,
+                                 column(width = ifelse(curCol=="calculation",8,4),
+                                        style="border: 1px solid lightgray; line-height: 35px;margin: 10px 0px;",
+                                 span(paste(curCol,":"),class='colNameInd'),
+                                 span(rowInd[1,curCol],class='colValInd')
+                                 )
+                           ,sep=" ")
+        }
+        textInfoOfRow<-HTML(textInfoOfRow)
+        s <- paste(s,
+                   box(id=paste("box",ind,sep = ""), title = ind, status="primary",
+                       width=12, solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
+                       div(
+                         textInfoOfRow , class="divOFIndRow"
+                       ),
+                       column(width = 7,
+                              actionButton(paste("editIndicatorButton", ind, sep = ""), "Edit Indicator", icon = icon("edit"), class="toolButton", style="height: 50px; margin-bottom:20px;", width="100%")
+                       ),
+                       column(width = 5,
+                              actionButton(paste("deleteIndicatorButton", ind, sep = ""), "Delete Indicator", icon = icon("trash-alt"), class="deleteButton", style="height: 50px; margin-bottom:20px;", width="100%")
+                       )
+                   )
+                   ,sep="")
+      }
+      
+      lapply(1:length(indicators), function(j) {
+        observeEvent(input[[paste("editIndicatorButton", indicators[j] ,sep = "")]] , {
+          tryCatch({
+            if(!is.null(indicatorsInfo$selectedIndicator)){
+              if(indicatorsInfo$selectedIndicator == "return"){
+                indicatorsInfo$selectedIndicator <- indicators[j]
+                indicatorsInfo$operationType <- "Edit"
+                return(FALSE)
+              }
+            }
+            indicatorsInfo$selectedIndicator <- indicators[j]
+            indicatorsInfo$operationType <- "Edit"
+            showModal(showIndicatorsTool("Edit",indicators[j]))
+          }, error = function(err) {
+            shinyalert("Error",
+                       err$message,
+                       type = "error",
+                       closeOnClickOutside = FALSE,
+                       confirmButtonCol = "#ff4d4d",
+                       animation = FALSE,
+                       showConfirmButton = TRUE
+            )
+          })
+        },ignoreInit = TRUE)
+      })
+      
+      lapply(1:length(indicators), function(j) {
+        observeEvent(input[[paste("deleteIndicatorButton", indicators[j] ,sep = "")]] , {
+          tryCatch({
+            progress <- shiny::Progress$new()
+            progress$set(message = "Deleting indicator in progress...", value = 0)
+            on.exit(progress$close())
+            updateProgress <- function(value = NULL, detail = NULL) {
+              if (is.null(value)) {
+                value <- progress$getValue()
+                value <- value + (progress$getMax() - value) / 5
+              }
+              progress$set(value = value, detail = detail)
+            }
+            updateProgress()
+            
+            form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+            indicator <- as.data.frame(read_excel(form_tmp, sheet = "indicator"),
+                                       stringsAsFactors = FALSE)
+            updateProgress()
+            #indicator[!is.na(indicator$fullname) & indicator$fullname==indicators[j],] <- NA 
+            indicator <-indicator[!is.na(indicator$fullname) & indicator$fullname!=indicators[j],]
+            updateProgress()
+            kobo_edit_form(indicator = indicator)
+            
+            
+            indicatorsIF <- indicatorsInfo[["data"]]
+            indicatorsIF <- indicatorsIF[indicatorsIF$fullname != indicators[j],]
+            updateProgress()
+            indicatorsIF <- indicatorsIF %>% arrange(fullname)
+            updateProgress()
+            indicatorsInfo[["data"]] <- indicatorsIF
+          }, error = function(err) {
+            shinyalert("Error",
+                       err$message,
+                       type = "error",
+                       closeOnClickOutside = FALSE,
+                       confirmButtonCol = "#ff4d4d",
+                       animation = FALSE,
+                       showConfirmButton = TRUE
+            )
+          })
+        } ,ignoreInit = TRUE,once = TRUE)
+      })
+      
+      s
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+    
+  })
+  
+  observeEvent(input$addIndicatorButton,{
+    tryCatch({
+      indicatorsInfo$selectedIndicator <- ""
+      indicatorsInfo$operationType <- "Add"
+      showModal(showIndicatorsTool("Add",NULL))
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  
+  showIndicatorsTool <- function(type, indicatorName) {
+    tryCatch({
+      return(modalDialog(id="showIndicatorToolPopUp", 
+                         title = ifelse(type=="Add","Add Indicator", paste("Edit",indicatorName,"Indicator")),
+                         uiOutput("indicatorToolBody"),
+                         size = "l",
+                         footer = tagList(
+                           modalButton("Cancel", icon("sign-out-alt")),
+                           actionButton("saveIndicatorButton", ifelse(type=="Add","Add the Indicator", "Edit the Indicator"), class="toolButton", style="height: 35px;")
+                         )
+      ))
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  }
+  
+  output$indicatorToolBody <- renderText({
+    tryCatch({
+      selInd <- indicatorsInfo$selectedIndicator
+      indicatorsIF <- indicatorsInfo[["data"]]
+      
+      rowInd <- indicatorsIF[indicatorsIF$fullname == selInd, ]
+      
+      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+      
+      list_name <- c()
+      choices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
+                               stringsAsFactors = FALSE)
+      if ("list_name" %in% colnames(choices)) {
+        list_name <- choices$list_name
+        list_name <- list_name[!is.na(list_name) | trimws(list_name) != '']
+        list_name <- list_name[!duplicated(list_name)]
+        list_name <- sort(list_name)
+      } 
+      
+      s <- paste("",
+                 box(id="mandatoryInputsIndicatorBox",title = "Mandatory Inputs...",
+                     width=12, solidHeader = TRUE, collapsible = FALSE, status = "danger",
+                   column(
+                     width=12,
+                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                            h4("Enter indicator's fullname:")
+                     ),
+                     column(width = 6, offset = 0,
+                            textInput("indicatorFullnameInput", label = NULL, value = rowInd[1,"fullname"], width = "100%")
+                     )
+                   ),
+                   column(
+                     width=12,
+                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                            h4("Enter indicator's label:")
+                     ),
+                     column(width = 6, offset = 0,
+                            textInput("indicatorLabelInput", label = NULL, value = rowInd[1,"label"], width = "100%")
+                     )
+                   ),
+                   column(
+                     width=12,
+                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                            h4("Select indicator's frame:")
+                     ),
+                     column(width = 6, offset = 0,
+                            selectizeInput("indicatorFrameInput", label = NULL, selected = rowInd[1,"frame"], choices = c("-- select --",projectConfigurationInfo$data[["beginRepeatList"]]), 
+                                           options = list(placeholder = "-- select --"),
+                                           width = "100%")
+                     )
+                   ),
+                   column(
+                     width=12,
+                      uiOutput("calculationBuilderToolBody")
+                   )
+                 ),
+                 
+                 box(id="moreOptionsIndicatorBox",title = "Optional Inputs...",
+                     width=12, solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE, status = "primary",
+                     column(
+                       width=12,
+                       column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                              h4("Enter indicator's listname:")
+                       ),
+                       column(width = 6, offset = 0,
+                              selectizeInput("indicatorListnameInput", label = NULL, selected = rowInd[1,"listname"], choices = c("-- select --",list_name), 
+                                             options = list(placeholder = "-- select --", create = TRUE),
+                                             width = "100%")
+                       )
+                     ),
+                   column(
+                     width=12,
+                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                            h4("Apply disaggregation?")
+                     ),
+                     column(width = 6, offset = 0,
+                            selectInput("indicatorDisaggregationInput", label = NULL, selected = ifelse(rowInd[1,"disaggregation"]=="TRUE","Yes",ifelse(rowInd[1,"disaggregation"]=="FALSE","No","-- select --")),
+                                        choices = c("-- select --","Yes","No"), 
+                                        width = "100%")
+                     )
+                   ),
+                   column(
+                     width=12,
+                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                            h4("Apply correlate?")
+                     ),
+                     column(width = 6, offset = 0,
+                            selectInput("indicatorCorrelateInput", label = NULL, selected = ifelse(rowInd[1,"correlate"]=="TRUE","Yes",ifelse(rowInd[1,"correlate"]=="FALSE","No","-- select --")),
+                                        choices = c("-- select --","Yes","No"), 
+                                        width = "100%")
+                     )
+                   ),
+                   column(
+                     width=12,
+                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                            h4("Apply sensitive?")
+                     ),
+                     column(width = 6, offset = 0,
+                            selectInput("indicatorSensitiveInput", label = NULL, selected = ifelse(rowInd[1,"sensitive"]=="TRUE","Yes",ifelse(rowInd[1,"sensitive"]=="FALSE","No","-- select --")),
+                                        choices = c("-- select --","Yes","No"), 
+                                        width = "100%")
+                     )
+                   ),
+                   column(
+                     width=12,
+                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                            h4("Select the anonymise way:")
+                     ),
+                     column(width = 6, offset = 0,
+                            selectInput("indicatorAnonymiseInput", label = NULL, selected = rowInd[1,"anonymise"],
+                                        choices = c("-- select --","key", "outlier", "sensitive", "remove", "reference"), 
+                                        width = "100%")
+                     )
+                   ),
+                   column(
+                     width=12,
+                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                            h4("Apply cluster?")
+                     ),
+                     column(width = 6, offset = 0,
+                            selectInput("indicatorClusterInput", label = NULL, selected = ifelse(rowInd[1,"cluster"]=="TRUE","Yes",ifelse(rowInd[1,"cluster"]=="FALSE","No","-- select --")),
+                                        choices = c("-- select --","Yes","No"), 
+                                        width = "100%")
+                     )
+                   ),
+                   column(
+                     width=12,
+                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                            h4("Apply predict?")
+                     ),
+                     column(width = 6, offset = 0,
+                            selectInput("indicatorPredictInput", label = NULL, selected = ifelse(rowInd[1,"predict"]=="TRUE","Yes",ifelse(rowInd[1,"predict"]=="FALSE","No","-- select --")),
+                                        choices = c("-- select --","Yes","No"), 
+                                        width = "100%")
+                     )
+                   ),
+                   
+                   
+                   column(
+                     width=12,
+                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                            h4("Apply mappoint?")
+                     ),
+                     column(width = 6, offset = 0,
+                            selectInput("indicatorMappointInput", label = NULL, selected = ifelse(rowInd[1,"mappoint"]=="TRUE","Yes",ifelse(rowInd[1,"mappoint"]=="FALSE","No","-- select --")),
+                                        choices = c("-- select --","Yes","No"), 
+                                        width = "100%")
+                     )
+                   ),
+                   column(
+                     width=12,
+                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                            h4("Apply mappoly?")
+                     ),
+                     column(width = 6, offset = 0,
+                            selectInput("indicatorMappolyInput", label = NULL, selected = ifelse(rowInd[1,"mappoly"]=="TRUE","Yes",ifelse(rowInd[1,"mappoly"]=="FALSE","No","-- select --")),
+                                        choices = c("-- select --","Yes","No"), 
+                                        width = "100%")
+                     )
+                   ),
+                   column(
+                     width=12,
+                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                            h4("Apply structuralequation?")
+                     ),
+                     column(width = 6, offset = 0,
+                            selectInput("indicatorStructuralequationInput", label = NULL, selected = ifelse(rowInd[1,"structuralequation"]=="TRUE","Yes",ifelse(rowInd[1,"structuralequation"]=="FALSE","No","-- select --")),
+                                        choices = c("-- select --","Yes","No"), 
+                                        width = "100%")
+                     )
+                   )
+                   
+                 )
+                 ,sep = "")
+      
+      s
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  
+  observeEvent(input$saveIndicatorButton,{
+    tryCatch({
+      selInd <- indicatorsInfo$selectedIndicator
+      indicatorsIF <- indicatorsInfo[["data"]]
+      
+      if(sum(input$indicatorFullnameInput=="")){
+        shinyalert("Fullname is required",
+                   'Please make sure that you entered the "Fullname" for this Indicator',
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
+      if(sum(input$indicatorFullnameInput %in% indicatorsIF$fullname)){
+        shinyalert("Fullname is not available",
+                   'This name is reserved by another indicator, please use another one.',
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
+      if(sum(input$indicatorLabelInput=="")){
+        shinyalert("Label is required",
+                   'Please make sure that you entered the "Label" for this Indicator',
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
+      if(sum(input$indicatorFrameInput=="-- select --")){
+        shinyalert("Frame is required",
+                   'Please make sure that you entered the "Frame" for this Indicator',
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
+      if(sum(input$indicatorCaseSelectInput == "-- select --")){
+        shinyalert("Error",
+                   "Please make sure that you select the Indicator.",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        resultDVUIValue$text <- ""
+        resultFRUIValue$text <- ""
+        resultSUUIValue$text <- ""
+        resultMMAUIValue$text <- ""
+        resultD2UIValue$text <- ""
+        return(FALSE)
+      }
+      
+      ######################Calculation Builder Tool#########################
+      
+      
+      calculationResult <- c()
+      if(sum(input$indicatorCaseSelectInput=="Discretize a value")){
+        tryCatch({ 
+          ############################        Validation        ############################
+          if (
+            sum(input$frameDVSelectInput == "-- select --") ||
+            sum(input$variableDVSelectInput == "-- select --") ||
+            sum(input$breaksDVTextInput == "")
+          ) {
+            shinyalert("Error",
+                       "Please make sure that you enter all required inputs.",
+                       type = "error",
+                       closeOnClickOutside = FALSE,
+                       confirmButtonCol = "#ff4d4d",
+                       animation = FALSE,
+                       showConfirmButton = TRUE
+            )
+            resultDVUIValue$text <- ""
+            return(FALSE)
+          }
+          ############################        END        ############################
+          
+          
+          pre<-as.numeric(strsplit(input$breaksDVTextInput,",")[[1]])
+          pre <- pre[!is.na(pre)]
+          pre <- paste( pre ,sep = "," ,collapse=",")
+          if(pre==""){
+            resultDVUIValue$text <- ""
+            shinyalert("Info",
+                       "Only numerical values are allowed",
+                       type = "info",
+                       closeOnClickOutside = FALSE,
+                       confirmButtonCol = "#28A8E2",
+                       animation = FALSE,
+                       showConfirmButton = TRUE
+            )
+            return(FALSE)
+          }
+          calculationResult <- "cut("
+          calculationResult <- paste(rest,input$frameDVSelectInput,"$",input$variableDVSelectInput, " ", sep="")
+          calculationResult <- paste(calculationResult, ",c(", pre,"))" , sep = ""  )
+        }, error = function(err) {
+          calculationResult <- structure(c, class = "try-error")
+        })
+      }
+      else if(sum(input$indicatorCaseSelectInput=="Re categorize a categorical variable by re coding modalities")){
+        tryCatch({ 
+          ############################        Validation        ############################
+          if (
+            sum(input$frameFRSelectInput == "-- select --") ||
+            sum(input$variableFRSelectInput == "-- select --") ||
+            sum(input$listnameFRSelectInput == "-- select --")
+          ) {
+            shinyalert("Error",
+                       "Please make sure that you enter all required inputs.",
+                       type = "error",
+                       closeOnClickOutside = FALSE,
+                       confirmButtonCol = "#ff4d4d",
+                       animation = FALSE,
+                       showConfirmButton = TRUE
+            )
+            resultFRUIValue$text <- ""
+            return(FALSE)
+          }
+          ############################        END        ############################
+          
+          calculationResult <- "fct_recode("
+          calculationResult <- paste(calculationResult,input$frameFRSelectInput,"$",input$variableFRSelectInput, ", ", sep="")
+          factorValues <- choicesSheetFR()[choicesSheetFR()$list_name==input$listnameFRSelectInput,c("list_name", "name", "label")]
+          for(i in 1:nrow(factorValues)){
+            
+            temp <- input[[paste(i,factorValues[i,"name"],sep = "-")]]
+            
+            calculationResult <- paste(calculationResult,"\"",temp,"\""," = ","\"",factorValues[i,"name"],"\"",sep = "")
+            
+            if(i!=nrow(factorValues)){
+              calculationResult <- paste(calculationResult,", ",sep = "")
+            }
+          }
+          calculationResult <- paste(calculationResult,")",sep = "")
+        }, error = function(err) {
+          calculationResult <- structure(c, class = "try-error")
+        })
+      }
+      else if(sum(input$indicatorCaseSelectInput=="Sum up different numeric or integer variables") ){
+        tryCatch({ 
+          ############################        Validation        ############################
+          if (
+            sum(input$frameSUSelectInput == "-- select --")
+          ) {
+            shinyalert("Error",
+                       "Please make sure that you enter all required inputs.",
+                       type = "error",
+                       closeOnClickOutside = FALSE,
+                       confirmButtonCol = "#ff4d4d",
+                       animation = FALSE,
+                       showConfirmButton = TRUE
+            )
+            resultSUUIValue$text <- ""
+            return(FALSE)
+          }
+          ############################        END        ############################
+          
+          calculationResult <- "psum("
+          calculationResult <- paste(calculationResult,
+                          input$frameSUSelectInput,
+                          "$",
+                          input$varSU1,
+                          ", ",
+                          input$frameSUSelectInput,
+                          "$",
+                          input$varSU2,
+                          ifelse(length(variablesToUseSU$idOfVar)>0,
+                                 ", ",""), sep="")
+          
+          
+          
+          counter <- 1
+          for(i in variablesToUseSU$idOfVar){
+            val <- input[[paste("varSU", i, sep = "")]]
+            calculationResult <- paste(calculationResult,
+                            input$frameSUSelectInput,
+                            "$",
+                            val
+                            , sep="")
+            
+            if(counter != length(variablesToUseSU$idOfVar)){
+              calculationResult <- paste(calculationResult,", ", sep="")
+            }
+            counter <- counter + 1
+          }
+          
+          
+          calculationResult <- paste(calculationResult,")",sep = "")
+        }, error = function(err) {
+          calculationResult <- structure(c, class = "try-error")
+        })
+      }
+      else if(sum(input$indicatorCaseSelectInput=="Calculate min, max or avg value for multiple integer or numeric variables")){
+        tryCatch({ 
+          ############################        Validation        ############################
+          if (
+            sum(input$frameMMASelectInput == "-- select --") ||
+            sum(input$variableMMASelectInput == "-- select --") ||
+            sum(input$statisticalFunctionsMMASelectInput == "-- select --")
+          ) {
+            shinyalert("Error",
+                       "Please make sure that you enter all required inputs.",
+                       type = "error",
+                       closeOnClickOutside = FALSE,
+                       confirmButtonCol = "#ff4d4d",
+                       animation = FALSE,
+                       showConfirmButton = TRUE
+            )
+            resultMMAUIValue$text <- ""
+            return(FALSE)
+          }
+          ############################        END        ############################
+          
+          
+          varFrame <- paste(input$frameMMASelectInput,"$",input$variableMMASelectInput, sep="")
+          if(sum(input$statisticalFunctionsMMASelectInput=="Minimum")){
+            calculationResult <- paste("min(",varFrame," ,na.rm = TRUE)",sep = "")
+          }else if(sum(input$statisticalFunctionsMMASelectInput=="Maximum")){
+            calculationResult <- paste("max(",varFrame," ,na.rm = TRUE)",sep = "")
+          }else if(sum(input$statisticalFunctionsMMASelectInput=="Average")){
+            calculationResult <- paste("mean(",varFrame," ,na.rm = TRUE)",sep = "")
+          }else if(sum(input$statisticalFunctionsMMASelectInput=="Median")){
+            calculationResult <- paste("median(",varFrame," ,na.rm = TRUE)",sep = "")
+          }else if(sum(input$statisticalFunctionsMMASelectInput=="Mode")){
+            calculationResult <- paste("uniqv[which.max(tabulate(match(",varFrame, ", unique(",varFrame,"))))",sep = "")
+          }else if(sum(input$statisticalFunctionsMMASelectInput=="Standard Deviation")){
+            calculationResult <- paste("sd(",varFrame," ,na.rm = TRUE)",sep = "")
+          }else if(sum(input$statisticalFunctionsMMASelectInput=="Interquartile Range")){
+            calculationResult <- paste("IQR(",varFrame," ,na.rm = TRUE)",sep = "")
+          }
+        }, error = function(err) {
+          calculationResult <- structure(c, class = "try-error")
+        })
+      }
+      else if(sum(input$indicatorCaseSelectInput=="Calculate ratio by dividing 2 numeric or integer variables")){
+        tryCatch({ 
+          ############################        Validation        ############################
+          if (
+            sum(input$frameD2SelectInput == "-- select --") ||
+            sum(input$variableD2SelectInput1 == "-- select --") ||
+            sum(input$variableD2SelectInput2 == "-- select --")
+          ) {
+            shinyalert("Error",
+                       "Please make sure that you enter all required inputs.",
+                       type = "error",
+                       closeOnClickOutside = FALSE,
+                       confirmButtonCol = "#ff4d4d",
+                       animation = FALSE,
+                       showConfirmButton = TRUE
+            )
+            resultD2UIValue$text <- ""
+            return(FALSE)
+          }
+          ############################        END        ############################
+          
+          
+          
+          calculationResult <- paste(input$frameD2SelectInput,"$",input$variableD2SelectInput1, " / ", sep="")
+          calculationResult <- paste(calculationResult, input$frameD2SelectInput,"$",input$variableD2SelectInput2, sep="")
+          }, error = function(err) {
+            calculationResult <- structure(c, class = "try-error")
+          })
+      }
+      
+      ################################################################
+      
+      if(class(calculationResult) == "try-error"){
+        shinyalert("Error",
+                   calculationResult$message,
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+
+  
+  ###################################################################
+  
+  
   #####################    Chapter      #############################
+  chaptersDataFrame <- reactiveValues(data=NULL, selectedChapter=NULL, operationType=NULL)
+  
   output$chapterUI <- renderUI({
     box(id="chapterBox",
         width=12, solidHeader = FALSE, collapsible = FALSE,height = 650,
         column(width = 12,style="border-bottom: 1px solid lightgray; margin: 10px 0px 35px;",
-               actionButton("addChapterButton", "Add Chapter", icon = icon("plus"), class="uploadButton", style="height: 50px; margin-bottom:20px;font-size: large;", width="100%")
+               actionButton("addChapterButton", "Add Chapter", icon = icon("plus"), class="uploadButton",
+                            style="height: 50px; margin-bottom:20px; font-size: large; margin-left: 1%; margin-right: 1%;", width="98%")
         ),
         column(width = 12,style="overflow: auto; height: 500px;",
                uiOutput("chaptersBoxes")
@@ -1781,89 +2463,450 @@ server <- shinyServer(function(input, output, session) {
   })
   
   output$chaptersBoxes <- renderText({
-    chaptersDF <- chaptersDataFrame[["data"]]
-    s <- ""
-    cahpters <- unique(chaptersDF[,"chapter"])
-    for (chp in cahpters) {
-      varSur <- chaptersDF[chaptersDF$chapter == chp & chaptersDF$sheet == "survey", "var"]
-      ind <- chaptersDF[chaptersDF$chapter == chp & chaptersDF$sheet == "indicator", "var"]
-      
-      
-      
-      if(length(varSur)==0){
-        textSur <- span("there is no variables for this chapter")
-      }else{
-        textSur <- ""
-        for(vs in varSur){
-          textSur <- paste(textSur,
-                           span(vs,class='tagVar')
-                           ,sep=" ")
+    tryCatch({
+      chaptersDF <- chaptersDataFrame[["data"]]
+      s <- ""
+      cahpters <- unique(chaptersDF[,"chapter"])
+      for (chp in cahpters) {
+        varSur <- chaptersDF[chaptersDF$chapter == chp & chaptersDF$sheet == "survey", "var"]
+        ind <- chaptersDF[chaptersDF$chapter == chp & chaptersDF$sheet == "indicator", "var"]
+        
+        
+        
+        if(length(varSur)==0){
+          textSur <- span("there is no variables for this chapter")
+        }else{
+          textSur <- ""
+          for(vs in varSur){
+            textSur <- paste(textSur,
+                             span(vs,class='tagVar')
+                             ,sep=" ")
+          }
+          textSur<-HTML(textSur)
         }
-        textSur<-HTML(textSur)
+        
+        if(length(ind)==0){
+          textInd <- span("there is no indicators for this chapter")
+        }else{
+          textInd <- ""
+          for(inde in ind){
+            textInd <- paste(textInd,
+                             span(inde,class='tagInd')
+                             ,sep=" ")
+          }
+          textInd<-HTML(textInd)
+        }
+        
+  
+        s <- paste(s,
+                   box(id=paste("box",chp,sep = ""), title = chp, status="primary",
+                       width=12, solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
+                       span("Variables: ", class="titleTagVar"),div(
+                           textSur , class="divVar"
+                       ),
+                       span("Indicators: ", class="titleTagInd"),div(
+                           textInd , class="divInd"
+                       ),
+                       column(width = 7,
+                              actionButton(paste("editChapterButton", chp, sep = ""), "Edit Chapter", icon = icon("edit"), class="toolButton", style="height: 50px; margin-bottom:20px;", width="100%")
+                       ),
+                       column(width = 5,
+                              actionButton(paste("deleteChapterButton", chp, sep = ""), "Delete Chapter", icon = icon("trash-alt"), class="deleteButton", style="height: 50px; margin-bottom:20px;", width="100%")
+                       )
+                   )
+                   ,sep="")
       }
       
-      if(length(ind)==0){
-        textInd <- span("there is no indicators for this chapter")
-      }else{
-        textInd <- ""
-        for(inde in ind){
-          textInd <- paste(textInd,
-                           span(inde,class='tagInd')
-                           ,sep=" ")
-        }
-        textInd<-HTML(textInd)
-      }
       
-
-      s <- paste(s,
-                 box(id=paste("box",chp,sep = ""), title = chp, status="primary",
-                     width=12, solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
-                     div(span("Variables: ", class="titleTagVar"),
-                         textSur , class="divVar"
-                     ),
-                     div(span("Indicators: ", class="titleTagInd"),
-                         textInd , class="divInd"
-                     ),
-                     column(width = 7,
-                            actionButton(paste("editChapterButton", chp, sep = ""), "Edit Chapter", icon = icon("edit"), class="toolButton", style="height: 50px; margin-bottom:20px;", width="100%")
-                     ),
-                     column(width = 5,
-                            actionButton(paste("deleteChapterButton", chp, sep = ""), "Delete Chapter", icon = icon("trash-alt"), class="deleteButton", style="height: 50px; margin-bottom:20px;", width="100%")
-                     )
-                 )
-                 ,sep="")
-    }
-    s
-  })
-  
-  chaptersDataFrame <- reactiveValues(data=NULL)
-  
-  observe({
-    form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
-    survey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+      lapply(1:length(cahpters), function(j) {
+        observeEvent(input[[paste("editChapterButton", cahpters[j] ,sep = "")]] , {
+          tryCatch({
+            if(!is.null(chaptersDataFrame$selectedChapter)){
+              if(chaptersDataFrame$selectedChapter == "return"){
+                chaptersDataFrame$selectedChapter <- cahpters[j]
+                chaptersDataFrame$operationType <- "Edit"
+                return(FALSE)
+              }
+            }
+            chaptersDataFrame$selectedChapter <- cahpters[j]
+            chaptersDataFrame$operationType <- "Edit"
+            showModal(showChapterTool("Edit",cahpters[j]))
+          }, error = function(err) {
+            shinyalert("Error",
+                       err$message,
+                       type = "error",
+                       closeOnClickOutside = FALSE,
+                       confirmButtonCol = "#ff4d4d",
+                       animation = FALSE,
+                       showConfirmButton = TRUE
+            )
+          })
+        },ignoreInit = TRUE)
+      })
+      lapply(1:length(cahpters), function(j) {
+        observeEvent(input[[paste("deleteChapterButton", cahpters[j] ,sep = "")]] , {
+          tryCatch({
+            progress <- shiny::Progress$new()
+            progress$set(message = "Deleting chapter in progress...", value = 0)
+            on.exit(progress$close())
+            updateProgress <- function(value = NULL, detail = NULL) {
+              if (is.null(value)) {
+                value <- progress$getValue()
+                value <- value + (progress$getMax() - value) / 5
+              }
+              progress$set(value = value, detail = detail)
+            }
+            updateProgress()
+            form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+            survey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                                    stringsAsFactors = FALSE)
+            indicator <- as.data.frame(read_excel(form_tmp, sheet = "indicator"),
                                       stringsAsFactors = FALSE)
-    indicator <- as.data.frame(read_excel(form_tmp, sheet = "indicator"),
-                            stringsAsFactors = FALSE)
-    survey <- survey[!is.na(survey$chapter),]
-    indicator <- indicator[!is.na(indicator$chapter),]
-    
-    surveyDataFrame <- data.frame(
-      chapter = survey$chapter,
-      sheet = "survey",
-      var = survey$name,
-      stringsAsFactors=FALSE
-    )
-    indicatorDataFrame <- data.frame(
-      chapter = indicator$chapter,
-      sheet = "indicator",
-      var = indicator$fullname,
-      stringsAsFactors=FALSE
-    )
-    
-    chaptersDataFrame[["data"]] <- rbind(surveyDataFrame, indicatorDataFrame)
+            updateProgress()
+            survey[!is.na(survey$chapter) & survey$chapter==cahpters[j],"chapter"] <- NA
+            indicator[!is.na(indicator$chapter) & indicator$chapter==cahpters[j],"chapter"] <- NA 
+            updateProgress()
+            kobo_edit_form(survey = survey, indicator = indicator)
+            chaptersDF <- chaptersDataFrame[["data"]]
+            chaptersDF <- chaptersDF[chaptersDF$chapter != cahpters[j],]
+            updateProgress()
+            chaptersDF <- chaptersDF %>% arrange(chapter)
+            updateProgress()
+            chaptersDataFrame[["data"]] <- chaptersDF
+          }, error = function(err) {
+            shinyalert("Error",
+                       err$message,
+                       type = "error",
+                       closeOnClickOutside = FALSE,
+                       confirmButtonCol = "#ff4d4d",
+                       animation = FALSE,
+                       showConfirmButton = TRUE
+            )
+          })
+        } ,ignoreInit = TRUE,once = TRUE)
+      })
+      
+      s
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
   })
   
+  observeEvent(input$addChapterButton,{
+    tryCatch({
+      chaptersDataFrame$selectedChapter <- ""
+      chaptersDataFrame$operationType <- "Add"
+      showModal(showChapterTool("Add",NULL))
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  
+  showChapterTool <- function(type, chapterName) {
+    tryCatch({
+      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+      survey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                              stringsAsFactors = FALSE)
+      indicator <- as.data.frame(read_excel(form_tmp, sheet = "indicator"),
+                                 stringsAsFactors = FALSE)
+      
+      survey <- survey[startsWith(tolower(survey$type), "integer") |	
+                         startsWith(tolower(survey$type), "decimal") |	
+                         startsWith(tolower(survey$type), "geopoint") |	
+                         startsWith(tolower(survey$type), "calculate") |	
+                         startsWith(tolower(survey$type), "text") |	
+                         startsWith(tolower(survey$type), "barcode") |	
+                         startsWith(tolower(survey$type), "select_multiple") |	
+                         startsWith(tolower(survey$type), "select_one") |	
+                         startsWith(tolower(survey$type), "date") |	
+                         startsWith(tolower(survey$type), "time") |	
+                         startsWith(tolower(survey$type), "datetime") 	
+                       ,]                          
+      
+      
+      varSer <- survey[is.na(survey$chapter),"name"]
+      
+      
+      varInd <- indicator[is.na(indicator$chapter),"fullname"]
+      
+      if(length(c(varSer, varInd)) == 0){
+        return(modalDialog(id="showChapterToolPopUp", 
+                    title = "No more Variables or Indicators",
+                    column(offset = 1,width = 10,style="text-align: center;",
+                          icon("info-circle","big-info-circle") 
+                    ),
+                    column(offset = 1,width = 11,
+                      h3("You can't add more chapters because there are no Variables or Indicators available to use.", style="color: gray; text-align: center; color")
+                    ),
+                    size = "l",
+                    footer = tagList(
+                      modalButton("Cancel", icon("sign-out-alt"))
+                    )
+        ))
+      }else{
+        return(modalDialog(id="showChapterToolPopUp", 
+                    title = ifelse(type=="Add","Add Chapter", paste("Edit",chapterName,"chapter")),
+                    uiOutput("chapterToolBody"),
+                    size = "l",
+                    footer = tagList(
+                      modalButton("Cancel", icon("sign-out-alt")),
+                      actionButton("saveChapterButton", ifelse(type=="Add","Add the Chapter", "Edit the Chapter"), class="toolButton", style="height: 35px;")
+                    )
+        ))
+      }
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  }
+  
+  output$chapterToolBody <- renderText({
+    tryCatch({
+      selChap <- chaptersDataFrame$selectedChapter
+      chaptersDF <- chaptersDataFrame[["data"]]
+      
+      
+      s <- paste("",
+      column(
+        width=12,
+        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               h4("Enter chapter's name:")
+        ),
+        column(width = 6, offset = 0,
+               textInput("chapterNameInput", label = NULL, value = selChap, width = "100%")
+        )
+      ),sep = "")
+      
+      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+      survey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                              stringsAsFactors = FALSE)
+      indicator <- as.data.frame(read_excel(form_tmp, sheet = "indicator"),
+                              stringsAsFactors = FALSE)
+      
+      survey <- survey[startsWith(tolower(survey$type), "integer") |	
+                         startsWith(tolower(survey$type), "decimal") |	
+                         startsWith(tolower(survey$type), "geopoint") |	
+                         startsWith(tolower(survey$type), "calculate") |	
+                         startsWith(tolower(survey$type), "text") |	
+                         startsWith(tolower(survey$type), "barcode") |	
+                         startsWith(tolower(survey$type), "select_multiple") |	
+                         startsWith(tolower(survey$type), "select_one") |	
+                         startsWith(tolower(survey$type), "date") |	
+                         startsWith(tolower(survey$type), "time") |	
+                         startsWith(tolower(survey$type), "datetime") 	
+                       ,]                          
+      
+      
+      varSer <- c(chaptersDF[chaptersDF$chapter == selChap & chaptersDF$sheet == "survey", "var"],
+                  survey[is.na(survey$chapter),"name"]
+                  )
+      
+      varInd <- c(chaptersDF[chaptersDF$chapter == selChap & chaptersDF$sheet == "indicator", "var"],
+                  indicator[is.na(indicator$chapter),"fullname"]
+      )
+      
+      s <- paste(s,
+                 column(
+                   width=12,
+                   column(width = 12, style = "margin: 15px 0px 10px; background-color: #1aab8a; color: white;",
+                          h4("Select Variables of the chapter"),helpText("(To select multiple Variables, press on Ctrl + Click on the item)", style="color: black;")
+                   ),
+                   column(width = 12,style="margin-top: 10px;",
+                          if(length(varSer)){
+                            selectInput("selectedVar", label=NULL, choices = varSer, multiple = TRUE, selected = chaptersDF[chaptersDF$chapter == selChap & chaptersDF$sheet == "survey", "var"]
+                                        , size=13, selectize = FALSE, width = "100%"
+                            )   
+                          }else{
+                            infoBox(
+                              width = 12,strong("Info"),
+                              h4(paste("There are no Variables available."),align="center")
+                              ,icon = icon("info-circle"),
+                              color = "teal"
+                            )
+                          }
+                       
+                   ),
+                   column(width = 12, style = "margin: 15px 0px 10px; background-color: #1aab8a; color: white;",
+                          h4("Select Indicators of the chapter"),helpText("(To select multiple Indicators, press on Ctrl + Click on the item)", style="color: black;")
+                   ),
+                   column(width = 12, style="margin-top: 10px;",
+                          if(length(varInd)){
+                            selectInput("selectedInd", label=NULL, choices = varInd, multiple = TRUE, selected = chaptersDF[chaptersDF$chapter == selChap & chaptersDF$sheet == "indicator", "var"]
+                                        , size=13, selectize = FALSE, width = "100%"
+                            )  
+                          }else{
+                            infoBox(
+                              width = 12,strong("Info"),
+                              h4(paste("There are no Indicators available."),align="center")
+                              ,icon = icon("info-circle"),
+                              color = "teal"
+                            )
+                          }
+                   )
+                 ),sep = "")
+      
+      s
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  
+  observeEvent(input$saveChapterButton,{
+    tryCatch({
+      selChap <- chaptersDataFrame$selectedChapter
+      chaptersDF <- chaptersDataFrame[["data"]]
+      opeType <- chaptersDataFrame$operationType
+  
+      chaptersDataFrame$selectedChapter <- "return"
+      if(is.null(input$chapterNameInput) || trimws(input$chapterNameInput) ==""){
+        shinyalert("chapter's name is required",
+                   "You need to enter the name of the chapter before saving",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      if(opeType == "Add"){
+        if(input$chapterNameInput %in% chaptersDF$chapter){
+          shinyalert("The name is reserved",
+                     "You need to enter another name for this chapter because this name is reserved.",
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          return(FALSE)
+        }
+        
+      }
+      
+      selectedVar <- input$selectedVar
+      selectedInd <- input$selectedInd
+      
+      if(is.null(selectedVar) & is.null(selectedInd)){
+        shinyalert("",
+                   "You need to select at least one item from Variables or Indicators.",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
+      
+      progress <- shiny::Progress$new()
+      progress$set(message = "Saving chapter in progress...", value = 0)
+      on.exit(progress$close())
+      updateProgress <- function(value = NULL, detail = NULL) {
+        if (is.null(value)) {
+          value <- progress$getValue()
+          value <- value + (progress$getMax() - value) / 5
+        }
+        progress$set(value = value, detail = detail)
+      }
+      updateProgress()
+      
+      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+      survey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                              stringsAsFactors = FALSE)
+      indicator <- as.data.frame(read_excel(form_tmp, sheet = "indicator"),
+                                 stringsAsFactors = FALSE)
+      updateProgress()
+      survey[!is.na(survey$chapter) & survey$chapter==selChap,"chapter"] <- NA
+      indicator[!is.na(indicator$chapter) & indicator$chapter==selChap,"chapter"] <- NA
+      updateProgress()
+      survey[!is.na(survey$name) & survey$name %in% selectedVar,"chapter"] <- input$chapterNameInput
+      indicator[!is.na(indicator$fullname) & indicator$fullname %in% selectedInd,"chapter"] <- input$chapterNameInput
+      updateProgress()
+      kobo_edit_form(survey = survey, indicator = indicator)
+      updateProgress()
+      chaptersDF <- chaptersDF[chaptersDF$chapter != selChap,]
+      
+      if(!is.null(selectedVar)){
+        surveyDataFrame <- data.frame(
+          chapter = input$chapterNameInput,
+          sheet = "survey",
+          var = selectedVar,
+          stringsAsFactors=FALSE
+        )
+      }else{
+        surveyDataFrame <- data.frame(
+          chapter = character(),
+          sheet = character(),
+          var = character(),
+          stringsAsFactors=FALSE
+        )
+      }
+      if(!is.null(selectedInd)){
+        indicatorDataFrame <- data.frame(
+          chapter = input$chapterNameInput,
+          sheet = "indicator",
+          var = selectedInd,
+          stringsAsFactors=FALSE
+        )
+      }else{
+        indicatorDataFrame <- data.frame(
+          chapter = character(),
+          sheet = character(),
+          var = character(),
+          stringsAsFactors=FALSE
+        )
+      }
+      updateProgress()
+      chaptersDF <- rbind(chaptersDF, surveyDataFrame, indicatorDataFrame)
+      chaptersDF <- chaptersDF %>% arrange(chapter)
+      chaptersDataFrame[["data"]] <- chaptersDF
+      updateProgress()
+      
+      Sys.sleep(4)
+      
+      removeModal()
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })  
   ###################################################################
+  
   
   
   ###########################Saving Unit for Settings#######################
@@ -2194,191 +3237,6 @@ server <- shinyServer(function(input, output, session) {
   })
   #############################################################################
   
-  
-  
-  output$surveySheetUI <- renderRHandsontable({
-    tryCatch({
-      rhandsontable(sheets[["survey"]], stretchH = "all", height = 550, useTypes = TRUE) %>%
-        hot_col("type", readOnly = TRUE, width = 200) %>%
-        hot_col("name", readOnly = TRUE, width = 200) %>%
-        hot_col("label", readOnly = TRUE, width = 200) %>%
-        hot_col("variable", type = "dropdown", source = c("integer","numeric","character","ordinal factor", "factor", "date", "time", "datetime"), width = 120) %>%
-        hot_col("chapter",  width = 200) %>%
-        hot_col("disaggregation",  width = 120, halign="htCenter") %>%
-        hot_col("structuralequation.risk",  width = 200, halign="htCenter") %>%
-        hot_col("structuralequation.coping",  width = 200, halign="htCenter") %>%
-        hot_col("structuralequation.resilience",  width = 200, halign="htCenter") %>%
-        hot_col("anonymise",  width = 120, halign="htCenter") %>%
-        hot_col("correlate",  width = 120, halign="htCenter") %>%
-        hot_col("clean",  width = 120, halign="htCenter") %>%
-        hot_col("cluster",  width = 120, halign="htCenter") %>%
-        hot_col("predict",  width = 120, halign="htCenter") %>%
-        hot_col("mappoint",  width = 120, halign="htCenter") %>%
-        hot_col("mappoly",  width = 120, halign="htCenter") %>%
-        hot_context_menu(allowRowEdit = FALSE, allowColEdit = FALSE)
-      
-      
-    }, error = function(err) {
-      shinyalert("Error",
-                 err$message,
-                 type = "error",
-                 closeOnClickOutside = FALSE,
-                 confirmButtonCol = "#ff4d4d",
-                 animation = FALSE,
-                 showConfirmButton = TRUE
-      )
-    })
-  })
-  
-  output$indicatorsSheetUI <- renderRHandsontable({
-    tryCatch({
-      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
-      
-      list_name <- c()
-      choices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
-                               stringsAsFactors = FALSE)
-      if ("list_name" %in% colnames(choices)) {
-        list_name <- choices$list_name
-        list_name <- list_name[!is.na(list_name) | trimws(list_name) != '']
-        list_name <- list_name[!duplicated(list_name)]
-        list_name <- sort(list_name)
-      } 
-      
-      
-      if(length(projectConfigurationInfo$data[["beginRepeatList"]])==1){
-        rhandsontable(sheets[["indicator"]], stretchH = "all", height = 450, useTypes = TRUE) %>%
-          hot_col("type", width = 120, type = "dropdown", source = c("integer","numeric","select_one")) %>%
-          hot_col("fullname", width = 200) %>%
-          hot_col("label", width = 200) %>%
-          hot_col("chapter", width = 200) %>%
-          hot_col("disaggregation",  width = 120, halign="htCenter") %>%
-          hot_col("correlate",  width = 120, halign="htCenter") %>%
-          hot_col("sensitive",  width = 120, halign="htCenter") %>%
-          hot_col("anonymise", width = 120, type = "dropdown", source = c("key", "outlier", "sensitive", "remove", "reference")) %>%
-          hot_col("cluster",  width = 120, halign="htCenter") %>%
-          hot_col("predict",  width = 120, halign="htCenter") %>%
-          hot_col("variable",  width = 120, halign="htCenter") %>%
-          hot_col("mappoint",  width = 120, halign="htCenter") %>%
-          hot_col("mappoly",  width = 120, halign="htCenter") %>%
-          hot_col("structuralequation",  width = 120, halign="htCenter") %>%
-          hot_col("frame", readOnly = TRUE, width = 120) %>%
-          hot_col("listname",  width = 120, type = "autocomplete", source = list_name) %>%
-          hot_col("calculation",  width = 200)
-      }else{
-        rhandsontable(sheets[["indicator"]], stretchH = "all", height = 450, useTypes = TRUE) %>%
-          hot_col("type", width = 120, type = "dropdown", source = c("integer","numeric","select_one")) %>%
-          hot_col("fullname", width = 200) %>%
-          hot_col("label", width = 200) %>%
-          hot_col("chapter", width = 200) %>%
-          hot_col("disaggregation",  width = 120, halign="htCenter") %>%
-          hot_col("correlate",  width = 120, halign="htCenter") %>%
-          hot_col("sensitive",  width = 120, halign="htCenter") %>%
-          hot_col("anonymise", width = 120, type = "dropdown", source = c("key", "outlier", "sensitive", "remove", "reference")) %>%
-          hot_col("cluster",  width = 120, halign="htCenter") %>%
-          hot_col("predict",  width = 120, halign="htCenter") %>%
-          hot_col("variable",  width = 120, halign="htCenter") %>%
-          hot_col("mappoint",  width = 120, halign="htCenter") %>%
-          hot_col("mappoly",  width = 120, halign="htCenter") %>%
-          hot_col("structuralequation",  width = 120, halign="htCenter") %>%
-          hot_col("frame", width = 120, type = "dropdown", source = projectConfigurationInfo$data[["beginRepeatList"]] ) %>%
-          hot_col("listname",  width = 120, type = "autocomplete", source = list_name) %>%
-          hot_col("calculation",  width = 200)
-      }
-      
-    }, error = function(err) {
-      shinyalert("Error",
-                 err$message,
-                 type = "error",
-                 closeOnClickOutside = FALSE,
-                 confirmButtonCol = "#ff4d4d",
-                 animation = FALSE,
-                 showConfirmButton = TRUE
-      )
-    })
-  })
-  
-  output$choicesSheetUI <- renderRHandsontable({
-    form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
-    list_name <- c()
-    choices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
-                             stringsAsFactors = FALSE)
-    if ("list_name" %in% colnames(choices)) {
-      list_name <- choices$list_name
-      list_name <- list_name[!is.na(list_name) | trimws(list_name) != '']
-      list_name <- list_name[!duplicated(list_name)]
-      list_name <- sort(list_name)
-      list_name <- c("-- select --",list_name)
-    }
-    if ("name" %in% colnames(choices)) {
-      nameC <- choices$name
-      nameC <- nameC[!is.na(nameC) | trimws(nameC) != '']
-      nameC <- nameC[!duplicated(nameC)]
-      nameC <- sort(nameC)
-      nameC <- c("-- select --",nameC)
-    } 
-    if ("label" %in% colnames(choices)) {
-      label <- choices$label
-      label <- label[!is.na(label) | trimws(label) != '']
-      label <- label[!duplicated(label)]
-      label <- sort(label)
-      label <- c("-- select --",label)
-    } 
-    rhandsontable(sheets[["choices"]], stretchH = "all", height = 550, useTypes = TRUE) %>%
-      hot_col("list_name",  width = 120, type = "autocomplete", source = list_name) %>% 
-      hot_col("name",  width = 120, type = "autocomplete", source = nameC) %>% 
-      hot_col("label",  width = 120, type = "autocomplete", source = label) %>% 
-      hot_col("order",  width = 30, type = "autocomplete", source = 1:100 ) 
-  })
-  
-  observeEvent(input$addNewIndicator,{
-    if (!is.numeric(input$rowNumberForCalculationBuilder)) {
-      shinyalert("Error",
-                 "Please make sure that row number input is a number and doesn't contains characters",
-                 type = "error",
-                 closeOnClickOutside = FALSE,
-                 confirmButtonCol = "#ff4d4d",
-                 animation = FALSE,
-                 showConfirmButton = TRUE
-      )
-      return(FALSE)
-    }else{
-      if (input$rowNumberForCalculationBuilder < 1) {
-        shinyalert("Error",
-                   "Please make sure that row number input greater than 1",
-                   type = "error",
-                   closeOnClickOutside = FALSE,
-                   confirmButtonCol = "#ff4d4d",
-                   animation = FALSE,
-                   showConfirmButton = TRUE
-        )
-        return(FALSE)
-      }
-    }
-    if(!input$rowNumberForCalculationBuilder%in%rownames(sheets[["indicator"]])){
-      shinyalert("Error",
-                 "Please make sure that row number input equal to one of the rows number in Indicators Sheet",
-                 type = "error",
-                 closeOnClickOutside = FALSE,
-                 confirmButtonCol = "#ff4d4d",
-                 animation = FALSE,
-                 showConfirmButton = TRUE
-      )
-      return(FALSE)
-    }
-    showModal(showCalculationBuilderTool(input$rowNumberForCalculationBuilder))
-  })
-  
-  showCalculationBuilderTool <- function(rowNumber) {
-    modalDialog(id="showCalculationBuilderToolPopUp", 
-                title = paste("Calculation Builder for row number:",rowNumber),
-                uiOutput("calculationBuilderToolBody"),
-                size = "l",
-                footer = tagList(
-                  modalButton("Exit", icon("sign-out-alt")),
-                  actionButton("queryConverterButton", "Get the calculation", class="toolButton", style="height: 35px;")
-                )
-    )
-  }
   
   output$calculationBuilderToolBody <- renderUI({
     fluidRow(
@@ -3263,7 +4121,7 @@ server <- shinyServer(function(input, output, session) {
           column(
             width=12,
             column(width = 12, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                   h4("Select the variables or enter numeric or integer value")
+                   h4("Select from variables, enter numeric ,or integer value")
             ),
             column(width = 12,style="margin-top: 15px;",
               column(width = 5, offset = 0, align="center",style="margin-top: 15px;",
@@ -3277,7 +4135,7 @@ server <- shinyServer(function(input, output, session) {
               column(width = 5, offset = 0, align="center",style="margin-top: 15px;",
                      selectizeInput("variableD2SelectInput2", label = NULL,choices = c("-- select --",
                                                                                        colnames(temp[ , selectedCol])
-                     ),width = "100%")
+                     ),width = "100%",options = list(create = TRUE))
               )
             )
           )
@@ -3598,84 +4456,6 @@ server <- shinyServer(function(input, output, session) {
     resultD2UIValue$text <- ""
   })
   
-  observeEvent(input$saveSheets, {
-    tryCatch({
-      progress <- shiny::Progress$new()
-      progress$set(message = "Saving sheets in progress...", value = 0)
-      on.exit(progress$close())
-      updateProgress <- function(value = NULL, detail = NULL) {
-        if (is.null(value)) {
-          value <- progress$getValue()
-          value <- value + (progress$getMax() - value) / 5
-        }
-        progress$set(value = value, detail = detail)
-      }
-      updateProgress()
-      ###################merge main survey with user survey#############
-      userSurvey <- isolate(sheets[["survey"]])
-      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
-      mainSurvey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
-                                  stringsAsFactors = FALSE)
-      updateProgress()
-      if ("required" %in% colnames(mainSurvey)) {
-        userSurvey$required <- NA
-      }
-      if ("relevant" %in% colnames(mainSurvey)) {
-        userSurvey$relevant <- NA
-      }
-      if ("constraint" %in% colnames(mainSurvey)) {
-        userSurvey$constraint <- NA
-      }
-      if ("calculate" %in% colnames(mainSurvey)) {
-        userSurvey$calculate <- NA
-      }
-      updateProgress()
-      userSurvey <<- userSurvey
-      newSurvey <- rbind(mainSurvey[!rownames(mainSurvey) %in% rownames(userSurvey),],
-                         userSurvey
-      )
-      updateProgress()
-      newSurvey <- newSurvey[ order(as.numeric(row.names(newSurvey))), ]
-      
-      if ("required" %in% colnames(mainSurvey)) {
-        newSurvey$required <- mainSurvey$required
-      }
-      if ("relevant" %in% colnames(mainSurvey)) {
-        newSurvey$relevant <- mainSurvey$relevant
-      }
-      if ("constraint" %in% colnames(mainSurvey)) {
-        newSurvey$constraint <- mainSurvey$constraint
-      }
-      if ("calculate" %in% colnames(mainSurvey)) {
-        newSurvey$calculate <- mainSurvey$calculate
-      }
-      updateProgress()
-      newIndicators <- isolate(sheets[["indicator"]])
-      
-      newchoices <- isolate(sheets[["choices"]])
-      
-      kobo_edit_form(survey = newSurvey, indicator = newIndicators, choices = newchoices)
-      updateProgress()
-      shinyalert("Done!",
-                 "The sheets have been successfully saved in the xlsform file",
-                 type = "success",
-                 closeOnClickOutside = FALSE,
-                 confirmButtonCol = "#28A8E2",
-                 animation = FALSE,
-                 showConfirmButton = TRUE
-      )
-    }, error = function(err) {
-      shinyalert("Error",
-                 err$message,
-                 type = "error",
-                 closeOnClickOutside = FALSE,
-                 confirmButtonCol = "#ff4d4d",
-                 animation = FALSE,
-                 showConfirmButton = TRUE
-      )
-    })
-  })
-  
   observe({
     tryCatch({
       if(FALSE){#if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
@@ -3861,7 +4641,7 @@ server <- shinyServer(function(input, output, session) {
       survey <- survey[reqNames]
       
       survey <- survey[!is.na(survey[,"variable"]),]
-      survey <- survey[survey["variable"]=="ordinal factor",]
+      survey <- survey[survey[,"variable"]=="ordinal factor",]
       survey <- survey[startsWith(tolower(survey[,"type"]), "select_one"),]
       
       varOfOrder <- sapply(survey[,"type"], function(x) {
@@ -4067,8 +4847,67 @@ server <- shinyServer(function(input, output, session) {
       
       ################################################################################
       
-
-    
+      ############################# Indicators Sheet #################################
+      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+      indicator <- as.data.frame(read_excel(form_tmp, sheet = "indicator"),
+                                 stringsAsFactors = FALSE)
+      
+      indicator <- indicator[!is.na(indicator$fullname),]
+      indicator <- indicator %>% arrange(fullname)
+      
+      indicatorsInfo[["data"]] <- indicator
+      ################################################################################
+      
+      ################################# Chapter#######################################
+      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+      survey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                              stringsAsFactors = FALSE)
+      #indicator <- as.data.frame(read_excel(form_tmp, sheet = "indicator"),
+      #                          stringsAsFactors = FALSE)
+     
+      
+      survey <- survey[!is.na(survey$chapter),]
+      indicator <- indicator[!is.na(indicator$chapter),]
+      
+      if(nrow(survey)!=0){
+        surveyDataFrame <- data.frame(
+          chapter = survey$chapter,
+          sheet = "survey",
+          var = survey$name,
+          stringsAsFactors=FALSE
+        )
+      }else{
+        surveyDataFrame <- data.frame(
+          chapter = character(),
+          sheet = character(),
+          var = character(),
+          stringsAsFactors=FALSE
+        )
+      }
+      
+      if(nrow(indicator)!=0){
+        indicatorDataFrame <- data.frame(
+          chapter = indicator$chapter,
+          sheet = "indicator",
+          var = indicator$fullname,
+          stringsAsFactors=FALSE
+        )
+      }else{
+        indicatorDataFrame <- data.frame(
+          chapter = character(),
+          sheet = character(),
+          var = character(),
+          stringsAsFactors=FALSE
+        )
+      }
+      
+      chaptersDF <- rbind(surveyDataFrame, indicatorDataFrame)
+      chaptersDF <- chaptersDF %>% arrange(chapter)
+      
+      chaptersDataFrame[["data"]] <- chaptersDF
+      ################################################################################
+      
+      
     }, error = function(err) {
       shinyalert("Error",
                  err$message,

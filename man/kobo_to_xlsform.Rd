@@ -7,6 +7,9 @@
 kobo_to_xlsform(df, form = "form.xls", n = 100)
 }
 \arguments{
+\item{df}{The dataframe object to be processed. For groups of questions to be processed,
+they must have been exported from an ODK plateform with dots (".") as separator.}
+
 \item{form}{The full filename of the form to be accessed (xls or xlsx file).
 It is assumed that the form is stored in the data folder.}
 

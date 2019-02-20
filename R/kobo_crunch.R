@@ -91,7 +91,7 @@ kobo_bar_one_indiv <- function(question, mainDir = "") {
 
   ## Getting choices
   selectlistname <- as.character(selectquestion[, "listname"])
-  selectchoices <- dico[dico$type %in% c("select_one_d", "select_multiple_d") & dico$listname == selectlistname, c("listname", "name", "labelchoice")]
+  selectchoices <- dico[dico$type  == "select_one_d" & dico$listname == selectlistname, c("listname", "name", "labelchoice")]
 
   ## Matching data from question
   dataquestion <- data[question]

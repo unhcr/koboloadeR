@@ -1473,17 +1473,39 @@ server <- shinyServer(function(input, output, session) {
   output$selectOneTypeUI <- renderUI({
     box(id="selectOneTypeBox",
         width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,height = 650,
-        #uiOutput("selectOneTypeBody")
-        rHandsontableOutput("selectOneTypeTable")
+        uiOutput("selectOneTypeBody")
+        #rHandsontableOutput("selectOneTypeTable")
     )
   })
 
   output$selectOneTypeBody <- renderUI({
     
-    if(is.null(sheets[["selectOneType"]])){
+    form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+    selectOneType <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                                   stringsAsFactors = FALSE)
+    reqNames <- c("type",   "name" ,  "label", "variable",
+                  "disaggregation", #"chapter",
+                  "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
+                  
+    )
+    if(sum(sapply(reqNames, function(x){x %in% colnames(selectOneType)})) != length(reqNames)){
+      shinyalert("Error",
+                 paste("You need to make sure that all required fields are existing in survey sheet\n",
+                       reqNames
+                 ),
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
       return(FALSE)
     }
-    if(nrow(sheets[["selectOneType"]])>0){
+    selectOneType <- selectOneType[reqNames]
+    selectOneType <- selectOneType[startsWith(tolower(selectOneType$type), "select_one"),]
+    
+    
+    if(nrow(selectOneType)>0){
       rHandsontableOutput("selectOneTypeTable")
     }else{
       infoBox(
@@ -1536,21 +1558,21 @@ server <- shinyServer(function(input, output, session) {
   output$orderOrdinalVariablesUI <- renderUI({
     box(id="orderOrdinalVariablesBox",
         width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,height = 650,
-        #uiOutput("orderOrdinalVariablesBody")
-        rHandsontableOutput("orderOrdinalVariablesTable")
+        uiOutput("orderOrdinalVariablesBody")
+        #rHandsontableOutput("orderOrdinalVariablesTable")
     )
   })
   output$orderOrdinalVariablesBody <- renderUI({
     
-    if(is.null(sheets[["selectOneType"]])){
+    if(is.null(sheets[["orderOrdinalVariables"]])){
       return(FALSE)
     }
-    if(nrow(sheets[["selectOneType"]])>0){
+    if(nrow(sheets[["orderOrdinalVariables"]])>0){
       rHandsontableOutput("orderOrdinalVariablesTable")
     }else{
       infoBox(
         width = 12,strong("Info"),
-        h4("There is no select_one type, you can start with the next step",align="center")
+        h4("There is no Ordinal Variables type, you can start with the next step",align="center")
         ,icon = icon("exclamation-triangle"),
         color = "yellow"
       )
@@ -1586,16 +1608,36 @@ server <- shinyServer(function(input, output, session) {
   output$selectMultipleTypeUI <- renderUI({
     box(id="selectMultipleTypeBox",
         width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,height = 650,
-        #uiOutput("selectMultipleTypeBody")
-        rHandsontableOutput("selectMultipleTypeTable")
+        uiOutput("selectMultipleTypeBody")
+        #rHandsontableOutput("selectMultipleTypeTable")
     )
   })
   output$selectMultipleTypeBody <- renderUI({
     
-    if(is.null(sheets[["selectMultipleType"]])){
+    form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+    selectMultipleType <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                                        stringsAsFactors = FALSE)
+    reqNames <- c("type",   "name" ,  "label", "variable",
+                  "disaggregation", #"chapter",
+                  "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
+                  
+    )
+    if(sum(sapply(reqNames, function(x){x %in% colnames(selectMultipleType)})) != length(reqNames)){
+      shinyalert("Error",
+                 paste("You need to make sure that all required fields are existing in survey sheet\n",
+                       reqNames
+                 ),
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
       return(FALSE)
     }
-    if(nrow(sheets[["selectMultipleType"]])>0){
+    selectMultipleType <- selectMultipleType[reqNames]
+    selectMultipleType <- selectMultipleType[startsWith(tolower(selectMultipleType$type), "select_multiple"),]
+    if(nrow(selectMultipleType)>0){
       rHandsontableOutput("selectMultipleTypeTable")
     }else{
       infoBox(
@@ -1648,17 +1690,41 @@ server <- shinyServer(function(input, output, session) {
   output$numericTypeUI <- renderUI({
     box(id="numericTypeBox",
         width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,height = 650,
-        #uiOutput("numericTypeBody")
-        rHandsontableOutput("numericTypeTable")
+        uiOutput("numericTypeBody")
+        #rHandsontableOutput("numericTypeTable")
     )
   })
   output$numericTypeBody <- renderUI({
     
-    if(is.null(sheets[["numericType"]])){
+    form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+    numericType <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                                 stringsAsFactors = FALSE)
+    reqNames <- c("type",   "name" ,  "label", "variable",
+                  "disaggregation", #"chapter",
+                  "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
+                  
+    )
+    if(sum(sapply(reqNames, function(x){x %in% colnames(numericType)})) != length(reqNames)){
+      shinyalert("Error",
+                 paste("You need to make sure that all required fields are existing in survey sheet\n",
+                       reqNames
+                 ),
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
       return(FALSE)
     }
-    if(nrow(sheets[["numericType"]])>0){
-      rHandsontableOutput("selectMultipleTypeTable")
+    numericType <- numericType[reqNames]
+    numericType <- numericType[startsWith(tolower(numericType$type), "integer") |
+                                 startsWith(tolower(numericType$type), "decimal") |
+                                 startsWith(tolower(numericType$type), "geopoint") |
+                                 startsWith(tolower(numericType$type), "calculate") 
+                               ,]
+    if(nrow(numericType)>0){
+      rHandsontableOutput("numericTypeTable")
     }else{
       infoBox(
         width = 12,strong("Info"),
@@ -1710,16 +1776,39 @@ server <- shinyServer(function(input, output, session) {
   output$dateTypeUI <- renderUI({
     box(id="dateTypeBox",
         width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,height = 650,
-        #uiOutput("dateTypeBody")
-        rHandsontableOutput("dateTypeTable")
+        uiOutput("dateTypeBody")
+        #rHandsontableOutput("dateTypeTable")
     )
   })
   output$dateTypeBody <- renderUI({
     
-    if(is.null(sheets[["dateType"]])){
+    form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+    dateType <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                              stringsAsFactors = FALSE)
+    reqNames <- c("type",   "name" ,  "label", "variable",
+                  "disaggregation", #"chapter",
+                  "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
+                  
+    )
+    if(sum(sapply(reqNames, function(x){x %in% colnames(dateType)})) != length(reqNames)){
+      shinyalert("Error",
+                 paste("You need to make sure that all required fields are existing in survey sheet\n",
+                       reqNames
+                 ),
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
       return(FALSE)
     }
-    if(nrow(sheets[["dateType"]])>0){
+    dateType <- dateType[reqNames]
+    dateType <- dateType[startsWith(tolower(dateType$type), "date") |
+                           startsWith(tolower(dateType$type), "time") |
+                           startsWith(tolower(dateType$type), "datetime") 
+                         ,]
+    if(nrow(dateType)>0){
       rHandsontableOutput("dateTypeTable")
     }else{
       infoBox(
@@ -1996,10 +2085,18 @@ server <- shinyServer(function(input, output, session) {
                                            width = "100%")
                      )
                    ),
-                   column(
-                     width=12,
-                      uiOutput("calculationBuilderToolBody")
+                   
+                   uiOutput("calculationNeed"),
+                   
+                   conditionalPanel(
+                     condition = "input.useCalculation=='No'",
+                     column(
+                       width=12,
+                       uiOutput("calculationBuilderToolBody")
+                     )
                    )
+                   
+                   
                  ),
                  
                  box(id="moreOptionsIndicatorBox",title = "Optional Inputs...",
@@ -2133,6 +2230,38 @@ server <- shinyServer(function(input, output, session) {
     })
   })
   
+  output$calculationNeed <- renderText({
+    m <- ""
+    print(indicatorsInfo$operationType)
+    if(indicatorsInfo$operationType=="Edit"){
+      m <- paste(m,column(
+        width=12,
+        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               h4("Use previous calculation?")
+        ),
+        column(width = 6, offset = 0,
+               selectInput("useCalculation", label = NULL, selected = "No",
+                           choices = c("Yes","No"), 
+                           width = "100%")
+        )
+      ),sep = "")
+      
+    }else{
+      m <- paste(m,column(style = "display: none;",
+        width=12,
+        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               h4("Use previous calculation?")
+        ),
+        column(width = 6, offset = 0,
+               selectInput("useCalculation", label = NULL, selected = "No",
+                           choices = c("No"), 
+                           width = "100%")
+        )
+      ),sep = "")
+    }
+    m
+  })
+  
   observeEvent(input$saveIndicatorButton,{
     tryCatch({
       selInd <- indicatorsInfo$selectedIndicator
@@ -2150,7 +2279,7 @@ server <- shinyServer(function(input, output, session) {
         return(FALSE)
       }
       
-      if(sum(input$indicatorFullnameInput %in% indicatorsIF$fullname)){
+      if(sum(input$indicatorFullnameInput %in% indicatorsIF$fullname) & sum(input$indicatorFullnameInput != selInd)){
         shinyalert("Fullname is not available",
                    'This name is reserved by another indicator, please use another one.',
                    type = "error",
@@ -2174,7 +2303,7 @@ server <- shinyServer(function(input, output, session) {
         return(FALSE)
       }
       
-      if(sum(input$indicatorFrameInput=="-- select --")){
+      if(sum(input$indicatorFrameInput=="-- select --") ){
         shinyalert("Frame is required",
                    'Please make sure that you entered the "Frame" for this Indicator',
                    type = "error",
@@ -2186,7 +2315,7 @@ server <- shinyServer(function(input, output, session) {
         return(FALSE)
       }
       
-      if(sum(input$indicatorCaseSelectInput == "-- select --")){
+      if(sum(input$indicatorCaseSelectInput == "-- select --") & sum(input$useCalculation=="No")){
         shinyalert("Error",
                    "Please make sure that you select the Indicator.",
                    type = "error",
@@ -2203,17 +2332,28 @@ server <- shinyServer(function(input, output, session) {
         return(FALSE)
       }
       
-      ######################Calculation Builder Tool#########################
+      progress <- shiny::Progress$new()
+      progress$set(message = "Process in progress...", value = 0)
+      on.exit(progress$close())
+      updateProgress <- function(value = NULL, detail = NULL) {
+        if (is.null(value)) {
+          value <- progress$getValue()
+          value <- value + (progress$getMax() - value) / 5
+        }
+        progress$set(value = value, detail = detail)
+      }
+      updateProgress()
       
+      ##################Calculation Builder Tool######################
       
       calculationResult <- c()
       if(sum(input$indicatorCaseSelectInput=="Discretize a value")){
         tryCatch({ 
           ############################        Validation        ############################
           if (
-            sum(input$frameDVSelectInput == "-- select --") ||
+            (sum(input$frameDVSelectInput == "-- select --") ||
             sum(input$variableDVSelectInput == "-- select --") ||
-            sum(input$breaksDVTextInput == "")
+            sum(input$breaksDVTextInput == "")& sum(input$useCalculation=="No"))
           ) {
             shinyalert("Error",
                        "Please make sure that you enter all required inputs.",
@@ -2245,7 +2385,7 @@ server <- shinyServer(function(input, output, session) {
             return(FALSE)
           }
           calculationResult <- "cut("
-          calculationResult <- paste(rest,input$frameDVSelectInput,"$",input$variableDVSelectInput, " ", sep="")
+          calculationResult <- paste(calculationResult,input$frameDVSelectInput,"$",input$variableDVSelectInput, " ", sep="")
           calculationResult <- paste(calculationResult, ",c(", pre,"))" , sep = ""  )
         }, error = function(err) {
           calculationResult <- structure(c, class = "try-error")
@@ -2255,9 +2395,9 @@ server <- shinyServer(function(input, output, session) {
         tryCatch({ 
           ############################        Validation        ############################
           if (
-            sum(input$frameFRSelectInput == "-- select --") ||
+            (sum(input$frameFRSelectInput == "-- select --") ||
             sum(input$variableFRSelectInput == "-- select --") ||
-            sum(input$listnameFRSelectInput == "-- select --")
+            sum(input$listnameFRSelectInput == "-- select --")) & sum(input$useCalculation=="No")
           ) {
             shinyalert("Error",
                        "Please make sure that you enter all required inputs.",
@@ -2294,7 +2434,7 @@ server <- shinyServer(function(input, output, session) {
         tryCatch({ 
           ############################        Validation        ############################
           if (
-            sum(input$frameSUSelectInput == "-- select --")
+            sum(input$frameSUSelectInput == "-- select --") & sum(input$useCalculation=="No")
           ) {
             shinyalert("Error",
                        "Please make sure that you enter all required inputs.",
@@ -2348,9 +2488,9 @@ server <- shinyServer(function(input, output, session) {
         tryCatch({ 
           ############################        Validation        ############################
           if (
-            sum(input$frameMMASelectInput == "-- select --") ||
+            (sum(input$frameMMASelectInput == "-- select --") ||
             sum(input$variableMMASelectInput == "-- select --") ||
-            sum(input$statisticalFunctionsMMASelectInput == "-- select --")
+            sum(input$statisticalFunctionsMMASelectInput == "-- select --")) & sum(input$useCalculation=="No")
           ) {
             shinyalert("Error",
                        "Please make sure that you enter all required inputs.",
@@ -2390,9 +2530,9 @@ server <- shinyServer(function(input, output, session) {
         tryCatch({ 
           ############################        Validation        ############################
           if (
-            sum(input$frameD2SelectInput == "-- select --") ||
+            (sum(input$frameD2SelectInput == "-- select --") ||
             sum(input$variableD2SelectInput1 == "-- select --") ||
-            sum(input$variableD2SelectInput2 == "-- select --")
+            sum(input$variableD2SelectInput2 == "-- select --")) & sum(input$useCalculation=="No")
           ) {
             shinyalert("Error",
                        "Please make sure that you enter all required inputs.",
@@ -2407,10 +2547,22 @@ server <- shinyServer(function(input, output, session) {
           }
           ############################        END        ############################
           
+          form_tmp <- paste(mainDir(), "data", paste(input$frameD2SelectInput, ".csv", sep = ""), sep = "/", collapse = "/")
+          temp <- read.csv(form_tmp, stringsAsFactors = TRUE)
           
+          if(input$variableD2SelectInput1 %in% colnames(temp)){
+            calculationResult <- paste(input$frameD2SelectInput,"$",input$variableD2SelectInput1, " / ", sep="")
+          }else{
+            calculationResult <- paste(input$variableD2SelectInput1, " / ", sep="")
+          }
           
-          calculationResult <- paste(input$frameD2SelectInput,"$",input$variableD2SelectInput1, " / ", sep="")
-          calculationResult <- paste(calculationResult, input$frameD2SelectInput,"$",input$variableD2SelectInput2, sep="")
+          if(input$variableD2SelectInput2 %in% colnames(temp)){
+            calculationResult <- paste(calculationResult, input$frameD2SelectInput,"$",input$variableD2SelectInput2, sep="")
+          }else{
+            calculationResult <- paste(calculationResult, input$variableD2SelectInput2, sep="")
+          }
+
+          
           }, error = function(err) {
             calculationResult <- structure(c, class = "try-error")
           })
@@ -2429,6 +2581,150 @@ server <- shinyServer(function(input, output, session) {
         )
         return(FALSE)
       }
+
+      ########################Detect the Type#########################
+      typeOfInd <- c()
+      
+      if(sum(input$indicatorCaseSelectInput=="Discretize a value")){
+        tryCatch({ 
+          form_tmp <- paste(mainDir(), "data", paste(input$frameDVSelectInput, ".csv", sep = ""), sep = "/", collapse = "/")
+          assign(input$frameDVSelectInput,read.csv(form_tmp, stringsAsFactors = TRUE))
+          typeOfInd <- class(eval(parse(text=calculationResult)))
+          rm(input$frameDVSelectInput)
+        }, error = function(err) {
+          typeOfInd <- structure(c, class = "try-error")
+        })
+      }
+      else if(sum(input$indicatorCaseSelectInput=="Re categorize a categorical variable by re coding modalities")){
+        tryCatch({ 
+          
+          form_tmp <- paste(mainDir(), "data", paste(input$frameFRSelectInput, ".csv", sep = ""), sep = "/", collapse = "/")
+          assign(input$frameFRSelectInput,read.csv(form_tmp, stringsAsFactors = TRUE))
+          typeOfInd <- class(eval(parse(text=calculationResult)))
+          rm(input$frameFRSelectInput)
+          
+        }, error = function(err) {
+          typeOfInd <- structure(c, class = "try-error")
+        })
+      }
+      else if(sum(input$indicatorCaseSelectInput=="Sum up different numeric or integer variables") ){
+        tryCatch({ 
+          
+          form_tmp <- paste(mainDir(), "data", paste(input$frameSUSelectInput, ".csv", sep = ""), sep = "/", collapse = "/")
+          assign(input$frameSUSelectInput,read.csv(form_tmp, stringsAsFactors = TRUE))
+          typeOfInd <- class(eval(parse(text=calculationResult)))
+          rm(input$frameSUSelectInput)
+
+        }, error = function(err) {
+          typeOfInd <- structure(c, class = "try-error")
+        })
+      }
+      else if(sum(input$indicatorCaseSelectInput=="Calculate min, max or avg value for multiple integer or numeric variables")){
+        tryCatch({ 
+          
+          form_tmp <- paste(mainDir(), "data", paste(input$frameMMASelectInput, ".csv", sep = ""), sep = "/", collapse = "/")
+          assign(input$frameMMASelectInput,read.csv(form_tmp, stringsAsFactors = TRUE))
+          typeOfInd <- class(eval(parse(text=calculationResult)))
+          rm(input$frameMMASelectInput)
+          
+        }, error = function(err) {
+          typeOfInd <- structure(c, class = "try-error")
+        })
+      }
+      else if(sum(input$indicatorCaseSelectInput=="Calculate ratio by dividing 2 numeric or integer variables")){
+        tryCatch({ 
+          
+          form_tmp <- paste(mainDir(), "data", paste(input$frameD2SelectInput, ".csv", sep = ""), sep = "/", collapse = "/")
+          assign(input$frameD2SelectInput,read.csv(form_tmp, stringsAsFactors = TRUE))
+          typeOfInd <- class(eval(parse(text=calculationResult)))
+          rm(input$frameD2SelectInput)
+          
+        }, error = function(err) {
+          typeOfInd <- structure(c, class = "try-error")
+        })
+      }
+      
+      ################################################################
+      updateProgress()
+      
+      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+      indicator <- as.data.frame(read_excel(form_tmp, sheet = "indicator"),
+                                 stringsAsFactors = FALSE)
+      updateProgress()
+      preTyp <- indicator[!is.na(indicator$fullname) & indicator$fullname==selInd, "type"]
+      preChp <- indicator[!is.na(indicator$fullname) & indicator$fullname==selInd, "chapter"]
+      preVar <- indicator[!is.na(indicator$fullname) & indicator$fullname==selInd, "variable"]
+      preCal <- indicator[!is.na(indicator$fullname) & indicator$fullname==selInd, "calculation"]
+      updateProgress()
+      if(length(preTyp)==0){
+        preTyp <- NA
+      }
+      if(length(preChp)==0){
+        preChp <- NA
+      }
+      if(length(preVar)==0){
+        preVar <- NA
+      }
+      if(length(preCal)==0){
+        preCal <- NA
+      }
+      indicator <- indicator[!is.na(indicator$fullname) & indicator$fullname!=selInd,]
+      
+      #t1 <- ifelse(sum(input$useCalculation=="No"),ifelse(is.null(typeOfInd),NA,ifelse(typeOfInd=="factor", "select_one",typeOfInd)),preTyp)   
+      #t2 <- input$indicatorFullnameInput
+      #t3 <- input$indicatorLabelInput
+      #t4 <- ifelse(sum(input$indicatorDisaggregationInput=="Yes"),"TRUE",ifelse(sum(input$indicatorDisaggregationInput=="No"),"False",NA))
+      #t5 <- ifelse(sum(input$indicatorCorrelateInput=="Yes"),"TRUE",ifelse(sum(input$indicatorCorrelateInput=="No"),"False",NA))
+      #t6 <- ifelse(sum(input$indicatorSensitiveInput=="Yes"),"TRUE",ifelse(sum(input$indicatorSensitiveInput=="No"),"False",NA))
+      #t7 <- ifelse(sum(input$indicatorAnonymiseInput=="-- select --"),NA,input$indicatorAnonymiseInput)
+      #t8 <- ifelse(sum(input$indicatorClusterInput=="Yes"),"TRUE",ifelse(sum(input$indicatorClusterInput=="No"),"False",NA))
+      #t9 <- ifelse(sum(input$indicatorPredictInput=="Yes"),"TRUE",ifelse(sum(input$indicatorPredictInput=="No"),"False",NA))
+      #t10 <- preVar
+      #t11 <- ifelse(sum(input$indicatorMappointInput=="Yes"),"TRUE",ifelse(sum(input$indicatorMappointInput=="No"),"False",NA))
+      #t12 <- ifelse(sum(input$indicatorMappolyInput=="Yes"),"TRUE",ifelse(sum(input$indicatorMappolyInput=="No"),"False",NA))
+      #t13 <- ifelse(sum(input$indicatorStructuralequationInput=="Yes"),"TRUE",ifelse(sum(input$indicatorStructuralequationInput=="No"),"False",NA))
+      #t14 <- ifelse(sum(input$indicatorFrameInput=="-- select --"),NA,input$indicatorFrameInput)
+      #t16 <- ifelse(sum(input$indicatorListnameInput=="-- select --"),NA,input$indicatorListnameInput)
+      #t17 <- ifelse(sum(input$useCalculation=="No"),calculationResult,preCal)
+      
+      newRow <- data.frame(
+        type = ifelse(sum(input$useCalculation=="No"),ifelse(is.null(typeOfInd),NA,ifelse(typeOfInd=="factor", "select_one",typeOfInd)),preTyp),
+        fullname = input$indicatorFullnameInput,
+        label = input$indicatorLabelInput,
+        chapter = preChp,
+        disaggregation = ifelse(sum(input$indicatorDisaggregationInput=="Yes"),"TRUE",ifelse(sum(input$indicatorDisaggregationInput=="No"),"False",NA)),
+        correlate = ifelse(sum(input$indicatorCorrelateInput=="Yes"),"TRUE",ifelse(sum(input$indicatorCorrelateInput=="No"),"False",NA)),
+        sensitive = ifelse(sum(input$indicatorSensitiveInput=="Yes"),"TRUE",ifelse(sum(input$indicatorSensitiveInput=="No"),"False",NA)),
+        anonymise = ifelse(sum(input$indicatorAnonymiseInput=="-- select --"),NA,input$indicatorAnonymiseInput),
+        cluster = ifelse(sum(input$indicatorClusterInput=="Yes"),"TRUE",ifelse(sum(input$indicatorClusterInput=="No"),"False",NA)),
+        predict = ifelse(sum(input$indicatorPredictInput=="Yes"),"TRUE",ifelse(sum(input$indicatorPredictInput=="No"),"False",NA)),
+        variable = preVar,
+        mappoint = ifelse(sum(input$indicatorMappointInput=="Yes"),"TRUE",ifelse(sum(input$indicatorMappointInput=="No"),"False",NA)),
+        mappoly = ifelse(sum(input$indicatorMappolyInput=="Yes"),"TRUE",ifelse(sum(input$indicatorMappolyInput=="No"),"False",NA)),
+        structuralequation = ifelse(sum(input$indicatorStructuralequationInput=="Yes"),"TRUE",ifelse(sum(input$indicatorStructuralequationInput=="No"),"False",NA)),
+        frame = ifelse(sum(input$indicatorFrameInput=="-- select --"),NA,input$indicatorFrameInput),
+        listname = ifelse(sum(input$indicatorListnameInput=="-- select --"),NA,input$indicatorListnameInput),
+        calculation =  ifelse(sum(input$useCalculation=="No"),calculationResult,preCal),
+        stringsAsFactors = FALSE
+      )
+      updateProgress()
+      indicator <- rbind(indicator, newRow)
+      
+      kobo_edit_form(indicator = indicator)
+      updateProgress()
+      
+      indicator <- indicator %>% arrange(fullname)
+      indicatorsInfo[["data"]] <- indicator
+      
+      indicatorsInfo$selectedIndicator <- newRow$fullname
+      updateProgress()
+      nr <<- newRow
+      if(newRow$type == "select_one" & (sum(input$useCalculation=="No") | !is.na(newRow[1,"variable"] ) | !is.na(newRow[1,"listname"]) ) ){
+        removeModal()
+        showModal(showSubIndicatorsTool(input$indicatorFullnameInput))
+      }else{
+        removeModal()
+      }
       
     }, error = function(err) {
       shinyalert("Error",
@@ -2441,8 +2737,153 @@ server <- shinyServer(function(input, output, session) {
       )
     })
   })
-
   
+  showSubIndicatorsTool <- function(indicatorName) {
+    tryCatch({
+      return(modalDialog(id="showSubIndicatorToolPopUp", 
+                         title = paste("More inputs for", indicatorName, "indicator"),
+                         uiOutput("subIndicatorToolBody"),
+                         size = "l",
+                         footer = tagList(
+                           actionButton("completeSaveIndicatorButton", "Continue...", class="toolButton", style="height: 35px;")
+                         )
+      ))
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  }
+  
+  output$subIndicatorToolBody <- renderText({
+    tryCatch({
+      selInd <- indicatorsInfo$selectedIndicator
+      indicatorsIF <- indicatorsInfo[["data"]]
+      
+      rowInd <- indicatorsIF[indicatorsIF$fullname == selInd, ]
+      
+      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+      
+      list_name <- c()
+      choices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
+                               stringsAsFactors = FALSE)
+      if ("list_name" %in% colnames(choices)) {
+        list_name <- choices$list_name
+        list_name <- list_name[!is.na(list_name) | trimws(list_name) != '']
+        list_name <- list_name[!duplicated(list_name)]
+        list_name <- sort(list_name)
+      }
+      
+      s <- paste("",
+                 
+                 box(id="mandatoryInputsSubIndicatorBox",title = "Mandatory Inputs...",
+                     width=12, solidHeader = TRUE, collapsible = FALSE, status = "danger",
+                     column(
+                       width=12,
+                       column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                              h4("Select the variable type?")
+                       ),
+                       column(width = 6, offset = 0,
+                              selectInput("subIndicatorVariableInput", label = NULL, selected = rowInd[1,"variable"],
+                                          choices = c("-- select --", "ordinal factor", "factor"), 
+                                          width = "100%")
+                       )
+                     ),
+                     column(
+                       width=12,
+                       column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                              h4("Enter indicator's listname:")
+                       ),
+                       column(width = 6, offset = 0,
+                              selectizeInput("subIndicatorListnameInput", label = NULL, selected = rowInd[1,"listname"], choices = c("-- select --",list_name), 
+                                             options = list(placeholder = "-- select --", create = TRUE),
+                                             width = "100%")
+                       )
+                     )
+                   
+                 )
+                 
+                 ,sep="")
+      
+      s
+      
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  
+  observeEvent(input$completeSaveIndicatorButton,{
+    tryCatch({
+      selInd <- indicatorsInfo$selectedIndicator
+      indicatorsIF <- indicatorsInfo[["data"]]
+      
+      if(sum(input$subIndicatorVariableInput=="-- select --") ){
+        shinyalert("Variable is required",
+                   'Please make sure that you entered the "Variable" for this Indicator',
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      if(sum(input$subIndicatorListnameInput=="-- select --") ){
+        shinyalert("Listname is required",
+                   'Please make sure that you entered the "Listname" for this Indicator',
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
+      progress <- shiny::Progress$new()
+      progress$set(message = "Process in progress...", value = 0)
+      on.exit(progress$close())
+      updateProgress <- function(value = NULL, detail = NULL) {
+        if (is.null(value)) {
+          value <- progress$getValue()
+          value <- value + (progress$getMax() - value) / 5
+        }
+        progress$set(value = value, detail = detail)
+      }
+      updateProgress()
+      
+      indicatorsIF[!is.na(indicatorsIF$fullname) & indicatorsIF$fullname == selInd, "variable"] = input$subIndicatorVariableInput
+      indicatorsIF[!is.na(indicatorsIF$fullname) & indicatorsIF$fullname == selInd, "listname"] = input$subIndicatorListnameInput
+      updateProgress()
+      kobo_edit_form(indicator = indicatorsIF)
+      updateProgress()
+      indicatorsIF <- indicatorsIF %>% arrange(fullname)
+      indicatorsInfo[["data"]] <- indicatorsIF
+      removeModal()
+      
+    }, error = function(err) {
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
   ###################################################################
   
   
@@ -3277,10 +3718,6 @@ server <- shinyServer(function(input, output, session) {
         condition = "input.variableDVSelectInput != '-- select --' && input.frameDVSelectInput != '-- select --'  && input.indicatorCaseSelectInput == 'Discretize a value'",
         uiOutput("breaksDVUI")
       ),
-      conditionalPanel(
-        condition = "input.variableDVSelectInput != '-- select --' && input.frameDVSelectInput != '-- select --' && input.breaksDVTextInput != '' && input.indicatorCaseSelectInput == 'Discretize a value'",
-        uiOutput("resultDVUI")
-      ),
       
       
       conditionalPanel(
@@ -3307,10 +3744,6 @@ server <- shinyServer(function(input, output, session) {
       conditionalPanel(
         condition = "input.listnameFRSelectInput != '-- select --'  && input.indicatorCaseSelectInput == 'Re categorize a categorical variable by re coding modalities'",
         uiOutput("factorValuesFRUI")
-      ),
-      conditionalPanel(
-        condition = "input.listnameFRSelectInput != '-- select --' && input.indicatorCaseSelectInput == 'Re categorize a categorical variable by re coding modalities'",
-        uiOutput("resultFRUI")
       ),
       
       
@@ -3340,10 +3773,6 @@ server <- shinyServer(function(input, output, session) {
           )
         )
       ),
-      conditionalPanel(
-        condition = "input.frameSUSelectInput != '-- select --' && input.indicatorCaseSelectInput == 'Sum up different numeric or integer variables'",
-        uiOutput("resultSUUI")
-      ),
       
       
       conditionalPanel(
@@ -3366,10 +3795,6 @@ server <- shinyServer(function(input, output, session) {
         condition = "input.variableMMASelectInput != '-- select --' && input.frameMMASelectInput != '-- select --' && input.indicatorCaseSelectInput == 'Calculate min, max or avg value for multiple integer or numeric variables'",
         uiOutput("statisticalFunctionsMMAUI")
       ),
-      conditionalPanel(
-        condition = "input.statisticalFunctionsMMASelectInput != '-- select --' && input.variableMMASelectInput != '-- select --' && input.frameMMASelectInput != '-- select --' && input.indicatorCaseSelectInput == 'Calculate min, max or avg value for multiple integer or numeric variables'",
-        uiOutput("resultMMAUI")
-      ),
       
       
       conditionalPanel(
@@ -3387,10 +3812,6 @@ server <- shinyServer(function(input, output, session) {
       conditionalPanel(
         condition = "input.frameD2SelectInput != '-- select --' && input.indicatorCaseSelectInput == 'Calculate ratio by dividing 2 numeric or integer variables'",
         uiOutput("variablesD2AUI")
-      ),
-      conditionalPanel(
-        condition = "input.frameD2SelectInput != '-- select --' && input.variableD2SelectInput1 != '-- select --' && input.variableD2SelectInput2 != '-- select --' && input.indicatorCaseSelectInput == 'Calculate ratio by dividing 2 numeric or integer variables'",
-        uiOutput("resultD2UI")
       )
     )
   })
@@ -3470,51 +3891,6 @@ server <- shinyServer(function(input, output, session) {
         ,icon = icon("times"),
         color = "red"
       )
-    })
-  })
-  
-  output$resultDVUI <- renderText({
-    tryCatch({
-      s <- ""
-      if(!is.null(input$breaksDVTextInput)){
-        if(class(resultDVUIValue$text) == "try-error"){
-          s<- paste(
-            div(id="resultUIDivError",
-              column(style="margin-top: 20px;",
-                     width=12,
-                     box(id="resultUIBoxError",
-                         title="ERROR",
-                         style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
-                         width=12, solidHeader = FALSE, collapsible = FALSE,
-                         p(resultDVUIValue$text$message)
-                     )
-                     
-              )
-            ),s,sep = "")
-        }else if(input$breaksDVTextInput != "" && resultDVUIValue$text != ""){
-          s<- paste(
-            div(id="resultUIDivSuccess",
-              column(style="margin-top: 20px;",
-              width=12,
-              box(id="resultUIBoxSuccess",
-                  title=paste("Copy the text and paste it into calculation column of row number:",input$rowNumberForCalculationBuilder),
-                  style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
-                  width=12, solidHeader = FALSE, collapsible = FALSE,
-                  p(resultDVUIValue$text)
-              )
-    
-            )
-          ),s,sep = "")
-        }
-      }
-      return(s)
-    }, error = function(err) {
-      return(infoBox(
-        width = 12,strong("Error"),
-        h4(err$message,align="center")
-        ,icon = icon("times"),
-        color = "red"
-      ))
     })
   })
   
@@ -3697,51 +4073,6 @@ server <- shinyServer(function(input, output, session) {
     })
   })
   
-  output$resultFRUI <- renderText({
-    tryCatch({ 
-      s <- ""
-      if(!is.null(input$listnameFRSelectInput)){
-        if(class(resultFRUIValue$text) == "try-error"){
-          s<- paste(
-            div(id="resultUIDivError",
-                column(style="margin-top: 20px;",
-                       width=12,
-                       box(id="resultUIBoxError",
-                           title="ERROR",
-                           style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
-                           width=12, solidHeader = FALSE, collapsible = FALSE,
-                           p(resultFRUIValue$text$message)
-                       )
-                       
-                )
-            ),s,sep = "")
-        }else if(resultFRUIValue$text != ""){
-          s<- paste(
-            div(id="resultUIDivSuccess",
-                column(style="margin-top: 20px;",
-                       width=12,
-                       box(id="resultUIBoxSuccess",
-                           title=paste("Copy the text and paste it into calculation column of row number:",input$rowNumberForCalculationBuilder),
-                           style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
-                           width=12, solidHeader = FALSE, collapsible = FALSE,
-                           p(resultFRUIValue$text)
-                       )
-                       
-                )
-            ),s,sep = "")
-        }
-      }
-      return(s)
-    }, error = function(err) {
-      return(infoBox(
-        width = 12,strong("Error"),
-        h4(err$message,align="center")
-        ,icon = icon("times"),
-        color = "red"
-      ))
-    })
-  })
-  
   resultFRUIValue <- reactiveValues(text="")
   
   observeEvent(input$frameFRSelectInput,{
@@ -3911,49 +4242,6 @@ server <- shinyServer(function(input, output, session) {
     })
   })
   
-  output$resultSUUI <- renderText({
-    tryCatch({
-      s <- ""
-      if(class(resultSUUIValue$text) == "try-error"){
-        s<- paste(
-          div(id="resultUIDivError",
-              column(style="margin-top: 20px;",
-                     width=12,
-                     box(id="resultUIBoxError",
-                         title="ERROR",
-                         style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
-                         width=12, solidHeader = FALSE, collapsible = FALSE,
-                         p(resultSUUIValue$text$message)
-                     )
-                     
-              )
-          ),s,sep = "")
-      }else if(resultSUUIValue$text != ""){
-        s<- paste(
-          div(id="resultUIDivSuccess",
-              column(style="margin-top: 20px;",
-                     width=12,
-                     box(id="resultUIBoxSuccess",
-                         title=paste("Copy the text and paste it into calculation column of row number:",input$rowNumberForCalculationBuilder),
-                         style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
-                         width=12, solidHeader = FALSE, collapsible = FALSE,
-                         p(resultSUUIValue$text)
-                     )
-                     
-              )
-          ),s,sep = "")
-      }
-      return(s)
-    }, error = function(err) {
-      return(infoBox(
-        width = 12,strong("Error"),
-        h4(err$message,align="center")
-        ,icon = icon("times"),
-        color = "red"
-      ))
-    })
-  })
-  
   observeEvent(input$varSU1,{
     resultSUUIValue$text <- ""
   })
@@ -4045,50 +4333,6 @@ server <- shinyServer(function(input, output, session) {
     })
   })
   
-  output$resultMMAUI <- renderText({
-    tryCatch({
-      s <- ""
-      if(class(resultMMAUIValue$text) == "try-error"){
-        s<- paste(
-          div(id="resultUIDivError",
-              column(style="margin-top: 20px;",
-                     width=12,
-                     box(id="resultUIBoxError",
-                         title="ERROR",
-                         style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
-                         width=12, solidHeader = FALSE, collapsible = FALSE,
-                         p(resultMMAUIValue$text$message)
-                     )
-                     
-              )
-          ),s,sep = "")
-      }else if(input$statisticalFunctionsMMASelectInput != "-- select --" && resultMMAUIValue$text != ""){
-        s<- paste(
-          div(id="resultUIDivSuccess",
-              column(style="margin-top: 20px;",
-                     width=12,
-                     box(id="resultUIBoxSuccess",
-                         title=paste("Copy the text and paste it into calculation column of row number:",input$rowNumberForCalculationBuilder),
-                         style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
-                         width=12, solidHeader = FALSE, collapsible = FALSE,
-                         p(resultMMAUIValue$text)
-                     )
-                     
-              )
-          ),s,sep = "")
-      }
-        
-      return(s)
-    }, error = function(err) {
-      return(infoBox(
-        width = 12,strong("Error"),
-        h4(err$message,align="center")
-        ,icon = icon("times"),
-        color = "red"
-      ))
-    })
-  })
-  
   observeEvent(input$frameMMASelectInput,{
     resultMMAUIValue$text <- ""
   })
@@ -4156,49 +4400,6 @@ server <- shinyServer(function(input, output, session) {
         ,icon = icon("times"),
         color = "red"
       )
-    })
-  })
-  
-  output$resultD2UI <- renderText({
-    tryCatch({
-      s <- ""
-      if(class(resultD2UIValue$text) == "try-error"){
-        s<- paste(
-          div(id="resultUIDivError",
-              column(style="margin-top: 20px;",
-                     width=12,
-                     box(id="resultUIBoxError",
-                         title="ERROR",
-                         style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
-                         width=12, solidHeader = FALSE, collapsible = FALSE,
-                         p(resultD2UIValue$text$message)
-                     )
-                     
-              )
-          ),s,sep = "")
-      }else if(resultD2UIValue$text != ""){
-        s<- paste(
-          div(id="resultUIDivSuccess",
-              column(style="margin-top: 20px;",
-                     width=12,
-                     box(id="resultUIBoxSuccess",
-                         title=paste("Copy the text and paste it into calculation column of row number:",input$rowNumberForCalculationBuilder),
-                         style="border: 1px solid lightgray; font-size: x-large;min-height: 300px;",
-                         width=12, solidHeader = FALSE, collapsible = FALSE,
-                         p(resultD2UIValue$text)
-                     )
-                     
-              )
-          ),s,sep = "")
-      }
-      return(s)
-    }, error = function(err) {
-      return(infoBox(
-        width = 12,strong("Error"),
-        h4(err$message,align="center")
-        ,icon = icon("times"),
-        color = "red"
-      ))
     })
   })
   

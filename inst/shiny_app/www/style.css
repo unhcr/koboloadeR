@@ -387,20 +387,7 @@ body > div > div > section > nav > div > div.navbar-header > span{
     100% { opacity:100%; }
 }
 
-#resultUIDivSuccess > div > div > div > div.box-header{
-  background-color: #1aab8a;
-  color: white;
-}
 
-#resultUIDivError > div > div > div > div.box-header{
-  background-color: #ff3333;
-  color: white;
-}
-
-#resultUIBoxSuccess{
-  overflow-x: auto;
-  overflow-y: auto;
-}
 
 .toolButtonDelete, .toolButtonDelete:focus, .toolButtonDelete:active:focus{
   background:#ff4d4d;

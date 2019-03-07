@@ -728,8 +728,8 @@ li.active > a[data-value="infoAPC"]{
   min-height: 650px;
 }
 #showIndicatorToolPopUp{
-  max-height: 650px;
-  min-height: 650px;
+  max-height: 750px;
+  min-height: 750px;
   overflow: auto;
 }
 .big-info-circle{
@@ -767,6 +767,6 @@ li.active > a[data-value="infoAPC"]{
 
 @media (min-width: 992px){
   .modal-lg {
-      width: 1085px !important;
+      width: 1185px !important;
   }
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/kobo_anonymise.R
 \name{kobo_anonymise}
 \alias{kobo_anonymise}
-\title{Generate anonymised dataset}
+\title{Remove direct identifier}
 \usage{
 kobo_anonymise(frame, dico)
 }

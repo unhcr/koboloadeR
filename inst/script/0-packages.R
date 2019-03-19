@@ -49,6 +49,7 @@ packages <- unique(sort(c(
   "tidyverse",
   "plyr",
   "stringr",
+  "fuzzyjoin",
   "qrmtools",
 
   "ggrepel", ## getting nice labels in ggplot2

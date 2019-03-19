@@ -18,11 +18,7 @@ Automatically produce a disclosure risk measurement report.
   https://cran.r-project.org/web/packages/sdcMicro/sdcMicro.pdf
 }
 \examples{
-kobo_anonymise()
-
-\dontrun{
-kobo_anonymisation_report(frame, dico)
-}
+kobo_anonymisation_report()
 
 }
 \author{

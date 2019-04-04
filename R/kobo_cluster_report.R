@@ -95,7 +95,6 @@ kobo_cluster_report <- function(frame, dico) {
 
 
         cat("```{r , echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE}", file = reportcluster , sep = "\n", append = TRUE)
-        cat("samplesize <- 10000", file = reportcluster , sep = "\n", append = TRUE)
         cat("\n", file = reportcluster , sep = "\n", append = TRUE)
         cat("mainDir <- getwd()", file = reportcluster , sep = "\n", append = TRUE)
         cat("mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 5)", file = reportcluster , sep = "\n", append = TRUE)
@@ -111,6 +110,14 @@ kobo_cluster_report <- function(frame, dico) {
 
         cat(paste0("datacluster <-  read.csv(paste0(mainDirroot,\"/data/clustering-report-",framename,".csv\"), sep = \",\", encoding = \"UTF-8\", na.strings = \"\")"), file = reportcluster , sep = "\n", append = TRUE)
 
+        cat("
+        if(nrow(datacluster) > 10000) {
+          samplesize <- 10000 
+        } else{ 
+          samplesize <- nrow(datacluster) 
+        }
+        ", file = reportcluster , sep = "\n", append = TRUE)
+        
         cat("\n", file = reportcluster , sep = "\n", append = TRUE)
         cat("```", file = reportcluster , sep = "\n", append = TRUE)
         cat("# Executive Summary", file = reportcluster , sep = "\n", append = TRUE)

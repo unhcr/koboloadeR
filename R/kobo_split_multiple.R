@@ -67,7 +67,7 @@ kobo_split_multiple <- function(data, dico) {
 
   #  data[data[ , id]=='', id] <- "zNotAnswered"
     data[is.na(data[ , id]), id] <- "zNotAnswered"
-
+    data[data[ , id]=='', id] <- "zNotAnswered"
 
     #levels(as.factor(data[ , id]))
     #levels(data[ , id])

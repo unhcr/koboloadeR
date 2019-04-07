@@ -26,9 +26,9 @@
 kobo_create_indicators <- function(form = "form.xls") {
   mainDir <- kobo_getMainDirectory()
   form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
+  
   ## Load all required packages
-  source(paste0(mainDir,"/code/0-packages.R"))
-  source(paste0(mainDir,"/code/0-config.R"))
+  kobo_load_packages()
   library(koboloadeR)
   
   ## load all required data files #########################################
@@ -55,16 +55,10 @@ kobo_create_indicators <- function(form = "form.xls") {
       writeLines("There was an error: You have not defined indicators within your xlsform file. \n")
       
     } else {
-      #rm(list = ls())
-      
-      
       ## Load data & dico #############################################################################
       #form <- "form.xls"
       ## Run this only after data cleaning
       dico <- read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
-      # household <- read.csv(paste(mainDir,"/household.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")
-      # nbremenage <- read.csv("data/nbremenage.csv", encoding = "UTF-8", na.strings = "NA")
-      
       
       ## Create the dicotemp #############################################################################
       #names(dico)

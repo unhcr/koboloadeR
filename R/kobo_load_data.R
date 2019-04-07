@@ -24,23 +24,23 @@
 #'
 
 kobo_load_data <- function(form = "form.xls") {
+  ## Load all required packages#############################################
+  kobo_load_packages()
+  configInfo <- kobo_get_config()
   mainDir <- kobo_getMainDirectory()
   form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
-  ## Load all required packages#############################################
-  source("code/0-packages.R")
-  source("code/0-config.R")
-  source("code/0-theme.R")
+  
   cat("\n\n\n Generate dictionnary from the xlsform \n\n\n\n")
   kobo_dico(form)
-  dico <- read.csv(paste("data/dico_",form,".csv",sep = ""), encoding = "UTF-8", na.strings = "")
+  dico <- read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
   
   ## Load data #######################################################################
   cat("\n\n\n Load original dataset \n\n\n\n")
-  data.or <- read.csv(path.to.data, sep = ",", encoding = "UTF-8", na.strings = "") 
+  originalData <- read.csv(paste(mainDir,"/data/data.csv",sep = ""), sep = ",", encoding = "UTF-8", na.strings = "") 
 
   ## Check to split select_multiple if data is extracted from ODK ###################
   cat("\n\n\n Now split select_multiple  variables \n\n\n\n")
-  household <- kobo_split_multiple(data.or, dico)
+  household <- kobo_split_multiple(originalData, dico)
   
   ## Clean variable if any ##########################################################
   cat("\n\n\n Clean variable if any \n\n\n\n")
@@ -49,26 +49,14 @@ kobo_load_data <- function(form = "form.xls") {
   
   ## Join with Weight file #########################################
   cat("\n\n\n Adding weight and removing some forms \n\n\n\n")
-  settings <- tryCatch({
-    as.data.frame(read_excel(form_tmp, sheet = "settings"),
-                  stringsAsFactors = FALSE)
-  }, error = function(err) {
-    data.frame(
-      name = character(),
-      label = character(),
-      value = character(),
-      path = character(),
-      stringsAsFactors = FALSE
-    )
-  })
-  if(nrow(settings)==0){
+  if(nrow(configInfo)==0){
     cat("\n\n\n You need to enter the sampling methods and all required parameters in settings sheet before processed  \n\n\n\n")
     return(FALSE)
   }
-  if(settings[settings$name=="sample_type", "value"] != "No sampling(type 1)"){
-    path <- settings[settings$name=="weights_info", "path"]
+  if(configInfo[configInfo$name=="sample_type", "value"] != "No sampling(type 1)"){
+    path <- configInfo[configInfo$name=="weights_info", "path"]
     weight <- read.csv(path,stringsAsFactors = F)
-    variableName <- settings[settings$name=="variable_name", "value"]
+    variableName <- configInfo[configInfo$name=="variable_name", "value"]
     household <- left_join(x = household, y = weight, by = variableName)
   }
   
@@ -90,13 +78,14 @@ kobo_load_data <- function(form = "form.xls") {
     dataFrame <- kobo_split_multiple(dataFrame, dico)
     dataFrame <- kobo_clean(dataFrame, dico)
     dataFrame <- kobo_label(dataFrame, dico)
-    dataFrame <- left_join(household, dataFrame, by="responseID")
+    dataFrame <- left_join(household, dataFrame, by=configInfo[configInfo$name=="instanceID","value"])
     write.csv(dataFrame,paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""), row.names = FALSE, na = "")
     cat("\n\nload",dbr,"and create all needed files for it..\n")
   }
   
   
   ## Compute indicators if defined ##################################################
+  cat("\n\Compute indicators if defined..\n")
   kobo_create_indicators()
   
   dico <- read.csv(paste("data/dico_",form,".csv",sep = ""), encoding = "UTF-8", na.strings = "")
@@ -110,7 +99,7 @@ kobo_load_data <- function(form = "form.xls") {
     dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""),stringsAsFactors = F) 
     dataFrame <- kobo_encode(dataFrame, dico)
     write.csv(dataFrame,paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""), row.names = FALSE, na = "")
-    cat("\n\nload",dbr,"and create all needed files for it..\n")
+    cat("\n\nRe-encode",dbr,"..\n")
   }
   
   write.csv(household,paste(mainDir,"/household.csv",sep = ""), row.names = FALSE, na = "")

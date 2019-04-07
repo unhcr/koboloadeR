@@ -96,13 +96,13 @@ server <- shinyServer(function(input, output, session) {
         if(file.exists(paste(mainDir(), "data", "/form.xls", sep = "/", collapse = "/"))  ){
           projectConfigurationInfo$log[["xlsForm"]] <- TRUE
           result <- kobo_get_begin_repeat()
-          projectConfigurationInfo$data[["beginRepeatList"]] = c("data",result$names)
+          projectConfigurationInfo$data[["beginRepeatList"]] = c("MainDataFrame",result$names)
           projectConfigurationInfo$log[["beginRepeatList"]] = TRUE
           projectConfigurationInfo$log[["isPrepared"]] <- FALSE
           tracker$value = tracker$value + 1
         }
-        if(file.exists(paste(mainDir(), "data", "/data.csv", sep = "/", collapse = "/")) ){
-          dataFile <- read.csv( paste(mainDir(), "data", "/data.csv", sep = "/", collapse = "/")
+        if(file.exists(paste(mainDir(), "data", "/MainDataFrame.csv", sep = "/", collapse = "/")) ){
+          dataFile <- read.csv( paste(mainDir(), "data", "/MainDataFrame.csv", sep = "/", collapse = "/")
                                 , header=TRUE , stringsAsFactors = FALSE)
           projectConfigurationInfo$log[["data"]] <- TRUE
           projectConfigurationInfo$data[["data"]] <- dataFile
@@ -154,7 +154,6 @@ server <- shinyServer(function(input, output, session) {
     }else{
       projectConfigurationInfo$log[["scenario"]] <- ""
     }
-    x<<-projectConfigurationInfo$log
   })
   
   ####################################### Project Configuration page ############################################
@@ -220,10 +219,10 @@ server <- shinyServer(function(input, output, session) {
                    selectInput("doYouHaveDataSelectInput", label = NULL,choices = c("-- select --","Yes","No"))
             ),
             column(width = projectConfigurationTheme$warningBlockWidth, offset = 0,
-                   if(file.exists(paste(mainDir(), "data", "/data.csv", sep = "/", collapse = "/"))){
+                   if(file.exists(paste(mainDir(), "data", "/MainDataFrame.csv", sep = "/", collapse = "/"))){
                      div(class="warningBlock",
                          span(class="warningTitle","WARNING!"),
-                         span(class="warningBody","Be careful, there is already data.csv file in the data directory, once you upload the new file, it will be overridden.")
+                         span(class="warningBody","Be careful, there is already MainDataFrame.csv file in the data directory, once you upload the new file, it will be overridden.")
                      )
                    }
                    
@@ -410,7 +409,7 @@ server <- shinyServer(function(input, output, session) {
         xlsx::saveWorkbook(wb, paste(mainDir(), "data", "/form.xls", sep = "/", collapse = "/"))
         projectConfigurationInfo$log[["xlsForm"]] <- TRUE
         result <- kobo_get_begin_repeat()
-        projectConfigurationInfo$data[["beginRepeatList"]] = c("data",result$names)
+        projectConfigurationInfo$data[["beginRepeatList"]] = c("MainDataFrame",result$names)
         projectConfigurationInfo$log[["beginRepeatList"]] = TRUE
         shinyalert("Done, xlsform has been successfully uploaded",
                    paste(
@@ -498,9 +497,13 @@ server <- shinyServer(function(input, output, session) {
         inFile <- input[[paste("fileInput",projectConfigurationInfo$data[["beginRepeatList"]][i],sep = "")]]
         if (!is.null(inFile)){
           dataFile <- read.csv(inFile$datapath, header=TRUE, sep=input[[paste("separator",projectConfigurationInfo$data[["beginRepeatList"]][i],sep = "")]], stringsAsFactors = FALSE)
-          
           fileName <- paste("/",projectConfigurationInfo$data[["beginRepeatList"]][i], ".csv", sep="")
-          
+          print(fileName)
+          if(projectConfigurationInfo$data[["beginRepeatList"]][i]=="MainDataFrame"){
+            projectConfigurationInfo$log[["data"]] <- TRUE
+            projectConfigurationInfo$data[["data"]] <- dataFile
+            write.csv(dataFile,  paste(mainDir(), "data", "/household.csv", sep = "/", collapse = "/"), row.names = FALSE)
+          }
           write.csv(dataFile,  paste(mainDir(), "data", fileName, sep = "/", collapse = "/"), row.names = FALSE)
         }
       }
@@ -518,8 +521,164 @@ server <- shinyServer(function(input, output, session) {
       )
       updateProgress()
       progress$close()
+      
+      showModal(showInputOfInstanceID())
+      
     }, error = function(err) {
       print("903gjrvgof")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  
+  showInputOfInstanceID <- function() {
+    tryCatch({
+      return(modalDialog(id="showInputOfInstanceIDPopUp", 
+                         title = "Instance ID and cluster ID",
+                         uiOutput("showInputOfInstanceIDBody"),
+                         size = "l",
+                         footer = tagList(
+                           actionButton("saveInstanceIDButton", "Save", class="toolButton", style="height: 35px;")
+                         )
+      ))
+    }, error = function(err) {
+      print("8gvffdijiods")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  }
+  
+  output$showInputOfInstanceIDBody <- renderUI({
+    column(width = 12,
+      column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+             h4("Select the unique variable for all data files?"),
+             div(class="help-tip-small",style="top: 0px; right: 25px;",
+                 p(
+                   span("This is the ID that will be used to join the main dataframe with other dataframes",style="display: block;")
+                 )
+             )
+      ),
+      column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
+             selectInput("instanceIDInput", label = NULL,choices = c("-- select --",colnames(projectConfigurationInfo$data[["data"]])))
+      ),
+      
+      column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+             h4("Select the ID variable for cluster report?"),
+             div(class="help-tip-small",style="top: 0px; right: 25px;",
+                 p(
+                   span("This is the ID that will be used for kobo_cluster_report function.",style="display: block;")
+                 )
+             )
+      ),
+      column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
+             selectInput("clusterIDInput", label = NULL,choices = c("-- select --",colnames(projectConfigurationInfo$data[["data"]])))
+      )
+    )
+  })
+  
+  observeEvent(input$saveInstanceIDButton, {
+    tryCatch({
+      if(sum(input$instanceIDInput == "-- select --")){
+        print("hjhgjhgyukiul")
+        shinyalert("Instance ID is required",
+                   "You can't save the settings without selecting one of the variables",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      if(sum(input$clusterIDInput == "-- select --")){
+        print("hgdtrhrfthdg")
+        shinyalert("Cluster ID is required",
+                   "You can't save the settings without selecting one of the variables",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
+      
+      progress <- shiny::Progress$new()
+      progress$set(message = "Save IDs in progress...", value = 0)
+      on.exit(progress$close())
+      updateProgress <- function(value = NULL, detail = NULL) {
+        if (is.null(value)) {
+          value <- progress$getValue()
+          value <- value + (progress$getMax() - value) / 5
+        }
+        progress$set(value = value, detail = detail)
+      }
+      updateProgress()
+      conf <- kobo_get_config()
+      updateProgress()
+      instanceID <- conf[conf$name=="instanceID","value"]
+      if(length(instanceID)==0){
+        conf <- rbind(conf, c("instanceID", "The unique id between data files", input$instanceIDInput, NA) )
+      }else{
+        if(is.na(instanceID)){
+          conf <- rbind(conf, c("instanceID", "The unique id between data files", input$instanceIDInput, NA) )
+        }else{
+          conf[conf$name=="instanceID","value"] <- input$instanceIDInput
+        }
+      }
+      
+      mainDir <- kobo_getMainDirectory()
+      form_tmp <- paste(mainDir, "data", "form.xls", sep = "/", collapse = "/")
+      survey <- tryCatch({
+        as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                      stringsAsFactors = FALSE) #read survey sheet from the form
+      }, error = function(err) {
+        data.frame( #if it doesn't exist, we need to create empty dataframe with those fields
+          type = character(),
+          name = character(),
+          label = character(),
+          "label::Report" = character(),
+          variable = character(),
+          disaggregation = character(),
+          chapter = character(),
+          structuralequation.risk = character(),
+          structuralequation.coping = character(),
+          structuralequation.resilience = character(),
+          anonymise = character(),
+          correlate = character(),
+          clean = character(),
+          cluster = character(),
+          predict = character(),
+          mappoint = character(),
+          mappoly = character(),
+          stringsAsFactors = FALSE,
+          check.names = F
+        )
+      })
+      
+      if(!"cluster" %in% colnames(survey)){
+        survey$cluster <- NA
+      }
+      survey[survey$name==input$clusterIDInput, "cluster"] <- "id"
+      
+      updateProgress()
+      kobo_edit_form(survey = survey, settings = conf)
+      removeModal()
+    }, error = function(err) {
+      print("jkfhg8fsdjksdjioerf")
       shinyalert("Error",
                  err$message,
                  type = "error",
@@ -536,7 +695,8 @@ server <- shinyServer(function(input, output, session) {
       inFile <- input$dataUploadedFile
       if (!is.null(inFile)){
         dataFile <- read.csv(inFile$datapath, header=TRUE, sep=input$dataUploadedFileSep, stringsAsFactors = FALSE)
-        write.csv(dataFile,  paste(mainDir(), "data", "/data.csv", sep = "/", collapse = "/"), row.names = FALSE)
+        write.csv(dataFile,  paste(mainDir(), "data", "/MainDataFrame.csv", sep = "/", collapse = "/"), row.names = FALSE)
+        write.csv(dataFile,  paste(mainDir(), "data", "/household.csv", sep = "/", collapse = "/"), row.names = FALSE)
         projectConfigurationInfo$log[["data"]] <- TRUE
         projectConfigurationInfo$data[["data"]] <- dataFile
         projectConfigurationInfo$log[["isGenerated"]] <- FALSE
@@ -578,7 +738,7 @@ server <- shinyServer(function(input, output, session) {
     if(!projectConfigurationInfo$log[["data"]]){
       print("lppodcsfodi8")
       shinyalert("Error",
-                 "You can't run this function without uploading data.csv file",
+                 "You can't run this function without uploading MainDataFrame.csv file",
                  type = "error",
                  closeOnClickOutside = FALSE,
                  confirmButtonCol = "#ff4d4d",
@@ -832,15 +992,12 @@ server <- shinyServer(function(input, output, session) {
                conditionalPanel(
                  condition = "input.samplingSelectInput == 'Cluster sample (type 2)'",
                  column(width = 12, style="margin: 15px 0px 15px; border-top: 1px solid lightgray; padding: 20px 10px 0px;",
-                        column(width = 6, 
+                        column(width = 4, 
                                selectizeInput("variableNameCluster", label = "Select the name of cluster variable",choices = projectConfigurationInfo$data[["xlsFormFields"]]
                                               ,options = list(placeholder = '-- select --', onInitialize = I('function() { this.setValue(""); }'))
                                )
                         ),
-                        column(width = 6,
-                               textInput("clusterIdTextInput", label = "Enter the clustre Id", placeholder = "Ex: 230948")
-                        ),
-                        column(width = 12,
+                        column(width = 8,
                                column(width = 9, style = "padding-left: 0px;",
                                       fileInput('weightsClusterFileInput', 'Choose weights file for Cluster sample',
                                                 accept=c('text/csv',
@@ -868,15 +1025,12 @@ server <- shinyServer(function(input, output, session) {
                conditionalPanel(
                  condition = "input.samplingSelectInput == 'Stratified sample (type 3)'",
                  column(width = 12, style="margin: 15px 0px 15px; border-top: 1px solid lightgray; padding: 20px 10px 0px;",
-                        column(width = 6, 
+                        column(width = 4, 
                                selectizeInput("variableNameStratified", label = "Select the name of stratified variable",choices = projectConfigurationInfo$data[["xlsFormFields"]]
                                               ,options = list(placeholder = '-- select --', onInitialize = I('function() { this.setValue(""); }'))
                                )
                         ),
-                        column(width = 6,
-                               textInput("stratifiedIdTextInput", label = "Enter the stratified Id", placeholder = "Ex: 230948")
-                        ),
-                        column(width = 12,
+                        column(width = 8,
                                column(width = 9, style = "padding-left: 0px;",
                                       fileInput('weightsStratifiedFileInput', 'Choose weights file for Stratified sample',
                                                 accept=c('text/csv',
@@ -986,7 +1140,8 @@ server <- shinyServer(function(input, output, session) {
         settingsDF[lastRow,"name"] <- "sample_type"
         settingsDF[lastRow,"label"] <- "Sample type of the project"
         settingsDF[lastRow,"value"] <- "No sampling(type 1)"
-      }else if(sum(input$samplingSelectInput == "Cluster sample (type 2)")){
+      }
+      else if(sum(input$samplingSelectInput == "Cluster sample (type 2)")){
         settingsDF[lastRow,"name"] <- "sample_type"
         settingsDF[lastRow,"label"] <- "Sample type of the project"
         settingsDF[lastRow,"value"] <- input$samplingSelectInput
@@ -1009,22 +1164,8 @@ server <- shinyServer(function(input, output, session) {
         settingsDF[lastRow,"label"] <- "The name of cluster variable"
         settingsDF[lastRow,"value"] <- input$variableNameCluster
         
-        if(sum(input$clusterIdTextInput == "")){
-          print("vfdpgok9f0")
-          shinyalert("Error",
-                     "You have to enter the clustre Id",
-                     type = "error",
-                     closeOnClickOutside = FALSE,
-                     confirmButtonCol = "#ff4d4d",
-                     animation = FALSE,
-                     showConfirmButton = TRUE
-          )
-          return(FALSE)
-        }
+        
         lastRow <- lastRow+1
-        settingsDF[lastRow,"name"] <- "cluster_id"
-        settingsDF[lastRow,"label"] <- "Cluster Id reference for weightsCluster file"
-        settingsDF[lastRow,"value"] <- input$clusterIdTextInput
         updateProgress()
         inFileWeightsCluster<- input$weightsClusterFileInput
         if(is.null(inFileWeightsCluster)){
@@ -1042,12 +1183,13 @@ server <- shinyServer(function(input, output, session) {
           dataFile <- read.csv(inFileWeightsCluster$datapath, header=TRUE, sep=input$weightsClusterSep, stringsAsFactors = FALSE)
           write.csv(dataFile,  paste(mainDir(), "data", "/weightsCluster.csv", sep = "/", collapse = "/"), row.names = FALSE)
           lastRow <- lastRow+1
-          settingsDF[lastRow,"name"] <- "weights_cluster"
+          settingsDF[lastRow,"name"] <- "weights_info"
           settingsDF[lastRow,"label"] <- "Weights that will be used in cluster sample"
           settingsDF[lastRow,"value"] <- "weightsCluster.csv"
           settingsDF[lastRow,"path"] <-  paste(mainDir(), "data", "/weightsCluster.csv", sep = "/", collapse = "/")
         }
-      }else if(sum(input$samplingSelectInput == "Stratified sample (type 3)")){
+      }
+      else if(sum(input$samplingSelectInput == "Stratified sample (type 3)")){
         settingsDF[lastRow,"name"] <- "sample_type"
         settingsDF[lastRow,"label"] <- "Sample type of the project"
         settingsDF[lastRow,"value"] <- input$samplingSelectInput
@@ -1069,22 +1211,8 @@ server <- shinyServer(function(input, output, session) {
         settingsDF[lastRow,"label"] <- "The name of Stratified variable"
         settingsDF[lastRow,"value"] <- input$variableNameStratified
         updateProgress()
-        if(sum(input$StratifiedIdTextInput == "")){
-          print("32rewfsf54h")
-          shinyalert("Error",
-                     "You have to enter the clustre Id",
-                     type = "error",
-                     closeOnClickOutside = FALSE,
-                     confirmButtonCol = "#ff4d4d",
-                     animation = FALSE,
-                     showConfirmButton = TRUE
-          )
-          return(FALSE)
-        }
         lastRow <- lastRow+1
-        settingsDF[lastRow,"name"] <- "stratified_id"
-        settingsDF[lastRow,"label"] <- "Stratified Id reference for weightsStratified file"
-        settingsDF[lastRow,"value"] <- input$stratifiedIdTextInput
+
         
         inFileWeightsStratified<- input$weightsStratifiedFileInput
         if(is.null(inFileWeightsStratified)){
@@ -1102,13 +1230,15 @@ server <- shinyServer(function(input, output, session) {
           dataFile <- read.csv(inFileWeightsStratified$datapath, header=TRUE, sep=input$weightsStratifiedSep, stringsAsFactors = FALSE)
           write.csv(dataFile,  paste(mainDir(), "data", "/weightsStratified.csv", sep = "/", collapse = "/"), row.names = FALSE)
           lastRow <- lastRow+1
-          settingsDF[lastRow,"name"] <- "weights_stratified"
+          settingsDF[lastRow,"name"] <- "weights_info"
           settingsDF[lastRow,"label"] <- "Weights that will be used in Stratified sample"
           settingsDF[lastRow,"value"] <- "weightsStratified.csv"
           settingsDF[lastRow,"path"] <-  paste(mainDir(), "data", "/weightsStratified.csv", sep = "/", collapse = "/")
         }
       }
+      
       updateProgress()
+      
       if(sum(input$cleaningLogSelectInput == "-- select --")){
         print("atywfqdhufe7")
         shinyalert("Error",
@@ -1126,7 +1256,8 @@ server <- shinyServer(function(input, output, session) {
         settingsDF[lastRow,"name"] <- "cleaning_log"
         settingsDF[lastRow,"label"] <- "cleaning log plan for the project"
         settingsDF[lastRow,"value"] <- "No"
-      }else{
+      }
+      else{
         inFilecleaningLog <- input$cleaningLogFileInput
         if(is.null(inFilecleaningLog) && sum(input$cleaningLogSelectInput == "Yes")){
           print("fdsgftrrr554")
@@ -1149,15 +1280,197 @@ server <- shinyServer(function(input, output, session) {
           settingsDF[lastRow,"path"] <-  paste(mainDir(), "data", "/cleaningLog.csv", sep = "/", collapse = "/")
         }
       }
-      x<<-settingsDF
-      wb <- xlsx::loadWorkbook(paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/"))
-      sheets <- xlsx::getSheets(wb)
-      settingsSheet <- sheets[["settings"]]
-      xlsx::addDataFrame(settingsDF, settingsSheet, col.names=TRUE, row.names=FALSE)
-      xlsx::saveWorkbook(wb, paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/"))
+
+      configInfo <- kobo_get_config()
+      configInfo <- configInfo[configInfo$name %in% settingsDF$name, ]
+      settingsDF <- rbind(settingsDF, configInfo)
+      
+      kobo_edit_form(settings = settingsDF )
       projectConfigurationInfo$log[["isRecordSettingsSaved"]] <- TRUE
       updateProgress()
+      if(sum(input$samplingSelectInput != "No sampling(type 1)")){
+        showModal(showSamplingMoreParm())
+      }else{
+        shinyalert("Done, Record Settings Configuration has been successfully saved",
+                   "You can find the Settings in 'settings' sheet in xlsform file",
+                   type = "success",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#28A8E2",
+                   animation = FALSE,
+                   showConfirmButton = FALSE
+        )
+        Sys.sleep(3)
+        shinyalert("Wooooow",
+                   "You can start the Analysis Plan Configrution",
+                   type = "success",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#28A8E2",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+      }
       
+      
+    }, error = function(err) {
+      print("dsuyhg78w90")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  showSamplingMoreParm <- function() {
+    tryCatch({
+      return(modalDialog(id="showSamplingMoreParmPopUp", 
+                         title = "More required parameters for sampling method",
+                         uiOutput("showSamplingMoreParmBody"),
+                         size = "l",
+                         footer = tagList(
+                           actionButton("saveSamplingMoreParmButton", "Save", class="toolButton", style="height: 35px;")
+                         )
+      ))
+    }, error = function(err) {
+      print("8gvffdijiods")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  }
+  
+  output$showSamplingMoreParmBody <- renderText({
+    configInfo <- kobo_get_config()
+    s <- ""
+    if(configInfo[configInfo$name=="sample_type","value"] == "Cluster sample (type 2)"){
+      path <- configInfo[configInfo$name=="weights_info", "path"]
+      print(path)
+      weight <- read.csv(file=path,stringsAsFactors = F)
+      s <- paste(s,
+                 column(width = 12,
+                        column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                               h4("Select the variable that contains the weights for cluster sample:")
+                        ),
+                        column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
+                               selectInput("weightsClusterVariableInput", label = NULL, choices = c("-- select --",colnames(weight)))
+                        ),
+                        
+                        column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                               h4("Enter number of clusters:")
+                        ),
+                        column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
+                               numericInput("numberOfClustersInput", label = NULL, value=1, min = 1, max=10000, step = 1)
+                        )
+                 )
+                 ,sep="")
+      
+    }else if(configInfo[configInfo$name=="sample_type","value"] == "Stratified sample (type 3)"){
+      path <- configInfo[configInfo$name=="weights_info", "path"]
+      weight <- read.csv(path,stringsAsFactors = F)
+      s <- paste(s,
+                 column(width = 12,
+                        column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                               h4("Select the variable that contains the weights for Stratified sample:")
+                        ),
+                        column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
+                               selectInput("weightsStratifiedVariableInput", label = NULL,choices = c("-- select --",colnames(weight)))
+                        )
+                 )
+                 ,sep="")
+      
+    } 
+    
+    return(s)
+  })
+  
+  observeEvent(input$saveSamplingMoreParmButton,{
+    tryCatch({
+      progress <- shiny::Progress$new()
+      progress$set(message = "Saving settings sheet", value = 0)
+      on.exit(progress$close())
+      updateProgress <- function(value = NULL, detail = NULL) {
+        if (is.null(value)) {
+          value <- progress$getValue()
+          value <- value + (progress$getMax() - value) / 5
+        }
+        progress$set(value = value, detail = detail)
+      }
+      updateProgress()
+      
+      configInfo <- kobo_get_config()
+      if(configInfo[configInfo$name=="sample_type","value"] == "Cluster sample (type 2)"){
+        if(sum(input$weightsClusterVariableInput == "-- select --")){
+          print("gfdhfjukli")
+          shinyalert("Weights Cluster Variable is required",
+                     "You can't save the settings without selecting one of the variables for Weights",
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          return(FALSE)
+        }
+        if(length(configInfo[configInfo$name=="weightsVariable","value"]) == 0){
+          configInfo <- rbind(configInfo, c("weightsVariable", "The variable that contains the weights",input$weightsClusterVariableInput,NA ))
+        }else{
+          if(is.na(configInfo[configInfo$name=="weightsVariable","value"])){
+            configInfo <- rbind(configInfo, c("weightsVariable", "The variable that contains the weights",input$weightsClusterVariableInput,NA ))
+          }else{
+            configInfo[configInfo$name=="weightsVariable","value"] <- input$weightsClusterVariableInput
+          }
+          
+        }
+        updateProgress()
+        if(length(configInfo[configInfo$name=="numberOfClusters","value"]) == 0){
+          configInfo <- rbind(configInfo, c("numberOfClusters", "Number of clusters",input$numberOfClustersInput,NA ))
+        }else{
+          if(is.na(configInfo[configInfo$name=="numberOfClusters","value"])){
+            configInfo <- rbind(configInfo, c("numberOfClusters", "Number of clusters",input$numberOfClustersInput,NA ))
+          }else{
+            configInfo[configInfo$name=="numberOfClusters","value"] <- input$numberOfClustersInput
+          }
+          
+        }
+        path <- configInfo[configInfo$name=="weights_info", "path"]
+        weight <- read.csv(path,stringsAsFactors = F)
+        weight$fpc <- input$numberOfClustersInput
+        write.csv(weight, path, row.names = F)
+        updateProgress()
+      }else if(configInfo[configInfo$name=="sample_type","value"] == "Stratified sample (type 3)"){
+        if(sum(input$weightsStratifiedVariableInput == "-- select --")){
+          print("htydhghf")
+          shinyalert("Weights Stratified Variable is required",
+                     "You can't save the settings without selecting one of the variables for Weights",
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          return(FALSE)
+        }
+        if(length(configInfo[configInfo$name=="weightsVariable","value"]) == 0){
+          configInfo <- rbind(configInfo, c("weightsVariable", "The variable that contains the weights",input$weightsStratifiedVariableInput,NA ))
+        }else{
+          if(is.na(configInfo[configInfo$name=="weightsVariable","value"])){
+            configInfo <- rbind(configInfo, c("weightsVariable", "The variable that contains the weights",input$weightsStratifiedVariableInput,NA ))
+          }else{
+            configInfo[configInfo$name=="weightsVariable","value"] <- input$weightsStratifiedVariableInput
+          }
+          
+        }
+        updateProgress()
+      }
+      updateProgress()
+      kobo_edit_form(settings = configInfo)
       shinyalert("Done, Record Settings Configuration has been successfully saved",
                  "You can find the Settings in 'settings' sheet in xlsform file",
                  type = "success",
@@ -1176,7 +1489,7 @@ server <- shinyServer(function(input, output, session) {
                  showConfirmButton = TRUE
       )
     }, error = function(err) {
-      print("dsuyhg78w90")
+      print("dgtryhehfyd")
       shinyalert("Error",
                  err$message,
                  type = "error",
@@ -1285,9 +1598,6 @@ server <- shinyServer(function(input, output, session) {
               width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,
               column(width = 2, align="left",
                      icon("arrow-right", "fa-14x") 
-              ),
-              column(width = 3, align="center",
-                     actionButton("ProduceDataDictionnaryButton", "Produce a Data Dictionnary", class = "processButton")
               ),
               column(width = 2, align="center",
                      icon("arrow-right", "fa-14x") 
@@ -2948,9 +3258,32 @@ server <- shinyServer(function(input, output, session) {
         }, error = function(err) {
           typeOfInd <- structure(c, class = "try-error")
         })
+      }else{
+        if(sum(input$useCalculation=="Yes")){
+          form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+          indicator <- as.data.frame(read_excel(form_tmp, sheet = "indicator"),
+                                     stringsAsFactors = FALSE)
+          
+          frame <- indicator[!is.na(indicator$fullname) & indicator$fullname==selInd, "frame"]
+          
+          form_tmp <- paste(mainDir(), "data", paste(frame, ".csv", sep = ""), sep = "/", collapse = "/")
+          assign(frame, read.csv(form_tmp, stringsAsFactors = TRUE))
+          typeOfInd <- eval(parse(text=indicator[!is.na(indicator$fullname) & indicator$fullname==selInd, "calculation"]))
+          if(is.character(typeOfInd)){
+            typeOfInd <- "factor"
+          }else if(is.integer(typeOfInd)){
+            typeOfInd <- "integer"
+          }else if(is.numeric(typeOfInd)){
+            typeOfInd <- "numeric"
+          }else{
+            typeOfInd <- "factor"
+          }
+          rm(frame)
+        }
       }
-
-      print(typeOfInd)
+      if(is.null(typeOfInd)){
+        typeOfInd <- F
+      }
       ################################################################
       updateProgress()
       
@@ -2976,6 +3309,11 @@ server <- shinyServer(function(input, output, session) {
         preCal <- NA
       }
       indicator <- indicator[!is.na(indicator$fullname) & indicator$fullname!=selInd,]
+      frame <- input$indicatorFrameInput
+      if(input$indicatorFrameInput=="MainDataFrame"){
+        frame <- "household"
+      }
+      
       
       newRow <- data.frame(
         type = ifelse(sum(input$useCalculation=="No"),ifelse(is.null(typeOfInd),NA,ifelse(typeOfInd=="factor", "select_one",typeOfInd)),preTyp),
@@ -2992,9 +3330,9 @@ server <- shinyServer(function(input, output, session) {
         mappoint = ifelse(sum(input$indicatorMappointInput=="Yes"),"TRUE",ifelse(sum(input$indicatorMappointInput=="No"),"False",NA)),
         mappoly = ifelse(sum(input$indicatorMappolyInput=="Yes"),"TRUE",ifelse(sum(input$indicatorMappolyInput=="No"),"False",NA)),
         structuralequation = ifelse(sum(input$indicatorStructuralequationInput=="Yes"),"TRUE",ifelse(sum(input$indicatorStructuralequationInput=="No"),"False",NA)),
-        frame = ifelse(sum(input$indicatorFrameInput=="-- select --"),NA,input$indicatorFrameInput),
+        frame = ifelse(sum(input$indicatorFrameInput=="-- select --"),NA,frame) ,
         listname = ifelse(sum(input$indicatorListnameInput=="-- select --"),NA,input$indicatorListnameInput),
-        calculation =  ifelse(sum(input$useCalculation=="No"),calculationResult,preCal),
+        calculation =  ifelse(sum(input$useCalculation=="No"),gsub("MainDataFrame", "household", calculationResult),preCal),
         stringsAsFactors = FALSE
       )
       updateProgress()
@@ -4329,7 +4667,6 @@ server <- shinyServer(function(input, output, session) {
     })
     
     
-    
     observeEvent(input$AddIfBlock,{
       tryCatch({
         
@@ -4929,7 +5266,8 @@ server <- shinyServer(function(input, output, session) {
                       modalButton("Cancel", icon("sign-out-alt"))
                     )
         ))
-      }else{
+      }
+      else{
         return(modalDialog(id="showChapterToolPopUp", 
                     title = ifelse(type=="Add","Add Chapter", paste("Edit",chapterName,"chapter")),
                     uiOutput("chapterToolBody"),

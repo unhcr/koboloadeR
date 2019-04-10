@@ -396,7 +396,7 @@ server <- shinyServer(function(input, output, session) {
       s <- paste(
         div(
           infoBox(
-            width = 12,strong("Perfect!"),h4("You can start the Analysis Plan Configrution",align="center")
+            width = 12,strong("Perfect!"),h4("Go to the second phase: the Analysis Plan Configrution",align="center")
             ,icon = icon("check"),
             color = "green"
           )

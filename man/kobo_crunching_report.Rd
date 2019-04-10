@@ -2,7 +2,7 @@
 % Please edit documentation in R/kobo_crunching_report.R
 \name{kobo_crunching_report}
 \alias{kobo_crunching_report}
-\title{Crunshing Report}
+\title{crunching Report}
 \usage{
 kobo_crunching_report(form = "form.xls", app = "console")
 }
@@ -16,7 +16,7 @@ It is assumed that the form is stored in the data folder.}
 No return, All results will be saved on RMD files and Word files
 }
 \description{
-Generate Crunshing Report that contains all descriptive statistics, correlation analysis, tabulation and data visualization for variables and indicators.
+Generate crunching Report that contains all descriptive statistics, correlation analysis, tabulation and data visualization for variables and indicators.
 }
 \examples{
 kobo_crunching_report()

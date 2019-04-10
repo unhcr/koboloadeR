@@ -282,7 +282,7 @@ server <- shinyServer(function(input, output, session) {
         box(id="doesFormNeedToPrepareBox",
             width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,
             column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                   h4("Does xlsform include settings?")
+                   h4("Does xlsform include already include information about Sampling and Cleaning?")
             ),
             column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
                    selectInput("formIncludeSettingsSelectInput", label = NULL,choices = c("-- select --","Yes","No"))
@@ -374,7 +374,7 @@ server <- shinyServer(function(input, output, session) {
     }
     if(sum(input$formIncludeSettingsSelectInput=="Yes")==1 && projectConfigurationInfo$log[["xlsForm"]] && projectConfigurationInfo$log[["subAndMainfiles"]] ){
       shinyalert("Wooooow",
-                 "You can start the Analysis Plan Configrution",
+                 "Go to phase two: Analysis Plan Configrution",
                  type = "success",
                  closeOnClickOutside = FALSE,
                  confirmButtonCol = "#28A8E2",

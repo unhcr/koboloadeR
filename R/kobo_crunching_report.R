@@ -1,8 +1,8 @@
 #' @name kobo_crunching_report
 #' @rdname kobo_crunching_report
-#' @title Crunshing Report
+#' @title crunching Report
 #'
-#' @description Generate Crunshing Report that contains all descriptive statistics, correlation analysis, tabulation and data visualization for variables and indicators.
+#' @description Generate crunching Report that contains all descriptive statistics, correlation analysis, tabulation and data visualization for variables and indicators.
 #' @param form The full filename of the form to be accessed (xls or xlsx file).
 #' It is assumed that the form is stored in the data folder.
 #' @param app The place where the function has been executed, the default is the console and the second option is the shiny app
@@ -26,7 +26,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
   tryCatch({
     if(app=="shiny"){
       progress <- shiny::Progress$new()
-      progress$set(message = "Generating crunshing report in progress...", value = 0)
+      progress$set(message = "Generating crunching report in progress...", value = 0)
       on.exit(progress$close())
       updateProgress <- function(value = NULL, detail = NULL) {
         if (is.null(value)) {

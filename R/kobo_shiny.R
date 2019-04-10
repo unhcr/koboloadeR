@@ -20,7 +20,7 @@
 #'
 #'
 kobo_shiny <- function(app="") {
-  mainDir <- getwd()
+  mainDir <- kobo_getMainDirectory()
 
   validApps <- list.files(system.file("shiny_app", package = "koboloadeR"))
 

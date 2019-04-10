@@ -35,7 +35,8 @@ Depends:
     ape,
     sp,
     gdata,
-    rhandsontable
+    rhandsontable,
+    stringr
 Suggests:
     shiny
 URL: https://github.com/unhcr/koboloadeR

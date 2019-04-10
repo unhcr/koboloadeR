@@ -184,25 +184,45 @@ kobo_projectinit <- function() {
       cat("www directory does not exist in your project directory - creating now!\n ")
       dir.create(file.path(mainDir, subDir,subsubDir,subsubsubDir))
     }
+    
     destfile = paste0(mainDir,"/code/shiny_app/www/exportformat.png")
     if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/exportformat.png",sep = ""), destfile)
+      file.copy(paste(mainDir,"/inst/shiny_app/www/exportformat.png",sep = ""), destfile)
+    }else{
+      file.remove(destfile)
+      file.copy(paste(mainDir,"/inst/shiny_app/www/exportformat.png",sep = ""), destfile)
     }
+    
     destfile = paste0(mainDir,"/code/shiny_app/www/bootstrap.min.css")
     if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/bootstrap.min.css",sep = ""), destfile)
+      file.copy(paste(mainDir,"/inst/shiny_app/www/bootstrap.min.css",sep = ""), destfile)
+    }else{
+      file.remove(destfile)
+      file.copy(paste(mainDir,"/inst/shiny_app/www/bootstrap.min.css",sep = ""), destfile)
     }
+    
     destfile = paste0(mainDir,"/code/shiny_app/www/style.css")
     if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/style.css",sep = ""), destfile)
+      file.copy(paste(mainDir,"/inst/shiny_app/www/style.css",sep = ""), destfile)
+    }else{
+      file.remove(destfile)
+      file.copy(paste(mainDir,"/inst/shiny_app/www/style.css",sep = ""), destfile)
     }
+    
     destfile = paste0(mainDir,"/code/shiny_app/www/background-lines.png")
     if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/style.css",sep = ""), destfile)
+      file.copy(paste(mainDir,"/inst/shiny_app/www/background-lines.png",sep = ""), destfile)
+    }else{
+      file.remove(destfile)
+      file.copy(paste(mainDir,"/inst/shiny_app/www/background-lines.png",sep = ""), destfile)
     }
+    
     destfile = paste0(mainDir,"/code/shiny_app/www/analysis-plan-configuration.png")
     if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/style.css",sep = ""), destfile)
+      file.copy(paste(mainDir,"/inst/shiny_app/www/analysis-plan-configuration.png",sep = ""), destfile)
+    }else{
+      file.remove(destfile)
+      file.copy(paste(mainDir,"/inst/shiny_app/www/analysis-plan-configuration.png",sep = ""), destfile)
     }
     
     ## HTML Template ####

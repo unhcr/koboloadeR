@@ -1173,7 +1173,7 @@ li.active > a[data-value="infoAPC"]{
 #indicatorLabelInputLengthRed{
   color: red;
   font-weight: 600;
-  line-height: !important;
+  line-height: 1.2 !important;
 }
 #indicatorLabelInputLengthBlack{
   line-height: 1.2 !important;

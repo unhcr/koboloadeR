@@ -89,6 +89,12 @@ body > div > div > section > nav > div > div.navbar-header > span{
   font-size: 14em;
   float:right;
 }
+
+.fa-24x{
+  font-size: 14em;
+  margin: 20% 0px;
+}
+
 .processButton, .processButton:focus, .processButton:active:focus{
     -moz-box-shadow: 0px 10px 14px -7px #276873;
   	-webkit-box-shadow: 0px 10px 14px -7px #276873;
@@ -134,6 +140,57 @@ body > div > div > section > nav > div > div.navbar-header > span{
 	  top:1px;
 }
 
+
+
+
+
+.processButtonLarge, .processButtonLarge:focus, .processButtonLarge:active:focus{
+    -moz-box-shadow: 0px 10px 14px -7px #276873;
+  	-webkit-box-shadow: 0px 10px 14px -7px #276873;
+  	box-shadow: 0px 10px 14px -7px #276873;
+  	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #599bb3), color-stop(1, #408c99));
+  	background:-moz-linear-gradient(top, #599bb3 5%, #408c99 100%);
+  	background:-webkit-linear-gradient(top, #599bb3 5%, #408c99 100%);
+  	background:-o-linear-gradient(top, #599bb3 5%, #408c99 100%);
+  	background:-ms-linear-gradient(top, #599bb3 5%, #408c99 100%);
+  	background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+  	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#599bb3', endColorstr='#408c99',GradientType=0);
+  	background-color:#599bb3;
+  	-moz-border-radius:8px;
+  	-webkit-border-radius:8px;
+    border-radius: 300px;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-family: Arial;
+    font-size: medium;
+    font-weight: bold;
+    padding: 9px 32px;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #3d768a;
+    border: 1px solid transparent;
+    height: 300px;
+    width: 300px;
+}
+
+.processButtonLarge:hover{
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #408c99), color-stop(1, #599bb3));
+  	background:-moz-linear-gradient(top, #408c99 5%, #599bb3 100%);
+  	background:-webkit-linear-gradient(top, #408c99 5%, #599bb3 100%);
+  	background:-o-linear-gradient(top, #408c99 5%, #599bb3 100%);
+  	background:-ms-linear-gradient(top, #408c99 5%, #599bb3 100%);
+  	background:linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
+  	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#408c99', endColorstr='#599bb3',GradientType=0);
+  	background-color:#408c99;
+    border: 1px solid transparent;
+}
+.processButtonLarge:active{
+    position:relative;
+	  top:1px;
+}
+
+
+
 .sweet-alert p{
     text-align: left !important;
     border-bottom: 1px solid lightgray !important;
@@ -154,7 +211,7 @@ body > div > div > section > nav > div > div.navbar-header > span{
     color: white; 
     background-color: #3c8dbc; 
 }
-#generateAndPrepareBox, #decoAndCheckplanBox{
+#generateAndPrepareBox, #decoAndCheckplanBox, #loadDataButtonBox{
     border-bottom: 3px solid #3c8dbc;
     background-image: url(background-lines.png);
     background-repeat: round;
@@ -846,4 +903,278 @@ li.active > a[data-value="infoAPC"]{
 
 #showInputOfInstanceIDPopUp, #showSamplingMoreParmPopUp{
     min-height: 150px;
+}
+
+
+#shiny-notification-panel{
+  position: fixed;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0,0,0,0);
+    padding: 2px;
+    width: 94%;
+    margin: 1% 4%;
+    z-index: 99999;
+}
+
+.shiny-progress-notification .progress-text .progress-message{
+  font-weight: bold;
+  font-size: larger;
+  margin-left: 20px;
+  color:white;
+}
+
+.shiny-notification{
+    background-color: black;
+    color: #333;
+    border: 1px solid #ccc;
+    opacity: 0.85;
+    padding: 35px 8px 35px 10px;
+    margin: 2px 2px 25px;
+    border-radius: 15px;
+}
+.shiny-progress-notification .progress{
+  margin: 0px 20px 10px;
+  height: 25px;
+}
+
+.toolButton006495, .toolButton006495:focus, .toolButton006495:active:focus{
+  background:#006495;
+  color:#fff;
+  border:none;
+  position:relative;
+  font-size:15px;
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+}
+.toolButton006495:hover{
+  background:#fff;
+  color:#006495;
+  border-left: 2px solid #006495;
+  border-right: 2px solid #006495;
+}
+.toolButton006495:before,.toolButton006495:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #006495;
+  transition:400ms ease all;
+}
+.toolButton006495:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.toolButton006495:hover:before,.toolButton006495:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+.toolButtonE0A025, .toolButtonE0A025:focus, .toolButtonE0A025:active:focus{
+  background:#E0A025;
+  color:#fff;
+  border:none;
+  position:relative;
+  font-size:15px;
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+}
+.toolButtonE0A025:hover{
+  background:#fff;
+  color:#E0A025;
+  border-left: 2px solid #E0A025;
+  border-right: 2px solid #E0A025;
+}
+.toolButtonE0A025:before,.toolButtonE0A025:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #E0A025;
+  transition:400ms ease all;
+}
+.toolButtonE0A025:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.toolButtonE0A025:hover:before,.toolButtonE0A025:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+
+.toolButtonF4D00C, .toolButtonF4D00C:focus, .toolButtonF4D00C:active:focus{
+  background:#F4D00C;
+  color:#fff;
+  border:none;
+  position:relative;
+  font-size:15px;
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+}
+.toolButtonF4D00C:hover{
+  background:#fff;
+  color:#F4D00C;
+  border-left: 2px solid #F4D00C;
+  border-right: 2px solid #F4D00C;
+}
+.toolButtonF4D00C:before,.toolButtonF4D00C:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #F4D00C;
+  transition:400ms ease all;
+}
+.toolButtonF4D00C:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.toolButtonF4D00C:hover:before,.toolButtonF4D00C:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+.toolButton004C70, .toolButton004C70:focus, .toolButton004C70:active:focus{
+  background:#004C70;
+  color:#fff;
+  border:none;
+  position:relative;
+  font-size:15px;
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+}
+.toolButton004C70:hover{
+  background:#fff;
+  color:#004C70;
+  border-left: 2px solid #004C70;
+  border-right: 2px solid #004C70;
+}
+.toolButton004C70:before,.toolButton004C70:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #004C70;
+  transition:400ms ease all;
+}
+.toolButton004C70:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.toolButton004C70:hover:before,.toolButton004C70:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+.toolButton0093D1, .toolButton0093D1:focus, .toolButton0093D1:active:focus{
+  background:#0093D1;
+  color:#fff;
+  border:none;
+  position:relative;
+  font-size:15px;
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+}
+.toolButton0093D1:hover{
+  background:#fff;
+  color:#0093D1;
+  border-left: 2px solid #0093D1;
+  border-right: 2px solid #0093D1;
+}
+.toolButton0093D1:before,.toolButton0093D1:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #0093D1;
+  transition:400ms ease all;
+}
+.toolButton0093D1:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.toolButton0093D1:hover:before,.toolButton0093D1:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+
+.toolButtonF2635F, .toolButtonF2635F:focus, .toolButtonF2635F:active:focus{
+  background:#F2635F;
+  color:#fff;
+  border:none;
+  position:relative;
+  font-size:15px;
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+}
+.toolButtonF2635F:hover{
+  background:#fff;
+  color:#F2635F;
+  border-left: 2px solid #F2635F;
+  border-right: 2px solid #F2635F;
+}
+.toolButtonF2635F:before,.toolButtonF2635F:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #F2635F;
+  transition:400ms ease all;
+}
+.toolButtonF2635F:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.toolButtonF2635F:hover:before,.toolButtonF2635F:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+
+#showCrunshingReportPopUp{
+    min-height: 650px;
+    max-height: 650px;
+    overflow-y: auto;
+    background-color: ghostwhite;
+}
+
+#indicatorLabelInputLengthRed{
+  color: red;
+  font-weight: 600;
+  line-height: !important;
+}
+#indicatorLabelInputLengthBlack{
+  line-height: 1.2 !important;
 }

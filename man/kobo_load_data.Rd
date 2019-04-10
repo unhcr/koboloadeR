@@ -4,11 +4,13 @@
 \alias{kobo_load_data}
 \title{Kobo Load Data}
 \usage{
-kobo_load_data(form = "form.xls")
+kobo_load_data(form = "form.xls", app = "console")
 }
 \arguments{
 \item{form}{The full filename of the form to be accessed (xls or xlsx file).
 It is assumed that the form is stored in the data folder.}
+
+\item{app}{The place where the function has been executed, the default is the console and the second option is the shiny app}
 }
 \value{
 No return, all results will be saved inside new CSV files

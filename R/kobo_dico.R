@@ -23,7 +23,7 @@
 #' @export kobo_dico
 #'
 
-kobo_dico <- function(form) {
+kobo_dico <- function(form="form.xls") {
 
   #kobo_form(formid, user = user, api = api)
   cat("\n Your form should be placed within the `data` folder. \n \n")
@@ -44,6 +44,13 @@ kobo_dico <- function(form) {
 
 
   ### add column if not present #################################################
+  if ("labelReport" %in% colnames(survey))
+  {
+    cat("1- Good: You have a column `labelReport` in your survey worksheet.\n");
+  } else
+  {cat("1- No column `labelReport` in your survey worksheet. Creating a dummy one for the moment...\n");
+    survey[,"labelReport"] <- substr(survey[,"label"],1,80)}
+  
   if ("disaggregation" %in% colnames(survey))
   {
   cat("1- Good: You have a column `disaggregation` in your survey worksheet.\n");
@@ -138,7 +145,7 @@ kobo_dico <- function(form) {
     survey$mappoly <- ""}
 
   ## Avoid columns without names
-  survey <- survey[ ,c("type",   "name" ,  "label",
+  survey <- survey[ ,c("type",   "name" ,  "label", "labelReport",
                        #"repeatsummarize",
                        "variable","disaggregation",  "chapter", "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
                       # "indicator","indicatorgroup","indicatortype",
@@ -357,6 +364,14 @@ kobo_dico <- function(form) {
   choices$listname <- trim(choices$listname)
   choices$label <- trim(choices$label)
 
+  if ("labelReport" %in% colnames(choices))
+  {
+    cat("12 -  Good: You have a column `labelReport` in your `choices` worksheet.\n");
+  } else
+  {cat("12 -  No column `labelReport` in your `choices` worksheet. Creating a dummy one for the moment...\n");
+    choices[,"labelReport"] <- substr(choices[,"label"],1,80)}
+  
+  
   if ("order" %in% colnames(choices))
   {
     cat("12 -  Good: You have a column `order` in your `choices` worksheet.\n");
@@ -409,7 +424,7 @@ kobo_dico <- function(form) {
     #names(choices) -"type", "name", "namefull",  "labelfull", "listname", "qrepeat", "qlevel", "qgroup"
     ## not kept: "nameq"     "labelq"   ,"fullname", "label",
     #names(survey) - "type" "name",  "fullname", "label",  "listname", "qrepeat"m  "qlevel",   "qgroup"
-  choices2 <- choices[ ,c("type", "name", "namefull",  "labelfull", "chapter","disaggregation","correlate", "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise",
+  choices2 <- choices[ ,c("type", "name", "namefull",  "labelfull", "labelReport", "chapter","disaggregation","correlate", "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise",
                           "clean","cluster","predict","mappoint","mappoly",
                           "listname", "qrepeat","qrepeatlabel",  "qlevel", "qgroup", "labelchoice",
                          #"repeatsummarize",
@@ -422,7 +437,7 @@ kobo_dico <- function(form) {
   names(choices2)[names(choices2) == "labelfull"] <- "label"
 
 
-  survey2 <-    survey[,c("type", "name",  "fullname", "label", "chapter", "disaggregation","correlate",  "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise",
+  survey2 <-    survey[,c("type", "name",  "fullname", "label", "labelReport", "chapter", "disaggregation","correlate",  "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise",
                           "clean","cluster","predict","mappoint","mappoly",
                           "listname", "qrepeat","qrepeatlabel",  "qlevel",   "qgroup", "labelchoice",
                           #"repeatsummarize",
@@ -450,7 +465,7 @@ kobo_dico <- function(form) {
 
   ## Trim long label...
   dico$label <- substring(dico$label, 0, 85)
-
+  dico$labelReport <- substring(dico$labelReport, 0, 85)
 
   ## A few fix on the dico
   dico <- dico[ !is.na(dico$name), ]
@@ -474,7 +489,7 @@ kobo_dico <- function(form) {
   #} else { dico$type <- dico$type
    #  cat("Note that select_one & select_multiple questions within REPEAT part are converted to integer (results are summed up).\n")
 
-  write.csv(dico, paste0("data/dico_",form,".csv"), row.names = FALSE, na = "")
+  write.csv(dico, paste0(mainDir,"/data/dico_",form,".csv"), row.names = FALSE, na = "")
 
  # f_csv(dico)
 #  return(dico)

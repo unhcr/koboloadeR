@@ -17,7 +17,12 @@
 
 
 kobo_getMainDirectory <- function() {
-  mainDir <- gsub("/code/shiny_app", "",  getwd())
-  mainDir <- gsub("/inst/shiny_app", "",  mainDir) 
-  return(mainDir)
+  tryCatch({
+    mainDir <- gsub("/code/shiny_app", "",  getwd())
+    mainDir <- gsub("/inst/shiny_app", "",  mainDir) 
+    return(mainDir)
+  }, error = function(err) {
+    print("kobo_getMainDirectory_ERROR")
+    return(structure(err, class = "try-error"))
+  })
 }

@@ -1,4 +1,4 @@
-#
+D#
 # This is a Shiny web application. You can run the application by clicking
 # the 'Run App' button above.
 #
@@ -93,6 +93,8 @@ server <- shinyServer(function(input, output, session) {
         projectConfigurationInfo$log[["subAndMainfiles"]] <- FALSE
         projectConfigurationInfo$log[["isRecordSettingsSaved"]] <- FALSE
         projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- FALSE
+        projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- FALSE
+        projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- FALSE
         if(file.exists(paste(mainDir(), "data", "/form.xls", sep = "/", collapse = "/"))  ){
           projectConfigurationInfo$log[["xlsForm"]] <- TRUE
           result <- kobo_get_begin_repeat()
@@ -157,8 +159,7 @@ server <- shinyServer(function(input, output, session) {
   })
   
   ####################################### Project Configuration page ############################################
-  
-  
+
   output$projectConfiguration <- renderUI({
     fluidRow(
       box(id="doYouHaveFormBox",
@@ -355,10 +356,14 @@ server <- shinyServer(function(input, output, session) {
   
   observeEvent(input$doYouHaveFormSelectInput,{
     projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- FALSE
+    projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- FALSE
+    projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- FALSE
   })
   
   observeEvent(input$formIncludeSettingsSelectInput, {
     projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- FALSE
+    projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- FALSE
+    projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- FALSE
     if(sum(input$formIncludeSettingsSelectInput=="No")==1){
       if(sum(input$doYouHaveFormSelectInput == 'Yes')==1){
         projectConfigurationInfo$log[["isPrepared"]] <- FALSE
@@ -425,6 +430,8 @@ server <- shinyServer(function(input, output, session) {
         )
         projectConfigurationInfo$log[["isPrepared"]] <- FALSE
         projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- FALSE
+        projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- FALSE
+        projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- FALSE
         return(TRUE)
       }
       shinyalert("You have to select file before uploading process",
@@ -498,7 +505,6 @@ server <- shinyServer(function(input, output, session) {
         if (!is.null(inFile)){
           dataFile <- read.csv(inFile$datapath, header=TRUE, sep=input[[paste("separator",projectConfigurationInfo$data[["beginRepeatList"]][i],sep = "")]], stringsAsFactors = FALSE)
           fileName <- paste("/",projectConfigurationInfo$data[["beginRepeatList"]][i], ".csv", sep="")
-          print(fileName)
           if(projectConfigurationInfo$data[["beginRepeatList"]][i]=="MainDataFrame"){
             projectConfigurationInfo$log[["data"]] <- TRUE
             projectConfigurationInfo$data[["data"]] <- dataFile
@@ -510,6 +516,8 @@ server <- shinyServer(function(input, output, session) {
       updateProgress()
       projectConfigurationInfo$log[["subAndMainfiles"]] <- TRUE
       projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- FALSE
+      projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- FALSE
+      projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- FALSE
       shinyalert("Done, all files have been successfully uploaded",
                  paste("You can find the files in",paste(mainDir(), "data", sep = "/", collapse = "/") )
                  ,
@@ -562,7 +570,7 @@ server <- shinyServer(function(input, output, session) {
   
   output$showInputOfInstanceIDBody <- renderUI({
     column(width = 12,
-      column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+      column(width = 8, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
              h4("Select the unique variable for all data files?"),
              div(class="help-tip-small",style="top: 0px; right: 25px;",
                  p(
@@ -570,11 +578,11 @@ server <- shinyServer(function(input, output, session) {
                  )
              )
       ),
-      column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
+      column(width = 4, offset = 0,
              selectInput("instanceIDInput", label = NULL,choices = c("-- select --",colnames(projectConfigurationInfo$data[["data"]])))
       ),
       
-      column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+      column(width = 8, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
              h4("Select the ID variable for cluster report?"),
              div(class="help-tip-small",style="top: 0px; right: 25px;",
                  p(
@@ -582,7 +590,7 @@ server <- shinyServer(function(input, output, session) {
                  )
              )
       ),
-      column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
+      column(width = 4, offset = 0,
              selectInput("clusterIDInput", label = NULL,choices = c("-- select --",colnames(projectConfigurationInfo$data[["data"]])))
       )
     )
@@ -627,6 +635,28 @@ server <- shinyServer(function(input, output, session) {
         progress$set(value = value, detail = detail)
       }
       updateProgress()
+      
+      
+      for(i in 1:(length(projectConfigurationInfo$data[["beginRepeatList"]]))){
+        inFile <- input[[paste("fileInput",projectConfigurationInfo$data[["beginRepeatList"]][i],sep = "")]]
+        if (!is.null(inFile)){
+          dataFile <- read.csv(inFile$datapath, header=TRUE, sep=input[[paste("separator",projectConfigurationInfo$data[["beginRepeatList"]][i],sep = "")]], stringsAsFactors = FALSE)
+          fileName <- paste("/",projectConfigurationInfo$data[["beginRepeatList"]][i], ".csv", sep="")
+          if(!input$instanceIDInput %in% colnames(dataFile)){
+            shinyalert("Instance ID Non-Existent",
+                       paste ("Instance ID does not existent in", projectConfigurationInfo$data[["beginRepeatList"]][i]),
+                       type = "error",
+                       closeOnClickOutside = FALSE,
+                       confirmButtonCol = "#ff4d4d",
+                       animation = FALSE,
+                       showConfirmButton = TRUE
+            )
+            return(FALSE)
+          }
+        }
+      }
+      
+      
       conf <- kobo_get_config()
       updateProgress()
       instanceID <- conf[conf$name=="instanceID","value"]
@@ -650,7 +680,7 @@ server <- shinyServer(function(input, output, session) {
           type = character(),
           name = character(),
           label = character(),
-          "label::Report" = character(),
+          "labelReport" = character(),
           variable = character(),
           disaggregation = character(),
           chapter = character(),
@@ -701,6 +731,8 @@ server <- shinyServer(function(input, output, session) {
         projectConfigurationInfo$data[["data"]] <- dataFile
         projectConfigurationInfo$log[["isGenerated"]] <- FALSE
         projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- FALSE
+        projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- FALSE
+        projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- FALSE
         shinyalert(paste ("Done,", inFile$name ,"has been successfully uploaded"),
                    paste("You can find the file in",paste(mainDir(), "data", sep = "/", collapse = "/") )
                    ,
@@ -773,6 +805,8 @@ server <- shinyServer(function(input, output, session) {
         projectConfigurationInfo$log[["isPrepared"]] <- FALSE
         projectConfigurationInfo$log[["isRecordSettingsSaved"]] <- FALSE
         projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- FALSE
+        projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- FALSE
+        projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- FALSE
         shinyalert("Done, xlsform created using 'kobo_to_xlsform' function",
                    "You can creates and save a xlsform skeleton from a data file in your data folder\nThe form.xls will be saved in the data folder of your project",
                    type = "success",
@@ -862,6 +896,8 @@ server <- shinyServer(function(input, output, session) {
         projectConfigurationInfo$log[["isPrepared"]] <- TRUE
         projectConfigurationInfo$log[["isRecordSettingsSaved"]] <- FALSE
         projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- FALSE
+        projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- FALSE
+        projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- FALSE
       }
     }, error = function(err) {
       print("vdskljdc8t34")
@@ -1186,7 +1222,7 @@ server <- shinyServer(function(input, output, session) {
           settingsDF[lastRow,"name"] <- "weights_info"
           settingsDF[lastRow,"label"] <- "Weights that will be used in cluster sample"
           settingsDF[lastRow,"value"] <- "weightsCluster.csv"
-          settingsDF[lastRow,"path"] <-  paste(mainDir(), "data", "/weightsCluster.csv", sep = "/", collapse = "/")
+          settingsDF[lastRow,"path"] <-  paste(mainDir(), "data", "weightsCluster.csv", sep = "/", collapse = "/")
         }
       }
       else if(sum(input$samplingSelectInput == "Stratified sample (type 3)")){
@@ -1233,7 +1269,7 @@ server <- shinyServer(function(input, output, session) {
           settingsDF[lastRow,"name"] <- "weights_info"
           settingsDF[lastRow,"label"] <- "Weights that will be used in Stratified sample"
           settingsDF[lastRow,"value"] <- "weightsStratified.csv"
-          settingsDF[lastRow,"path"] <-  paste(mainDir(), "data", "/weightsStratified.csv", sep = "/", collapse = "/")
+          settingsDF[lastRow,"path"] <-  paste(mainDir(), "data", "weightsStratified.csv", sep = "/", collapse = "/")
         }
       }
       
@@ -1256,8 +1292,7 @@ server <- shinyServer(function(input, output, session) {
         settingsDF[lastRow,"name"] <- "cleaning_log"
         settingsDF[lastRow,"label"] <- "cleaning log plan for the project"
         settingsDF[lastRow,"value"] <- "No"
-      }
-      else{
+      }else{
         inFilecleaningLog <- input$cleaningLogFileInput
         if(is.null(inFilecleaningLog) && sum(input$cleaningLogSelectInput == "Yes")){
           print("fdsgftrrr554")
@@ -1282,8 +1317,10 @@ server <- shinyServer(function(input, output, session) {
       }
 
       configInfo <- kobo_get_config()
-      configInfo <- configInfo[configInfo$name %in% settingsDF$name, ]
+      configInfo <- configInfo[!configInfo$name %in% settingsDF$name, ]
       settingsDF <- rbind(settingsDF, configInfo)
+      
+      settingsDF <- settingsDF[!is.na(settingsDF$name),]
       
       kobo_edit_form(settings = settingsDF )
       projectConfigurationInfo$log[["isRecordSettingsSaved"]] <- TRUE
@@ -1347,7 +1384,9 @@ server <- shinyServer(function(input, output, session) {
   }
   
   output$showSamplingMoreParmBody <- renderText({
+    mainDir <- kobo_getMainDirectory()
     configInfo <- kobo_get_config()
+    configInfo <- configInfo[!is.na(configInfo$name),]
     s <- ""
     if(configInfo[configInfo$name=="sample_type","value"] == "Cluster sample (type 2)"){
       path <- configInfo[configInfo$name=="weights_info", "path"]
@@ -1355,31 +1394,31 @@ server <- shinyServer(function(input, output, session) {
       weight <- read.csv(file=path,stringsAsFactors = F)
       s <- paste(s,
                  column(width = 12,
-                        column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                        column(width = 8, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
                                h4("Select the variable that contains the weights for cluster sample:")
                         ),
-                        column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
+                        column(width = 4, offset = 0,
                                selectInput("weightsClusterVariableInput", label = NULL, choices = c("-- select --",colnames(weight)))
                         ),
                         
-                        column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                        column(width = 8, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
                                h4("Enter number of clusters:")
                         ),
-                        column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
+                        column(width = 4, offset = 0,
                                numericInput("numberOfClustersInput", label = NULL, value=1, min = 1, max=10000, step = 1)
                         )
                  )
                  ,sep="")
       
     }else if(configInfo[configInfo$name=="sample_type","value"] == "Stratified sample (type 3)"){
-      path <- configInfo[configInfo$name=="weights_info", "path"]
+      path <- configInfo[configInfo$name=="weights_info", "value"]
       weight <- read.csv(path,stringsAsFactors = F)
       s <- paste(s,
                  column(width = 12,
-                        column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                        column(width = 8, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
                                h4("Select the variable that contains the weights for Stratified sample:")
                         ),
-                        column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
+                        column(width = 4, offset = 0,
                                selectInput("weightsStratifiedVariableInput", label = NULL,choices = c("-- select --",colnames(weight)))
                         )
                  )
@@ -1405,6 +1444,8 @@ server <- shinyServer(function(input, output, session) {
       updateProgress()
       
       configInfo <- kobo_get_config()
+      configInfo <- configInfo[!configInfo$name%in% c("weightsVariable", "numberOfClusters"),]
+      
       if(configInfo[configInfo$name=="sample_type","value"] == "Cluster sample (type 2)"){
         if(sum(input$weightsClusterVariableInput == "-- select --")){
           print("gfdhfjukli")
@@ -1471,6 +1512,7 @@ server <- shinyServer(function(input, output, session) {
       }
       updateProgress()
       kobo_edit_form(settings = configInfo)
+      removeModal()
       shinyalert("Done, Record Settings Configuration has been successfully saved",
                  "You can find the Settings in 'settings' sheet in xlsform file",
                  type = "success",
@@ -1481,7 +1523,7 @@ server <- shinyServer(function(input, output, session) {
       )
       Sys.sleep(3)
       shinyalert("Wooooow",
-                 "You can start the Analysis Plan Configrution",
+                 "You can start Analysis Plan Configrution",
                  type = "success",
                  closeOnClickOutside = FALSE,
                  confirmButtonCol = "#28A8E2",
@@ -1509,8 +1551,7 @@ server <- shinyServer(function(input, output, session) {
   lastMenuItem <- reactiveValues(v=NULL)
   
   output$analysisPlanConfiguration <- renderUI({
-    #if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
-    if(FALSE){ 
+    if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
      infoBox(
         width = 12,strong("Warning"),h4("You cannot proceed without completing Project Configuration section",align="center")
         ,icon = icon("exclamation-triangle"),
@@ -1597,21 +1638,75 @@ server <- shinyServer(function(input, output, session) {
           box(id="decoAndCheckplanBox",
               width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,
               column(width = 2, align="left",
-                     icon("arrow-right", "fa-14x") 
+                     icon("arrow-right", "fa-24x") 
               ),
               column(width = 2, align="center",
-                     icon("arrow-right", "fa-14x") 
+                     icon("arrow-right", "fa-24x") 
               ),
               column(width = 3, align="center",
-                     actionButton("checkPlanButton", "Check the Plan", class = "processButton")
+                     actionButton("checkPlanButton", "Check the Plan", class = "processButtonLarge")
+              ),
+              column(width = 2, align="center",
+                     icon("arrow-right", "fa-24x") 
               ),
               column(width = 2, align="right",
-                     icon("arrow-down", "fa-14x") 
+                     icon("arrow-right", "fa-24x") 
               )
           )
         )
       )
     }
+  })
+  
+  observeEvent(input$checkPlanButton, {
+    tryCatch({
+      progress <- shiny::Progress$new()
+      progress$set(message = "Checking analysis plan in progress...", value = 0)
+      on.exit(progress$close())
+      updateProgress <- function(value = NULL, detail = NULL) {
+        if (is.null(value)) {
+          value <- progress$getValue()
+          value <- value + (progress$getMax() - value) / 5
+        }
+        progress$set(value = value, detail = detail)
+      }
+      updateProgress()
+      result <- kobo_check_analysis_plan()
+      
+      if(result$flag){
+        projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- TRUE
+        projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- FALSE
+        shinyalert("Wooooow",
+                   "You can start Data Processing",
+                   type = "success",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#28A8E2",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+      }else{
+        shinyalert("You can't start Data Processing\nyour plan contains some errors",
+                   result$message,
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+      }
+      
+      
+    }, error = function(err) {
+      print("ghdhkkjdasfdsa")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
   })
   
   observeEvent(input$styleFormButton, {
@@ -1653,7 +1748,6 @@ server <- shinyServer(function(input, output, session) {
     })
   })
   
-  
   #####################relabeling Survey#############################
   output$relabelingSurveyUI <- renderUI({
     box(id="relabelingSurveyBox",
@@ -1671,28 +1765,28 @@ server <- shinyServer(function(input, output, session) {
       
       if("label" %in% colnames(sheets[["relabelingSurvey"]])){
         temp <- temp %>% hot_col("label", readOnly = TRUE, width = 200) %>%
-          hot_col("label::Report", width = 400, allowInvalid = FALSE,
+          hot_col("labelReport", width = 400, allowInvalid = FALSE,
                   validator = "
            function (value, callback) {
             setTimeout(function(){
-              if(value.length >= 80){
-                alert('Please make sure that the length of the string less than 80 characters');
+              if(value.length >= 85){
+                alert('Please make sure that the length of the string less than 85 characters');
               }
               if(value.length <= 0){
                 alert('Please make sure that the length of the string greater than 0 characters');
               }
-              callback(value.length < 80 && value.length > 0);
+              callback(value.length < 85 && value.length > 0);
             }, 700)
            }")
       }else{
-        temp <- temp %>% hot_col("label::Report", width = 400, allowInvalid = FALSE,
+        temp <- temp %>% hot_col("labelReport", width = 400, allowInvalid = FALSE,
                                  validator = "
                                  function (value, callback) {
                                  setTimeout(function(){
-                                 if(value.length >= 80){
+                                 if(value.length >= 85){
                                  alert('Please make sure that the length of the string less than 80 characters');
                                  }
-                                 callback(value.length < 80);
+                                 callback(value.length < 85);
                                  }, 700)
                                  }"
                                  )
@@ -1700,28 +1794,28 @@ server <- shinyServer(function(input, output, session) {
       
       if("hint" %in% colnames(sheets[["relabelingSurvey"]])){
         temp <- temp %>% hot_col("hint", readOnly = TRUE, width = 200) %>%
-          hot_col("hint::Report", width = 400, allowInvalid = FALSE,
+          hot_col("hintReport", width = 400, allowInvalid = FALSE,
                   validator = "
                   function (value, callback) {
                   setTimeout(function(){
-                  if(value.length >= 80){
-                  alert('Please make sure that the length of the string less than 80 characters');
+                  if(value.length >= 85){
+                  alert('Please make sure that the length of the string less than 85 characters');
                   }
                   if(value.length <= 0){
                   alert('Please make sure that the length of the string greater than 0 characters');
                   }
-                  callback(value.length < 80 && value.length > 0);
+                  callback(value.length < 85 && value.length > 0);
                   }, 700)
                   }")
       }else{
-        temp <- temp %>% hot_col("hint::Report", width = 400, allowInvalid = FALSE,
+        temp <- temp %>% hot_col("hintReport", width = 400, allowInvalid = FALSE,
                                  validator = "
                                  function (value, callback) {
                                  setTimeout(function(){
-                                 if(value.length >= 80){
-                                 alert('Please make sure that the length of the string less than 80 characters');
+                                 if(value.length >= 85){
+                                 alert('Please make sure that the length of the string less than 85 characters');
                                  }
-                                 callback(value.length < 80);
+                                 callback(value.length < 85);
                                  }, 700)
                                  }"
                                  )
@@ -1758,7 +1852,7 @@ server <- shinyServer(function(input, output, session) {
       
       if("label" %in% colnames(sheets[["relabelingChoices"]])){
         temp <- temp %>% hot_col("label", readOnly = TRUE, width = 200) %>%
-          hot_col("label::Report", width = 400, allowInvalid = FALSE,
+          hot_col("labelReport", width = 400, allowInvalid = FALSE,
                   validator = "
                   function (value, callback) {
                   setTimeout(function(){
@@ -1773,7 +1867,7 @@ server <- shinyServer(function(input, output, session) {
                   }")
       }
       else{
-        temp <- temp %>% hot_col("label::Report", width = 400, allowInvalid = FALSE,
+        temp <- temp %>% hot_col("labelReport", width = 400, allowInvalid = FALSE,
                                  validator = "
                                  function (value, callback) {
                                  setTimeout(function(){
@@ -1799,7 +1893,6 @@ server <- shinyServer(function(input, output, session) {
       })
     })
   ###################################################################
-  
   
   #####################selectOne Type#############################
   output$selectOneTypeUI <- renderUI({
@@ -1887,7 +1980,6 @@ server <- shinyServer(function(input, output, session) {
     })
   ###################################################################
   
-
   #####################Order Ordinal Variables#############################
   output$orderOrdinalVariablesUI <- renderUI({
     box(id="orderOrdinalVariablesBox",
@@ -1937,7 +2029,6 @@ server <- shinyServer(function(input, output, session) {
     })
   })
   ###################################################################
-  
   
   #####################Select_multiple type#############################
   output$selectMultipleTypeUI <- renderUI({
@@ -2021,7 +2112,6 @@ server <- shinyServer(function(input, output, session) {
     })
   })
   ###################################################################
-  
   
   #####################Numeric type#############################
   output$numericTypeUI <- renderUI({
@@ -2195,7 +2285,6 @@ server <- shinyServer(function(input, output, session) {
     })
   })
   ###################################################################
-  
   
   ################################## Indicators Sheet #########################################
   indicatorsInfo <- reactiveValues(data=NULL, selectedIndicator=NULL, operationType=NULL)
@@ -2415,8 +2504,11 @@ server <- shinyServer(function(input, output, session) {
                      column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
                             h4("Enter indicator's label:")
                      ),
-                     column(width = 6, offset = 0,
+                     column(width = 5, offset = 0,
                             textInput("indicatorLabelInput", label = NULL, value = rowInd[1,"label"], width = "100%")
+                     ),
+                     column(width = 1, offset = 0, align="center",
+                            uiOutput("indicatorLabelInputLengthUI")
                      )
                    ),
                    column(
@@ -2424,7 +2516,7 @@ server <- shinyServer(function(input, output, session) {
                      column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
                             h4("Select indicator's frame:")
                      ),
-                     column(width = 6, offset = 0,
+                     column(width = 6, offset = 0, 
                             selectizeInput("indicatorFrameInput", label = NULL, selected = rowInd[1,"frame"], choices = c("-- select --",projectConfigurationInfo$data[["beginRepeatList"]]), 
                                            options = list(placeholder = "-- select --"),
                                            width = "100%")
@@ -2639,6 +2731,18 @@ server <- shinyServer(function(input, output, session) {
       if(sum(input$indicatorLabelInput=="")){
         shinyalert("Label is required",
                    'Please make sure that you entered the "Label" for this Indicator',
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
+      if(sum(str_length(input$indicatorLabelInput)>85)){
+        shinyalert("Label length",
+                   'Please make sure that the length of the label string is less than 85',
                    type = "error",
                    closeOnClickOutside = FALSE,
                    confirmButtonCol = "#ff4d4d",
@@ -3365,6 +3469,23 @@ server <- shinyServer(function(input, output, session) {
       )
     })
   })
+  
+  observe({
+    output$indicatorLabelInputLengthUI <- renderUI({
+      if(str_length(input$indicatorLabelInput)>85){
+        verbatimTextOutput("indicatorLabelInputLengthRed")
+      }else{
+        verbatimTextOutput("indicatorLabelInputLengthBlack")
+      }
+    })
+  })
+  output$indicatorLabelInputLengthRed <- renderText({
+    str_length(input$indicatorLabelInput)
+  })
+  output$indicatorLabelInputLengthBlack <- renderText({
+    str_length(input$indicatorLabelInput)
+  })
+  
   
   showSubIndicatorsTool <- function(indicatorName) {
     tryCatch({
@@ -5046,10 +5167,7 @@ server <- shinyServer(function(input, output, session) {
     
     
     ##########-----END----------##################
-    
   #############################################################################################
-  
-  
   
   #####################    Chapter      #############################
   chaptersDataFrame <- reactiveValues(data=NULL, selectedChapter=NULL, operationType=NULL)
@@ -5534,12 +5652,13 @@ server <- shinyServer(function(input, output, session) {
         mainSurvey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
                                     stringsAsFactors = FALSE)
         
-        if(identical(as.character(mainSurvey["label::Report"]),as.character(userRelabelingSurvey["label::Report"])) &
-           identical(as.character(mainSurvey["hint::Report"]),as.character(userRelabelingSurvey["hint::Report"]))
+        if(identical(as.character(mainSurvey["labelReport"]),as.character(userRelabelingSurvey["labelReport"])) &
+           identical(as.character(mainSurvey["hintReport"]),as.character(userRelabelingSurvey["hintReport"]))
            ){
           return(FALSE)
         }
-        
+        projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- FALSE
+        projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- FALSE
         progress <- shiny::Progress$new()
         progress$set(message = "Saving sheet in progress...", value = 0)
         on.exit(progress$close())
@@ -5552,8 +5671,8 @@ server <- shinyServer(function(input, output, session) {
         }
         updateProgress()
         
-        mainSurvey["label::Report"] = userRelabelingSurvey["label::Report"]
-        mainSurvey["hint::Report"] = userRelabelingSurvey["hint::Report"]
+        mainSurvey["labelReport"] = userRelabelingSurvey["labelReport"]
+        mainSurvey["hintReport"] = userRelabelingSurvey["hintReport"]
 
         kobo_edit_form(survey = mainSurvey)
         updateProgress()
@@ -5564,10 +5683,11 @@ server <- shinyServer(function(input, output, session) {
         mainChoices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
                                     stringsAsFactors = FALSE)
         
-        if(identical(as.character(mainChoices["label::Report"]),as.character(userRelabelingChoices["label::Report"]))){
+        if(identical(as.character(mainChoices["labelReport"]),as.character(userRelabelingChoices["labelReport"]))){
           return(FALSE)
         }
-        
+        projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- FALSE
+        projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- FALSE
         progress <- shiny::Progress$new()
         progress$set(message = "Saving sheet in progress...", value = 0)
         on.exit(progress$close())
@@ -5580,7 +5700,7 @@ server <- shinyServer(function(input, output, session) {
         }
         updateProgress()
         
-        mainChoices["label::Report"] <- userRelabelingChoices["label::Report"]
+        mainChoices["labelReport"] <- userRelabelingChoices["labelReport"]
         
         kobo_edit_form(choices = mainChoices)
         updateProgress()
@@ -5599,7 +5719,8 @@ server <- shinyServer(function(input, output, session) {
         if(identical(origin,newSur)){
           return(FALSE)
         }
-        
+        projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- FALSE
+        projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- FALSE
         progress <- shiny::Progress$new()
         progress$set(message = "Saving sheet in progress...", value = 0)
         on.exit(progress$close())
@@ -5652,7 +5773,8 @@ server <- shinyServer(function(input, output, session) {
         if(identical(origin,newCho)){
           return(FALSE)
         }
-        
+        projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- FALSE
+        projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- FALSE
         progress <- shiny::Progress$new()
         progress$set(message = "Saving sheet in progress...", value = 0)
         on.exit(progress$close())
@@ -5701,7 +5823,8 @@ server <- shinyServer(function(input, output, session) {
         if(identical(origin,newSur)){
           return(FALSE)
         }
-        
+        projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- FALSE
+        projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- FALSE
         progress <- shiny::Progress$new()
         progress$set(message = "Saving sheet in progress...", value = 0)
         on.exit(progress$close())
@@ -5750,7 +5873,8 @@ server <- shinyServer(function(input, output, session) {
         if(identical(origin,newSur)){
           return(FALSE)
         }
-        
+        projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- FALSE
+        projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- FALSE
         progress <- shiny::Progress$new()
         progress$set(message = "Saving sheet in progress...", value = 0)
         on.exit(progress$close())
@@ -5799,7 +5923,8 @@ server <- shinyServer(function(input, output, session) {
         if(identical(origin,newSur)){
           return(FALSE)
         }
-        
+        projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- FALSE
+        projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- FALSE
         progress <- shiny::Progress$new()
         progress$set(message = "Saving sheet in progress...", value = 0)
         on.exit(progress$close())
@@ -5849,10 +5974,9 @@ server <- shinyServer(function(input, output, session) {
   })
   #############################################################################
   
-  
   observe({
     tryCatch({
-      if(FALSE){#if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
+      if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
         return(NULL)
       }
       relabelingSurvey <- c()
@@ -5876,60 +6000,60 @@ server <- shinyServer(function(input, output, session) {
         names(relabelingSurvey)[tolower(names(relabelingSurvey)) == "hint::english"] <- "hint"
         reqNames <- c("type", "name")
         if("label" %in% colnames(relabelingSurvey)){
-          reqNames <- c(reqNames, "label", "label::Report")
+          reqNames <- c(reqNames, "label", "labelReport")
           relabelingSurvey[,"label"] <- as.character(relabelingSurvey[,"label"])
         }else{
-          reqNames <- c(reqNames, "label::Report")
+          reqNames <- c(reqNames, "labelReport")
         }    
         
         if("hint" %in% colnames(relabelingSurvey)){
-          reqNames <- c(reqNames, "hint", "hint::Report")
+          reqNames <- c(reqNames, "hint", "hintReport")
           relabelingSurvey[,"hint"] <- as.character(survey[,"hint"])
         }else{
-          reqNames <- c(reqNames, "hint::Report")
+          reqNames <- c(reqNames, "hintReport")
         } 
         
-        if ("label::Report" %in% colnames(relabelingSurvey)) {
-          if(mean(is.na(relabelingSurvey[,"label::Report"]))==1){
+        if ("labelReport" %in% colnames(relabelingSurvey)) {
+          if(mean(is.na(relabelingSurvey[,"labelReport"]))==1){
             if("label" %in% colnames(relabelingSurvey)){
-              relabelingSurvey["label::Report"] = substr(relabelingSurvey[,"label"],1,80)
+              relabelingSurvey["labelReport"] = substr(relabelingSurvey[,"label"],1,80)
             }else{
-              relabelingSurvey["label::Report"] = ""
+              relabelingSurvey["labelReport"] = ""
             }
           }else{
-            relabelingSurvey["label::Report"] = substr(relabelingSurvey[,"label::Report"],1,80)
+            relabelingSurvey["labelReport"] = substr(relabelingSurvey[,"labelReport"],1,80)
           }
         }
         
-        if (!"label::Report" %in% colnames(relabelingSurvey)) {
+        if (!"labelReport" %in% colnames(relabelingSurvey)) {
           if("label" %in% colnames(relabelingSurvey)){
-            relabelingSurvey["label::Report"] = substr(relabelingSurvey[,"label"],1,80)
+            relabelingSurvey["labelReport"] = substr(relabelingSurvey[,"label"],1,80)
           }else{
-            relabelingSurvey["label::Report"] = ""
+            relabelingSurvey["labelReport"] = ""
           }
         }
         
-        if ("hint::Report" %in% colnames(relabelingSurvey)) {
-          if(mean(is.na(relabelingSurvey[,"hint::Report"]))==1){
+        if ("hintReport" %in% colnames(relabelingSurvey)) {
+          if(mean(is.na(relabelingSurvey[,"hintReport"]))==1){
             if("hint" %in% colnames(relabelingSurvey)){
-              relabelingSurvey["hint::Report"] = substr(relabelingSurvey[,"hint"],1,80)
+              relabelingSurvey["hintReport"] = substr(relabelingSurvey[,"hint"],1,80)
             }else{
-              relabelingSurvey["hint::Report"] = ""
+              relabelingSurvey["hintReport"] = ""
             }
           }else{
-            relabelingSurvey["hint::Report"] = substr(relabelingSurvey[,"hint::Report"],1,80)
+            relabelingSurvey["hintReport"] = substr(relabelingSurvey[,"hintReport"],1,80)
           }
         }
         
-        if (!"hint::Report" %in% colnames(relabelingSurvey)) {
+        if (!"hintReport" %in% colnames(relabelingSurvey)) {
           if("hint" %in% colnames(relabelingSurvey)){
-            relabelingSurvey["hint::Report"] = substr(relabelingSurvey[,"hint"],1,80)
+            relabelingSurvey["hintReport"] = substr(relabelingSurvey[,"hint"],1,80)
           }else{
-            relabelingSurvey["hint::Report"] = ""
+            relabelingSurvey["hintReport"] = ""
           }
         }
-        relabelingSurvey[,"label::Report"] <- as.character(relabelingSurvey[,"label::Report"])
-        relabelingSurvey[,"hint::Report"] <- as.character(relabelingSurvey[,"hint::Report"])
+        relabelingSurvey[,"labelReport"] <- as.character(relabelingSurvey[,"labelReport"])
+        relabelingSurvey[,"hintReport"] <- as.character(relabelingSurvey[,"hintReport"])
         relabelingSurvey <- relabelingSurvey[reqNames]
       }
       
@@ -5953,33 +6077,33 @@ server <- shinyServer(function(input, output, session) {
         names(relabelingChoices)[tolower(names(relabelingChoices)) == "label::english"] <- "label"
         reqNames <- c("list_name", "name")
         if("label" %in% colnames(relabelingChoices)){
-          reqNames <- c(reqNames, "label", "label::Report")
+          reqNames <- c(reqNames, "label", "labelReport")
           relabelingChoices[,"label"] <- as.character(relabelingChoices[,"label"])
         }else{
-          reqNames <- c(reqNames, "label::Report")
+          reqNames <- c(reqNames, "labelReport")
         }    
         
-        if ("label::Report" %in% colnames(relabelingChoices)) {
-          if(mean(is.na(relabelingChoices[,"label::Report"]))==1){
+        if ("labelReport" %in% colnames(relabelingChoices)) {
+          if(mean(is.na(relabelingChoices[,"labelReport"]))==1){
             if("label" %in% colnames(relabelingChoices)){
-              relabelingChoices["label::Report"] = substr(relabelingChoices[,"label"],1,80)
+              relabelingChoices["labelReport"] = substr(relabelingChoices[,"label"],1,80)
             }else{
-              relabelingChoices["label::Report"] = ""
+              relabelingChoices["labelReport"] = ""
             }
           }else{
-            relabelingChoices["label::Report"] = substr(relabelingChoices[,"label::Report"],1,80)
+            relabelingChoices["labelReport"] = substr(relabelingChoices[,"labelReport"],1,80)
           }
         }
         
         
-        if (!"label::Report" %in% colnames(relabelingChoices)) {
+        if (!"labelReport" %in% colnames(relabelingChoices)) {
           if("label" %in% colnames(relabelingChoices)){
-            relabelingChoices["label::Report"] = substr(relabelingChoices[,"label"],1,80)
+            relabelingChoices["labelReport"] = substr(relabelingChoices[,"label"],1,80)
           }else{
-            relabelingChoices["label::Report"] = ""
+            relabelingChoices["labelReport"] = ""
           }
         }
-        relabelingChoices[,"label::Report"] <- as.character(relabelingChoices[,"label::Report"])
+        relabelingChoices[,"labelReport"] <- as.character(relabelingChoices[,"labelReport"])
         relabelingChoices <- relabelingChoices[reqNames]
       }
       relabelingChoices <- relabelingChoices[ order(as.numeric(row.names(relabelingChoices))), ]
@@ -6022,7 +6146,7 @@ server <- shinyServer(function(input, output, session) {
         
         
         #selectOneType$chapter <- as.character(selectOneType$chapter)
-        selectOneType$variable <- as.character(selectOneType$variable)
+        selectOneType$variable <- as.character(ifelse(is.na(selectOneType$variable),"factor", selectOneType$variable ))
         
         selectOneType$disaggregation <- as.logical(selectOneType$disaggregation)
         selectOneType$structuralequation.risk <- as.logical(selectOneType$structuralequation.risk)
@@ -6066,7 +6190,7 @@ server <- shinyServer(function(input, output, session) {
       survey <- survey[reqNames]
       
       survey <- survey[!is.na(survey[,"variable"]),]
-      survey <- survey[survey[,"variable"]=="ordinal factor",]
+      survey <- survey[survey[,"variable"]=="ordinal",]
       survey <- survey[startsWith(tolower(survey[,"type"]), "select_one"),]
       
       varOfOrder <- sapply(survey[,"type"], function(x) {
@@ -6350,7 +6474,206 @@ server <- shinyServer(function(input, output, session) {
       )
     })
   })
+  
+  
+  
+  ####################################### Data Processing page ############################################
+  output$dataProcessing <- renderUI({
+    if(!projectConfigurationInfo$log[["isAnalysisPlanCompleted"]]){
+      infoBox(
+        width = 12,strong("Warning"),h4("You cannot proceed without completing Analysis Plan section",align="center")
+        ,icon = icon("exclamation-triangle"),
+        color = "yellow"
+      )
+    }else{
+      box(id="loadDataButtonBox",
+          width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,
+          column(width = 2, align="left",
+                 icon("arrow-right", "fa-24x") 
+          ),
+          column(width = 2, align="left",
+                 icon("arrow-right", "fa-24x") 
+          ),
+          column(width = 3, align="center",
+                 actionButton("loadDataButton", "Load Data", class = "processButtonLarge")
+          ),
+          column(width = 2, align="right",
+                 icon("arrow-right", "fa-24x") 
+          ),
+          column(width = 2, align="right",
+                 icon("arrow-right", "fa-24x") 
+          )
+      )
+    }
+  })
+  
+  observeEvent(input$loadDataButton,{
+    tryCatch({
+      result <- kobo_load_data(app="shiny")
+      if(class(result) == "try-error"){
+        shinyalert("Error",
+                   result,
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }else{
+        projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- TRUE
+        shinyalert("Wooooow",
+                   "You can start Reports Generation",
+                   type = "success",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#28A8E2",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+      }
+
+    }, error = function(err) {
+      print("fdhfhdflolkjllk7")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  
+  
+  ####################################### Reports Generation page ############################################
+  output$reportsGeneration <- renderUI({
+    #if(!projectConfigurationInfo$log[["isDataProcessingCompleted"]]){
+    if(F){
+      infoBox(
+        width = 12,strong("Warning"),h4("You cannot proceed without completing Data Processing section",align="center")
+        ,icon = icon("exclamation-triangle"),
+        color = "yellow"
+      )
+    }else{
+      column(width = 12, align="center",
+             column(width = 12, align="center",style="margin-bottom:15px;",
+               column(width = 8, align="center",
+                      actionButton("crunchingReportButton", "Crunching Report", class="toolButton006495", style="height: 250px; font-size: xx-large; width: 100%;") 
+               ),
+               column(width = 4, align="center",
+                      actionButton("anonymisationReportButton", "Anonymisation Report", class="toolButtonE0A025", style="height: 250px; font-size: xx-large; width: 100%;")
+               )
+             ),
+             column(width = 12, align="center",style="margin-bottom:15px;",
+               column(width = 6, align="center",
+                      actionButton("monitoringReportButton", "Monitoring Report", class="toolButtonF4D00C", style="height: 250px; font-size: xx-large; width: 100%;")
+               ),
+               column(width = 6, align="center",
+                      actionButton("clusterReportButton", "Cluster Report", class="toolButton004C70", style="height: 250px; font-size: xx-large; width: 100%;")
+               )
+             ),
+             column(width = 12, align="center",style="margin-bottom:15px;",
+               column(width = 5, align="center",
+                      actionButton("predictionReportButton", "Prediction Report", class="toolButton0093D1", style="height: 250px; font-size: xx-large; width: 100%;")
+               ),
+               column(width = 7, align="center",
+                      actionButton("scoreReportButton", "Score Report", class="toolButtonF2635F", style="height: 250px; font-size: xx-large; width: 100%;")
+               )
+             )
+      )
+    }
+  })
+  observeEvent(input$crunchingReportButton,{
+    tryCatch({
+      result <- kobo_crunching_report(app="shiny")
+      if(class(result) == "try-error"){
+        shinyalert("Error",
+                   result,
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }else{
+        shinyalert("Wooooow",
+                   "Done!! Reports are in the folder OUT - Review the report- Adjust your configuration files and you will be very soon ready to start the qualitative analysis and the analysis workshops...",
+                   type = "success",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#28A8E2",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        showModal(showCrunchingReportLinks())
+      }
+      
+    }, error = function(err) {
+      print("jhjhgfjhjfhg")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  
+  showCrunchingReportLinks <- function() {
+    tryCatch({
+      return(modalDialog(id="showCrunchingReportPopUp", 
+                         title = "Crunching Reports",
+                         uiOutput("crunchingReportBody"),
+                         size = "l",
+                         footer = tagList(
+                           modalButton("Exit", icon("sign-out-alt"))
+                         )
+      )
+      )
+      
+    }, error = function(err) {
+      print("dhfgdhfgdhgfgd")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  }
+  
+  output$crunchingReportBody <- renderText({
+    s <- ""
+    mainPath <- paste(kobo_getMainDirectory(),"/out/crunching_reports/", sep = "")
+    filesNames <- list.files(mainPath)
+    filesNames <- sort(filesNames)
+    for (fn in filesNames) {
+      s <- paste(s,
+                 box(width = 6, title = fn, solidHeader = FALSE, status = "primary", collapsed = F, collapsible = F,
+                      downloadLink(paste("download",fn,sep = ""), paste("Download",fn))
+                     )
+                 ,sep="")
+      
+    }
+    lapply(1:length(filesNames), function(m) {
+      output[[paste("download",filesNames[m],sep = "")]] <- downloadHandler(
+        filename = filesNames[m],
+        content = function(file) {
+          file.copy(paste(kobo_getMainDirectory(),"/out/crunching_reports/",filesNames[m], sep = ""), file)
+        }
+      )
+    })
+
+    return(s)
+  })
+  
 })
+
 
 # Run the application 
 shinyApp(ui = ui, server = server)

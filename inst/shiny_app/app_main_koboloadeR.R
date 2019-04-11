@@ -159,7 +159,7 @@ server <- shinyServer(function(input, output, session) {
   })
   
   ####################################### Project Configuration page ############################################
-
+  
   output$projectConfiguration <- renderUI({
     fluidRow(
       box(id="doYouHaveFormBox",
@@ -570,29 +570,29 @@ server <- shinyServer(function(input, output, session) {
   
   output$showInputOfInstanceIDBody <- renderUI({
     column(width = 12,
-      column(width = 8, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-             h4("Select the unique variable for all data files?"),
-             div(class="help-tip-small",style="top: 0px; right: 25px;",
-                 p(
-                   span("This is the ID that will be used to join the main dataframe with other dataframes",style="display: block;")
-                 )
-             )
-      ),
-      column(width = 4, offset = 0,
-             selectInput("instanceIDInput", label = NULL,choices = c("-- select --",colnames(projectConfigurationInfo$data[["data"]])))
-      ),
-      
-      column(width = 8, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-             h4("Select the ID variable for cluster report?"),
-             div(class="help-tip-small",style="top: 0px; right: 25px;",
-                 p(
-                   span("This is the ID that will be used for kobo_cluster_report function.",style="display: block;")
-                 )
-             )
-      ),
-      column(width = 4, offset = 0,
-             selectInput("clusterIDInput", label = NULL,choices = c("-- select --",colnames(projectConfigurationInfo$data[["data"]])))
-      )
+           column(width = 8, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                  h4("Select the unique variable for all data files?"),
+                  div(class="help-tip-small",style="top: 0px; right: 25px;",
+                      p(
+                        span("This is the ID that will be used to join the main dataframe with other dataframes",style="display: block;")
+                      )
+                  )
+           ),
+           column(width = 4, offset = 0,
+                  selectInput("instanceIDInput", label = NULL,choices = c("-- select --",colnames(projectConfigurationInfo$data[["data"]])))
+           ),
+           
+           column(width = 8, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                  h4("Select the ID variable for cluster report?"),
+                  div(class="help-tip-small",style="top: 0px; right: 25px;",
+                      p(
+                        span("This is the ID that will be used for kobo_cluster_report function.",style="display: block;")
+                      )
+                  )
+           ),
+           column(width = 4, offset = 0,
+                  selectInput("clusterIDInput", label = NULL,choices = c("-- select --",colnames(projectConfigurationInfo$data[["data"]])))
+           )
     )
   })
   
@@ -1248,7 +1248,7 @@ server <- shinyServer(function(input, output, session) {
         settingsDF[lastRow,"value"] <- input$variableNameStratified
         updateProgress()
         lastRow <- lastRow+1
-
+        
         
         inFileWeightsStratified<- input$weightsStratifiedFileInput
         if(is.null(inFileWeightsStratified)){
@@ -1315,7 +1315,7 @@ server <- shinyServer(function(input, output, session) {
           settingsDF[lastRow,"path"] <-  paste(mainDir(), "data", "/cleaningLog.csv", sep = "/", collapse = "/")
         }
       }
-
+      
       configInfo <- kobo_get_config()
       configInfo <- configInfo[!configInfo$name %in% settingsDF$name, ]
       settingsDF <- rbind(settingsDF, configInfo)
@@ -1552,7 +1552,7 @@ server <- shinyServer(function(input, output, session) {
   
   output$analysisPlanConfiguration <- renderUI({
     if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
-     infoBox(
+      infoBox(
         width = 12,strong("Warning"),h4("You cannot proceed without completing Project Configuration section",align="center")
         ,icon = icon("exclamation-triangle"),
         color = "yellow"
@@ -1572,66 +1572,66 @@ server <- shinyServer(function(input, output, session) {
           condition = "input.doYouHaveAnalysisPlanSelectInput=='No'",
           
           column(width = 12,
-          div(id="wellMenuForAPC",
-            sidebarLayout(
-              sidebarPanel(width = 2,
-                sidebarMenu(id="sidebarMenuForAP",
-                  menuItem(div(span("1",class="numberStep"),span("Re-Labeling Survey Sheet")), tabName = "relabelingSurvey"),
-                  menuItem(div(span("2",class="numberStep"),span("Re-Labeling Choices Sheet")), tabName = "relabelingChoices"),
-                  #menuItem(div(span("3",class="numberStep"),span("Text type")), tabName = "textType"),
-                  menuItem(div(span("3",class="numberStep"),span("Select_one type")), tabName = "selectOneType"),
-                  menuItem(div(span("4",class="numberStep"),span("Order Ordinal Variables")), tabName = "orderOrdinalVariables"),
-                  menuItem(div(span("5",class="numberStep"),span("Select_multiple type")), tabName = "selectMultipleType"),
-                  menuItem(div(span("6",class="numberStep"),span("Numeric type")), tabName = "numericType"),
-                  #menuItem(div(span("8",class="numberStep"),span("Integer type")), tabName = "integerType"),
-                  menuItem(div(span("7",class="numberStep"),span("Date type")), tabName = "dateType"),
-                  #menuItem(div(span("10",class="numberStep"),span("Decimal type")), tabName = "decimalType"),
-                  menuItem(div(span("8",class="numberStep"),span("Indicators Sheet")), tabName = "indicatorsSheet"),
-                  menuItem(div(span("9",class="numberStep"),span("Chapter")), tabName = "chapter"),
-                  menuItem(NULL, icon = icon("info-circle"), tabName = "infoAPC")
-                ),
-                div(id="styleFormDiv", style="background-color: #ecf0f5;",
-                    actionButton("styleFormButton", "Add style to xlsform", style="width: 100%; margin: 10px 0% 0px; line-height: 35px;", class="uploadButton"))
-              ),
-              mainPanel(width = 10,
-                        div(id = "analysisPlanTab",
-                          tabItems(
-                            tabItem(tabName = "relabelingSurvey",
-                                    uiOutput("relabelingSurveyUI")
-                            ),
-                            tabItem(tabName = "relabelingChoices",
-                                    uiOutput("relabelingChoicesUI")
-                            ),
-                            tabItem(tabName = "selectOneType",
-                                    uiOutput("selectOneTypeUI")
-                            ),
-                            tabItem(tabName = "orderOrdinalVariables",
-                                    uiOutput("orderOrdinalVariablesUI")
-                            ),
-                            tabItem(tabName = "selectMultipleType",
-                                    uiOutput("selectMultipleTypeUI")
-                            ),
-                            tabItem(tabName = "numericType",
-                                    uiOutput("numericTypeUI")
-                            ),
-                            tabItem(tabName = "dateType",
-                                    uiOutput("dateTypeUI")
-                            ),
-                            tabItem(tabName = "indicatorsSheet",
-                                    uiOutput("indicatorsSheetUI")
-                            ),
-                            tabItem(tabName = "chapter",
-                                    uiOutput("chapterUI")
-                            ),
-                            tabItem(tabName = "infoAPC",
-                                    uiOutput("infoAPCUI")
-                            )
-                          )
-                        )
-                  )
-            )
+                 div(id="wellMenuForAPC",
+                     sidebarLayout(
+                       sidebarPanel(width = 2,
+                                    sidebarMenu(id="sidebarMenuForAP",
+                                                menuItem(div(span("1",class="numberStep"),span("Re-Labeling Survey Sheet")), tabName = "relabelingSurvey"),
+                                                menuItem(div(span("2",class="numberStep"),span("Re-Labeling Choices Sheet")), tabName = "relabelingChoices"),
+                                                #menuItem(div(span("3",class="numberStep"),span("Text type")), tabName = "textType"),
+                                                menuItem(div(span("3",class="numberStep"),span("Select_one type")), tabName = "selectOneType"),
+                                                menuItem(div(span("4",class="numberStep"),span("Order Ordinal Variables")), tabName = "orderOrdinalVariables"),
+                                                menuItem(div(span("5",class="numberStep"),span("Select_multiple type")), tabName = "selectMultipleType"),
+                                                menuItem(div(span("6",class="numberStep"),span("Numeric type")), tabName = "numericType"),
+                                                #menuItem(div(span("8",class="numberStep"),span("Integer type")), tabName = "integerType"),
+                                                menuItem(div(span("7",class="numberStep"),span("Date type")), tabName = "dateType"),
+                                                #menuItem(div(span("10",class="numberStep"),span("Decimal type")), tabName = "decimalType"),
+                                                menuItem(div(span("8",class="numberStep"),span("Indicators Sheet")), tabName = "indicatorsSheet"),
+                                                menuItem(div(span("9",class="numberStep"),span("Chapter")), tabName = "chapter"),
+                                                menuItem(NULL, icon = icon("info-circle"), tabName = "infoAPC")
+                                    ),
+                                    div(id="styleFormDiv", style="background-color: #ecf0f5;",
+                                        actionButton("styleFormButton", "Add style to xlsform", style="width: 100%; margin: 10px 0% 0px; line-height: 35px;", class="uploadButton"))
+                       ),
+                       mainPanel(width = 10,
+                                 div(id = "analysisPlanTab",
+                                     tabItems(
+                                       tabItem(tabName = "relabelingSurvey",
+                                               uiOutput("relabelingSurveyUI")
+                                       ),
+                                       tabItem(tabName = "relabelingChoices",
+                                               uiOutput("relabelingChoicesUI")
+                                       ),
+                                       tabItem(tabName = "selectOneType",
+                                               uiOutput("selectOneTypeUI")
+                                       ),
+                                       tabItem(tabName = "orderOrdinalVariables",
+                                               uiOutput("orderOrdinalVariablesUI")
+                                       ),
+                                       tabItem(tabName = "selectMultipleType",
+                                               uiOutput("selectMultipleTypeUI")
+                                       ),
+                                       tabItem(tabName = "numericType",
+                                               uiOutput("numericTypeUI")
+                                       ),
+                                       tabItem(tabName = "dateType",
+                                               uiOutput("dateTypeUI")
+                                       ),
+                                       tabItem(tabName = "indicatorsSheet",
+                                               uiOutput("indicatorsSheetUI")
+                                       ),
+                                       tabItem(tabName = "chapter",
+                                               uiOutput("chapterUI")
+                                       ),
+                                       tabItem(tabName = "infoAPC",
+                                               uiOutput("infoAPCUI")
+                                       )
+                                     )
+                                 )
+                       )
+                     )
+                 )
           )
-         )
         ),
         conditionalPanel(
           condition = "input.doYouHaveAnalysisPlanSelectInput=='No' || input.doYouHaveAnalysisPlanSelectInput=='Yes'",
@@ -1711,29 +1711,29 @@ server <- shinyServer(function(input, output, session) {
   
   observeEvent(input$styleFormButton, {
     tryCatch({
-        progress <- shiny::Progress$new()
-        progress$set(message = "Styling xlsform in progress...", value = 0)
-        on.exit(progress$close())
-        updateProgress <- function(value = NULL, detail = NULL) {
-          if (is.null(value)) {
-            value <- progress$getValue()
-            value <- value + (progress$getMax() - value) / 5
-          }
-          progress$set(value = value, detail = detail)
+      progress <- shiny::Progress$new()
+      progress$set(message = "Styling xlsform in progress...", value = 0)
+      on.exit(progress$close())
+      updateProgress <- function(value = NULL, detail = NULL) {
+        if (is.null(value)) {
+          value <- progress$getValue()
+          value <- value + (progress$getMax() - value) / 5
         }
-        updateProgress()
-        kobo_prepare_form()
-        updateProgress()
-    
-        shinyalert("Done, xlsform styled using 'kobo_prepare_form' function",
-                   "Prepare XLSform by adding chapter, disaggregation, correlate, variable, anonymise, structuralequation, clean, cluster, predict, mappoint, mappoly in case if those fields are not exist; the function will create dummy column for each one. Also, coloring all rows that have type equal to 'begin group', 'end group', 'begin repeat' or 'end repeat'.",
-                   type = "success",
-                   closeOnClickOutside = FALSE,
-                   confirmButtonCol = "#28A8E2",
-                   animation = FALSE,
-                   showConfirmButton = TRUE
-        )
-        
+        progress$set(value = value, detail = detail)
+      }
+      updateProgress()
+      kobo_prepare_form()
+      updateProgress()
+      
+      shinyalert("Done, xlsform styled using 'kobo_prepare_form' function",
+                 "Prepare XLSform by adding chapter, disaggregation, correlate, variable, anonymise, structuralequation, clean, cluster, predict, mappoint, mappoly in case if those fields are not exist; the function will create dummy column for each one. Also, coloring all rows that have type equal to 'begin group', 'end group', 'begin repeat' or 'end repeat'.",
+                 type = "success",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#28A8E2",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+      
       
     }, error = function(err) {
       print("fdsg54tu7j")
@@ -1752,8 +1752,8 @@ server <- shinyServer(function(input, output, session) {
   output$relabelingSurveyUI <- renderUI({
     box(id="relabelingSurveyBox",
         width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,height = 650,
-           rHandsontableOutput("relabelingSurveyTable")
-           )
+        rHandsontableOutput("relabelingSurveyTable")
+    )
   })
   output$relabelingSurveyTable <- renderRHandsontable({
     tryCatch({
@@ -1767,17 +1767,17 @@ server <- shinyServer(function(input, output, session) {
         temp <- temp %>% hot_col("label", readOnly = TRUE, width = 200) %>%
           hot_col("labelReport", width = 400, allowInvalid = FALSE,
                   validator = "
-           function (value, callback) {
-            setTimeout(function(){
-              if(value.length >= 85){
-                alert('Please make sure that the length of the string less than 85 characters');
-              }
-              if(value.length <= 0){
-                alert('Please make sure that the length of the string greater than 0 characters');
-              }
-              callback(value.length < 85 && value.length > 0);
-            }, 700)
-           }")
+                  function (value, callback) {
+                  setTimeout(function(){
+                  if(value.length >= 85){
+                  alert('Please make sure that the length of the string less than 85 characters');
+                  }
+                  if(value.length <= 0){
+                  alert('Please make sure that the length of the string greater than 0 characters');
+                  }
+                  callback(value.length < 85 && value.length > 0);
+                  }, 700)
+                  }")
       }else{
         temp <- temp %>% hot_col("labelReport", width = 400, allowInvalid = FALSE,
                                  validator = "
@@ -1821,18 +1821,18 @@ server <- shinyServer(function(input, output, session) {
                                  )
       }
       temp
-    }, error = function(err) {
-      print("1")
-      shinyalert("Error",
-                 err$message,
-                 type = "error",
-                 closeOnClickOutside = FALSE,
-                 confirmButtonCol = "#ff4d4d",
-                 animation = FALSE,
-                 showConfirmButton = TRUE
-      )
+}, error = function(err) {
+  print("1")
+  shinyalert("Error",
+             err$message,
+             type = "error",
+             closeOnClickOutside = FALSE,
+             confirmButtonCol = "#ff4d4d",
+             animation = FALSE,
+             showConfirmButton = TRUE
+  )
+})
     })
-  })
   ###################################################################
   
   #####################relabeling Choices#############################
@@ -1902,7 +1902,7 @@ server <- shinyServer(function(input, output, session) {
         #rHandsontableOutput("selectOneTypeTable")
     )
   })
-
+  
   output$selectOneTypeBody <- renderUI({
     
     form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
@@ -1964,20 +1964,20 @@ server <- shinyServer(function(input, output, session) {
         hot_col("mappoint",  width = 120, halign="htCenter") %>%
         hot_col("mappoly",  width = 120, halign="htCenter") %>%
         hot_context_menu(allowRowEdit = FALSE, allowColEdit = FALSE)
-
+      
       temp
-      }, error = function(err) {
-        print("3")
-        shinyalert("Error",
-                   err$message,
-                   type = "error",
-                   closeOnClickOutside = FALSE,
-                   confirmButtonCol = "#ff4d4d",
-                   animation = FALSE,
-                   showConfirmButton = TRUE
-        )
-      })
+    }, error = function(err) {
+      print("3")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
     })
+  })
   ###################################################################
   
   #####################Order Ordinal Variables#############################
@@ -2311,16 +2311,16 @@ server <- shinyServer(function(input, output, session) {
         
         rowInd <- indicatorsIF[indicatorsIF$fullname == ind, ]
         
-  
+        
         textInfoOfRow <- ""
         for(curCol in colnames(rowInd)){
           textInfoOfRow <- paste(textInfoOfRow,
                                  column(width = ifelse(curCol=="calculation",8,4),
                                         style="border: 1px solid lightgray; line-height: 35px;margin: 10px 0px;",
-                                 span(paste(curCol,":"),class='colNameInd'),
-                                 span(rowInd[1,curCol],class='colValInd')
+                                        span(paste(curCol,":"),class='colNameInd'),
+                                        span(rowInd[1,curCol],class='colValInd')
                                  )
-                           ,sep=" ")
+                                 ,sep=" ")
         }
         textInfoOfRow<-HTML(textInfoOfRow)
         s <- paste(s,
@@ -2451,7 +2451,7 @@ server <- shinyServer(function(input, output, session) {
                          footer = tagList(
                            #modalButton("Cancel", icon("sign-out-alt")),
                            actionButton("cancelIndicatorButton", "Cancel", icon = icon("sign-out-alt")),
-                          
+                           
                            actionButton("saveIndicatorButton", ifelse(type=="Add","Add the Indicator", "Edit the Indicator"), class="toolButton", style="height: 35px;")
                          )
       ))
@@ -2490,50 +2490,50 @@ server <- shinyServer(function(input, output, session) {
       s <- paste("",
                  box(id="mandatoryInputsIndicatorBox",title = "Mandatory Inputs...",
                      width=12, solidHeader = TRUE, collapsible = FALSE, status = "danger",
-                   column(
-                     width=12,
-                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                            h4("Enter indicator's fullname:")
-                     ),
-                     column(width = 6, offset = 0,
-                            textInput("indicatorFullnameInput", label = NULL, value = rowInd[1,"fullname"], width = "100%")
-                     )
-                   ),
-                   column(
-                     width=12,
-                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                            h4("Enter indicator's label:")
-                     ),
-                     column(width = 5, offset = 0,
-                            textInput("indicatorLabelInput", label = NULL, value = rowInd[1,"label"], width = "100%")
-                     ),
-                     column(width = 1, offset = 0, align="center",
-                            uiOutput("indicatorLabelInputLengthUI")
-                     )
-                   ),
-                   column(
-                     width=12,
-                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                            h4("Select indicator's frame:")
-                     ),
-                     column(width = 6, offset = 0, 
-                            selectizeInput("indicatorFrameInput", label = NULL, selected = rowInd[1,"frame"], choices = c("-- select --",projectConfigurationInfo$data[["beginRepeatList"]]), 
-                                           options = list(placeholder = "-- select --"),
-                                           width = "100%")
-                     )
-                   ),
-                   
-                   uiOutput("calculationNeed"),
-                   
-                   conditionalPanel(
-                     condition = "input.useCalculation=='No'",
                      column(
                        width=12,
-                       uiOutput("calculationBuilderToolBody")
+                       column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                              h4("Enter indicator's fullname:")
+                       ),
+                       column(width = 6, offset = 0,
+                              textInput("indicatorFullnameInput", label = NULL, value = rowInd[1,"fullname"], width = "100%")
+                       )
+                     ),
+                     column(
+                       width=12,
+                       column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                              h4("Enter indicator's label:")
+                       ),
+                       column(width = 5, offset = 0,
+                              textInput("indicatorLabelInput", label = NULL, value = rowInd[1,"label"], width = "100%")
+                       ),
+                       column(width = 1, offset = 0, align="center",
+                              uiOutput("indicatorLabelInputLengthUI")
+                       )
+                     ),
+                     column(
+                       width=12,
+                       column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                              h4("Select indicator's frame:")
+                       ),
+                       column(width = 6, offset = 0, 
+                              selectizeInput("indicatorFrameInput", label = NULL, selected = rowInd[1,"frame"], choices = c("-- select --",projectConfigurationInfo$data[["beginRepeatList"]]), 
+                                             options = list(placeholder = "-- select --"),
+                                             width = "100%")
+                       )
+                     ),
+                     
+                     uiOutput("calculationNeed"),
+                     
+                     conditionalPanel(
+                       condition = "input.useCalculation=='No'",
+                       column(
+                         width=12,
+                         uiOutput("calculationBuilderToolBody")
+                       )
                      )
-                   )
-                   
-                   
+                     
+                     
                  ),
                  
                  box(id="moreOptionsIndicatorBox",title = "Optional Inputs...",
@@ -2549,108 +2549,108 @@ server <- shinyServer(function(input, output, session) {
                                              width = "100%")
                        )
                      ),
-                   column(
-                     width=12,
-                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                            h4("Apply disaggregation?")
+                     column(
+                       width=12,
+                       column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                              h4("Apply disaggregation?")
+                       ),
+                       column(width = 6, offset = 0,
+                              selectInput("indicatorDisaggregationInput", label = NULL, selected = ifelse(rowInd[1,"disaggregation"]=="TRUE","Yes",ifelse(rowInd[1,"disaggregation"]=="FALSE","No","-- select --")),
+                                          choices = c("-- select --","Yes","No"), 
+                                          width = "100%")
+                       )
                      ),
-                     column(width = 6, offset = 0,
-                            selectInput("indicatorDisaggregationInput", label = NULL, selected = ifelse(rowInd[1,"disaggregation"]=="TRUE","Yes",ifelse(rowInd[1,"disaggregation"]=="FALSE","No","-- select --")),
-                                        choices = c("-- select --","Yes","No"), 
-                                        width = "100%")
-                     )
-                   ),
-                   column(
-                     width=12,
-                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                            h4("Apply correlate?")
+                     column(
+                       width=12,
+                       column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                              h4("Apply correlate?")
+                       ),
+                       column(width = 6, offset = 0,
+                              selectInput("indicatorCorrelateInput", label = NULL, selected = ifelse(rowInd[1,"correlate"]=="TRUE","Yes",ifelse(rowInd[1,"correlate"]=="FALSE","No","-- select --")),
+                                          choices = c("-- select --","Yes","No"), 
+                                          width = "100%")
+                       )
                      ),
-                     column(width = 6, offset = 0,
-                            selectInput("indicatorCorrelateInput", label = NULL, selected = ifelse(rowInd[1,"correlate"]=="TRUE","Yes",ifelse(rowInd[1,"correlate"]=="FALSE","No","-- select --")),
-                                        choices = c("-- select --","Yes","No"), 
-                                        width = "100%")
-                     )
-                   ),
-                   column(
-                     width=12,
-                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                            h4("Apply sensitive?")
+                     column(
+                       width=12,
+                       column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                              h4("Apply sensitive?")
+                       ),
+                       column(width = 6, offset = 0,
+                              selectInput("indicatorSensitiveInput", label = NULL, selected = ifelse(rowInd[1,"sensitive"]=="TRUE","Yes",ifelse(rowInd[1,"sensitive"]=="FALSE","No","-- select --")),
+                                          choices = c("-- select --","Yes","No"), 
+                                          width = "100%")
+                       )
                      ),
-                     column(width = 6, offset = 0,
-                            selectInput("indicatorSensitiveInput", label = NULL, selected = ifelse(rowInd[1,"sensitive"]=="TRUE","Yes",ifelse(rowInd[1,"sensitive"]=="FALSE","No","-- select --")),
-                                        choices = c("-- select --","Yes","No"), 
-                                        width = "100%")
-                     )
-                   ),
-                   column(
-                     width=12,
-                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                            h4("Select the anonymise way:")
+                     column(
+                       width=12,
+                       column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                              h4("Select the anonymise way:")
+                       ),
+                       column(width = 6, offset = 0,
+                              selectInput("indicatorAnonymiseInput", label = NULL, selected = rowInd[1,"anonymise"],
+                                          choices = c("-- select --","key", "outlier", "sensitive", "remove", "reference"), 
+                                          width = "100%")
+                       )
                      ),
-                     column(width = 6, offset = 0,
-                            selectInput("indicatorAnonymiseInput", label = NULL, selected = rowInd[1,"anonymise"],
-                                        choices = c("-- select --","key", "outlier", "sensitive", "remove", "reference"), 
-                                        width = "100%")
-                     )
-                   ),
-                   column(
-                     width=12,
-                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                            h4("Apply cluster?")
+                     column(
+                       width=12,
+                       column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                              h4("Apply cluster?")
+                       ),
+                       column(width = 6, offset = 0,
+                              selectInput("indicatorClusterInput", label = NULL, selected = ifelse(rowInd[1,"cluster"]=="TRUE","Yes",ifelse(rowInd[1,"cluster"]=="FALSE","No","-- select --")),
+                                          choices = c("-- select --","Yes","No"), 
+                                          width = "100%")
+                       )
                      ),
-                     column(width = 6, offset = 0,
-                            selectInput("indicatorClusterInput", label = NULL, selected = ifelse(rowInd[1,"cluster"]=="TRUE","Yes",ifelse(rowInd[1,"cluster"]=="FALSE","No","-- select --")),
-                                        choices = c("-- select --","Yes","No"), 
-                                        width = "100%")
-                     )
-                   ),
-                   column(
-                     width=12,
-                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                            h4("Apply predict?")
+                     column(
+                       width=12,
+                       column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                              h4("Apply predict?")
+                       ),
+                       column(width = 6, offset = 0,
+                              selectInput("indicatorPredictInput", label = NULL, selected = ifelse(rowInd[1,"predict"]=="TRUE","Yes",ifelse(rowInd[1,"predict"]=="FALSE","No","-- select --")),
+                                          choices = c("-- select --","Yes","No"), 
+                                          width = "100%")
+                       )
                      ),
-                     column(width = 6, offset = 0,
-                            selectInput("indicatorPredictInput", label = NULL, selected = ifelse(rowInd[1,"predict"]=="TRUE","Yes",ifelse(rowInd[1,"predict"]=="FALSE","No","-- select --")),
-                                        choices = c("-- select --","Yes","No"), 
-                                        width = "100%")
-                     )
-                   ),
-                   
-                   
-                   column(
-                     width=12,
-                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                            h4("Apply mappoint?")
+                     
+                     
+                     column(
+                       width=12,
+                       column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                              h4("Apply mappoint?")
+                       ),
+                       column(width = 6, offset = 0,
+                              selectInput("indicatorMappointInput", label = NULL, selected = ifelse(rowInd[1,"mappoint"]=="TRUE","Yes",ifelse(rowInd[1,"mappoint"]=="FALSE","No","-- select --")),
+                                          choices = c("-- select --","Yes","No"), 
+                                          width = "100%")
+                       )
                      ),
-                     column(width = 6, offset = 0,
-                            selectInput("indicatorMappointInput", label = NULL, selected = ifelse(rowInd[1,"mappoint"]=="TRUE","Yes",ifelse(rowInd[1,"mappoint"]=="FALSE","No","-- select --")),
-                                        choices = c("-- select --","Yes","No"), 
-                                        width = "100%")
-                     )
-                   ),
-                   column(
-                     width=12,
-                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                            h4("Apply mappoly?")
+                     column(
+                       width=12,
+                       column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                              h4("Apply mappoly?")
+                       ),
+                       column(width = 6, offset = 0,
+                              selectInput("indicatorMappolyInput", label = NULL, selected = ifelse(rowInd[1,"mappoly"]=="TRUE","Yes",ifelse(rowInd[1,"mappoly"]=="FALSE","No","-- select --")),
+                                          choices = c("-- select --","Yes","No"), 
+                                          width = "100%")
+                       )
                      ),
-                     column(width = 6, offset = 0,
-                            selectInput("indicatorMappolyInput", label = NULL, selected = ifelse(rowInd[1,"mappoly"]=="TRUE","Yes",ifelse(rowInd[1,"mappoly"]=="FALSE","No","-- select --")),
-                                        choices = c("-- select --","Yes","No"), 
-                                        width = "100%")
+                     column(
+                       width=12,
+                       column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                              h4("Apply structuralequation?")
+                       ),
+                       column(width = 6, offset = 0,
+                              selectInput("indicatorStructuralequationInput", label = NULL, selected = ifelse(rowInd[1,"structuralequation"]=="TRUE","Yes",ifelse(rowInd[1,"structuralequation"]=="FALSE","No","-- select --")),
+                                          choices = c("-- select --","Yes","No"), 
+                                          width = "100%")
+                       )
                      )
-                   ),
-                   column(
-                     width=12,
-                     column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                            h4("Apply structuralequation?")
-                     ),
-                     column(width = 6, offset = 0,
-                            selectInput("indicatorStructuralequationInput", label = NULL, selected = ifelse(rowInd[1,"structuralequation"]=="TRUE","Yes",ifelse(rowInd[1,"structuralequation"]=="FALSE","No","-- select --")),
-                                        choices = c("-- select --","Yes","No"), 
-                                        width = "100%")
-                     )
-                   )
-                   
+                     
                  )
                  ,sep = "")
       
@@ -2685,15 +2685,15 @@ server <- shinyServer(function(input, output, session) {
       
     }else{
       m <- paste(m,column(style = "display: none;",
-        width=12,
-        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-               h4("Use previous calculation?")
-        ),
-        column(width = 6, offset = 0,
-               selectInput("useCalculation", label = NULL, selected = "No",
-                           choices = c("No"), 
-                           width = "100%")
-        )
+                          width=12,
+                          column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                                 h4("Use previous calculation?")
+                          ),
+                          column(width = 6, offset = 0,
+                                 selectInput("useCalculation", label = NULL, selected = "No",
+                                             choices = c("No"), 
+                                             width = "100%")
+                          )
       ),sep = "")
     }
     m
@@ -2802,8 +2802,8 @@ server <- shinyServer(function(input, output, session) {
           ############################        Validation        ############################
           if (
             (sum(input$frameDVSelectInput == "-- select --") ||
-            sum(input$variableDVSelectInput == "-- select --") ||
-            sum(input$breaksDVTextInput == "")& sum(input$useCalculation=="No"))
+             sum(input$variableDVSelectInput == "-- select --") ||
+             sum(input$breaksDVTextInput == "")& sum(input$useCalculation=="No"))
           ) {
             print("lkfdbjg9")
             shinyalert("Error",
@@ -2847,8 +2847,8 @@ server <- shinyServer(function(input, output, session) {
           ############################        Validation        ############################
           if (
             (sum(input$frameFRSelectInput == "-- select --") ||
-            sum(input$variableFRSelectInput == "-- select --") ||
-            sum(input$listnameFRSelectInput == "-- select --")) & sum(input$useCalculation=="No")
+             sum(input$variableFRSelectInput == "-- select --") ||
+             sum(input$listnameFRSelectInput == "-- select --")) & sum(input$useCalculation=="No")
           ) {
             print("kfdjsgt54")
             shinyalert("Error",
@@ -2904,15 +2904,15 @@ server <- shinyServer(function(input, output, session) {
           
           calculationResult <- "psum("
           calculationResult <- paste(calculationResult,
-                          input$frameSUSelectInput,
-                          "$",
-                          input$varSU1,
-                          ", ",
-                          input$frameSUSelectInput,
-                          "$",
-                          input$varSU2,
-                          ifelse(length(variablesToUseSU$idOfVar)>0,
-                                 ", ",""), sep="")
+                                     input$frameSUSelectInput,
+                                     "$",
+                                     input$varSU1,
+                                     ", ",
+                                     input$frameSUSelectInput,
+                                     "$",
+                                     input$varSU2,
+                                     ifelse(length(variablesToUseSU$idOfVar)>0,
+                                            ", ",""), sep="")
           
           
           
@@ -2920,10 +2920,10 @@ server <- shinyServer(function(input, output, session) {
           for(i in variablesToUseSU$idOfVar){
             val <- input[[paste("varSU", i, sep = "")]]
             calculationResult <- paste(calculationResult,
-                            input$frameSUSelectInput,
-                            "$",
-                            val
-                            , sep="")
+                                       input$frameSUSelectInput,
+                                       "$",
+                                       val
+                                       , sep="")
             
             if(counter != length(variablesToUseSU$idOfVar)){
               calculationResult <- paste(calculationResult,", ", sep="")
@@ -2942,8 +2942,8 @@ server <- shinyServer(function(input, output, session) {
           ############################        Validation        ############################
           if (
             (sum(input$frameMMASelectInput == "-- select --") ||
-            sum(input$variableMMASelectInput == "-- select --") ||
-            sum(input$statisticalFunctionsMMASelectInput == "-- select --")) & sum(input$useCalculation=="No")
+             sum(input$variableMMASelectInput == "-- select --") ||
+             sum(input$statisticalFunctionsMMASelectInput == "-- select --")) & sum(input$useCalculation=="No")
           ) {
             print("lklfgjifyuqw")
             shinyalert("Error",
@@ -2985,8 +2985,8 @@ server <- shinyServer(function(input, output, session) {
           ############################        Validation        ############################
           if (
             (sum(input$frameD2SelectInput == "-- select --") ||
-            sum(input$variableD2SelectInput1 == "-- select --") ||
-            sum(input$variableD2SelectInput2 == "-- select --")) & sum(input$useCalculation=="No")
+             sum(input$variableD2SelectInput1 == "-- select --") ||
+             sum(input$variableD2SelectInput2 == "-- select --")) & sum(input$useCalculation=="No")
           ) {
             print("idf85reij")
             shinyalert("Error",
@@ -3016,11 +3016,11 @@ server <- shinyServer(function(input, output, session) {
           }else{
             calculationResult <- paste(calculationResult, input$variableD2SelectInput2, sep="")
           }
-
           
-          }, error = function(err) {
-            calculationResult <- structure(c, class = "try-error")
-          })
+          
+        }, error = function(err) {
+          calculationResult <- structure(c, class = "try-error")
+        })
       }
       else if(sum(input$indicatorCaseSelectInput=="Set condition on specific variables")){
         mainDf <- ifVariables$mainDataFrame
@@ -3235,7 +3235,7 @@ server <- shinyServer(function(input, output, session) {
         )
         return(FALSE)
       }
-
+      
       ########################Detect the Type#########################
       typeOfInd <- c()
       
@@ -3295,7 +3295,7 @@ server <- shinyServer(function(input, output, session) {
             typeOfInd <- "factor"
           }
           rm(input$frameSUSelectInput)
-
+          
         }, error = function(err) {
           typeOfInd <- structure(c, class = "try-error")
         })
@@ -3555,7 +3555,7 @@ server <- shinyServer(function(input, output, session) {
                                              width = "100%")
                        )
                      )
-                   
+                     
                  )
                  
                  ,sep="")
@@ -3794,839 +3794,1115 @@ server <- shinyServer(function(input, output, session) {
       )
     )
   })
-    
-    ##########Discretize a value##################
-    
-    output$variableDVUI <- renderUI({
-      tryCatch({
-        if(input$frameDVSelectInput != "-- select --"){
-          if(file.exists(paste(mainDir(), "data", paste("/",input$frameDVSelectInput, ".csv", sep=""), sep = "/", collapse = "/"))){
-            temp <- read.csv(
-              paste(mainDir(), "data", paste("/",input$frameDVSelectInput, ".csv", sep=""), sep = "/", collapse = "/"),
-              stringsAsFactors = FALSE, nrows = 1
-            )
-            selectedCol <- unlist(lapply(temp, is.numeric)) 
-            column(
-              width=12,
-              column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                     h4("Select the variable")
-              ),
-              column(width = 6, offset = 0,
-                     selectInput("variableDVSelectInput", label = NULL,choices = c("-- select --",
-                                                                                   colnames(temp[ , selectedCol])
-                     ),width = "100%")
-              )
-            )
-          }else{
-            infoBox(
-              width = 12,strong("Warning"),
-              h4(paste("You cannot proceed without",input$frameDVSelectInput,"file"),align="center")
-              ,icon = icon("exclamation-triangle"),
-              color = "yellow"
-            )
-          }
-          
-        }
-      }, error = function(err) {
-        infoBox(
-          width = 12,strong("Error"),
-          h4(err$message,align="center")
-          ,icon = icon("times"),
-          color = "red"
-        )
-      })
-    })
-    
-    output$breaksDVUI <- renderUI({
-      tryCatch({
-        if(!is.null(input$variableDVSelectInput)){
-          if(input$variableDVSelectInput != "-- select --"){
-            column(
-              width=12,
-              column(width = 4, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                     h4("Enter the Breaks argument")
-              ),
-              column(width = 1,
-                     div(class="help-tip",style="top: 0px;left: 25px;",
-                         p(
-                           span("Enter either a numeric vector of two or more unique cut points EX: 0,25,50,75,100",style="display: block;"),
-                           span("OR\n",style="display: block;text-align: center;margin: 20px 0px;font-weight: 900;border-top: 1px solid white;line-height: 0px;
-                                font-size: 25px;color: #1aab8a;"),
-                           span("Single number as Interval length EX: 5, so the length of the interval will be equal to max(x)/5, where x is the variable.",style="display: block;")
-                           )
-                     )
-              ),
-              column(width = 7, offset = 0,
-                     textInput("breaksDVTextInput", label = NULL, width = "100%", placeholder="EX: 0,25,50,75,100 or 5")
-              )
-            )
-          }
-        }
-      }, error = function(err) {
-        infoBox(
-          width = 12,strong("Error"),
-          h4(err$message,align="center")
-          ,icon = icon("times"),
-          color = "red"
-        )
-      })
-    })
-    
-    resultDVUIValue <- reactiveValues(text="")
-    
-    observeEvent(input$frameDVSelectInput,{
-      resultDVUIValue$text <- ""
-    })
-    
-    observeEvent(input$variableDVSelectInput,{
-      resultDVUIValue$text <- ""
-    })
-    
-    observe({
-      if(!is.null(input$breaksDVTextInput)){
-        if(input$breaksDVTextInput == ""){
-          resultDVUIValue$text = ""
-        }
-      }
-    })
-    ##########-----END----------##################
-    
-    
-    ##########Re categorize a categorical variable by re coding modalities##################
-    output$variableFRUI <- renderUI({
-      tryCatch({ 
-        if(input$frameFRSelectInput != "-- select --"){
-          if(file.exists(paste(mainDir(), "data", paste("/",input$frameFRSelectInput, ".csv", sep=""), sep = "/", collapse = "/"))){
-            temp <- read.csv(
-              paste(mainDir(), "data", paste("/",input$frameFRSelectInput, ".csv", sep=""), sep = "/", collapse = "/"),
-              stringsAsFactors = FALSE, nrows = 1
-            )
-            selectedCol <- unlist(lapply(temp, is.character)) 
-            column(
-              width=12,
-              column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                     h4("Select the variable")
-              ),
-              column(width = 6, offset = 0,
-                     selectInput("variableFRSelectInput", label = NULL,choices = c("-- select --",
-                                                                                   colnames(temp[ , selectedCol])
-                     ),width = "100%")
-              )
-            )
-          }else{
-            infoBox(
-              width = 12,strong("Warning"),
-              h4(paste("You cannot proceed without",input$frameDVSelectInput,"file"),align="center")
-              ,icon = icon("exclamation-triangle"),
-              color = "yellow"
-            )
-          }
-        }
-      }, error = function(err) {
-        infoBox(
-          width = 12,strong("Error"),
-          h4(err$message,align="center")
-          ,icon = icon("times"),
-          color = "red"
-        )
-      })
-    })
-    
-    choicesSheetFR <- reactive({
-      tryCatch({ 
-        form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
-        choices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
-                                 stringsAsFactors = FALSE)
-        choices <- choices[!is.na(choices$list_name),]
-        choices <- choices[trimws(choices$list_name)!="",]
-        choices
-      }, error = function(err) {
-        print("1x3wex")
-        shinyalert("Error",
-                   err$message,
-                   type = "error",
-                   closeOnClickOutside = FALSE,
-                   confirmButtonCol = "#ff4d4d",
-                   animation = FALSE,
-                   showConfirmButton = TRUE
-        )
-        data.frame(
-          name = character(),
-          label = character(),
-          value = character(),
-          path = character(),
-          stringsAsFactors = FALSE
-        )
-      })
-    })
-    
-    output$listnameFRUI <- renderText({
-      tryCatch({ 
-        if(!is.null(input$variableFRSelectInput)){
-          if(input$variableFRSelectInput != "-- select --"){
-            s <- ""
-            s<-paste(
-              column(
-                width=12,
-                column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                       h4("Select the listname that represent the factor")
-                ),
-                column(width = 6, offset = 0,
-                       selectInput("listnameFRSelectInput", label = NULL,choices = c("-- select --",
-                                                                                     choicesSheetFR()$list_name
-                       ),width = "100%")
-                )
-              ),s,sep = "")
-            return(s)
-          }
-        }
-        return("")
-      }, error = function(err) {
-        return(infoBox(
-          width = 12,strong("Error"),
-          h4(err$message,align="center")
-          ,icon = icon("times"),
-          color = "red"
-        ))
-      })
-    })
-    
-    output$factorValuesFRUI <- renderText({
-      tryCatch({ 
-        if(!is.null(input$listnameFRSelectInput)){
-          if(input$listnameFRSelectInput != "-- select --"){
-            factorValues <- choicesSheetFR()[choicesSheetFR()$list_name==input$listnameFRSelectInput,c("list_name", "name", "label")]
-            
-            s <- column(width = 2,offset=10,style="margin-bottom:50px;",
-                        div(class="help-tip",style="top: 0px;left: 25px;",
-                            p(
-                              span("Enter the new name of level",style="display: block;"),
-                              span("OR\n",style="display: block;text-align: center;margin: 20px 0px;font-weight: 900;border-top: 1px solid white;line-height: 0px;
-                                   font-size: 25px;color: #1aab8a;"),
-                              span("Keep it as is",style="display: block;"),
-                              span("OR\n",style="display: block;text-align: center;margin: 20px 0px;font-weight: 900;border-top: 1px solid white;line-height: 0px;
-                                   font-size: 25px;color: #1aab8a;"),
-                              span("Replace it with 'NULL' value to remove it",style="display: block;")
-                              )
-                            )
-            )
-            
-            
-            s <- paste(s,
-                       column(width = 12,offset = 0,style="margin-bottom: 10px;",
-                              column(width = 3, style="background-color: black;color: white;text-align: center;border-right: 1px solid white;",
-                                     h4("list_name")),
-                              column(width = 5, style="background-color: black;color: white;text-align: center;border-right: 1px solid white;",
-                                     h4("label")),
-                              column(width = 4, style="background-color: black;color: white;text-align: center;",
-                                     h4("name"))
-                       ),sep="")
-            for(i in 1:nrow(factorValues)){
-              s <- paste(s,
-                         column(width = 12,offset = 0,
-                                column(width = 3,
-                                       h5(factorValues[i,"list_name"]) ),
-                                column(width = 5,style="border-left: 2px solid #1aab8a;border-right: 2px solid #1aab8a;",
-                                       h5(factorValues[i,"label"]) ),
-                                column(width = 4,
-                                       textInput(paste(i,factorValues[i,"name"],sep = "-"),
-                                                 label = NULL,
-                                                 value = factorValues[i,"name"],
-                                                 placeholder = factorValues[i,"name"],
-                                                 width = "100%"
-                                       ) 
-                                )
-                         )
-                         ,sep = "")
-            }
-            return(s)
-          }
-        }
-      }, error = function(err) {
-        return(infoBox(
-          width = 12,strong("Error"),
-          h4(err$message,align="center")
-          ,icon = icon("times"),
-          color = "red"
-        ))
-      })
-    })
-    
-    resultFRUIValue <- reactiveValues(text="")
-    
-    observeEvent(input$frameFRSelectInput,{
-      resultFRUIValue$text <- ""
-    })
-    
-    observeEvent(input$variableFRSelectInput,{
-      resultFRUIValue$text <- ""
-    })
-    
-    observeEvent(input$listnameFRSelectInput,{
-      resultFRUIValue$text <- ""
-    })
-    
-    ##########-----END----------##################
-    
-    
-    ##########Sum up different numeric or integer variables##################
-    variablesToUseSU <- reactiveValues(col=NULL,counterOfVar=2, otherVariablesSUUI="", idOfVar=c())
-    resultSUUIValue <- reactiveValues(text="")
-    
-    observeEvent(input$frameSUSelectInput,{
-      tryCatch({ 
-        if(sum(input$frameSUSelectInput != "-- select --") ){
+  
+  ##########Discretize a value##################
+  
+  output$variableDVUI <- renderUI({
+    tryCatch({
+      if(input$frameDVSelectInput != "-- select --"){
+        if(file.exists(paste(mainDir(), "data", paste("/",input$frameDVSelectInput, ".csv", sep=""), sep = "/", collapse = "/"))){
           temp <- read.csv(
-            paste(mainDir(), "data", paste("/",input$frameSUSelectInput, ".csv", sep=""), sep = "/", collapse = "/"),
+            paste(mainDir(), "data", paste("/",input$frameDVSelectInput, ".csv", sep=""), sep = "/", collapse = "/"),
             stringsAsFactors = FALSE, nrows = 1
           )
           selectedCol <- unlist(lapply(temp, is.numeric)) 
-          selectedCol <- colnames(temp[ , selectedCol])
-          selectedCol <- sort(selectedCol)
-          variablesToUseSU$col <- selectedCol
+          column(
+            width=12,
+            column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                   h4("Select the variable")
+            ),
+            column(width = 6, offset = 0,
+                   selectInput("variableDVSelectInput", label = NULL,choices = c("-- select --",
+                                                                                 colnames(temp[ , selectedCol])
+                   ),width = "100%")
+            )
+          )
+        }else{
+          infoBox(
+            width = 12,strong("Warning"),
+            h4(paste("You cannot proceed without",input$frameDVSelectInput,"file"),align="center")
+            ,icon = icon("exclamation-triangle"),
+            color = "yellow"
+          )
         }
-      }, error = function(err) {
-        return(infoBox(
-          width = 12,strong("Error"),
-          h4(err$message,align="center")
-          ,icon = icon("times"),
-          color = "red"
-        ))
-      })
-    })
-    
-    output$mainTwoVariablesSUUI <- renderUI({
-      column(
-        width=12,
-        column(width = 1, offset = 0,align="center",
-               icon("flag", "fa-2x")
-        ),
-        column(width = 3, offset = 0,align="center",
-               selectInput("varSU1", label = NULL,choices = variablesToUseSU$col,width = "100%", selected = 1)
-        ),
-        column(width = 1, offset = 0,align="center",
-               icon("plus", "fa-2x")
-        ),
-        column(width = 4, offset = 0,align="center",
-               selectInput("varSU2", label = NULL,choices = variablesToUseSU$col,width = "100%", selected = 15)
-        ),
-        column(width = 3, offset = 0,align="center",
-               actionButton("addVariablesSU", "Add Variable", class="toolButton", style="height: 35px;", icon = icon("plus-circle","fa-1x"))
-        )
+        
+      }
+    }, error = function(err) {
+      infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
       )
     })
-    
-    output$otherVariablesSUUI <- renderText({
-      variablesToUseSU$otherVariablesSUUI
-    })
-    
-    observeEvent(input$addVariablesSU,{
-      tryCatch({ 
-        resultSUUIValue$text <- ""
-        if(length(variablesToUseSU$idOfVar)==0 || variablesToUseSU$idOfVar==0){
-          variablesToUseSU$counterOfVar <- variablesToUseSU$counterOfVar + 1
-          variablesToUseSU$idOfVar <- c(variablesToUseSU$counterOfVar)
-        }else{
-          variablesToUseSU$counterOfVar <- variablesToUseSU$counterOfVar + 1
-          variablesToUseSU$idOfVar <- c(variablesToUseSU$idOfVar, variablesToUseSU$counterOfVar)
-        }
-        
-        if( length(variablesToUseSU$idOfVar) > length(variablesToUseSU$col) ){
-          shinyalert("Info",
-                     "You can't add more variables, because you have enough inputs that cover all variables",
-                     type = "info",
-                     closeOnClickOutside = FALSE,
-                     confirmButtonCol = "#ff4d4d",
-                     animation = FALSE,
-                     showConfirmButton = TRUE
+  })
+  
+  output$breaksDVUI <- renderUI({
+    tryCatch({
+      if(!is.null(input$variableDVSelectInput)){
+        if(input$variableDVSelectInput != "-- select --"){
+          column(
+            width=12,
+            column(width = 4, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                   h4("Enter the Breaks argument")
+            ),
+            column(width = 1,
+                   div(class="help-tip",style="top: 0px;left: 25px;",
+                       p(
+                         span("Enter either a numeric vector of two or more unique cut points EX: 0,25,50,75,100",style="display: block;"),
+                         span("OR\n",style="display: block;text-align: center;margin: 20px 0px;font-weight: 900;border-top: 1px solid white;line-height: 0px;
+                              font-size: 25px;color: #1aab8a;"),
+                         span("Single number as Interval length EX: 5, so the length of the interval will be equal to max(x)/5, where x is the variable.",style="display: block;")
+                         )
+                   )
+            ),
+            column(width = 7, offset = 0,
+                   textInput("breaksDVTextInput", label = NULL, width = "100%", placeholder="EX: 0,25,50,75,100 or 5")
+            )
           )
-          variablesToUseSU$counterOfVar <- variablesToUseSU$counterOfVar-1
-          return(NULL)
         }
-        
-        s <- ""
-        for(i in variablesToUseSU$idOfVar){
-          tempVal<-1
+      }
+    }, error = function(err) {
+      infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      )
+    })
+  })
+  
+  resultDVUIValue <- reactiveValues(text="")
+  
+  observeEvent(input$frameDVSelectInput,{
+    resultDVUIValue$text <- ""
+  })
+  
+  observeEvent(input$variableDVSelectInput,{
+    resultDVUIValue$text <- ""
+  })
+  
+  observe({
+    if(!is.null(input$breaksDVTextInput)){
+      if(input$breaksDVTextInput == ""){
+        resultDVUIValue$text = ""
+      }
+    }
+  })
+  ##########-----END----------##################
+  
+  
+  ##########Re categorize a categorical variable by re coding modalities##################
+  output$variableFRUI <- renderUI({
+    tryCatch({ 
+      if(input$frameFRSelectInput != "-- select --"){
+        if(file.exists(paste(mainDir(), "data", paste("/",input$frameFRSelectInput, ".csv", sep=""), sep = "/", collapse = "/"))){
+          temp <- read.csv(
+            paste(mainDir(), "data", paste("/",input$frameFRSelectInput, ".csv", sep=""), sep = "/", collapse = "/"),
+            stringsAsFactors = FALSE, nrows = 1
+          )
+          selectedCol <- unlist(lapply(temp, is.character)) 
+          column(
+            width=12,
+            column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                   h4("Select the variable")
+            ),
+            column(width = 6, offset = 0,
+                   selectInput("variableFRSelectInput", label = NULL,choices = c("-- select --",
+                                                                                 colnames(temp[ , selectedCol])
+                   ),width = "100%")
+            )
+          )
+        }else{
+          infoBox(
+            width = 12,strong("Warning"),
+            h4(paste("You cannot proceed without",input$frameDVSelectInput,"file"),align="center")
+            ,icon = icon("exclamation-triangle"),
+            color = "yellow"
+          )
+        }
+      }
+    }, error = function(err) {
+      infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      )
+    })
+  })
+  
+  choicesSheetFR <- reactive({
+    tryCatch({ 
+      form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
+      choices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
+                               stringsAsFactors = FALSE)
+      choices <- choices[!is.na(choices$list_name),]
+      choices <- choices[trimws(choices$list_name)!="",]
+      choices
+    }, error = function(err) {
+      print("1x3wex")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+      data.frame(
+        name = character(),
+        label = character(),
+        value = character(),
+        path = character(),
+        stringsAsFactors = FALSE
+      )
+    })
+  })
+  
+  output$listnameFRUI <- renderText({
+    tryCatch({ 
+      if(!is.null(input$variableFRSelectInput)){
+        if(input$variableFRSelectInput != "-- select --"){
+          s <- ""
+          s<-paste(
+            column(
+              width=12,
+              column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                     h4("Select the listname that represent the factor")
+              ),
+              column(width = 6, offset = 0,
+                     selectInput("listnameFRSelectInput", label = NULL,choices = c("-- select --",
+                                                                                   choicesSheetFR()$list_name
+                     ),width = "100%")
+              )
+            ),s,sep = "")
+          return(s)
+        }
+      }
+      return("")
+    }, error = function(err) {
+      return(infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      ))
+    })
+  })
+  
+  output$factorValuesFRUI <- renderText({
+    tryCatch({ 
+      if(!is.null(input$listnameFRSelectInput)){
+        if(input$listnameFRSelectInput != "-- select --"){
+          factorValues <- choicesSheetFR()[choicesSheetFR()$list_name==input$listnameFRSelectInput,c("list_name", "name", "label")]
           
-          if(!is.null(input[[paste("varSU", i, sep = "")]])){
-            tempVal <- input[[paste("varSU", i, sep = "")]]
-          }
+          s <- column(width = 2,offset=10,style="margin-bottom:50px;",
+                      div(class="help-tip",style="top: 0px;left: 25px;",
+                          p(
+                            span("Enter the new name of level",style="display: block;"),
+                            span("OR\n",style="display: block;text-align: center;margin: 20px 0px;font-weight: 900;border-top: 1px solid white;line-height: 0px;
+                                 font-size: 25px;color: #1aab8a;"),
+                            span("Keep it as is",style="display: block;"),
+                            span("OR\n",style="display: block;text-align: center;margin: 20px 0px;font-weight: 900;border-top: 1px solid white;line-height: 0px;
+                                 font-size: 25px;color: #1aab8a;"),
+                            span("Replace it with 'NULL' value to remove it",style="display: block;")
+                            )
+                          )
+          )
+          
           
           s <- paste(s,
-                     column(
-                       width=12,
-                       column(width = 1, offset = 0,align="center",
-                              icon("plus", "fa-2x")
-                       ),
-                       column(width = 8, offset = 0,align="center",
-                              selectInput(paste("varSU", i, sep = ""), label = NULL,choices = variablesToUseSU$col,width = "100%", selected = tempVal)
-                       ),
-                       column(width = 2, offset = 0,align="center",
-                              actionButton(paste("deleteVariableSU", i ,sep = ""), NULL, class="toolButtonDelete", style="height: 35px;", icon = icon("times","fa-2x"))
-                       )
+                     column(width = 12,offset = 0,style="margin-bottom: 10px;",
+                            column(width = 3, style="background-color: black;color: white;text-align: center;border-right: 1px solid white;",
+                                   h4("list_name")),
+                            column(width = 5, style="background-color: black;color: white;text-align: center;border-right: 1px solid white;",
+                                   h4("label")),
+                            column(width = 4, style="background-color: black;color: white;text-align: center;",
+                                   h4("name"))
                      ),sep="")
+          for(i in 1:nrow(factorValues)){
+            s <- paste(s,
+                       column(width = 12,offset = 0,
+                              column(width = 3,
+                                     h5(factorValues[i,"list_name"]) ),
+                              column(width = 5,style="border-left: 2px solid #1aab8a;border-right: 2px solid #1aab8a;",
+                                     h5(factorValues[i,"label"]) ),
+                              column(width = 4,
+                                     textInput(paste(i,factorValues[i,"name"],sep = "-"),
+                                               label = NULL,
+                                               value = factorValues[i,"name"],
+                                               placeholder = factorValues[i,"name"],
+                                               width = "100%"
+                                     ) 
+                              )
+                       )
+                       ,sep = "")
+          }
+          return(s)
         }
-        
-        
-        lapply(1:length(variablesToUseSU$idOfVar), function(j) {
-          observeEvent(input[[paste("deleteVariableSU", variablesToUseSU$idOfVar[j] ,sep = "")]] , {
-            resultSUUIValue$text <- ""
-            variablesToUseSU$idOfVar <- variablesToUseSU$idOfVar[ variablesToUseSU$idOfVar != variablesToUseSU$idOfVar[j] ]
-            variablesToUseSU$idOfVar <- sort(variablesToUseSU$idOfVar)
-            
-            
-            if(length(variablesToUseSU$idOfVar)==0 || variablesToUseSU$idOfVar==0){
-              variablesToUseSU$idOfVar <- c()
-            }
-            
-            s <- ""
-            for(i in variablesToUseSU$idOfVar){
-              tempVal<-1
-              
-              if(!is.null(input[[paste("varSU", i, sep = "")]])){
-                tempVal <- input[[paste("varSU", i, sep = "")]]
-              }
-              
-              s <- paste(s,
-                         column(
-                           width=12,
-                           column(width = 1, offset = 0,align="center",
-                                  icon("plus", "fa-2x")
-                           ),
-                           column(width = 8, offset = 0,align="center",
-                                  selectInput(paste("varSU", i, sep = ""), label = NULL,choices = variablesToUseSU$col,width = "100%", selected = tempVal)
-                           ),
-                           column(width = 2, offset = 0,align="center",
-                                  actionButton(paste("deleteVariableSU", i ,sep = ""), NULL, class="toolButtonDelete", style="height: 35px;", icon = icon("times","fa-2x"))
-                           )
-                         ),sep="")
-            }
-            
-            variablesToUseSU$otherVariablesSUUI <- s
-            
-          }, ignoreInit = TRUE,once = TRUE)
-        })
-        
-        
-        variablesToUseSU$otherVariablesSUUI <- s
-      }, error = function(err) {
-        print("7565hujfhn")
-        shinyalert("Error",
-                   err$message,
-                   type = "error",
+      }
+    }, error = function(err) {
+      return(infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      ))
+    })
+  })
+  
+  resultFRUIValue <- reactiveValues(text="")
+  
+  observeEvent(input$frameFRSelectInput,{
+    resultFRUIValue$text <- ""
+  })
+  
+  observeEvent(input$variableFRSelectInput,{
+    resultFRUIValue$text <- ""
+  })
+  
+  observeEvent(input$listnameFRSelectInput,{
+    resultFRUIValue$text <- ""
+  })
+  
+  ##########-----END----------##################
+  
+  
+  ##########Sum up different numeric or integer variables##################
+  variablesToUseSU <- reactiveValues(col=NULL,counterOfVar=2, otherVariablesSUUI="", idOfVar=c())
+  resultSUUIValue <- reactiveValues(text="")
+  
+  observeEvent(input$frameSUSelectInput,{
+    tryCatch({ 
+      if(sum(input$frameSUSelectInput != "-- select --") ){
+        temp <- read.csv(
+          paste(mainDir(), "data", paste("/",input$frameSUSelectInput, ".csv", sep=""), sep = "/", collapse = "/"),
+          stringsAsFactors = FALSE, nrows = 1
+        )
+        selectedCol <- unlist(lapply(temp, is.numeric)) 
+        selectedCol <- colnames(temp[ , selectedCol])
+        selectedCol <- sort(selectedCol)
+        variablesToUseSU$col <- selectedCol
+      }
+    }, error = function(err) {
+      return(infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      ))
+    })
+  })
+  
+  output$mainTwoVariablesSUUI <- renderUI({
+    column(
+      width=12,
+      column(width = 1, offset = 0,align="center",
+             icon("flag", "fa-2x")
+      ),
+      column(width = 3, offset = 0,align="center",
+             selectInput("varSU1", label = NULL,choices = variablesToUseSU$col,width = "100%", selected = 1)
+      ),
+      column(width = 1, offset = 0,align="center",
+             icon("plus", "fa-2x")
+      ),
+      column(width = 4, offset = 0,align="center",
+             selectInput("varSU2", label = NULL,choices = variablesToUseSU$col,width = "100%", selected = 15)
+      ),
+      column(width = 3, offset = 0,align="center",
+             actionButton("addVariablesSU", "Add Variable", class="toolButton", style="height: 35px;", icon = icon("plus-circle","fa-1x"))
+      )
+    )
+  })
+  
+  output$otherVariablesSUUI <- renderText({
+    variablesToUseSU$otherVariablesSUUI
+  })
+  
+  observeEvent(input$addVariablesSU,{
+    tryCatch({ 
+      resultSUUIValue$text <- ""
+      if(length(variablesToUseSU$idOfVar)==0 || variablesToUseSU$idOfVar==0){
+        variablesToUseSU$counterOfVar <- variablesToUseSU$counterOfVar + 1
+        variablesToUseSU$idOfVar <- c(variablesToUseSU$counterOfVar)
+      }else{
+        variablesToUseSU$counterOfVar <- variablesToUseSU$counterOfVar + 1
+        variablesToUseSU$idOfVar <- c(variablesToUseSU$idOfVar, variablesToUseSU$counterOfVar)
+      }
+      
+      if( length(variablesToUseSU$idOfVar) > length(variablesToUseSU$col) ){
+        shinyalert("Info",
+                   "You can't add more variables, because you have enough inputs that cover all variables",
+                   type = "info",
                    closeOnClickOutside = FALSE,
                    confirmButtonCol = "#ff4d4d",
                    animation = FALSE,
                    showConfirmButton = TRUE
         )
-      })
-    })
-    
-    observeEvent(input$varSU1,{
-      resultSUUIValue$text <- ""
-    })
-    
-    observeEvent(input$varSU2,{
-      resultSUUIValue$text <- ""
-    })
-    
-    observeEvent(input$frameSUSelectInput,{
-      resultSUUIValue$text <- ""
-    })
-    
-    ##########-----END----------##################
-    
-    
-    ##########Calculate min, max or avg value for multiple integer or numeric variables##################
-    resultMMAUIValue <- reactiveValues(text="")
-    
-    output$variableMMAUI <- renderUI({
-      tryCatch({
-        if(sum(input$frameMMASelectInput != "-- select --")){
-          if(file.exists(paste(mainDir(), "data", paste("/",input$frameMMASelectInput, ".csv", sep=""), sep = "/", collapse = "/"))){
-            temp <- read.csv(
-              paste(mainDir(), "data", paste("/",input$frameMMASelectInput, ".csv", sep=""), sep = "/", collapse = "/"),
-              stringsAsFactors = FALSE, nrows = 1
-            )
-            selectedCol <- unlist(lapply(temp, is.numeric)) 
-            column(
-              width=12,
-              column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                     h4("Select the variable")
-              ),
-              column(width = 6, offset = 0,
-                     selectInput("variableMMASelectInput", label = NULL,choices = c("-- select --",
-                                                                                    colnames(temp[ , selectedCol])
-                     ),width = "100%")
-              )
-            )
-          }else{
-            infoBox(
-              width = 12,strong("Warning"),
-              h4(paste("You cannot proceed without",input$frameMMASelectInput,"file"),align="center")
-              ,icon = icon("exclamation-triangle"),
-              color = "yellow"
-            )
+        variablesToUseSU$counterOfVar <- variablesToUseSU$counterOfVar-1
+        return(NULL)
+      }
+      
+      s <- ""
+      for(i in variablesToUseSU$idOfVar){
+        tempVal<-1
+        
+        if(!is.null(input[[paste("varSU", i, sep = "")]])){
+          tempVal <- input[[paste("varSU", i, sep = "")]]
+        }
+        
+        s <- paste(s,
+                   column(
+                     width=12,
+                     column(width = 1, offset = 0,align="center",
+                            icon("plus", "fa-2x")
+                     ),
+                     column(width = 8, offset = 0,align="center",
+                            selectInput(paste("varSU", i, sep = ""), label = NULL,choices = variablesToUseSU$col,width = "100%", selected = tempVal)
+                     ),
+                     column(width = 2, offset = 0,align="center",
+                            actionButton(paste("deleteVariableSU", i ,sep = ""), NULL, class="toolButtonDelete", style="height: 35px;", icon = icon("times","fa-2x"))
+                     )
+                   ),sep="")
+      }
+      
+      
+      lapply(1:length(variablesToUseSU$idOfVar), function(j) {
+        observeEvent(input[[paste("deleteVariableSU", variablesToUseSU$idOfVar[j] ,sep = "")]] , {
+          resultSUUIValue$text <- ""
+          variablesToUseSU$idOfVar <- variablesToUseSU$idOfVar[ variablesToUseSU$idOfVar != variablesToUseSU$idOfVar[j] ]
+          variablesToUseSU$idOfVar <- sort(variablesToUseSU$idOfVar)
+          
+          
+          if(length(variablesToUseSU$idOfVar)==0 || variablesToUseSU$idOfVar==0){
+            variablesToUseSU$idOfVar <- c()
           }
           
-        }
-      }, error = function(err) {
-        infoBox(
-          width = 12,strong("Error"),
-          h4(err$message,align="center")
-          ,icon = icon("times"),
-          color = "red"
-        )
+          s <- ""
+          for(i in variablesToUseSU$idOfVar){
+            tempVal<-1
+            
+            if(!is.null(input[[paste("varSU", i, sep = "")]])){
+              tempVal <- input[[paste("varSU", i, sep = "")]]
+            }
+            
+            s <- paste(s,
+                       column(
+                         width=12,
+                         column(width = 1, offset = 0,align="center",
+                                icon("plus", "fa-2x")
+                         ),
+                         column(width = 8, offset = 0,align="center",
+                                selectInput(paste("varSU", i, sep = ""), label = NULL,choices = variablesToUseSU$col,width = "100%", selected = tempVal)
+                         ),
+                         column(width = 2, offset = 0,align="center",
+                                actionButton(paste("deleteVariableSU", i ,sep = ""), NULL, class="toolButtonDelete", style="height: 35px;", icon = icon("times","fa-2x"))
+                         )
+                       ),sep="")
+          }
+          
+          variablesToUseSU$otherVariablesSUUI <- s
+          
+        }, ignoreInit = TRUE,once = TRUE)
       })
+      
+      
+      variablesToUseSU$otherVariablesSUUI <- s
+    }, error = function(err) {
+      print("7565hujfhn")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
     })
-    
-    output$statisticalFunctionsMMAUI <- renderUI({
-      tryCatch({
-        if(input$variableMMASelectInput != "-- select --"){
+  })
+  
+  observeEvent(input$varSU1,{
+    resultSUUIValue$text <- ""
+  })
+  
+  observeEvent(input$varSU2,{
+    resultSUUIValue$text <- ""
+  })
+  
+  observeEvent(input$frameSUSelectInput,{
+    resultSUUIValue$text <- ""
+  })
+  
+  ##########-----END----------##################
+  
+  
+  ##########Calculate min, max or avg value for multiple integer or numeric variables##################
+  resultMMAUIValue <- reactiveValues(text="")
+  
+  output$variableMMAUI <- renderUI({
+    tryCatch({
+      if(sum(input$frameMMASelectInput != "-- select --")){
+        if(file.exists(paste(mainDir(), "data", paste("/",input$frameMMASelectInput, ".csv", sep=""), sep = "/", collapse = "/"))){
+          temp <- read.csv(
+            paste(mainDir(), "data", paste("/",input$frameMMASelectInput, ".csv", sep=""), sep = "/", collapse = "/"),
+            stringsAsFactors = FALSE, nrows = 1
+          )
+          selectedCol <- unlist(lapply(temp, is.numeric)) 
           column(
             width=12,
             column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                   h4("Select the Statistical Function")
+                   h4("Select the variable")
             ),
             column(width = 6, offset = 0,
-                   selectInput("statisticalFunctionsMMASelectInput", label = NULL,choices = c("-- select --",
-                                                                                              "Minimum",
-                                                                                              "Maximum",
-                                                                                              "Average",
-                                                                                              "Median",
-                                                                                              "Mode",
-                                                                                              "Standard Deviation",
-                                                                                              "Interquartile Range"
-                   )
-                   ,width = "100%")
+                   selectInput("variableMMASelectInput", label = NULL,choices = c("-- select --",
+                                                                                  colnames(temp[ , selectedCol])
+                   ),width = "100%")
             )
           )
-          
+        }else{
+          infoBox(
+            width = 12,strong("Warning"),
+            h4(paste("You cannot proceed without",input$frameMMASelectInput,"file"),align="center")
+            ,icon = icon("exclamation-triangle"),
+            color = "yellow"
+          )
         }
-      }, error = function(err) {
-        infoBox(
-          width = 12,strong("Error"),
-          h4(err$message,align="center")
-          ,icon = icon("times"),
-          color = "red"
-        )
-      })
-    })
-    
-    observeEvent(input$frameMMASelectInput,{
-      resultMMAUIValue$text <- ""
-    })
-    
-    observeEvent(input$variableMMASelectInput,{
-      resultMMAUIValue$text <- ""
-    })
-    
-    observeEvent(input$variableMMASelectInput,{
-      resultMMAUIValue$text <- ""
-    })
-    
-    observeEvent(input$statisticalFunctionsMMASelectInput,{
-      resultMMAUIValue$text <- ""
-    })
-    ##########-----END----------##################
-    
-    
-    ##########Calculate ratio by dividing 2 numeric or integer variables##################
-    resultD2UIValue <- reactiveValues(text="")
-    
-    output$variablesD2AUI <- renderUI({
-      tryCatch({
-        if(sum(input$frameD2SelectInput != "-- select --")){
-          if(file.exists(paste(mainDir(), "data", paste("/",input$frameD2SelectInput, ".csv", sep=""), sep = "/", collapse = "/"))){
-            temp <- read.csv(
-              paste(mainDir(), "data", paste("/",input$frameD2SelectInput, ".csv", sep=""), sep = "/", collapse = "/"),
-              stringsAsFactors = FALSE, nrows = 1
-            )
-            selectedCol <- unlist(lapply(temp, is.numeric)) 
-            column(
-              width=12,
-              column(width = 12, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                     h4("Select from variables, enter numeric ,or integer value")
-              ),
-              column(width = 12,style="margin-top: 15px;",
-                     column(width = 5, offset = 0, align="center",style="margin-top: 15px;",
-                            selectizeInput("variableD2SelectInput1", label = NULL,choices = c("-- select --",
-                                                                                              colnames(temp[ , selectedCol])
-                            ),width = "100%",options = list(create = TRUE))
-                     ),
-                     column(width = 2, offset = 0, align="center",
-                            h3("/")
-                     ),
-                     column(width = 5, offset = 0, align="center",style="margin-top: 15px;",
-                            selectizeInput("variableD2SelectInput2", label = NULL,choices = c("-- select --",
-                                                                                              colnames(temp[ , selectedCol])
-                            ),width = "100%",options = list(create = TRUE))
-                     )
-              )
-            )
-          }else{
-            infoBox(
-              width = 12,strong("Warning"),
-              h4(paste("You cannot proceed without",input$frameD2SelectInput,"file"),align="center")
-              ,icon = icon("exclamation-triangle"),
-              color = "yellow"
-            )
-          }
-          
-        }
-      }, error = function(err) {
-        infoBox(
-          width = 12,strong("Error"),
-          h4(err$message,align="center")
-          ,icon = icon("times"),
-          color = "red"
-        )
-      })
-    })
-    
-    observeEvent(input$frameD2SelectInput,{
-      resultD2UIValue$text <- ""
-    })
-    
-    observeEvent(input$variableD2SelectInput1,{
-      resultD2UIValue$text <- ""
-    })
-    
-    observeEvent(input$variableD2SelectInput2,{
-      resultD2UIValue$text <- ""
-    })
-    
-    ##########-----END----------##################
-    
-
-    ##########Set condition on specific variables###########################
-    ifVariables <- reactiveValues(conditionsIdOfBlock1=NULL,
-                                               mainDataFrame = NULL,
-                                               newBlock="",
-                                               blocksId = NULL,
-                                               lastIdConditionsBlock1 = NULL,
-                                               lastIdBlocks = NULL
-                                               )
-    blockWithNewId <- reactiveValues(lastIdBlocks=2)
-    
-    observeEvent(input$frameIFSelectInput,{
-      blocksId <- c(1, ifVariables$blocksId)
-      for(i in 1:length(blocksId) ){
-        ifVariables[[paste("lastIdConditions", blocksId[i], sep="")]] <- 0
-        ifVariables[[paste("conditionsIdOfBlock", blocksId[i], sep="")]] <- NULL
+        
       }
-      ifVariables$conditionsIdOfBlock1 <- NULL
-      ifVariables$mainDataFrame <- NULL
-      ifVariables$newBlock <- ""
-      ifVariables$blocksId <- NULL
-      ifVariables$lastIdConditionsBlock1 <- 0
-      ifVariables$lastIdBlocks <- 0
+    }, error = function(err) {
+      infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      )
     })
-
-    observeEvent(input$cancelIndicatorButton,{
-      blocksId <- c(1, ifVariables$blocksId)
-      for(i in 1:length(blocksId) ){
-        ifVariables[[paste("lastIdConditionsBlock", blocksId[i], sep="")]] <- ifVariables[[paste("lastIdConditionsBlock", blocksId[i], sep="")]] + 1
-        ifVariables[[paste("conditionsIdOfBlock", blocksId[i], sep="")]] <- NULL
-        ifVariables[[paste("moreConditionsBlock", blocksId[i], sep="")]] <- ""
-      }
-      
-      ifVariables$mainDataFrame <- NULL
-      ifVariables$newBlock <- ""
-      ifVariables$lastIdBlocks <-  ifVariables$lastIdBlocks + 1
-      blockWithNewId$lastIdBlocks <- ifVariables$lastIdBlocks
-      ifVariables$blocksId <- NULL
-
-      removeModal()
-    })
-    
-    output$conditionsBlockIFUI <- renderUI({
-      column(width = 12,
-        column(width = 4, offset = 8,
-               actionButton("AddIfBlock" ,"Add if block", icon = icon("plus"), class="toolButton", style="height: 40px; margin-bottom:20px;", width="100%")
-        ),
-        box(title = "Block 1", id="Block1",status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
-          column(width = 2,
-            h3("if(")
+  })
+  
+  output$statisticalFunctionsMMAUI <- renderUI({
+    tryCatch({
+      if(input$variableMMASelectInput != "-- select --"){
+        column(
+          width=12,
+          column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                 h4("Select the Statistical Function")
           ),
-          column(width = 4,offset = 6,
-                 actionButton("addConditionBlock1", "Add condition for Block1", icon = icon("plus") ,class="toolButton", style="height: 35px; margin-top: 20px;", width = "100%")
-          ),
-          column(width = 12,offset = 0, style="margin-top: 20px;" , align = "left",
-                 box(title = "Condition 1", id="cond1Block1",status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
-                     uiOutput("bodyOfCondition1")
+          column(width = 6, offset = 0,
+                 selectInput("statisticalFunctionsMMASelectInput", label = NULL,choices = c("-- select --",
+                                                                                            "Minimum",
+                                                                                            "Maximum",
+                                                                                            "Average",
+                                                                                            "Median",
+                                                                                            "Mode",
+                                                                                            "Standard Deviation",
+                                                                                            "Interquartile Range"
                  )
-          ),
-          column(width = 12,offset = 0 , align = "left",
-                 uiOutput("moreConditionsBlock1")
-          ),
-          column(width = 1,
-                 h3("){")
-          ),
-          column(width = 11,offset = 1,
-                 uiOutput("bodyOfBlock1")
-          ),
-          column(width = 1,
-                 h3("}")
+                 ,width = "100%")
           )
-        ),
-        uiOutput("newBlock"),
-        box(title = "Else", id="elseBlock",status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
-            column(width = 2,
-                   h3("else(")
-            ),
-            column(width = 11,offset = 1,
-                   uiOutput("bodyOfElse")
-            ),
-            column(width = 1,
-                   h3("}")
-            )
         )
         
+      }
+    }, error = function(err) {
+      infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      )
+    })
+  })
+  
+  observeEvent(input$frameMMASelectInput,{
+    resultMMAUIValue$text <- ""
+  })
+  
+  observeEvent(input$variableMMASelectInput,{
+    resultMMAUIValue$text <- ""
+  })
+  
+  observeEvent(input$variableMMASelectInput,{
+    resultMMAUIValue$text <- ""
+  })
+  
+  observeEvent(input$statisticalFunctionsMMASelectInput,{
+    resultMMAUIValue$text <- ""
+  })
+  ##########-----END----------##################
+  
+  
+  ##########Calculate ratio by dividing 2 numeric or integer variables##################
+  resultD2UIValue <- reactiveValues(text="")
+  
+  output$variablesD2AUI <- renderUI({
+    tryCatch({
+      if(sum(input$frameD2SelectInput != "-- select --")){
+        if(file.exists(paste(mainDir(), "data", paste("/",input$frameD2SelectInput, ".csv", sep=""), sep = "/", collapse = "/"))){
+          temp <- read.csv(
+            paste(mainDir(), "data", paste("/",input$frameD2SelectInput, ".csv", sep=""), sep = "/", collapse = "/"),
+            stringsAsFactors = FALSE, nrows = 1
+          )
+          selectedCol <- unlist(lapply(temp, is.numeric)) 
+          column(
+            width=12,
+            column(width = 12, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                   h4("Select from variables, enter numeric ,or integer value")
+            ),
+            column(width = 12,style="margin-top: 15px;",
+                   column(width = 5, offset = 0, align="center",style="margin-top: 15px;",
+                          selectizeInput("variableD2SelectInput1", label = NULL,choices = c("-- select --",
+                                                                                            colnames(temp[ , selectedCol])
+                          ),width = "100%",options = list(create = TRUE))
+                   ),
+                   column(width = 2, offset = 0, align="center",
+                          h3("/")
+                   ),
+                   column(width = 5, offset = 0, align="center",style="margin-top: 15px;",
+                          selectizeInput("variableD2SelectInput2", label = NULL,choices = c("-- select --",
+                                                                                            colnames(temp[ , selectedCol])
+                          ),width = "100%",options = list(create = TRUE))
+                   )
+            )
+          )
+        }else{
+          infoBox(
+            width = 12,strong("Warning"),
+            h4(paste("You cannot proceed without",input$frameD2SelectInput,"file"),align="center")
+            ,icon = icon("exclamation-triangle"),
+            color = "yellow"
+          )
+        }
+        
+      }
+    }, error = function(err) {
+      infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      )
+    })
+  })
+  
+  observeEvent(input$frameD2SelectInput,{
+    resultD2UIValue$text <- ""
+  })
+  
+  observeEvent(input$variableD2SelectInput1,{
+    resultD2UIValue$text <- ""
+  })
+  
+  observeEvent(input$variableD2SelectInput2,{
+    resultD2UIValue$text <- ""
+  })
+  
+  ##########-----END----------##################
+  
+  
+  ##########Set condition on specific variables###########################
+  ifVariables <- reactiveValues(conditionsIdOfBlock1=NULL,
+                                mainDataFrame = NULL,
+                                newBlock="",
+                                blocksId = NULL,
+                                lastIdConditionsBlock1 = NULL,
+                                lastIdBlocks = NULL
+  )
+  blockWithNewId <- reactiveValues(lastIdBlocks=2)
+  
+  observeEvent(input$frameIFSelectInput,{
+    blocksId <- c(1, ifVariables$blocksId)
+    for(i in 1:length(blocksId) ){
+      ifVariables[[paste("lastIdConditions", blocksId[i], sep="")]] <- 0
+      ifVariables[[paste("conditionsIdOfBlock", blocksId[i], sep="")]] <- NULL
+    }
+    ifVariables$conditionsIdOfBlock1 <- NULL
+    ifVariables$mainDataFrame <- NULL
+    ifVariables$newBlock <- ""
+    ifVariables$blocksId <- NULL
+    ifVariables$lastIdConditionsBlock1 <- 0
+    ifVariables$lastIdBlocks <- 0
+  })
+  
+  observeEvent(input$cancelIndicatorButton,{
+    blocksId <- c(1, ifVariables$blocksId)
+    for(i in 1:length(blocksId) ){
+      ifVariables[[paste("lastIdConditionsBlock", blocksId[i], sep="")]] <- ifVariables[[paste("lastIdConditionsBlock", blocksId[i], sep="")]] + 1
+      ifVariables[[paste("conditionsIdOfBlock", blocksId[i], sep="")]] <- NULL
+      ifVariables[[paste("moreConditionsBlock", blocksId[i], sep="")]] <- ""
+    }
+    
+    ifVariables$mainDataFrame <- NULL
+    ifVariables$newBlock <- ""
+    ifVariables$lastIdBlocks <-  ifVariables$lastIdBlocks + 1
+    blockWithNewId$lastIdBlocks <- ifVariables$lastIdBlocks
+    ifVariables$blocksId <- NULL
+    
+    removeModal()
+  })
+  
+  output$conditionsBlockIFUI <- renderUI({
+    column(width = 12,
+           column(width = 4, offset = 8,
+                  actionButton("AddIfBlock" ,"Add if block", icon = icon("plus"), class="toolButton", style="height: 40px; margin-bottom:20px;", width="100%")
+           ),
+           box(title = "Block 1", id="Block1",status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
+               column(width = 2,
+                      h3("if(")
+               ),
+               column(width = 4,offset = 6,
+                      actionButton("addConditionBlock1", "Add condition for Block1", icon = icon("plus") ,class="toolButton", style="height: 35px; margin-top: 20px;", width = "100%")
+               ),
+               column(width = 12,offset = 0, style="margin-top: 20px;" , align = "left",
+                      box(title = "Condition 1", id="cond1Block1",status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
+                          uiOutput("bodyOfCondition1")
+                      )
+               ),
+               column(width = 12,offset = 0 , align = "left",
+                      uiOutput("moreConditionsBlock1")
+               ),
+               column(width = 1,
+                      h3("){")
+               ),
+               column(width = 11,offset = 1,
+                      uiOutput("bodyOfBlock1")
+               ),
+               column(width = 1,
+                      h3("}")
+               )
+           ),
+           uiOutput("newBlock"),
+           box(title = "Else", id="elseBlock",status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
+               column(width = 2,
+                      h3("else(")
+               ),
+               column(width = 11,offset = 1,
+                      uiOutput("bodyOfElse")
+               ),
+               column(width = 1,
+                      h3("}")
+               )
+           )
+           
+    )
+  })
+  
+  output$bodyOfCondition1 <- renderUI({
+    tryCatch({
+      if(sum(input$frameIFSelectInput != "-- select --")){
+        if(file.exists(paste(mainDir(), "data", paste("/",input$frameIFSelectInput, ".csv", sep=""), sep = "/", collapse = "/"))){
+          temp <- read.csv(
+            paste(mainDir(), "data", paste("/",input$frameIFSelectInput, ".csv", sep=""), sep = "/", collapse = "/"),
+            stringsAsFactors = FALSE, nrows = 1
+          )
+          ifVariables$mainDataFrame <- temp
+          column(width=12,
+                 column(width = 5, align = "center",
+                        selectizeInput("leftSideCond1Block1", label = NULL,choices = c("-- select --",
+                                                                                       colnames(temp)
+                        ),width = "100%",options = list( placeholder = "-- select --"))
+                 ),
+                 column(width = 2, align = "center",
+                        selectInput("logicalOperatorsCond1Block1",label = NULL, choices = c("-- select --", "<", "<=", ">", ">=", "==", "!=", "&", "|", "in", "not in"), width = "100%")
+                 ),
+                 column(width = 5, align = "center",
+                        selectizeInput("rightSideCond1Block1", label = NULL,choices = c("-- select or enter --",
+                                                                                        colnames(temp)
+                        ),width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
+                 )
+          )
+        }else{
+          infoBox(
+            width = 12,strong("Warning"),
+            h4(paste("You cannot proceed without",input$frameIFSelectInput,"file"),align="center")
+            ,icon = icon("exclamation-triangle"),
+            color = "yellow"
+          )
+        }
+        
+      }
+    }, error = function(err) {
+      infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
       )
     })
     
-    output$bodyOfCondition1 <- renderUI({
-      tryCatch({
-        if(sum(input$frameIFSelectInput != "-- select --")){
-          if(file.exists(paste(mainDir(), "data", paste("/",input$frameIFSelectInput, ".csv", sep=""), sep = "/", collapse = "/"))){
-            temp <- read.csv(
-              paste(mainDir(), "data", paste("/",input$frameIFSelectInput, ".csv", sep=""), sep = "/", collapse = "/"),
-              stringsAsFactors = FALSE, nrows = 1
-            )
-            ifVariables$mainDataFrame <- temp
-            column(width=12,
-                   column(width = 5, align = "center",
-                          selectizeInput("leftSideCond1Block1", label = NULL,choices = c("-- select --",
-                                                                                        colnames(temp)
-                          ),width = "100%",options = list( placeholder = "-- select --"))
-                   ),
-                   column(width = 2, align = "center",
-                          selectInput("logicalOperatorsCond1Block1",label = NULL, choices = c("-- select --", "<", "<=", ">", ">=", "==", "!=", "&", "|", "in", "not in"), width = "100%")
-                   ),
-                   column(width = 5, align = "center",
-                          selectizeInput("rightSideCond1Block1", label = NULL,choices = c("-- select or enter --",
-                                                                                        colnames(temp)
-                          ),width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
-                   )
-            )
-          }else{
-            infoBox(
-              width = 12,strong("Warning"),
-              h4(paste("You cannot proceed without",input$frameIFSelectInput,"file"),align="center")
-              ,icon = icon("exclamation-triangle"),
-              color = "yellow"
-            )
-          }
-          
+  })
+  
+  output$moreConditionsBlock1 <- renderText({
+    ifVariables[["moreConditionsBlock1"]]
+  })
+  
+  observeEvent(input$addConditionBlock1,{
+    tryCatch({
+      if(is.null(ifVariables$conditionsIdOfBlock1)){
+        if(is.null(ifVariables$lastIdConditionsBlock1)){
+          ifVariables$lastIdConditionsBlock1 <- 2
         }
-      }, error = function(err) {
-        infoBox(
-          width = 12,strong("Error"),
-          h4(err$message,align="center")
-          ,icon = icon("times"),
-          color = "red"
-        )
-      })
-      
-    })
-    
-    output$moreConditionsBlock1 <- renderText({
-      ifVariables[["moreConditionsBlock1"]]
-    })
-    
-    observeEvent(input$addConditionBlock1,{
-      tryCatch({
-        if(is.null(ifVariables$conditionsIdOfBlock1)){
-          if(is.null(ifVariables$lastIdConditionsBlock1)){
-            ifVariables$lastIdConditionsBlock1 <- 2
-          }
-          ifVariables$conditionsIdOfBlock1 <- ifVariables$lastIdConditionsBlock1
-        }else{
-          ifVariables$lastIdConditionsBlock1 <- ifVariables$lastIdConditionsBlock1 + 1
-          ifVariables$conditionsIdOfBlock1 <- c(ifVariables$conditionsIdOfBlock1, ifVariables$lastIdConditionsBlock1)
-        }
-        print("**")
-        print(ifVariables$conditionsIdOfBlock1)
-        print("##")
-        s <- ""
-        for(i in 1:length(ifVariables$conditionsIdOfBlock1)){
-          choices <- c(paste("Condition", i))
-          track <- ""
-          for (j in 1:i) {
-            if(i>1){
-              if(track==""){
-                track <- paste("Condition", j)
-              }else{
-                track <- paste(track,paste("Condition", j), sep = " - ")
-              }
+        ifVariables$conditionsIdOfBlock1 <- ifVariables$lastIdConditionsBlock1
+      }else{
+        ifVariables$lastIdConditionsBlock1 <- ifVariables$lastIdConditionsBlock1 + 1
+        ifVariables$conditionsIdOfBlock1 <- c(ifVariables$conditionsIdOfBlock1, ifVariables$lastIdConditionsBlock1)
+      }
+      print("**")
+      print(ifVariables$conditionsIdOfBlock1)
+      print("##")
+      s <- ""
+      for(i in 1:length(ifVariables$conditionsIdOfBlock1)){
+        choices <- c(paste("Condition", i))
+        track <- ""
+        for (j in 1:i) {
+          if(i>1){
+            if(track==""){
+              track <- paste("Condition", j)
+            }else{
+              track <- paste(track,paste("Condition", j), sep = " - ")
             }
           }
-          choices <- c(choices,track)
+        }
+        choices <- c(choices,track)
+        s <- paste(s,
+                   box(title = paste("Condition",i+1), id=paste("cond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep=""),status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
+                       if(input$frameIFSelectInput != "-- select --"){
+                         temp <- ifVariables$mainDataFrame
+                         column(width = 12,
+                                column(width = 12, style="color: white; background-color: black; height: 70px; padding: 15px 0px 0px; margin-bottom: 30px; border-bottom: 5px solid lightgray;",
+                                       column(width = 2, align = "left",
+                                              h4("Link by")
+                                       ),
+                                       column(width = 3, align = "center",
+                                              selectInput(paste("linkByCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep=""),label = NULL, choices = c("-- select --", "and", "or"),
+                                                          selected = ifelse(!is.null(input[[paste("linkByCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]]), input[[paste("linkByCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]], "-- select --")
+                                                          
+                                                          ,width = "100%")
+                                       ),
+                                       column(width = 2, align = "center",
+                                              h4("With")
+                                       ),
+                                       column(width = 5, align = "center",
+                                              selectInput(paste("withCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep=""),label = NULL, choices = c("-- select --", choices),
+                                                          selected = ifelse(!is.null(input[[paste("withCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]]), input[[paste("withCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]], "-- select --")
+                                                          
+                                                          ,width = "100%")
+                                       )
+                                ),
+                                
+                                column(width = 5, align = "center",
+                                       selectizeInput(paste("leftSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep=""), label = NULL,choices = c("-- select --",
+                                                                                                                                                          colnames(temp)
+                                       ),
+                                       selected = ifelse(!is.null(input[[paste("leftSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep="")]]), input[[paste("leftSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep="")]], "-- select --")
+                                       ,width = "100%",options = list(placeholder = "-- select --"))
+                                ),
+                                column(width = 2, align = "center",
+                                       selectInput(paste("logicalOperatorsCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep=""),label = NULL, choices = c("-- select --", "<", "<=", ">", ">=", "==", "!=", "&", "|", "in", "not in"),
+                                                   selected = ifelse(!is.null(input[[paste("logicalOperatorsCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]]), input[[paste("logicalOperatorsCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]], "-- select --")
+                                                   
+                                                   ,width = "100%")
+                                ),
+                                column(width = 5, align = "center",
+                                       selectizeInput(paste("rightSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep=""), label = NULL,choices = c("-- select or enter --",
+                                                                                                                                                           colnames(temp)
+                                       ),
+                                       selected = ifelse(!is.null(input[[paste("rightSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep="")]]), input[[paste("rightSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep="")]], "-- select --")
+                                       ,width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
+                                ),
+                                column(width = 12, align = "center",
+                                       actionButton(paste("deleteCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep=""), "Delete Condition", icon = icon("trash-alt"), class="deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")
+                                )
+                         )
+                         
+                       }
+                   )
+                   
+                   ,sep = "")
+      }
+      
+      
+      lapply(1:length(ifVariables$conditionsIdOfBlock1), function(k) {
+        observeEvent(input[[paste("deleteCond",ifVariables$conditionsIdOfBlock1[k],"Block1",sep="")]] , {
+          ifVariables$conditionsIdOfBlock1 <- ifVariables$conditionsIdOfBlock1[ ifVariables$conditionsIdOfBlock1 != ifVariables$conditionsIdOfBlock1[k] ]
+          s <- ""
+          if(length(ifVariables$conditionsIdOfBlock1)!=0){
+            for(i in 1:length(ifVariables$conditionsIdOfBlock1)){
+              choices <- c(paste("Condition", i))
+              track <- ""
+              for (j in 1:i) {
+                if(i>1){
+                  if(track==""){
+                    track <- paste("Condition", j)
+                  }else{
+                    track <- paste(track,paste("Condition", j), sep = " - ")
+                  }
+                }
+              }
+              choices <- c(choices,track)
+              s <- paste(s,
+                         box(title = paste("Condition",i+1), id=paste("cond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep=""),status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
+                             if(input$frameIFSelectInput != "-- select --"){
+                               temp <- ifVariables$mainDataFrame
+                               column(width = 12,
+                                      column(width = 12, style="color: white; background-color: black; height: 70px; padding: 15px 0px 0px; margin-bottom: 30px; border-bottom: 5px solid lightgray;",
+                                             column(width = 2, align = "left",
+                                                    h4("Link by")
+                                             ),
+                                             column(width = 3, align = "center",
+                                                    selectInput(paste("linkByCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep=""),label = NULL, choices = c("-- select --", "and", "or"),
+                                                                selected = ifelse(!is.null(input[[paste("linkByCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]]), input[[paste("linkByCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]], "-- select --")
+                                                                
+                                                                ,width = "100%")
+                                             ),
+                                             column(width = 2, align = "center",
+                                                    h4("With")
+                                             ),
+                                             column(width = 5, align = "center",
+                                                    selectInput(paste("withCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep=""),label = NULL, choices = c("-- select --", choices),
+                                                                selected = ifelse(!is.null(input[[paste("withCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]]), input[[paste("withCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]], "-- select --")
+                                                                
+                                                                ,width = "100%")
+                                             )
+                                      ),
+                                      
+                                      column(width = 5, align = "center",
+                                             selectizeInput(paste("leftSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep=""), label = NULL,choices = c("-- select --",
+                                                                                                                                                                colnames(temp)
+                                             ),
+                                             selected = ifelse(!is.null(input[[paste("leftSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep="")]]), input[[paste("leftSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep="")]], "-- select --")
+                                             ,width = "100%",options = list(placeholder = "-- select --"))
+                                      ),
+                                      column(width = 2, align = "center",
+                                             selectInput(paste("logicalOperatorsCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep=""),label = NULL, choices = c("-- select --", "<", "<=", ">", ">=", "==", "!=", "&", "|", "in", "not in"),
+                                                         selected = ifelse(!is.null(input[[paste("logicalOperatorsCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]]), input[[paste("logicalOperatorsCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]], "-- select --")
+                                                         
+                                                         ,width = "100%")
+                                      ),
+                                      column(width = 5, align = "center",
+                                             selectizeInput(paste("rightSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep=""), label = NULL,choices = c("-- select or enter --",
+                                                                                                                                                                 colnames(temp)
+                                             ),
+                                             selected = ifelse(!is.null(input[[paste("rightSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep="")]]), input[[paste("rightSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep="")]], "-- select --")
+                                             ,width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
+                                      ),
+                                      column(width = 12, align = "center",
+                                             actionButton(paste("deleteCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep=""), "Delete Condition", icon = icon("trash-alt"), class="deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")
+                                      )
+                               )
+                               
+                             }
+                         )
+                         
+                         ,sep = "")
+            }
+          }else{
+            ifVariables$lastIdConditionsBlock1 <- ifVariables$lastIdConditionsBlock1 +1
+            ifVariables$conditionsIdOfBlock1 <- NULL
+            s<-""
+          }
+          ifVariables[["moreConditionsBlock1"]] <- s
+        }, ignoreInit = TRUE, once = TRUE)
+      })
+      
+      
+      ifVariables[["moreConditionsBlock1"]] <- s
+      
+    }, error = function(err) {
+      infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      )
+    })
+  })
+  
+  output$bodyOfBlock1 <- renderUI({
+    tryCatch({
+      if(input$frameIFSelectInput != "-- select --"){
+        if(file.exists(paste(mainDir(), "data", paste("/",input$frameIFSelectInput, ".csv", sep=""), sep = "/", collapse = "/"))){
+          temp <- ifVariables$mainDataFrame
+          
+          column(width=12,
+                 column(width = 11, align = "center",
+                        selectizeInput("resultOfBlock1", label = NULL,choices = c("-- select or enter --",
+                                                                                  colnames(temp)
+                        ),width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
+                 )
+          )
+        }else{
+          infoBox(
+            width = 12,strong("Warning"),
+            h4(paste("You cannot proceed without",input$frameIFSelectInput,"file"),align="center")
+            ,icon = icon("exclamation-triangle"),
+            color = "yellow"
+          )
+        }
+        
+      }
+    }, error = function(err) {
+      infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      )
+    })
+  })
+  
+  output$bodyOfElse <- renderUI({
+    tryCatch({
+      if(input$frameIFSelectInput != "-- select --"){
+        if(file.exists(paste(mainDir(), "data", paste("/",input$frameIFSelectInput, ".csv", sep=""), sep = "/", collapse = "/"))){
+          temp <- ifVariables$mainDataFrame
+          
+          column(width=12,
+                 column(width = 11, align = "center",
+                        selectizeInput("resultOfElse", label = NULL,choices = c("-- select or enter --", "- none -",
+                                                                                colnames(temp)
+                        ),width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
+                 )
+          )
+        }else{
+          infoBox(
+            width = 12,strong("Warning"),
+            h4(paste("You cannot proceed without",input$frameIFSelectInput,"file"),align="center")
+            ,icon = icon("exclamation-triangle"),
+            color = "yellow"
+          )
+        }
+        
+      }
+    }, error = function(err) {
+      infoBox(
+        width = 12,strong("Error"),
+        h4(err$message,align="center")
+        ,icon = icon("times"),
+        color = "red"
+      )
+    })
+  })
+  
+  output$newBlock <- renderText({
+    ifVariables$newBlock
+  })
+  
+  
+  observeEvent(input$AddIfBlock,{
+    tryCatch({
+      
+      if (!input$AddIfBlock == ""){
+        print("Before ***********")
+        print(paste("last id block for ifVar", ifVariables$lastIdBlocks))
+        print(paste("blocksId", ifVariables$blocksId))
+        print(paste("last id block for blockWithNewId", ifVariables$blocksId))
+        
+        
+        if(is.null(ifVariables$blocksId)){
+          if(ifVariables$lastIdBlocks==0){
+            ifVariables$lastIdBlocks <- blockWithNewId$lastIdBlocks
+          }
+          ifVariables$blocksId <- ifVariables$lastIdBlocks
+        }
+        else{
+          ifVariables$lastIdBlocks <- ifVariables$lastIdBlocks + 1
+          ifVariables$blocksId <- c(ifVariables$blocksId, ifVariables$lastIdBlocks)
+        }
+        print("After ***********")
+        print(paste("last id block for ifVar", ifVariables$lastIdBlocks))
+        print(paste("blocksId", ifVariables$blocksId))
+        print(paste("last id block for blockWithNewId", ifVariables$blocksId))
+        
+        temp <- ifVariables$mainDataFrame
+        s <- ""
+        
+        for (i in 1:length(ifVariables$blocksId)) {
           s <- paste(s,
-                     box(title = paste("Condition",i+1), id=paste("cond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep=""),status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
-                         if(input$frameIFSelectInput != "-- select --"){
-                           temp <- ifVariables$mainDataFrame
-                           column(width = 12,
-                                  column(width = 12, style="color: white; background-color: black; height: 70px; padding: 15px 0px 0px; margin-bottom: 30px; border-bottom: 5px solid lightgray;",
-                                         column(width = 2, align = "left",
-                                                h4("Link by")
-                                         ),
-                                         column(width = 3, align = "center",
-                                                selectInput(paste("linkByCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep=""),label = NULL, choices = c("-- select --", "and", "or"),
-                                                            selected = ifelse(!is.null(input[[paste("linkByCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]]), input[[paste("linkByCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]], "-- select --")
-                                                            
-                                                            ,width = "100%")
-                                         ),
-                                         column(width = 2, align = "center",
-                                                h4("With")
-                                         ),
-                                         column(width = 5, align = "center",
-                                                selectInput(paste("withCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep=""),label = NULL, choices = c("-- select --", choices),
-                                                            selected = ifelse(!is.null(input[[paste("withCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]]), input[[paste("withCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]], "-- select --")
-                                                            
-                                                            ,width = "100%")
-                                         )
-                                  ),
-                                  
-                                  column(width = 5, align = "center",
-                                         selectizeInput(paste("leftSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep=""), label = NULL,choices = c("-- select --",
-                                                                                                                                                                         colnames(temp)
-                                         ),
-                                         selected = ifelse(!is.null(input[[paste("leftSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep="")]]), input[[paste("leftSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep="")]], "-- select --")
-                                         ,width = "100%",options = list(placeholder = "-- select --"))
-                                  ),
-                                  column(width = 2, align = "center",
-                                         selectInput(paste("logicalOperatorsCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep=""),label = NULL, choices = c("-- select --", "<", "<=", ">", ">=", "==", "!=", "&", "|", "in", "not in"),
-                                                     selected = ifelse(!is.null(input[[paste("logicalOperatorsCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]]), input[[paste("logicalOperatorsCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]], "-- select --")
-                                                     
-                                                     ,width = "100%")
-                                  ),
-                                  column(width = 5, align = "center",
-                                         selectizeInput(paste("rightSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep=""), label = NULL,choices = c("-- select or enter --",
-                                                                                                                                                                          colnames(temp)
-                                         ),
-                                         selected = ifelse(!is.null(input[[paste("rightSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep="")]]), input[[paste("rightSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep="")]], "-- select --")
-                                         ,width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
-                                  ),
-                                  column(width = 12, align = "center",
-                                         actionButton(paste("deleteCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep=""), "Delete Condition", icon = icon("trash-alt"), class="deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")
-                                  )
-                           )
-
-                         }
+                     box(title = paste("Block", i+1), id=paste("Block",ifVariables$blocksId[i], sep = ""),status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
+                         column(width = 2,
+                                h3("if(")
+                         ),
+                         column(width = 4,offset = 6,
+                                actionButton(paste("addConditionBlock",ifVariables$blocksId[i], sep = ""), paste("Add condition for Block", i+1, sep = ""), icon = icon("plus") ,class="toolButton", style="height: 35px; margin-top: 20px;", width = "100%")
+                         ),
+                         column(width = 12,offset = 0, style="margin-top: 20px;" , align = "left",
+                                box(title = "Condition 1", id=paste("cond1Block",ifVariables$blocksId[i], sep = ""),status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
+                                    column(width=12,
+                                           column(width = 5, align = "center",
+                                                  selectizeInput(paste("leftSideCond1Block",ifVariables$blocksId[i], sep = ""), label = NULL,choices = c("-- select --",
+                                                                                                                                                         colnames(temp)
+                                                  ),width = "100%",options = list( placeholder = "-- select --"))
+                                           ),
+                                           column(width = 2, align = "center",
+                                                  selectInput(paste("logicalOperatorsCond1Block",ifVariables$blocksId[i], sep = ""),label = NULL, choices = c("-- select --", "<", "<=", ">", ">=", "==", "!=", "&", "|", "in", "not in"), width = "100%")
+                                           ),
+                                           column(width = 5, align = "center",
+                                                  selectizeInput(paste("rightSideCond1Block",ifVariables$blocksId[i], sep = ""), label = NULL,choices = c("-- select or enter --",
+                                                                                                                                                          colnames(temp)
+                                                  ),width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
+                                           )
+                                    )
+                                )
+                         ),
+                         column(width = 12,offset = 0 , align = "left",
+                                uiOutput(paste("moreConditionsBlock",ifVariables$blocksId[i], sep = ""))
+                         ),
+                         column(width = 1,
+                                h3("){")
+                         ),
+                         column(width = 11,offset = 1,
+                                column(width=12,
+                                       column(width = 11, align = "center",
+                                              selectizeInput(paste("resultOfBlock",ifVariables$blocksId[i], sep = ""), label = NULL,choices = c("-- select or enter --",
+                                                                                                                                                colnames(temp)
+                                              ),width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
+                                       )
+                                )
+                         ),
+                         column(width = 1,
+                                h3("}")
+                         ),
+                         column(width = 4,offset = 8,
+                                actionButton(paste("deleteBlock",ifVariables$blocksId[i] ,sep=""), "Delete Block", icon = icon("trash-alt"), class="deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")
+                         )
                      )
-                     
                      ,sep = "")
         }
         
+        lapply(1:length(ifVariables$blocksId), function(m) {
+          output[[paste("moreConditionsBlock",ifVariables$blocksId[m], sep = "")]] <- renderText({
+            ifVariables[[paste("moreConditionsBlock",ifVariables$blocksId[m], sep = "")]]
+          })
+        })
         
-        lapply(1:length(ifVariables$conditionsIdOfBlock1), function(k) {
-          observeEvent(input[[paste("deleteCond",ifVariables$conditionsIdOfBlock1[k],"Block1",sep="")]] , {
-            ifVariables$conditionsIdOfBlock1 <- ifVariables$conditionsIdOfBlock1[ ifVariables$conditionsIdOfBlock1 != ifVariables$conditionsIdOfBlock1[k] ]
-            s <- ""
-            if(length(ifVariables$conditionsIdOfBlock1)!=0){
-              for(i in 1:length(ifVariables$conditionsIdOfBlock1)){
+        lapply(1:length(ifVariables$blocksId), function(w) {
+          observeEvent(input[[paste("addConditionBlock", ifVariables$blocksId[w], sep="")]],{  
+            
+            print(paste(paste("addConditionBlock", ifVariables$blocksId[w], sep="") ,"--- input -->", input[[paste("addConditionBlock", ifVariables$blocksId[w], sep="")]] ))
+            print(paste("length of ids-->", length(ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]])))
+            
+            
+            
+            if(is.null(ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]] )){
+              
+              if(is.null(ifVariables[[paste("lastIdConditionsBlock", ifVariables$blocksId[w], sep="")]])){
+                ifVariables[[paste("lastIdConditionsBlock", ifVariables$blocksId[w], sep="")]] <- 2
+              }
+              
+              ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]] <- ifVariables[[paste("lastIdConditionsBlock", ifVariables$blocksId[w], sep="")]]
+              
+            }else{
+              ifVariables[[paste("lastIdConditionsBlock", ifVariables$blocksId[w], sep="")]] <- ifVariables[[paste("lastIdConditionsBlock", ifVariables$blocksId[w], sep="")]] + 1
+              ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]] <- c(ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]], ifVariables[[paste("lastIdConditionsBlock", ifVariables$blocksId[w], sep="")]])
+            }
+            
+            print(paste("con1:",!input[[paste("addConditionBlock", ifVariables$blocksId[w], sep="")]] == "" ))
+            print(paste("con2:",input[[paste("addConditionBlock", ifVariables$blocksId[w], sep="")]] == length(ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]])))
+            
+            if (!input[[paste("addConditionBlock", ifVariables$blocksId[w], sep="")]] == "" & 
+                input[[paste("addConditionBlock", ifVariables$blocksId[w], sep="")]] == length(ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]])){
+              s <- ""
+              for(i in 1:length(ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]])){
                 choices <- c(paste("Condition", i))
                 track <- ""
                 for (j in 1:i) {
@@ -4640,7 +4916,7 @@ server <- shinyServer(function(input, output, session) {
                 }
                 choices <- c(choices,track)
                 s <- paste(s,
-                           box(title = paste("Condition",i+1), id=paste("cond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep=""),status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
+                           box(title = paste("Condition",i+1), id=paste("cond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i], sep=""),status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
                                if(input$frameIFSelectInput != "-- select --"){
                                  temp <- ifVariables$mainDataFrame
                                  column(width = 12,
@@ -4649,8 +4925,8 @@ server <- shinyServer(function(input, output, session) {
                                                       h4("Link by")
                                                ),
                                                column(width = 3, align = "center",
-                                                      selectInput(paste("linkByCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep=""),label = NULL, choices = c("-- select --", "and", "or"),
-                                                                  selected = ifelse(!is.null(input[[paste("linkByCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]]), input[[paste("linkByCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]], "-- select --")
+                                                      selectInput(paste("linkByCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep=""),label = NULL, choices = c("-- select --", "and", "or"),
+                                                                  selected = ifelse(!is.null(input[[paste("linkByCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]]), input[[paste("linkByCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]], "-- select --")
                                                                   
                                                                   ,width = "100%")
                                                ),
@@ -4658,36 +4934,35 @@ server <- shinyServer(function(input, output, session) {
                                                       h4("With")
                                                ),
                                                column(width = 5, align = "center",
-                                                      selectInput(paste("withCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep=""),label = NULL, choices = c("-- select --", choices),
-                                                                  selected = ifelse(!is.null(input[[paste("withCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]]), input[[paste("withCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]], "-- select --")
+                                                      selectInput(paste("withCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep=""),label = NULL, choices = c("-- select --", choices),
+                                                                  selected = ifelse(!is.null(input[[paste("withCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]]), input[[paste("withCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]], "-- select --")
                                                                   
                                                                   ,width = "100%")
                                                )
                                         ),
                                         
                                         column(width = 5, align = "center",
-                                               selectizeInput(paste("leftSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep=""), label = NULL,choices = c("-- select --",
-                                                                                                                                                                               colnames(temp)
+                                               selectizeInput(paste("leftSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep=""), label = NULL,choices = c("-- select --",
+                                                                                                                                                                                                                                                     colnames(temp)
                                                ),
-                                               selected = ifelse(!is.null(input[[paste("leftSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep="")]]), input[[paste("leftSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep="")]], "-- select --")
+                                               selected = ifelse(!is.null(input[[paste("leftSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep="")]]), input[[paste("leftSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep="")]], "-- select --")
                                                ,width = "100%",options = list(placeholder = "-- select --"))
                                         ),
                                         column(width = 2, align = "center",
-                                               selectInput(paste("logicalOperatorsCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep=""),label = NULL, choices = c("-- select --", "<", "<=", ">", ">=", "==", "!=", "&", "|", "in", "not in"),
-                                                           selected = ifelse(!is.null(input[[paste("logicalOperatorsCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]]), input[[paste("logicalOperatorsCond",ifVariables$conditionsIdOfBlock1[i],"Block1", sep="")]], "-- select --")
+                                               selectInput(paste("logicalOperatorsCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep=""),label = NULL, choices = c("-- select --", "<", "<=", ">", ">=", "==", "!=", "&", "|", "in", "not in"),
+                                                           selected = ifelse(!is.null(input[[paste("logicalOperatorsCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]]), input[[paste("logicalOperatorsCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]], "-- select --")
                                                            
                                                            ,width = "100%")
                                         ),
                                         column(width = 5, align = "center",
-                                               selectizeInput(paste("rightSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep=""), label = NULL,choices = c("-- select or enter --",
-                                                                                                                                                                                colnames(temp)
+                                               selectizeInput(paste("rightSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep=""), label = NULL,choices = c("-- select or enter --",
+                                                                                                                                                                                                                                                      colnames(temp)
                                                ),
-                                               selected = ifelse(!is.null(input[[paste("rightSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep="")]]), input[[paste("rightSideCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep="")]], "-- select --")
+                                               selected = ifelse(!is.null(input[[paste("rightSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep="")]]), input[[paste("rightSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep="")]], "-- select --")
                                                ,width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
                                         ),
                                         column(width = 12, align = "center",
-                                               actionButton(paste("deleteCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep=""), "Delete Condition", icon = icon("trash-alt"), class="deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")
-                                        )
+                                               actionButton(paste("deleteCond", ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i] , paste("Block", ifVariables$blocksId[w], sep=""),sep=""), "Delete Condition", icon = icon("trash-alt"), class="deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")                                      )
                                  )
                                  
                                }
@@ -4695,478 +4970,203 @@ server <- shinyServer(function(input, output, session) {
                            
                            ,sep = "")
               }
-            }else{
-              ifVariables$lastIdConditionsBlock1 <- ifVariables$lastIdConditionsBlock1 +1
-              ifVariables$conditionsIdOfBlock1 <- NULL
-              s<-""
-            }
-            ifVariables[["moreConditionsBlock1"]] <- s
-          }, ignoreInit = TRUE, once = TRUE)
-        })
-        
-  
-       ifVariables[["moreConditionsBlock1"]] <- s
-     
-      }, error = function(err) {
-        infoBox(
-          width = 12,strong("Error"),
-          h4(err$message,align="center")
-          ,icon = icon("times"),
-          color = "red"
-        )
-      })
-    })
-    
-    output$bodyOfBlock1 <- renderUI({
-      tryCatch({
-        if(input$frameIFSelectInput != "-- select --"){
-          if(file.exists(paste(mainDir(), "data", paste("/",input$frameIFSelectInput, ".csv", sep=""), sep = "/", collapse = "/"))){
-            temp <- ifVariables$mainDataFrame
-            
-            column(width=12,
-                   column(width = 11, align = "center",
-                          selectizeInput("resultOfBlock1", label = NULL,choices = c("-- select or enter --",
-                                                                                         colnames(temp)
-                          ),width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
-                   )
-            )
-          }else{
-            infoBox(
-              width = 12,strong("Warning"),
-              h4(paste("You cannot proceed without",input$frameIFSelectInput,"file"),align="center")
-              ,icon = icon("exclamation-triangle"),
-              color = "yellow"
-            )
-          }
-          
-        }
-      }, error = function(err) {
-        infoBox(
-          width = 12,strong("Error"),
-          h4(err$message,align="center")
-          ,icon = icon("times"),
-          color = "red"
-        )
-      })
-    })
-    
-    output$bodyOfElse <- renderUI({
-      tryCatch({
-        if(input$frameIFSelectInput != "-- select --"){
-          if(file.exists(paste(mainDir(), "data", paste("/",input$frameIFSelectInput, ".csv", sep=""), sep = "/", collapse = "/"))){
-            temp <- ifVariables$mainDataFrame
-            
-            column(width=12,
-                   column(width = 11, align = "center",
-                          selectizeInput("resultOfElse", label = NULL,choices = c("-- select or enter --", "- none -",
-                                                                                    colnames(temp)
-                          ),width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
-                   )
-            )
-          }else{
-            infoBox(
-              width = 12,strong("Warning"),
-              h4(paste("You cannot proceed without",input$frameIFSelectInput,"file"),align="center")
-              ,icon = icon("exclamation-triangle"),
-              color = "yellow"
-            )
-          }
-          
-        }
-      }, error = function(err) {
-        infoBox(
-          width = 12,strong("Error"),
-          h4(err$message,align="center")
-          ,icon = icon("times"),
-          color = "red"
-        )
-      })
-    })
-    
-    output$newBlock <- renderText({
-      ifVariables$newBlock
-    })
-    
-    
-    observeEvent(input$AddIfBlock,{
-      tryCatch({
-        
-        if (!input$AddIfBlock == ""){
-          print("Before ***********")
-          print(paste("last id block for ifVar", ifVariables$lastIdBlocks))
-          print(paste("blocksId", ifVariables$blocksId))
-          print(paste("last id block for blockWithNewId", ifVariables$blocksId))
-          
-          
-          if(is.null(ifVariables$blocksId)){
-            if(ifVariables$lastIdBlocks==0){
-              ifVariables$lastIdBlocks <- blockWithNewId$lastIdBlocks
-            }
-            ifVariables$blocksId <- ifVariables$lastIdBlocks
-          }
-          else{
-            ifVariables$lastIdBlocks <- ifVariables$lastIdBlocks + 1
-            ifVariables$blocksId <- c(ifVariables$blocksId, ifVariables$lastIdBlocks)
-          }
-          print("After ***********")
-          print(paste("last id block for ifVar", ifVariables$lastIdBlocks))
-          print(paste("blocksId", ifVariables$blocksId))
-          print(paste("last id block for blockWithNewId", ifVariables$blocksId))
-          
-          temp <- ifVariables$mainDataFrame
-          s <- ""
-          
-          for (i in 1:length(ifVariables$blocksId)) {
-            s <- paste(s,
-              box(title = paste("Block", i+1), id=paste("Block",ifVariables$blocksId[i], sep = ""),status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
-                column(width = 2,
-                       h3("if(")
-                ),
-                column(width = 4,offset = 6,
-                       actionButton(paste("addConditionBlock",ifVariables$blocksId[i], sep = ""), paste("Add condition for Block", i+1, sep = ""), icon = icon("plus") ,class="toolButton", style="height: 35px; margin-top: 20px;", width = "100%")
-                ),
-                column(width = 12,offset = 0, style="margin-top: 20px;" , align = "left",
-                       box(title = "Condition 1", id=paste("cond1Block",ifVariables$blocksId[i], sep = ""),status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
-                           column(width=12,
-                                  column(width = 5, align = "center",
-                                         selectizeInput(paste("leftSideCond1Block",ifVariables$blocksId[i], sep = ""), label = NULL,choices = c("-- select --",
-                                                                                                        colnames(temp)
-                                         ),width = "100%",options = list( placeholder = "-- select --"))
-                                  ),
-                                  column(width = 2, align = "center",
-                                         selectInput(paste("logicalOperatorsCond1Block",ifVariables$blocksId[i], sep = ""),label = NULL, choices = c("-- select --", "<", "<=", ">", ">=", "==", "!=", "&", "|", "in", "not in"), width = "100%")
-                                  ),
-                                  column(width = 5, align = "center",
-                                         selectizeInput(paste("rightSideCond1Block",ifVariables$blocksId[i], sep = ""), label = NULL,choices = c("-- select or enter --",
-                                                                                                         colnames(temp)
-                                         ),width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
-                                  )
-                           )
-                       )
-                ),
-                column(width = 12,offset = 0 , align = "left",
-                       uiOutput(paste("moreConditionsBlock",ifVariables$blocksId[i], sep = ""))
-                ),
-                column(width = 1,
-                       h3("){")
-                ),
-                column(width = 11,offset = 1,
-                       column(width=12,
-                              column(width = 11, align = "center",
-                                     selectizeInput(paste("resultOfBlock",ifVariables$blocksId[i], sep = ""), label = NULL,choices = c("-- select or enter --",
-                                                                                               colnames(temp)
-                                     ),width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
-                              )
-                       )
-                ),
-                column(width = 1,
-                       h3("}")
-                ),
-                column(width = 4,offset = 8,
-                       actionButton(paste("deleteBlock",ifVariables$blocksId[i] ,sep=""), "Delete Block", icon = icon("trash-alt"), class="deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")
-                )
-            )
-            ,sep = "")
-          }
-          
-          lapply(1:length(ifVariables$blocksId), function(m) {
-            output[[paste("moreConditionsBlock",ifVariables$blocksId[m], sep = "")]] <- renderText({
-              ifVariables[[paste("moreConditionsBlock",ifVariables$blocksId[m], sep = "")]]
-            })
-          })
-          
-          lapply(1:length(ifVariables$blocksId), function(w) {
-            observeEvent(input[[paste("addConditionBlock", ifVariables$blocksId[w], sep="")]],{  
               
-              print(paste(paste("addConditionBlock", ifVariables$blocksId[w], sep="") ,"--- input -->", input[[paste("addConditionBlock", ifVariables$blocksId[w], sep="")]] ))
-              print(paste("length of ids-->", length(ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]])))
-     
               
-  
-              if(is.null(ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]] )){
-                
-                if(is.null(ifVariables[[paste("lastIdConditionsBlock", ifVariables$blocksId[w], sep="")]])){
-                  ifVariables[[paste("lastIdConditionsBlock", ifVariables$blocksId[w], sep="")]] <- 2
-                }
-                
-                ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]] <- ifVariables[[paste("lastIdConditionsBlock", ifVariables$blocksId[w], sep="")]]
-                
-              }else{
-                ifVariables[[paste("lastIdConditionsBlock", ifVariables$blocksId[w], sep="")]] <- ifVariables[[paste("lastIdConditionsBlock", ifVariables$blocksId[w], sep="")]] + 1
-                ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]] <- c(ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]], ifVariables[[paste("lastIdConditionsBlock", ifVariables$blocksId[w], sep="")]])
-              }
-              
-              print(paste("con1:",!input[[paste("addConditionBlock", ifVariables$blocksId[w], sep="")]] == "" ))
-              print(paste("con2:",input[[paste("addConditionBlock", ifVariables$blocksId[w], sep="")]] == length(ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]])))
-              
-              if (!input[[paste("addConditionBlock", ifVariables$blocksId[w], sep="")]] == "" & 
-                  input[[paste("addConditionBlock", ifVariables$blocksId[w], sep="")]] == length(ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]])){
-                s <- ""
-                for(i in 1:length(ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]])){
-                  choices <- c(paste("Condition", i))
-                  track <- ""
-                  for (j in 1:i) {
-                    if(i>1){
-                      if(track==""){
-                        track <- paste("Condition", j)
-                      }else{
-                        track <- paste(track,paste("Condition", j), sep = " - ")
-                      }
-                    }
-                  }
-                  choices <- c(choices,track)
-                  s <- paste(s,
-                             box(title = paste("Condition",i+1), id=paste("cond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i], sep=""),status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
-                                 if(input$frameIFSelectInput != "-- select --"){
-                                   temp <- ifVariables$mainDataFrame
-                                   column(width = 12,
-                                          column(width = 12, style="color: white; background-color: black; height: 70px; padding: 15px 0px 0px; margin-bottom: 30px; border-bottom: 5px solid lightgray;",
-                                                 column(width = 2, align = "left",
-                                                        h4("Link by")
-                                                 ),
-                                                 column(width = 3, align = "center",
-                                                        selectInput(paste("linkByCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep=""),label = NULL, choices = c("-- select --", "and", "or"),
-                                                                    selected = ifelse(!is.null(input[[paste("linkByCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]]), input[[paste("linkByCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]], "-- select --")
-                                                                    
-                                                                    ,width = "100%")
-                                                 ),
-                                                 column(width = 2, align = "center",
-                                                        h4("With")
-                                                 ),
-                                                 column(width = 5, align = "center",
-                                                        selectInput(paste("withCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep=""),label = NULL, choices = c("-- select --", choices),
-                                                                    selected = ifelse(!is.null(input[[paste("withCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]]), input[[paste("withCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]], "-- select --")
-                                                                    
-                                                                    ,width = "100%")
-                                                 )
-                                          ),
-                                          
-                                          column(width = 5, align = "center",
-                                                 selectizeInput(paste("leftSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep=""), label = NULL,choices = c("-- select --",
-                                                                                                                                                                                 colnames(temp)
-                                                 ),
-                                                 selected = ifelse(!is.null(input[[paste("leftSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep="")]]), input[[paste("leftSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep="")]], "-- select --")
-                                                 ,width = "100%",options = list(placeholder = "-- select --"))
-                                          ),
-                                          column(width = 2, align = "center",
-                                                 selectInput(paste("logicalOperatorsCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep=""),label = NULL, choices = c("-- select --", "<", "<=", ">", ">=", "==", "!=", "&", "|", "in", "not in"),
-                                                             selected = ifelse(!is.null(input[[paste("logicalOperatorsCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]]), input[[paste("logicalOperatorsCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]], "-- select --")
-                                                             
-                                                             ,width = "100%")
-                                          ),
-                                          column(width = 5, align = "center",
-                                                 selectizeInput(paste("rightSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep=""), label = NULL,choices = c("-- select or enter --",
-                                                                                                                                                                                  colnames(temp)
-                                                 ),
-                                                 selected = ifelse(!is.null(input[[paste("rightSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep="")]]), input[[paste("rightSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep="")]], "-- select --")
-                                                 ,width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
-                                          ),
-                                          column(width = 12, align = "center",
-                                                 actionButton(paste("deleteCond", ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i] , paste("Block", ifVariables$blocksId[w], sep=""),sep=""), "Delete Condition", icon = icon("trash-alt"), class="deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")                                      )
-                                   )
-                                   
-                                 }
-                             )
-                             
-                             ,sep = "")
-                }
-                
-                
-                lapply(1:length(ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]]), function(k) {
-                  observeEvent(input[[paste("deleteCond", ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][k] , paste("Block", ifVariables$blocksId[w], sep=""),sep="")]] , {
-                    
-                    ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]] <- ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][ ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]] != ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][k] ]
-                    #print(ifVariables$conditionsIdOfBlock1)
-                    s <- ""
-                    
-                    if(length(ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]])!=0){
-                      for(i in 1:length(ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]])){
-                        choices <- c(paste("Condition", i))
-                        track <- ""
-                        for (j in 1:i) {
-                          if(i>1){
-                            if(track==""){
-                              track <- paste("Condition", j)
-                            }else{
-                              track <- paste(track,paste("Condition", j), sep = " - ")
-                            }
+              lapply(1:length(ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]]), function(k) {
+                observeEvent(input[[paste("deleteCond", ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][k] , paste("Block", ifVariables$blocksId[w], sep=""),sep="")]] , {
+                  
+                  ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]] <- ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][ ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]] != ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][k] ]
+                  #print(ifVariables$conditionsIdOfBlock1)
+                  s <- ""
+                  
+                  if(length(ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]])!=0){
+                    for(i in 1:length(ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]])){
+                      choices <- c(paste("Condition", i))
+                      track <- ""
+                      for (j in 1:i) {
+                        if(i>1){
+                          if(track==""){
+                            track <- paste("Condition", j)
+                          }else{
+                            track <- paste(track,paste("Condition", j), sep = " - ")
                           }
                         }
-                        choices <- c(choices,track)
-                        s <- paste(s,
-                                   box(title = paste("Condition",i+1), id=paste("cond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i], sep=""),status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
-                                       if(input$frameIFSelectInput != "-- select --"){
-                                         temp <- ifVariables$mainDataFrame
-                                         column(width = 12,
-                                                column(width = 12, style="color: white; background-color: black; height: 70px; padding: 15px 0px 0px; margin-bottom: 30px; border-bottom: 5px solid lightgray;",
-                                                       column(width = 2, align = "left",
-                                                              h4("Link by")
-                                                       ),
-                                                       column(width = 3, align = "center",
-                                                              selectInput(paste("linkByCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep=""),label = NULL, choices = c("-- select --", "and", "or"),
-                                                                          selected = ifelse(!is.null(input[[paste("linkByCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]]), input[[paste("linkByCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]], "-- select --")
-                                                                          
-                                                                          ,width = "100%")
-                                                       ),
-                                                       column(width = 2, align = "center",
-                                                              h4("With")
-                                                       ),
-                                                       column(width = 5, align = "center",
-                                                              selectInput(paste("withCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep=""),label = NULL, choices = c("-- select --", choices),
-                                                                          selected = ifelse(!is.null(input[[paste("withCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]]), input[[paste("withCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]], "-- select --")
-                                                                          
-                                                                          ,width = "100%")
-                                                       )
-                                                ),
-                                                
-                                                column(width = 5, align = "center",
-                                                       selectizeInput(paste("leftSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep=""), label = NULL,choices = c("-- select --",
-                                                                                                                                                                                                                                                colnames(temp)
-                                                       ),
-                                                       selected = ifelse(!is.null(input[[paste("leftSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep="")]]), input[[paste("leftSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep="")]], "-- select --")
-                                                       ,width = "100%",options = list(placeholder = "-- select --"))
-                                                ),
-                                                column(width = 2, align = "center",
-                                                       selectInput(paste("logicalOperatorsCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep=""),label = NULL, choices = c("-- select --", "<", "<=", ">", ">=", "==", "!=", "&", "|", "in", "not in"),
-                                                                   selected = ifelse(!is.null(input[[paste("logicalOperatorsCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]]), input[[paste("logicalOperatorsCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]], "-- select --")
-                                                                   
-                                                                   ,width = "100%")
-                                                ),
-                                                column(width = 5, align = "center",
-                                                       selectizeInput(paste("rightSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep=""), label = NULL,choices = c("-- select or enter --",
-                                                                                                                                                                                                                                                 colnames(temp)
-                                                       ),
-                                                       selected = ifelse(!is.null(input[[paste("rightSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep="")]]), input[[paste("rightSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep="")]], "-- select --")
-                                                       ,width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
-                                                ),
-                                                column(width = 12, align = "center",
-                                                       actionButton(paste("deleteCond", ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i] , paste("Block", ifVariables$blocksId[w], sep=""),sep=""), "Delete Condition", icon = icon("trash-alt"), class="deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")                                      )
-                                         )
-                                         
-                                       }
-                                   )
-                                   
-                                   ,sep = "")
                       }
-                    }else{
-                      ifVariables[[paste("lastIdConditionsBlock", ifVariables$blocksId[w], sep="")]] <- ifVariables[[paste("lastIdConditionsBlock", ifVariables$blocksId[w], sep="")]] +1
-                      
-                      ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]] <- NULL
-                      s<-""
-                    }
-                    
-                    
-                    ifVariables[[paste("moreConditionsBlock", ifVariables$blocksId[w], sep="")]] <- s
-                  })
-                })
-                
-                ifVariables[[paste("moreConditionsBlock", ifVariables$blocksId[w], sep="")]] <- s
-              }
-              
-            },ignoreInit = T)
-          })
-          
-          lapply(1:length(ifVariables$blocksId), function(z) {
-            observeEvent(input[[paste("deleteBlock",ifVariables$blocksId[z] ,sep="")]],{
-              ifVariables$blocksId <- ifVariables$blocksId[ifVariables$blocksId != ifVariables$blocksId[z] ]
-              #print(ifVariables$blocksId)
-              s <- ""
-              
-              if(length(ifVariables$blocksId)!=0){
-                temp <- ifVariables$mainDataFrame
-                s <- ""
-                for (i in 1:length(ifVariables$blocksId)) {
-                  s <- paste(s,
-                             box(title = paste("Block", i+1), id=paste("Block",ifVariables$blocksId[i], sep = ""),status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
-                                 column(width = 2,
-                                        h3("if(")
-                                 ),
-                                 column(width = 4,offset = 6,
-                                        actionButton(paste("addConditionBlock",ifVariables$blocksId[i], sep = ""), paste("Add condition for Block", i+1, sep = ""), icon = icon("plus") ,class="toolButton", style="height: 35px; margin-top: 20px;", width = "100%")
-                                 ),
-                                 column(width = 12,offset = 0, style="margin-top: 20px;" , align = "left",
-                                        box(title = "Condition 1", id=paste("cond1Block",ifVariables$blocksId[i], sep = ""),status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
-                                            column(width=12,
-                                                   column(width = 5, align = "center",
-                                                          selectizeInput(paste("leftSideCond1Block",ifVariables$blocksId[i], sep = ""), label = NULL,choices = c("-- select --",
-                                                                                                                                                                              colnames(temp)
-                                                          ),width = "100%",options = list( placeholder = "-- select --"))
-                                                   ),
-                                                   column(width = 2, align = "center",
-                                                          selectInput(paste("logicalOperatorsCond1Block",ifVariables$blocksId[i], sep = ""),label = NULL, choices = c("-- select --", "<", "<=", ">", ">=", "==", "!=", "&", "|", "in", "not in"), width = "100%")
-                                                   ),
-                                                   column(width = 5, align = "center",
-                                                          selectizeInput(paste("rightSideCond1Block",ifVariables$blocksId[i], sep = ""), label = NULL,choices = c("-- select or enter --",
-                                                                                                                                                                               colnames(temp)
-                                                          ),width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
-                                                   )
-                                            )
-                                        )
-                                 ),
-                                 column(width = 12,offset = 0 , align = "left",
-                                        uiOutput(paste("moreConditionsBlock",ifVariables$blocksId[i], sep = ""))
-                                 ),
-                                 column(width = 1,
-                                        h3("){")
-                                 ),
-                                 column(width = 11,offset = 1,
-                                        column(width=12,
-                                               column(width = 11, align = "center",
-                                                      selectizeInput(paste("resultOfBlock",ifVariables$blocksId[i], sep = ""), label = NULL,choices = c("-- select or enter --",
-                                                                                                                                                                     colnames(temp)
-                                                      ),width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
-                                               )
-                                        )
-                                 ),
-                                 column(width = 1,
-                                        h3("}")
-                                 ),
-                                 column(width = 4,offset = 8,
-                                        actionButton(paste("deleteBlock",ifVariables$blocksId[i] ,sep=""), "Delete Block", icon = icon("trash-alt"), class="deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")
+                      choices <- c(choices,track)
+                      s <- paste(s,
+                                 box(title = paste("Condition",i+1), id=paste("cond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i], sep=""),status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
+                                     if(input$frameIFSelectInput != "-- select --"){
+                                       temp <- ifVariables$mainDataFrame
+                                       column(width = 12,
+                                              column(width = 12, style="color: white; background-color: black; height: 70px; padding: 15px 0px 0px; margin-bottom: 30px; border-bottom: 5px solid lightgray;",
+                                                     column(width = 2, align = "left",
+                                                            h4("Link by")
+                                                     ),
+                                                     column(width = 3, align = "center",
+                                                            selectInput(paste("linkByCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep=""),label = NULL, choices = c("-- select --", "and", "or"),
+                                                                        selected = ifelse(!is.null(input[[paste("linkByCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]]), input[[paste("linkByCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]], "-- select --")
+                                                                        
+                                                                        ,width = "100%")
+                                                     ),
+                                                     column(width = 2, align = "center",
+                                                            h4("With")
+                                                     ),
+                                                     column(width = 5, align = "center",
+                                                            selectInput(paste("withCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep=""),label = NULL, choices = c("-- select --", choices),
+                                                                        selected = ifelse(!is.null(input[[paste("withCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]]), input[[paste("withCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]], "-- select --")
+                                                                        
+                                                                        ,width = "100%")
+                                                     )
+                                              ),
+                                              
+                                              column(width = 5, align = "center",
+                                                     selectizeInput(paste("leftSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep=""), label = NULL,choices = c("-- select --",
+                                                                                                                                                                                                                                                           colnames(temp)
+                                                     ),
+                                                     selected = ifelse(!is.null(input[[paste("leftSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep="")]]), input[[paste("leftSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep="")]], "-- select --")
+                                                     ,width = "100%",options = list(placeholder = "-- select --"))
+                                              ),
+                                              column(width = 2, align = "center",
+                                                     selectInput(paste("logicalOperatorsCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep=""),label = NULL, choices = c("-- select --", "<", "<=", ">", ">=", "==", "!=", "&", "|", "in", "not in"),
+                                                                 selected = ifelse(!is.null(input[[paste("logicalOperatorsCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]]), input[[paste("logicalOperatorsCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""), sep="")]], "-- select --")
+                                                                 
+                                                                 ,width = "100%")
+                                              ),
+                                              column(width = 5, align = "center",
+                                                     selectizeInput(paste("rightSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep=""), label = NULL,choices = c("-- select or enter --",
+                                                                                                                                                                                                                                                            colnames(temp)
+                                                     ),
+                                                     selected = ifelse(!is.null(input[[paste("rightSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep="")]]), input[[paste("rightSideCond",ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i],paste("Block", ifVariables$blocksId[w], sep=""),sep="")]], "-- select --")
+                                                     ,width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
+                                              ),
+                                              column(width = 12, align = "center",
+                                                     actionButton(paste("deleteCond", ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i] , paste("Block", ifVariables$blocksId[w], sep=""),sep=""), "Delete Condition", icon = icon("trash-alt"), class="deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")                                      )
+                                       )
+                                       
+                                     }
                                  )
-                             )
-                             ,sep = "")
-                }
-                
-                
-              }else{
-                ifVariables$lastIdBlocks <- ifVariables$lastIdBlocks + 1
-                ifVariables$blocksId <- NULL
-                s<-""
+                                 
+                                 ,sep = "")
+                    }
+                  }else{
+                    ifVariables[[paste("lastIdConditionsBlock", ifVariables$blocksId[w], sep="")]] <- ifVariables[[paste("lastIdConditionsBlock", ifVariables$blocksId[w], sep="")]] +1
+                    
+                    ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]] <- NULL
+                    s<-""
+                  }
+                  
+                  
+                  ifVariables[[paste("moreConditionsBlock", ifVariables$blocksId[w], sep="")]] <- s
+                })
+              })
+              
+              ifVariables[[paste("moreConditionsBlock", ifVariables$blocksId[w], sep="")]] <- s
+            }
+            
+          },ignoreInit = T)
+        })
+        
+        lapply(1:length(ifVariables$blocksId), function(z) {
+          observeEvent(input[[paste("deleteBlock",ifVariables$blocksId[z] ,sep="")]],{
+            ifVariables$blocksId <- ifVariables$blocksId[ifVariables$blocksId != ifVariables$blocksId[z] ]
+            #print(ifVariables$blocksId)
+            s <- ""
+            
+            if(length(ifVariables$blocksId)!=0){
+              temp <- ifVariables$mainDataFrame
+              s <- ""
+              for (i in 1:length(ifVariables$blocksId)) {
+                s <- paste(s,
+                           box(title = paste("Block", i+1), id=paste("Block",ifVariables$blocksId[i], sep = ""),status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
+                               column(width = 2,
+                                      h3("if(")
+                               ),
+                               column(width = 4,offset = 6,
+                                      actionButton(paste("addConditionBlock",ifVariables$blocksId[i], sep = ""), paste("Add condition for Block", i+1, sep = ""), icon = icon("plus") ,class="toolButton", style="height: 35px; margin-top: 20px;", width = "100%")
+                               ),
+                               column(width = 12,offset = 0, style="margin-top: 20px;" , align = "left",
+                                      box(title = "Condition 1", id=paste("cond1Block",ifVariables$blocksId[i], sep = ""),status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
+                                          column(width=12,
+                                                 column(width = 5, align = "center",
+                                                        selectizeInput(paste("leftSideCond1Block",ifVariables$blocksId[i], sep = ""), label = NULL,choices = c("-- select --",
+                                                                                                                                                               colnames(temp)
+                                                        ),width = "100%",options = list( placeholder = "-- select --"))
+                                                 ),
+                                                 column(width = 2, align = "center",
+                                                        selectInput(paste("logicalOperatorsCond1Block",ifVariables$blocksId[i], sep = ""),label = NULL, choices = c("-- select --", "<", "<=", ">", ">=", "==", "!=", "&", "|", "in", "not in"), width = "100%")
+                                                 ),
+                                                 column(width = 5, align = "center",
+                                                        selectizeInput(paste("rightSideCond1Block",ifVariables$blocksId[i], sep = ""), label = NULL,choices = c("-- select or enter --",
+                                                                                                                                                                colnames(temp)
+                                                        ),width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
+                                                 )
+                                          )
+                                      )
+                               ),
+                               column(width = 12,offset = 0 , align = "left",
+                                      uiOutput(paste("moreConditionsBlock",ifVariables$blocksId[i], sep = ""))
+                               ),
+                               column(width = 1,
+                                      h3("){")
+                               ),
+                               column(width = 11,offset = 1,
+                                      column(width=12,
+                                             column(width = 11, align = "center",
+                                                    selectizeInput(paste("resultOfBlock",ifVariables$blocksId[i], sep = ""), label = NULL,choices = c("-- select or enter --",
+                                                                                                                                                      colnames(temp)
+                                                    ),width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
+                                             )
+                                      )
+                               ),
+                               column(width = 1,
+                                      h3("}")
+                               ),
+                               column(width = 4,offset = 8,
+                                      actionButton(paste("deleteBlock",ifVariables$blocksId[i] ,sep=""), "Delete Block", icon = icon("trash-alt"), class="deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")
+                               )
+                           )
+                           ,sep = "")
               }
               
               
-              ifVariables$newBlock <- s
-              
-              
-            })
+            }else{
+              ifVariables$lastIdBlocks <- ifVariables$lastIdBlocks + 1
+              ifVariables$blocksId <- NULL
+              s<-""
+            }
+            
+            
+            ifVariables$newBlock <- s
+            
+            
           })
+        })
         
-        }
-        
-        ifVariables$newBlock <- s
-        
-      }, error = function(err) {
-        print("lzvmifv89zxvvfj3")
-        shinyalert("Error",
-                   err$message,
-                   type = "error",
-                   closeOnClickOutside = FALSE,
-                   confirmButtonCol = "#ff4d4d",
-                   animation = FALSE,
-                   showConfirmButton = TRUE
-        )
-      })
-    },ignoreInit = T)
-    
-    
-    
-    
-    
-    
-    
-    
-    ##########-----END----------##################
+      }
+      
+      ifVariables$newBlock <- s
+      
+    }, error = function(err) {
+      print("lzvmifv89zxvvfj3")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  },ignoreInit = T)
+  
+  
+  
+  
+  
+  
+  
+  
+  ##########-----END----------##################
   #############################################################################################
   
   #####################    Chapter      #############################
@@ -5220,15 +5220,15 @@ server <- shinyServer(function(input, output, session) {
           textInd<-HTML(textInd)
         }
         
-  
+        
         s <- paste(s,
                    box(id=paste("box",chp,sep = ""), title = chp, status="primary",
                        width=12, solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                        span("Variables: ", class="titleTagVar"),div(
-                           textSur , class="divVar"
+                         textSur , class="divVar"
                        ),
                        span("Indicators: ", class="titleTagInd"),div(
-                           textInd , class="divInd"
+                         textInd , class="divInd"
                        ),
                        column(width = 7,
                               actionButton(paste("editChapterButton", chp, sep = ""), "Edit Chapter", icon = icon("edit"), class="toolButton", style="height: 50px; margin-bottom:20px;", width="100%")
@@ -5285,7 +5285,7 @@ server <- shinyServer(function(input, output, session) {
             survey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
                                     stringsAsFactors = FALSE)
             indicator <- as.data.frame(read_excel(form_tmp, sheet = "indicator"),
-                                      stringsAsFactors = FALSE)
+                                       stringsAsFactors = FALSE)
             updateProgress()
             survey[!is.na(survey$chapter) & survey$chapter==cahpters[j],"chapter"] <- NA
             indicator[!is.na(indicator$chapter) & indicator$chapter==cahpters[j],"chapter"] <- NA 
@@ -5372,28 +5372,28 @@ server <- shinyServer(function(input, output, session) {
       
       if(length(c(varSer, varInd)) == 0){
         return(modalDialog(id="showChapterToolPopUp", 
-                    title = "No more Variables or Indicators",
-                    column(offset = 1,width = 10,style="text-align: center;",
-                          icon("info-circle","big-info-circle") 
-                    ),
-                    column(offset = 1,width = 11,
-                      h3("You can't add more chapters because there are no Variables or Indicators available to use.", style="color: gray; text-align: center; color")
-                    ),
-                    size = "l",
-                    footer = tagList(
-                      modalButton("Cancel", icon("sign-out-alt"))
-                    )
+                           title = "No more Variables or Indicators",
+                           column(offset = 1,width = 10,style="text-align: center;",
+                                  icon("info-circle","big-info-circle") 
+                           ),
+                           column(offset = 1,width = 11,
+                                  h3("You can't add more chapters because there are no Variables or Indicators available to use.", style="color: gray; text-align: center; color")
+                           ),
+                           size = "l",
+                           footer = tagList(
+                             modalButton("Cancel", icon("sign-out-alt"))
+                           )
         ))
       }
       else{
         return(modalDialog(id="showChapterToolPopUp", 
-                    title = ifelse(type=="Add","Add Chapter", paste("Edit",chapterName,"chapter")),
-                    uiOutput("chapterToolBody"),
-                    size = "l",
-                    footer = tagList(
-                      modalButton("Cancel", icon("sign-out-alt")),
-                      actionButton("saveChapterButton", ifelse(type=="Add","Add the Chapter", "Edit the Chapter"), class="toolButton", style="height: 35px;")
-                    )
+                           title = ifelse(type=="Add","Add Chapter", paste("Edit",chapterName,"chapter")),
+                           uiOutput("chapterToolBody"),
+                           size = "l",
+                           footer = tagList(
+                             modalButton("Cancel", icon("sign-out-alt")),
+                             actionButton("saveChapterButton", ifelse(type=="Add","Add the Chapter", "Edit the Chapter"), class="toolButton", style="height: 35px;")
+                           )
         ))
       }
     }, error = function(err) {
@@ -5416,21 +5416,21 @@ server <- shinyServer(function(input, output, session) {
       
       
       s <- paste("",
-      column(
-        width=12,
-        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-               h4("Enter chapter's name:")
-        ),
-        column(width = 6, offset = 0,
-               textInput("chapterNameInput", label = NULL, value = selChap, width = "100%")
-        )
-      ),sep = "")
+                 column(
+                   width=12,
+                   column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                          h4("Enter chapter's name:")
+                   ),
+                   column(width = 6, offset = 0,
+                          textInput("chapterNameInput", label = NULL, value = selChap, width = "100%")
+                   )
+                 ),sep = "")
       
       form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
       survey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
                               stringsAsFactors = FALSE)
       indicator <- as.data.frame(read_excel(form_tmp, sheet = "indicator"),
-                              stringsAsFactors = FALSE)
+                                 stringsAsFactors = FALSE)
       
       survey <- survey[startsWith(tolower(survey$type), "integer") |	
                          startsWith(tolower(survey$type), "decimal") |	
@@ -5448,7 +5448,7 @@ server <- shinyServer(function(input, output, session) {
       
       varSer <- c(chaptersDF[chaptersDF$chapter == selChap & chaptersDF$sheet == "survey", "var"],
                   survey[is.na(survey$chapter),"name"]
-                  )
+      )
       
       varInd <- c(chaptersDF[chaptersDF$chapter == selChap & chaptersDF$sheet == "indicator", "var"],
                   indicator[is.na(indicator$chapter),"fullname"]
@@ -5473,7 +5473,7 @@ server <- shinyServer(function(input, output, session) {
                               color = "teal"
                             )
                           }
-                       
+                          
                    ),
                    column(width = 12, style = "margin: 15px 0px 10px; background-color: #1aab8a; color: white;",
                           h4("Select Indicators of the chapter"),helpText("(To select multiple Indicators, press on Ctrl + Click on the item)", style="color: black;")
@@ -5513,7 +5513,7 @@ server <- shinyServer(function(input, output, session) {
       selChap <- chaptersDataFrame$selectedChapter
       chaptersDF <- chaptersDataFrame[["data"]]
       opeType <- chaptersDataFrame$operationType
-  
+      
       chaptersDataFrame$selectedChapter <- "return"
       if(is.null(input$chapterNameInput) || trimws(input$chapterNameInput) ==""){
         shinyalert("chapter's name is required",
@@ -5654,7 +5654,7 @@ server <- shinyServer(function(input, output, session) {
         
         if(identical(as.character(mainSurvey["labelReport"]),as.character(userRelabelingSurvey["labelReport"])) &
            identical(as.character(mainSurvey["hintReport"]),as.character(userRelabelingSurvey["hintReport"]))
-           ){
+        ){
           return(FALSE)
         }
         projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- FALSE
@@ -5673,7 +5673,7 @@ server <- shinyServer(function(input, output, session) {
         
         mainSurvey["labelReport"] = userRelabelingSurvey["labelReport"]
         mainSurvey["hintReport"] = userRelabelingSurvey["hintReport"]
-
+        
         kobo_edit_form(survey = mainSurvey)
         updateProgress()
       }
@@ -5681,7 +5681,7 @@ server <- shinyServer(function(input, output, session) {
         userRelabelingChoices <- sheets[["relabelingChoices"]]
         form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
         mainChoices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
-                                    stringsAsFactors = FALSE)
+                                     stringsAsFactors = FALSE)
         
         if(identical(as.character(mainChoices["labelReport"]),as.character(userRelabelingChoices["labelReport"]))){
           return(FALSE)
@@ -5740,7 +5740,7 @@ server <- shinyServer(function(input, output, session) {
         userSurvey<-userSurvey[colnames(mainSurvey)]
         
         updateProgress()
-       
+        
         
         newSurvey <- rbind(mainSurvey[!rownames(mainSurvey) %in% rownames(userSurvey),],
                            userSurvey
@@ -5763,7 +5763,7 @@ server <- shinyServer(function(input, output, session) {
         
         form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
         mainChoices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
-                                    stringsAsFactors = FALSE)
+                                     stringsAsFactors = FALSE)
         
         origin <- mainChoices[rownames(mainChoices) %in% rownames(userChoices),colnames(userChoices)]
         newCho <- userChoices 
@@ -5797,7 +5797,7 @@ server <- shinyServer(function(input, output, session) {
         
         
         newChoices <- rbind(mainChoices[!rownames(mainChoices) %in% rownames(userChoices),],
-                           userChoices
+                            userChoices
         )
         newChoices <- newChoices[ order(as.numeric(row.names(newChoices))), ]
         updateProgress()
@@ -5987,7 +5987,7 @@ server <- shinyServer(function(input, output, session) {
       numericType <- c()
       dateType <- c()
       
-
+      
       #################################relabeling Survey#######################################
       if (!is.null(input$relabelingSurveyTable)) {
         relabelingSurvey = hot_to_r(input$relabelingSurveyTable)
@@ -5995,7 +5995,7 @@ server <- shinyServer(function(input, output, session) {
       else{
         form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
         relabelingSurvey <- as.data.frame(read_excel(form_tmp, sheet = "survey"), 
-                                stringsAsFactors = FALSE)
+                                          stringsAsFactors = FALSE)
         names(relabelingSurvey)[tolower(names(relabelingSurvey)) == "label::english"] <- "label"
         names(relabelingSurvey)[tolower(names(relabelingSurvey)) == "hint::english"] <- "hint"
         reqNames <- c("type", "name")
@@ -6073,7 +6073,7 @@ server <- shinyServer(function(input, output, session) {
       else{
         form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
         relabelingChoices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
-                                          stringsAsFactors = FALSE)
+                                           stringsAsFactors = FALSE)
         names(relabelingChoices)[tolower(names(relabelingChoices)) == "label::english"] <- "label"
         reqNames <- c("list_name", "name")
         if("label" %in% colnames(relabelingChoices)){
@@ -6121,7 +6121,7 @@ server <- shinyServer(function(input, output, session) {
       else {
         form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
         selectOneType <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
-                                stringsAsFactors = FALSE)
+                                       stringsAsFactors = FALSE)
         reqNames <- c("type",   "name" ,  "label", "variable",
                       "disaggregation", #"chapter",
                       "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
@@ -6167,7 +6167,7 @@ server <- shinyServer(function(input, output, session) {
       
       
       ###############################Order Ordinal Variables##########################
-
+      
       form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
       survey <- sheets[["selectOneType"]]
       reqNames <- c("type",  "variable")
@@ -6196,7 +6196,7 @@ server <- shinyServer(function(input, output, session) {
       varOfOrder <- sapply(survey[,"type"], function(x) {
         strsplit(x," ")[[1]][2]
       }, simplify = TRUE, USE.NAMES = FALSE)
-  
+      
       choices <- as.data.frame(read_excel(form_tmp, sheet = "choices"),
                                stringsAsFactors = FALSE)
       reqNames <- c("list_name",  "name", "label", "order")
@@ -6223,7 +6223,7 @@ server <- shinyServer(function(input, output, session) {
       choices$label <- as.character(choices$label)
       choices$order <- as.integer(choices$order)
       orderOrdinalVariables = choices  
-
+      
       orderOrdinalVariables <- orderOrdinalVariables[ order(as.numeric(row.names(orderOrdinalVariables))), ]
       sheets[["orderOrdinalVariables"]] <- orderOrdinalVariables
       
@@ -6237,7 +6237,7 @@ server <- shinyServer(function(input, output, session) {
       else {
         form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
         selectMultipleType <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
-                                       stringsAsFactors = FALSE)
+                                            stringsAsFactors = FALSE)
         reqNames <- c("type",   "name" ,  "label", "variable",
                       "disaggregation", #"chapter",
                       "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
@@ -6290,7 +6290,7 @@ server <- shinyServer(function(input, output, session) {
       else {
         form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
         numericType <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
-                                            stringsAsFactors = FALSE)
+                                     stringsAsFactors = FALSE)
         reqNames <- c("type",   "name" ,  "label", "variable",
                       "disaggregation", #"chapter",
                       "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
@@ -6312,14 +6312,14 @@ server <- shinyServer(function(input, output, session) {
         }
         numericType <- numericType[reqNames]
         numericType <- numericType[startsWith(tolower(numericType$type), "integer") |
-                           startsWith(tolower(numericType$type), "decimal") |
-                           startsWith(tolower(numericType$type), "geopoint") |
-                           startsWith(tolower(numericType$type), "calculate") 
-                         ,]
+                                     startsWith(tolower(numericType$type), "decimal") |
+                                     startsWith(tolower(numericType$type), "geopoint") |
+                                     startsWith(tolower(numericType$type), "calculate") 
+                                   ,]
         
         numericType[tolower(numericType$type) %in% c("integer") ,"variable"] = "integer"
         numericType[tolower(numericType$type) %in% c("decimal","geopoint", "calculate") ,"variable"] = "numeric"
-
+        
         
         #numericType$chapter <- as.character(numericType$chapter)
         numericType$variable <- as.character(numericType$variable)
@@ -6349,7 +6349,7 @@ server <- shinyServer(function(input, output, session) {
       else {
         form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
         dateType <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
-                                     stringsAsFactors = FALSE)
+                                  stringsAsFactors = FALSE)
         reqNames <- c("type",   "name" ,  "label", "variable",
                       "disaggregation", #"chapter",
                       "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
@@ -6371,9 +6371,9 @@ server <- shinyServer(function(input, output, session) {
         }
         dateType <- dateType[reqNames]
         dateType <- dateType[startsWith(tolower(dateType$type), "date") |
-                                     startsWith(tolower(dateType$type), "time") |
-                                     startsWith(tolower(dateType$type), "datetime") 
-                                   ,]
+                               startsWith(tolower(dateType$type), "time") |
+                               startsWith(tolower(dateType$type), "datetime") 
+                             ,]
         
         if(nrow(dateType)!=0){
           dateType[tolower(dateType$type) %in% c("date") ,"variable"] = "date"
@@ -6418,7 +6418,7 @@ server <- shinyServer(function(input, output, session) {
                               stringsAsFactors = FALSE)
       #indicator <- as.data.frame(read_excel(form_tmp, sheet = "indicator"),
       #                          stringsAsFactors = FALSE)
-     
+      
       
       survey <- survey[!is.na(survey$chapter),]
       indicator <- indicator[!is.na(indicator$chapter),]
@@ -6531,7 +6531,7 @@ server <- shinyServer(function(input, output, session) {
                    showConfirmButton = TRUE
         )
       }
-
+      
     }, error = function(err) {
       print("fdhfhdflolkjllk7")
       shinyalert("Error",
@@ -6548,8 +6548,7 @@ server <- shinyServer(function(input, output, session) {
   
   ####################################### Reports Generation page ############################################
   output$reportsGeneration <- renderUI({
-    #if(!projectConfigurationInfo$log[["isDataProcessingCompleted"]]){
-    if(F){
+    if(!projectConfigurationInfo$log[["isDataProcessingCompleted"]]){
       infoBox(
         width = 12,strong("Warning"),h4("You cannot proceed without completing Data Processing section",align="center")
         ,icon = icon("exclamation-triangle"),
@@ -6558,28 +6557,28 @@ server <- shinyServer(function(input, output, session) {
     }else{
       column(width = 12, align="center",
              column(width = 12, align="center",style="margin-bottom:15px;",
-               column(width = 8, align="center",
-                      actionButton("crunchingReportButton", "Crunching Report", class="toolButton006495", style="height: 250px; font-size: xx-large; width: 100%;") 
-               ),
-               column(width = 4, align="center",
-                      actionButton("anonymisationReportButton", "Anonymisation Report", class="toolButtonE0A025", style="height: 250px; font-size: xx-large; width: 100%;")
-               )
+                    column(width = 8, align="center",
+                           actionButton("crunchingReportButton", "Crunching Report", class="toolButton006495", style="height: 250px; font-size: xx-large; width: 100%;") 
+                    ),
+                    column(width = 4, align="center",
+                           actionButton("anonymisationReportButton", "Anonymisation Report", class="toolButtonE0A025", style="height: 250px; font-size: xx-large; width: 100%;")
+                    )
              ),
              column(width = 12, align="center",style="margin-bottom:15px;",
-               column(width = 6, align="center",
-                      actionButton("monitoringReportButton", "Monitoring Report", class="toolButtonF4D00C", style="height: 250px; font-size: xx-large; width: 100%;")
-               ),
-               column(width = 6, align="center",
-                      actionButton("clusterReportButton", "Cluster Report", class="toolButton004C70", style="height: 250px; font-size: xx-large; width: 100%;")
-               )
+                    column(width = 6, align="center",
+                           actionButton("monitoringReportButton", "Monitoring Report", class="toolButtonF4D00C", style="height: 250px; font-size: xx-large; width: 100%;")
+                    ),
+                    column(width = 6, align="center",
+                           actionButton("clusterReportButton", "Cluster Report", class="toolButton004C70", style="height: 250px; font-size: xx-large; width: 100%;")
+                    )
              ),
              column(width = 12, align="center",style="margin-bottom:15px;",
-               column(width = 5, align="center",
-                      actionButton("predictionReportButton", "Prediction Report", class="toolButton0093D1", style="height: 250px; font-size: xx-large; width: 100%;")
-               ),
-               column(width = 7, align="center",
-                      actionButton("scoreReportButton", "Score Report", class="toolButtonF2635F", style="height: 250px; font-size: xx-large; width: 100%;")
-               )
+                    column(width = 5, align="center",
+                           actionButton("predictionReportButton", "Prediction Report", class="toolButton0093D1", style="height: 250px; font-size: xx-large; width: 100%;")
+                    ),
+                    column(width = 7, align="center",
+                           actionButton("scoreReportButton", "Score Report", class="toolButtonF2635F", style="height: 250px; font-size: xx-large; width: 100%;")
+                    )
              )
       )
     }
@@ -6655,8 +6654,8 @@ server <- shinyServer(function(input, output, session) {
     for (fn in filesNames) {
       s <- paste(s,
                  box(width = 6, title = fn, solidHeader = FALSE, status = "primary", collapsed = F, collapsible = F,
-                      downloadLink(paste("download",fn,sep = ""), paste("Download",fn))
-                     )
+                     downloadLink(paste("download",fn,sep = ""), paste("Download",fn))
+                 )
                  ,sep="")
       
     }
@@ -6668,7 +6667,7 @@ server <- shinyServer(function(input, output, session) {
         }
       )
     })
-
+    
     return(s)
   })
   

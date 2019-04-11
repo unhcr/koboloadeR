@@ -74,25 +74,30 @@ kobo_check_analysis_plan <- function(form = "form.xls") {
     }
     
     
-    
-    temp <- survey[is.na(survey$labelReport),]
-    if(nrow(temp)>0){
+    if(!"labelReport"%in%colnames(survey)){
       result$flag <- F
       countE <- countE+1
-      result$labelReportMissedSur <- paste(countE,"-"," Please make sure that you fill all labelReport with a proper label before loading data and generating reports (survey sheet)", sep = "")
-      result$message <- paste(result$message, "\n", result$labelReportMissedSur,sep = "")
+      result$labelReportNotExisSur <- paste(countE,"-"," Survey sheet does not contain labelReport column, you must fist labelReport before Data Processing", sep = "")
+      result$message <- paste(result$message, "\n", result$labelReportNotExisSur,sep = "")
+    }else{
+      temp <- survey[is.na(survey$labelReport),]
+      if(nrow(temp)>0){
+        result$flag <- F
+        countE <- countE+1
+        result$labelReportMissedSur <- paste(countE,"-"," Please make sure that you fill all labelReport with a proper label before loading data and generating reports (survey sheet)", sep = "")
+        result$message <- paste(result$message, "\n", result$labelReportMissedSur,sep = "")
+      }
+      
+      if(mean(str_length(survey$labelReport) <= 85, na.rm=T) != 1){
+        result$flag <- F
+        countE <- countE+1
+        temp <- survey[str_length(survey$labelReport) > 85,"name"]
+        temp <- paste(temp, sep = " ", collapse = " ,")
+        result$labelReportLengthSur <- paste(countE,"-"," Please make sure that all labelReport length are less than 85 character in survey sheet where name equal: ",temp , sep = "")
+        result$message <- paste(result$message, "\n", result$labelReportLengthSur,sep = "")
+      }
     }
-    
-    if(mean(str_length(survey$labelReport) <= 85, na.rm=T) != 1){
-      result$flag <- F
-      countE <- countE+1
-      temp <- survey[str_length(survey$labelReport) > 85,"name"]
-      temp <- paste(temp, sep = " ", collapse = " ,")
-      result$labelReportLengthSur <- paste(countE,"-"," Please make sure that all labelReport length are less than 85 character in survey sheet where name equal: ",temp , sep = "")
-      result$message <- paste(result$message, "\n", result$labelReportLengthSur,sep = "")
-    }
-    
-    
+
     choices <- tryCatch({
       as.data.frame(read_excel(form_tmp, sheet = "choices"),
                     stringsAsFactors = FALSE) #read survey sheet from the form
@@ -109,14 +114,24 @@ kobo_check_analysis_plan <- function(form = "form.xls") {
     })
     choices <- choices[!is.na(choices$name) & !is.na(choices$list_name),]
     
-    if(mean(str_length(choices$labelReport) <= 85, na.rm=T) != 1){
+    
+    if(!"labelReport"%in%colnames(choices)){
       result$flag <- F
       countE <- countE+1
-      temp <- choices[str_length(choices$labelReport) > 85,"name"]
-      temp <- paste(temp, sep = " ", collapse = " ,")
-      result$labelReportLengthCho <- paste(countE,"-"," Please make sure that all labelReport length are less than 85 character in choices sheet where name equal: ",temp , sep = "")
-      result$message <- paste(result$message, "\n", result$labelReportLengthCho,sep = "")
+      result$labelReportNotExisCho <- paste(countE,"-"," Choices sheet does not contain labelReport column, you must fist labelReport before Data Processing", sep = "")
+      result$message <- paste(result$message, "\n", result$labelReportNotExisCho,sep = "")
+    }else{
+      if(mean(str_length(choices$labelReport) <= 85, na.rm=T) != 1){
+        result$flag <- F
+        countE <- countE+1
+        temp <- choices[str_length(choices$labelReport) > 85,"name"]
+        temp <- paste(temp, sep = " ", collapse = " ,")
+        result$labelReportLengthCho <- paste(countE,"-"," Please make sure that all labelReport length are less than 85 character in choices sheet where name equal: ",temp , sep = "")
+        result$message <- paste(result$message, "\n", result$labelReportLengthCho,sep = "")
+      }
     }
+    
+    
     
     temp <- survey[!is.na(survey[,"variable"]),]
     temp <- temp[temp[,"variable"]=="ordinal",]
@@ -161,15 +176,29 @@ kobo_check_analysis_plan <- function(form = "form.xls") {
       )
     })
     indicator <- indicator[!is.na(indicator$fullname),]
-    if(mean(str_length(indicator$label) <= 85, na.rm=T) != 1){
+    
+    if(!"label"%in%colnames(indicator)){
       result$flag <- F
       countE <- countE+1
-      temp <- indicator[str_length(indicator$label) > 85,"fullname"]
-      temp <- paste(temp, sep = " ", collapse = " ,")
-      result$labelReportLengthInd <- paste(countE,"-"," Please make sure that all label length are less than 85 character in indicator sheet where fullname equal: ",temp , sep = "")
-      result$message <- paste(result$message, "\n", result$labelReportLengthInd,sep = "")
+      result$labelReportNotExisInd <- paste(countE,"-"," Indicator sheet does not contain label column, you must fist labelReport before Data Processing", sep = "")
+      result$message <- paste(result$message, "\n", result$labelReportNotExisInd,sep = "")
+    }else{
+      if(mean(str_length(indicator$label) <= 85, na.rm=T) != 1){
+        result$flag <- F
+        countE <- countE+1
+        temp <- indicator[str_length(indicator$label) > 85,"fullname"]
+        temp <- paste(temp, sep = " ", collapse = " ,")
+        result$labelReportLengthInd <- paste(countE,"-"," Please make sure that all label length are less than 85 character in indicator sheet where fullname equal: ",temp , sep = "")
+        result$message <- paste(result$message, "\n", result$labelReportLengthInd,sep = "")
+      }
+      temp <- indicator[is.na(indicator$label),"label"]
+      if(length(temp)>0){
+        result$flag <- F
+        countE <- countE+1
+        result$labelInd <- paste(countE,"-"," Please make sure that you fill all cells of label column in the indicator sheet", sep = "")
+        result$message <- paste(result$message, "\n", result$labelInd,sep = "")
+      }
     }
-    
     temp <- indicator[is.na(indicator$type) | !indicator$type %in% c("integer","numeric","select_one"),"type"]
     if(length(temp)>0){
       result$flag <- F
@@ -178,13 +207,7 @@ kobo_check_analysis_plan <- function(form = "form.xls") {
       result$message <- paste(result$message, "\n", result$typeInd,sep = "")
     }
     
-    temp <- indicator[is.na(indicator$label),"label"]
-    if(length(temp)>0){
-      result$flag <- F
-      countE <- countE+1
-      result$labelInd <- paste(countE,"-"," Please make sure that you fill all cells of label column in the indicator sheet", sep = "")
-      result$message <- paste(result$message, "\n", result$labelInd,sep = "")
-    }
+
     
     temp <- indicator[is.na(indicator$chapter),"chapter"]
     if(length(temp)>0){

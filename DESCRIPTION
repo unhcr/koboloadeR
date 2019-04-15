@@ -36,7 +36,10 @@ Depends:
     sp,
     gdata,
     rhandsontable,
-    stringr
+    stringr,
+    simFrame,
+    classInt,
+    ggrepel
 Suggests:
     shiny
 URL: https://github.com/unhcr/koboloadeR

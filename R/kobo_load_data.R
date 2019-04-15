@@ -34,7 +34,7 @@ kobo_load_data <- function(form = "form.xls", app="console") {
       updateProgress <- function(value = NULL, detail = NULL) {
         if (is.null(value)) {
           value <- progress$getValue()
-          value <- value + (progress$getMax() - value) / 50
+          value <- value + (progress$getMax() - value) / 25
         }
         progress$set(value = value, detail = detail)
       }

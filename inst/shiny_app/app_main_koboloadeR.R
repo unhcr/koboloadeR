@@ -78,9 +78,9 @@ server <- shinyServer(function(input, output, session) {
   
   projectConfigurationInfo <- reactiveValues(log = list(), data = list()) 
   projectConfigurationTheme <- reactiveValues(
-    questionsWidth = 5,
+    questionsWidth = 6,
     yesNoInputWidth = 3,
-    warningBlockWidth = 4
+    warningBlockWidth = 3
   ) 
   tracker <- reactiveValues(value=0)
   
@@ -282,7 +282,7 @@ server <- shinyServer(function(input, output, session) {
         box(id="doesFormNeedToPrepareBox",
             width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,
             column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                   h4("Does xlsform include already include information about Sampling and Cleaning?")
+                   h4("Does your xlsform already include information about the Sampling used for data collection and data Cleaning log?")
             ),
             column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
                    selectInput("formIncludeSettingsSelectInput", label = NULL,choices = c("-- select --","Yes","No"))
@@ -1956,7 +1956,7 @@ server <- shinyServer(function(input, output, session) {
         hot_col("structuralequation.risk",  width = 200, halign="htCenter") %>%
         hot_col("structuralequation.coping",  width = 200, halign="htCenter") %>%
         hot_col("structuralequation.resilience",  width = 200, halign="htCenter") %>%
-        hot_col("anonymise", type = "dropdown", source = c("default-non-anonymised", "remove", "reference", "scramble"), width = 120) %>%
+        hot_col("anonymise", type = "dropdown", source = c("default-non-anonymised", "key", "remove", "sensitive", "reference"), width = 120) %>%
         hot_col("correlate",  width = 120, halign="htCenter") %>%
         hot_col("clean",  width = 120, halign="htCenter") %>%
         hot_col("cluster",  width = 120, halign="htCenter") %>%
@@ -2089,7 +2089,7 @@ server <- shinyServer(function(input, output, session) {
         hot_col("structuralequation.risk",  width = 200, halign="htCenter") %>%
         hot_col("structuralequation.coping",  width = 200, halign="htCenter") %>%
         hot_col("structuralequation.resilience",  width = 200, halign="htCenter") %>%
-        hot_col("anonymise", type = "dropdown", source = c("default-non-anonymised", "remove", "reference", "scramble"), width = 120) %>%
+        hot_col("anonymise", type = "dropdown", source = c("default-non-anonymised", "key", "remove", "sensitive", "reference"), width = 120) %>%
         hot_col("correlate",  width = 120, halign="htCenter") %>%
         hot_col("clean",  width = 120, halign="htCenter") %>%
         hot_col("cluster",  width = 120, halign="htCenter") %>%
@@ -2176,7 +2176,7 @@ server <- shinyServer(function(input, output, session) {
         hot_col("structuralequation.risk",  width = 200, halign="htCenter") %>%
         hot_col("structuralequation.coping",  width = 200, halign="htCenter") %>%
         hot_col("structuralequation.resilience",  width = 200, halign="htCenter") %>%
-        hot_col("anonymise", type = "dropdown", source = c("default-non-anonymised", "remove", "reference", "scramble"), width = 120) %>%
+        hot_col("anonymise", type = "dropdown", source = c("default-non-anonymised", "key", "outlier"), width = 120) %>%
         hot_col("correlate",  width = 120, halign="htCenter") %>%
         hot_col("clean",  width = 120, halign="htCenter") %>%
         hot_col("cluster",  width = 120, halign="htCenter") %>%
@@ -2262,7 +2262,7 @@ server <- shinyServer(function(input, output, session) {
         hot_col("structuralequation.risk",  width = 200, halign="htCenter") %>%
         hot_col("structuralequation.coping",  width = 200, halign="htCenter") %>%
         hot_col("structuralequation.resilience",  width = 200, halign="htCenter") %>%
-        hot_col("anonymise", type = "dropdown", source = c("default-non-anonymised", "remove", "reference", "scramble"), width = 120) %>%
+        hot_col("anonymise", type = "dropdown", source = c("default-non-anonymised", "key", "outlier"), width = 120) %>%
         hot_col("correlate",  width = 120, halign="htCenter") %>%
         hot_col("clean",  width = 120, halign="htCenter") %>%
         hot_col("cluster",  width = 120, halign="htCenter") %>%
@@ -5976,6 +5976,7 @@ server <- shinyServer(function(input, output, session) {
   
   observe({
     tryCatch({
+      
       if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
         return(NULL)
       }
@@ -5986,8 +5987,6 @@ server <- shinyServer(function(input, output, session) {
       orderOrdinalVariables <- c()
       numericType <- c()
       dateType <- c()
-      
-      
       #################################relabeling Survey#######################################
       if (!is.null(input$relabelingSurveyTable)) {
         relabelingSurvey = hot_to_r(input$relabelingSurveyTable)
@@ -6152,7 +6151,7 @@ server <- shinyServer(function(input, output, session) {
         selectOneType$structuralequation.risk <- as.logical(selectOneType$structuralequation.risk)
         selectOneType$structuralequation.coping <- as.logical(selectOneType$structuralequation.coping)
         selectOneType$structuralequation.resilience <- as.logical(selectOneType$structuralequation.resilience)
-        selectOneType$anonymise <- as.logical(selectOneType$anonymise)
+        selectOneType$anonymise <- as.character(selectOneType$anonymise)
         selectOneType$correlate <- as.logical(selectOneType$correlate)
         selectOneType$clean <- as.logical(selectOneType$clean)
         selectOneType$cluster <- as.logical(selectOneType$cluster)
@@ -6269,7 +6268,7 @@ server <- shinyServer(function(input, output, session) {
         selectMultipleType$structuralequation.risk <- as.logical(selectMultipleType$structuralequation.risk)
         selectMultipleType$structuralequation.coping <- as.logical(selectMultipleType$structuralequation.coping)
         selectMultipleType$structuralequation.resilience <- as.logical(selectMultipleType$structuralequation.resilience)
-        selectMultipleType$anonymise <- as.logical(selectMultipleType$anonymise)
+        selectMultipleType$anonymise <- as.character(selectMultipleType$anonymise)
         selectMultipleType$correlate <- as.logical(selectMultipleType$correlate)
         selectMultipleType$clean <- as.logical(selectMultipleType$clean)
         selectMultipleType$cluster <- as.logical(selectMultipleType$cluster)
@@ -6328,7 +6327,7 @@ server <- shinyServer(function(input, output, session) {
         numericType$structuralequation.risk <- as.logical(numericType$structuralequation.risk)
         numericType$structuralequation.coping <- as.logical(numericType$structuralequation.coping)
         numericType$structuralequation.resilience <- as.logical(numericType$structuralequation.resilience)
-        numericType$anonymise <- as.logical(numericType$anonymise)
+        numericType$anonymise <- as.character(numericType$anonymise)
         numericType$correlate <- as.logical(numericType$correlate)
         numericType$clean <- as.logical(numericType$clean)
         numericType$cluster <- as.logical(numericType$cluster)
@@ -6387,7 +6386,7 @@ server <- shinyServer(function(input, output, session) {
           dateType$structuralequation.risk <- as.logical(dateType$structuralequation.risk)
           dateType$structuralequation.coping <- as.logical(dateType$structuralequation.coping)
           dateType$structuralequation.resilience <- as.logical(dateType$structuralequation.resilience)
-          dateType$anonymise <- as.logical(dateType$anonymise)
+          dateType$anonymise <- as.character(dateType$anonymise)
           dateType$correlate <- as.logical(dateType$correlate)
           dateType$clean <- as.logical(dateType$clean)
           dateType$cluster <- as.logical(dateType$cluster)
@@ -6577,12 +6576,14 @@ server <- shinyServer(function(input, output, session) {
                            actionButton("predictionReportButton", "Prediction Report", class="toolButton0093D1", style="height: 250px; font-size: xx-large; width: 100%;")
                     ),
                     column(width = 7, align="center",
-                           actionButton("scoreReportButton", "Score Report", class="toolButtonF2635F", style="height: 250px; font-size: xx-large; width: 100%;")
+                           actionButton("scoreReportButton", "Scoring Report", class="toolButtonF2635F", style="height: 250px; font-size: xx-large; width: 100%;")
                     )
              )
       )
     }
   })
+  
+  ##################crunching Report################
   observeEvent(input$crunchingReportButton,{
     tryCatch({
       result <- kobo_crunching_report(app="shiny")
@@ -6647,28 +6648,240 @@ server <- shinyServer(function(input, output, session) {
   }
   
   output$crunchingReportBody <- renderText({
-    s <- ""
-    mainPath <- paste(kobo_getMainDirectory(),"/out/crunching_reports/", sep = "")
-    filesNames <- list.files(mainPath)
-    filesNames <- sort(filesNames)
-    for (fn in filesNames) {
-      s <- paste(s,
-                 box(width = 6, title = fn, solidHeader = FALSE, status = "primary", collapsed = F, collapsible = F,
-                     downloadLink(paste("download",fn,sep = ""), paste("Download",fn))
-                 )
-                 ,sep="")
-      
-    }
-    lapply(1:length(filesNames), function(m) {
-      output[[paste("download",filesNames[m],sep = "")]] <- downloadHandler(
-        filename = filesNames[m],
-        content = function(file) {
-          file.copy(paste(kobo_getMainDirectory(),"/out/crunching_reports/",filesNames[m], sep = ""), file)
-        }
+    tryCatch({
+      s <- ""
+      mainPath <- paste(kobo_getMainDirectory(),"/out/crunching_reports/", sep = "")
+      filesNames <- list.files(mainPath)
+      filesNames <- sort(filesNames)
+      for (fn in filesNames) {
+        s <- paste(s,
+                   box(width = 6, title = fn, solidHeader = FALSE, status = "primary", collapsed = F, collapsible = F,
+                       downloadLink(paste("download",fn,sep = ""), paste("Download",fn))
+                   )
+                   ,sep="")
+        
+      }
+      lapply(1:length(filesNames), function(m) {
+        output[[paste("download",filesNames[m],sep = "")]] <- downloadHandler(
+          filename = filesNames[m],
+          content = function(file) {
+            file.copy(paste(kobo_getMainDirectory(),"/out/crunching_reports/",filesNames[m], sep = ""), file)
+          }
+        )
+      })
+      return(s)
+    }, error = function(err) {
+      print("gdhggfmlkfhoghkgf")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
       )
     })
-    
-    return(s)
+  })
+  ##################cluster Report################
+  observeEvent(input$clusterReportButton,{
+    tryCatch({
+      household <- read.csv(paste(mainDir(), "data", "/household.csv", sep = "/", collapse = "/"), stringsAsFactors = F)
+      result <- kobo_cluster_report(household, app="shiny")
+      if(class(result) == "try-error"){
+        shinyalert("Error",
+                   result,
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }else{
+        shinyalert("Wooooow",
+                   "Done!! Reports are in the folder OUT - Review the report- furter review your clustering assumptions and regenerate as needed...",
+                   type = "success",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#28A8E2",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        showModal(showClusterReportLinks())
+      }
+      
+    }, error = function(err) {
+      print("htghfghfghythdh")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  
+  showClusterReportLinks <- function() {
+    tryCatch({
+      return(modalDialog(id="showClusterReportPopUp", 
+                         title = "Cluster Reports",
+                         uiOutput("clusterReportBody"),
+                         size = "l",
+                         footer = tagList(
+                           modalButton("Exit", icon("sign-out-alt"))
+                         )
+      )
+      )
+      
+    }, error = function(err) {
+      print("dhrthdyhnfrhntkjk")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  }
+  
+  output$clusterReportBody <- renderText({
+    tryCatch({
+      s <- ""
+      mainPath <- paste(kobo_getMainDirectory(),"/out/cluster_reports/", sep = "")
+      filesNames <- list.files(mainPath)
+      filesNames <- sort(filesNames)
+      for (fn in filesNames) {
+        s <- paste(s,
+                   box(width = 6, title = fn, solidHeader = FALSE, status = "primary", collapsed = F, collapsible = F,
+                       downloadLink(paste("download",fn,sep = ""), paste("Download",fn))
+                   )
+                   ,sep="")
+        
+      }
+      lapply(1:length(filesNames), function(m) {
+        output[[paste("download",filesNames[m],sep = "")]] <- downloadHandler(
+          filename = filesNames[m],
+          content = function(file) {
+            file.copy(paste(kobo_getMainDirectory(),"/out/cluster_reports/",filesNames[m], sep = ""), file)
+          }
+        )
+      })
+      return(s)
+    }, error = function(err) {
+      print("fdjkghdfijldfjkgfos")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  
+  ##################anonymisation Report################
+  observeEvent(input$anonymisationReportButton,{
+    tryCatch({
+      household <- read.csv(paste(mainDir(), "data", "/household.csv", sep = "/", collapse = "/"), stringsAsFactors = F)
+      result <- kobo_anonymisation_report(household, app="shiny")
+      if(class(result) == "try-error"){
+        shinyalert("Error",
+                   result,
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }else{
+        shinyalert("Wooooow",
+                   "Done!! Reports are in the folder OUT - Review the report- furter anonymise and regenerate as needed...",
+                   type = "success",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#28A8E2",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        showModal(showAnonymisationReportLinks())
+      }
+      
+    }, error = function(err) {
+      print("fgjhikiliklik")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  
+  showAnonymisationReportLinks <- function() {
+    tryCatch({
+      return(modalDialog(id="showAnonymisationReportPopUp", 
+                         title = "Anonymisation Reports",
+                         uiOutput("anonymisationReportBody"),
+                         size = "l",
+                         footer = tagList(
+                           modalButton("Exit", icon("sign-out-alt"))
+                         )
+      )
+      )
+      
+    }, error = function(err) {
+      print("kiulgikigykuj")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  }
+
+  output$anonymisationReportBody <- renderText({
+    tryCatch({
+      s <- ""
+      mainPath <- paste(kobo_getMainDirectory(),"/out/anonymisation_reports/", sep = "")
+      filesNames <- list.files(mainPath)
+      filesNames <- sort(filesNames)
+      for (fn in filesNames) {
+        s <- paste(s,
+                   box(width = 6, title = fn, solidHeader = FALSE, status = "primary", collapsed = F, collapsible = F,
+                       downloadLink(paste("download",fn,sep = ""), paste("Download",fn))
+                   )
+                   ,sep="")
+        
+      }
+      lapply(1:length(filesNames), function(m) {
+        output[[paste("download",filesNames[m],sep = "")]] <- downloadHandler(
+          filename = filesNames[m],
+          content = function(file) {
+            file.copy(paste(kobo_getMainDirectory(),"/out/anonymisation_reports/",filesNames[m], sep = ""), file)
+          }
+        )
+      })
+      return(s)
+    }, error = function(err) {
+      print("fdjkghdfijldfjkgfos")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
   })
   
 })

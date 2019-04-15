@@ -163,8 +163,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
       cat("```{r setup, include = FALSE, echo = FALSE, warning = FALSE, message = FALSE}", file = chapter.name , sep = "\n", append = TRUE)
       cat("mainDir <- getwd()", file = chapter.name , sep = "\n", append = TRUE)
       cat("mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 5)", file = chapter.name , sep = "\n", append = TRUE)
-      cat("## Load all required packages", file = chapter.name , sep = "\n", append = TRUE)
-      #  cat("source(paste0(mainDirroot,\"/code/0-packages.R\"))", file = chapter.name , sep = "\n", append = TRUE)
+
       
       cat("library(tidyverse)", file = chapter.name , sep = "\n", append = TRUE)
       cat("library(ggthemes)", file = chapter.name , sep = "\n", append = TRUE)
@@ -180,8 +179,11 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
       cat("library(knitr)", file = chapter.name , sep = "\n", append = TRUE)
       cat("library(rmarkdown)", file = chapter.name , sep = "\n", append = TRUE)
       
-      cat("source(paste0(mainDirroot,\"/code/0-theme.R\"))", file = chapter.name , sep = "\n", append = TRUE)
+      #("source(paste0(mainDirroot,\"/code/0-theme.R\"))", file = chapter.name , sep = "\n", append = TRUE)
       cat("library(koboloadeR)", file = chapter.name , sep = "\n", append = TRUE)
+      cat("## Load all required packages", file = chapter.name , sep = "\n", append = TRUE)
+      cat("kobo_load_data()", file = chapter.name , sep = "\n", append = TRUE)
+      #  cat("source(paste0(mainDirroot,\"/code/0-packages.R\"))", file = chapter.name , sep = "\n", append = TRUE)
       cat("## Provide below the name of the form in xsl form - format should be xls not xlsx", file = chapter.name , sep = "\n", append = TRUE)
       cat(paste0("form <- \"",form,"\""), file = chapter.name , sep = "\n", append = TRUE)
       cat("dico <- read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = chapter.name , sep = "\n", append = TRUE)

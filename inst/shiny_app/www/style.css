@@ -1163,7 +1163,7 @@ li.active > a[data-value="infoAPC"]{
   transition:800ms ease all;
 }
 
-#showCrunchingReportPopUp{
+#showCrunchingReportPopUp, #showClusterReportPopUp, #showAnonymisationReportPopUp{
     min-height: 650px;
     max-height: 650px;
     overflow-y: auto;

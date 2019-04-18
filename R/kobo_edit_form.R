@@ -143,6 +143,7 @@ kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, ind
   }
   if(!is.null(settings)){
     sheetname <- "settings"
+    
     if(!is.null(xlsx::getSheets(wb)[[sheetname]]))
       xlsx::removeSheet(wb, sheetname)
     settingsSheet <- xlsx::createSheet(wb, sheetName=sheetname) #create sheet with settings name

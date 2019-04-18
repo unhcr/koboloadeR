@@ -86,46 +86,62 @@ kobo_projectinit <- function() {
       } else {path_correct <- as.character(path[2,1])}
     }
     
-    destfile = paste0(mainDir,"/code/0-packages.R")
-    if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/script/0-packages.R", sep = ""), destfile)
+    subsubDir <- "script"
+    if (file.exists(paste(mainDir, subDir,"/",subsubDir,"/", sep = "/", collapse = "/"))) {
+      cat("script exists in subDir and is a directory.\n")
+    } else if (file.exists(paste(mainDir, subDir, subsubDir, sep = "/", collapse = "/"))) {
+      cat("script directory exists in your project directory.\n")
+      # you will probably want to handle this separately
+    } else {
+      cat("script directory does not exist in your project directory - creating now!\n ")
+      dir.create(file.path(mainDir, subDir,subsubDir))
     }
     
-    destfile = paste0(mainDir,"/code/0-theme.R")
+    destfile = paste0(mainDir,"/code/script/run-analysis.R")
     if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/script/0-theme.R", sep = ""), destfile)
+      file.copy(paste(path_correct,"/koboloadeR/script/run-analysis.R",sep = ""), destfile)
+    }else{
+      file.remove(destfile)
+      file.copy(paste(path_correct,"/koboloadeR/script/run-analysis.R",sep = ""), destfile)
     }
     
-    destfile = paste0(mainDir,"/code/0-config.R")
-    if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/script/0-config.R", sep = ""), destfile)
-    }
     
-    destfile = paste0(mainDir,"/code/1-loaddata.R")
-    if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/script/1-loaddata.R", sep = ""), destfile)
-    }
-    
-    #  destfile = paste0(mainDir,"/code/2-create-graph.R")
-    #  if (!file.exists(destfile)) {
-    #    file.copy(paste(path_correct,"/koboloadeR/script/2-create-graph.R", sep = ""), destfile)
-    #  }
-    
-    destfile = paste0(mainDir,"/code/2-create-indicators.R")
-    if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/script/2-create-indicators.R", sep = ""), destfile)
-    }
-    
-    destfile = paste0(mainDir,"/code/3-generate-report.R")
-    if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/script/3-generate-report.R", sep = ""), destfile)
-    }
-    
-    destfile = paste0(mainDir,"/code/4-generate-prediction.R")
-    if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/script/4-generate-prediction.R", sep = ""), destfile)
-    }
-    
+    # 
+    # destfile = paste0(mainDir,"/code/0-theme.R")
+    # if (!file.exists(destfile)) {
+    #   file.copy(paste(path_correct,"/koboloadeR/script/0-theme.R", sep = ""), destfile)
+    # }
+    # 
+    # destfile = paste0(mainDir,"/code/0-config.R")
+    # if (!file.exists(destfile)) {
+    #   file.copy(paste(path_correct,"/koboloadeR/script/0-config.R", sep = ""), destfile)
+    # }
+    # 
+    # destfile = paste0(mainDir,"/code/1-loaddata.R")
+    # if (!file.exists(destfile)) {
+    #   file.copy(paste(path_correct,"/koboloadeR/script/1-loaddata.R", sep = ""), destfile)
+    # }
+    # 
+    # #  destfile = paste0(mainDir,"/code/2-create-graph.R")
+    # #  if (!file.exists(destfile)) {
+    # #    file.copy(paste(path_correct,"/koboloadeR/script/2-create-graph.R", sep = ""), destfile)
+    # #  }
+    # 
+    # destfile = paste0(mainDir,"/code/2-create-indicators.R")
+    # if (!file.exists(destfile)) {
+    #   file.copy(paste(path_correct,"/koboloadeR/script/2-create-indicators.R", sep = ""), destfile)
+    # }
+    # 
+    # destfile = paste0(mainDir,"/code/3-generate-report.R")
+    # if (!file.exists(destfile)) {
+    #   file.copy(paste(path_correct,"/koboloadeR/script/3-generate-report.R", sep = ""), destfile)
+    # }
+    # 
+    # destfile = paste0(mainDir,"/code/4-generate-prediction.R")
+    # if (!file.exists(destfile)) {
+    #   file.copy(paste(path_correct,"/koboloadeR/script/4-generate-prediction.R", sep = ""), destfile)
+    # }
+    # 
     destfile = paste0(mainDir,"/code/report.Rmd")
     if (!file.exists(destfile)) {
       file.copy(paste(path_correct,"/koboloadeR/script/report.Rmd", sep = ""), destfile)

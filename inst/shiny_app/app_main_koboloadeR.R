@@ -500,11 +500,25 @@ server <- shinyServer(function(input, output, session) {
         return(FALSE)
       }
       updateProgress()
+      settingsDF <- data.frame(name = character(),
+                               label = character(),
+                               value = character(),
+                               path = character(),
+                               stringsAsFactors = FALSE
+      )
+
       for(i in 1:(length(projectConfigurationInfo$data[["beginRepeatList"]]))){
         inFile <- input[[paste("fileInput",projectConfigurationInfo$data[["beginRepeatList"]][i],sep = "")]]
         if (!is.null(inFile)){
           dataFile <- read.csv(inFile$datapath, header=TRUE, sep=input[[paste("separator",projectConfigurationInfo$data[["beginRepeatList"]][i],sep = "")]], stringsAsFactors = FALSE)
           fileName <- paste("/",projectConfigurationInfo$data[["beginRepeatList"]][i], ".csv", sep="")
+          settingsDF <- rbind(settingsDF,  data.frame(name = projectConfigurationInfo$data[["beginRepeatList"]][i],
+                                                      label = NA,
+                                                      value = paste(projectConfigurationInfo$data[["beginRepeatList"]][i], ".csv", sep=""),
+                                                      path = paste0(mainDir(), "/data", fileName),
+                                                      stringsAsFactors = FALSE
+                                            )
+                              )
           if(projectConfigurationInfo$data[["beginRepeatList"]][i]=="MainDataFrame"){
             projectConfigurationInfo$log[["data"]] <- TRUE
             projectConfigurationInfo$data[["data"]] <- dataFile
@@ -513,6 +527,13 @@ server <- shinyServer(function(input, output, session) {
           write.csv(dataFile,  paste(mainDir(), "data", fileName, sep = "/", collapse = "/"), row.names = FALSE)
         }
       }
+      
+      configInfo <- kobo_get_config()
+      configInfo <- configInfo[!configInfo$name %in% settingsDF$name, ]
+      settingsDF <- rbind(configInfo, settingsDF)
+      settingsDF <- settingsDF[!is.na(settingsDF$name),]
+      kobo_edit_form(settings = settingsDF )
+      
       updateProgress()
       projectConfigurationInfo$log[["subAndMainfiles"]] <- TRUE
       projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- FALSE
@@ -657,16 +678,16 @@ server <- shinyServer(function(input, output, session) {
       }
       
       
-      conf <- kobo_get_config()
+      configInfo <- kobo_get_config()
       updateProgress()
-      instanceID <- conf[conf$name=="instanceID","value"]
+      instanceID <- configInfo[configInfo$name=="instanceID","value"]
       if(length(instanceID)==0){
-        conf <- rbind(conf, c("instanceID", "The unique id between data files", input$instanceIDInput, NA) )
+        configInfo <- rbind(configInfo, c("instanceID", "The unique id between data files", input$instanceIDInput, NA) )
       }else{
         if(is.na(instanceID)){
-          conf <- rbind(conf, c("instanceID", "The unique id between data files", input$instanceIDInput, NA) )
+          configInfo <- rbind(configInfo, c("instanceID", "The unique id between data files", input$instanceIDInput, NA) )
         }else{
-          conf[conf$name=="instanceID","value"] <- input$instanceIDInput
+          configInfo[configInfo$name=="instanceID","value"] <- input$instanceIDInput
         }
       }
       
@@ -705,7 +726,7 @@ server <- shinyServer(function(input, output, session) {
       survey[survey$name==input$clusterIDInput, "cluster"] <- "id"
       
       updateProgress()
-      kobo_edit_form(survey = survey, settings = conf)
+      kobo_edit_form(survey = survey, settings = configInfo)
       removeModal()
     }, error = function(err) {
       print("jkfhg8fsdjksdjioerf")
@@ -1568,74 +1589,68 @@ server <- shinyServer(function(input, output, session) {
                    selectInput("doYouHaveAnalysisPlanSelectInput", label = NULL,choices = c("-- select --","Yes","No"))
             )
         ),
-        conditionalPanel(
-          condition = "input.doYouHaveAnalysisPlanSelectInput=='No'",
-          
-          column(width = 12,
-                 div(id="wellMenuForAPC",
-                     sidebarLayout(
-                       sidebarPanel(width = 2,
-                                    sidebarMenu(id="sidebarMenuForAP",
-                                                menuItem(div(span("1",class="numberStep"),span("Re-Labeling Survey Sheet")), tabName = "relabelingSurvey"),
-                                                menuItem(div(span("2",class="numberStep"),span("Re-Labeling Choices Sheet")), tabName = "relabelingChoices"),
-                                                #menuItem(div(span("3",class="numberStep"),span("Text type")), tabName = "textType"),
-                                                menuItem(div(span("3",class="numberStep"),span("Select_one type")), tabName = "selectOneType"),
-                                                menuItem(div(span("4",class="numberStep"),span("Order Ordinal Variables")), tabName = "orderOrdinalVariables"),
-                                                menuItem(div(span("5",class="numberStep"),span("Select_multiple type")), tabName = "selectMultipleType"),
-                                                menuItem(div(span("6",class="numberStep"),span("Numeric type")), tabName = "numericType"),
-                                                #menuItem(div(span("8",class="numberStep"),span("Integer type")), tabName = "integerType"),
-                                                menuItem(div(span("7",class="numberStep"),span("Date type")), tabName = "dateType"),
-                                                #menuItem(div(span("10",class="numberStep"),span("Decimal type")), tabName = "decimalType"),
-                                                menuItem(div(span("8",class="numberStep"),span("Indicators Sheet")), tabName = "indicatorsSheet"),
-                                                menuItem(div(span("9",class="numberStep"),span("Chapter")), tabName = "chapter"),
-                                                menuItem(NULL, icon = icon("info-circle"), tabName = "infoAPC")
-                                    ),
-                                    div(id="styleFormDiv", style="background-color: #ecf0f5;",
-                                        actionButton("styleFormButton", "Add style to xlsform", style="width: 100%; margin: 10px 0% 0px; line-height: 35px;", class="uploadButton"))
-                       ),
-                       mainPanel(width = 10,
-                                 div(id = "analysisPlanTab",
-                                     tabItems(
-                                       tabItem(tabName = "relabelingSurvey",
-                                               uiOutput("relabelingSurveyUI")
-                                       ),
-                                       tabItem(tabName = "relabelingChoices",
-                                               uiOutput("relabelingChoicesUI")
-                                       ),
-                                       tabItem(tabName = "selectOneType",
-                                               uiOutput("selectOneTypeUI")
-                                       ),
-                                       tabItem(tabName = "orderOrdinalVariables",
-                                               uiOutput("orderOrdinalVariablesUI")
-                                       ),
-                                       tabItem(tabName = "selectMultipleType",
-                                               uiOutput("selectMultipleTypeUI")
-                                       ),
-                                       tabItem(tabName = "numericType",
-                                               uiOutput("numericTypeUI")
-                                       ),
-                                       tabItem(tabName = "dateType",
-                                               uiOutput("dateTypeUI")
-                                       ),
-                                       tabItem(tabName = "indicatorsSheet",
-                                               uiOutput("indicatorsSheetUI")
-                                       ),
-                                       tabItem(tabName = "chapter",
-                                               uiOutput("chapterUI")
-                                       ),
-                                       tabItem(tabName = "infoAPC",
-                                               uiOutput("infoAPCUI")
-                                       )
+        column(width = 12,
+               div(id="wellMenuForAPC",
+                   sidebarLayout(
+                     sidebarPanel(width = 2,
+                                  sidebarMenu(id="sidebarMenuForAP",
+                                              menuItem(div(span("1",class="numberStep"),span("Re-Labeling Survey Sheet")), tabName = "relabelingSurvey"),
+                                              menuItem(div(span("2",class="numberStep"),span("Re-Labeling Choices Sheet")), tabName = "relabelingChoices"),
+                                              #menuItem(div(span("3",class="numberStep"),span("Text type")), tabName = "textType"),
+                                              menuItem(div(span("3",class="numberStep"),span("Select_one type")), tabName = "selectOneType"),
+                                              menuItem(div(span("4",class="numberStep"),span("Order Ordinal Variables")), tabName = "orderOrdinalVariables"),
+                                              menuItem(div(span("5",class="numberStep"),span("Select_multiple type")), tabName = "selectMultipleType"),
+                                              menuItem(div(span("6",class="numberStep"),span("Numeric type")), tabName = "numericType"),
+                                              #menuItem(div(span("8",class="numberStep"),span("Integer type")), tabName = "integerType"),
+                                              menuItem(div(span("7",class="numberStep"),span("Date type")), tabName = "dateType"),
+                                              #menuItem(div(span("10",class="numberStep"),span("Decimal type")), tabName = "decimalType"),
+                                              menuItem(div(span("8",class="numberStep"),span("Indicators Sheet")), tabName = "indicatorsSheet"),
+                                              menuItem(div(span("9",class="numberStep"),span("Chapter")), tabName = "chapter"),
+                                              menuItem(NULL, icon = icon("info-circle"), tabName = "infoAPC")
+                                  ),
+                                  div(id="styleFormDiv", style="background-color: #ecf0f5;",
+                                      actionButton("styleFormButton", "Add style to xlsform", style="width: 100%; margin: 10px 0% 0px; line-height: 35px;", class="uploadButton"))
+                     ),
+                     mainPanel(width = 10,
+                               div(id = "analysisPlanTab",
+                                   tabItems(
+                                     tabItem(tabName = "relabelingSurvey",
+                                             uiOutput("relabelingSurveyUI")
+                                     ),
+                                     tabItem(tabName = "relabelingChoices",
+                                             uiOutput("relabelingChoicesUI")
+                                     ),
+                                     tabItem(tabName = "selectOneType",
+                                             uiOutput("selectOneTypeUI")
+                                     ),
+                                     tabItem(tabName = "orderOrdinalVariables",
+                                             uiOutput("orderOrdinalVariablesUI")
+                                     ),
+                                     tabItem(tabName = "selectMultipleType",
+                                             uiOutput("selectMultipleTypeUI")
+                                     ),
+                                     tabItem(tabName = "numericType",
+                                             uiOutput("numericTypeUI")
+                                     ),
+                                     tabItem(tabName = "dateType",
+                                             uiOutput("dateTypeUI")
+                                     ),
+                                     tabItem(tabName = "indicatorsSheet",
+                                             uiOutput("indicatorsSheetUI")
+                                     ),
+                                     tabItem(tabName = "chapter",
+                                             uiOutput("chapterUI")
+                                     ),
+                                     tabItem(tabName = "infoAPC",
+                                             uiOutput("infoAPCUI")
                                      )
-                                 )
-                       )
+                                   )
+                               )
                      )
-                 )
-          )
+                   )
+               )
         ),
-        conditionalPanel(
-          condition = "input.doYouHaveAnalysisPlanSelectInput=='No' || input.doYouHaveAnalysisPlanSelectInput=='Yes'",
-          box(id="decoAndCheckplanBox",
+        box(id="decoAndCheckplanBox",
               width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,
               column(width = 2, align="left",
                      icon("arrow-right", "fa-24x") 
@@ -1654,7 +1669,6 @@ server <- shinyServer(function(input, output, session) {
               )
           )
         )
-      )
     }
   })
   
@@ -6480,7 +6494,7 @@ server <- shinyServer(function(input, output, session) {
   output$dataProcessing <- renderUI({
     if(!projectConfigurationInfo$log[["isAnalysisPlanCompleted"]]){
       infoBox(
-        width = 12,strong("Warning"),h4("You cannot proceed without completing Analysis Plan section",align="center")
+        width = 12,strong("Warning"),h4("You cannot proceed without checking the Analysis Plan section by 'Check the Plan' button in the previous step",align="center")
         ,icon = icon("exclamation-triangle"),
         color = "yellow"
       )

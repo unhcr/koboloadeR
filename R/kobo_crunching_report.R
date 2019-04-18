@@ -1143,7 +1143,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
       render(paste(mainDir,"/code/",i,"-", chaptersname, "-chapter.Rmd", sep = ""))
       ## Put the report in the out folder
       mainDir <- kobo_getMainDirectory()
-      file.rename(paste(mainDir,"/code/",i,"-", chaptersname, "-chapter.docx", sep = ""), paste0(mainDir,"/out/crunching_reports/report-",i,"-", chaptersname,"-",Sys.Date(), "-chapter.docx"))
+      file.rename(paste(mainDir,"/code/",i,"-", chaptersname, "-chapter.docx", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", chaptersname,"-",Sys.Date(), "-chapter.docx"))
       ## Clean  memory
       gc()
     }

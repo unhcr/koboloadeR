@@ -274,7 +274,7 @@ for (i in 1:nrow(chapters) )
 
 
         cat(paste0("names(frequ)[1] <- \"", questions.shortname,"\""),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = chapter.name ,sep = "\n", append = TRUE)
+       # cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = chapter.name ,sep = "\n", append = TRUE)
         cat(paste0("## Frequency table with NA in order to get non response rate"),file = chapter.name ,sep = "\n", append = TRUE)
         cat(paste0("frequ1 <- as.data.frame(prop.table(table(", questions.variable,", useNA=\"ifany\")))"),file = chapter.name ,sep = "\n", append = TRUE)
         cat(paste0("frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]"),file = chapter.name ,sep = "\n", append = TRUE)
@@ -441,7 +441,7 @@ for (i in 1:nrow(chapters) )
             } else if (disag.type == "select_one") {
 
               # Get number levels to set up chart height
-              figheight <- nlevels( get(paste0(questions.frame))[[disag.name]])
+              figheight <- nlevels( as.factor(get(paste0(questions.frame))[[disag.name]]))
               if ( figheight == 0) { figheight <- 1}
               else if ( figheight == 1) {figheight <- "2"}
               else if ( figheight == 2) {figheight <- "3"}
@@ -670,8 +670,8 @@ for (i in 1:nrow(chapters) )
       } else if (nrow(frequ) > 10) {
         cat(paste0("cat(\"There's too many potential values to display. We will only show the histogram. \n \")"),file = chapter.name ,sep = "\n", append = TRUE)
       } else{
-        cat(paste0("## display table"),file = chapter.name ,sep = "\n", append = TRUE)
-        cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = chapter.name ,sep = "\n", append = TRUE)
+       # cat(paste0("## display table"),file = chapter.name ,sep = "\n", append = TRUE)
+       # cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = chapter.name ,sep = "\n", append = TRUE)
       }
 
       ## To do implement FD number of bin: https://www.r-bloggers.com/friday-function-nclass/
@@ -947,7 +947,7 @@ for (i in 1:nrow(chapters) )
           cat(paste0("names(frequ)[1] <- \"", questions.shortname,"\""),file = chapter.name ,sep = "\n", append = TRUE)
           cat(paste0("frequ[ ,3] <- paste0(round(frequ[ ,3]*100,digits = 1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
 
-          cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = chapter.name ,sep = "\n", append = TRUE)
+        #  cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = chapter.name ,sep = "\n", append = TRUE)
 
           cat(paste0("frequ1 <- castdata[castdata$Var1!=\"\", ]"),file = chapter.name ,sep = "\n", append = TRUE)
           cat(paste0("frequ1[ ,4] <- paste0(round(frequ1[ ,3]*100,digits = 1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)

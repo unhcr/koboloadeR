@@ -43,7 +43,7 @@ kobo_load_data <- function(form = "form.xls", app="console") {
     
     
     kobo_load_packages()
-    configInfo <- kobo_get_config()
+    configInfo <- kobo_get_config(form)
     mainDir <- kobo_getMainDirectory()
     form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
     
@@ -107,9 +107,16 @@ kobo_load_data <- function(form = "form.xls", app="console") {
       progress$set(message = "loading all required data files in progress...")
       updateProgress()
     }
-    dataBeginRepeat <- kobo_get_begin_repeat()
-    dataBeginRepeat <- dataBeginRepeat$names
-    for (dbr in dataBeginRepeat) {
+    
+    configInfo <- configInfo[startsWith(tolower(configInfo$name), "instanceid"),]
+    levelsOfDF <- kobo_get_dataframes_levels(form)
+    levelsOfDF <- levelsOfDF[levelsOfDF$name!="MainDataFrame",]
+    levelsOfDF[levelsOfDF$parent=="MainDataFrame","parent"] <- "household"
+    
+    #ataBeginRepeat <- kobo_get_begin_repeat("form2.xls")
+    #dataBeginRepeat <- dataBeginRepeat$names
+    
+    for (dbr in levelsOfDF$name) {
       cat("\n\nload all required data files..\n")
       if(app=="shiny"){
         progress$set(message = paste("loading",dbr,"file in progress..."))
@@ -131,20 +138,37 @@ kobo_load_data <- function(form = "form.xls", app="console") {
         updateProgress()
       }
       dataFrame <- kobo_label(dataFrame, dico)
-      dataFrame <- left_join(household, dataFrame, by=configInfo[configInfo$name=="instanceID","value"])
+  
+      child <- levelsOfDF[levelsOfDF$name==dbr, "name"]
+      parent <- levelsOfDF[levelsOfDF$name==dbr, "parent"]
+      while (T) {
+        cat("Join child dataframe", child, "with the parent", parent)
+        instanceIDChild  <- configInfo[tolower(configInfo$name)==tolower(paste0("instanceid_",child,"_",ifelse(parent=="household","MainDataFrame",parent))), "value"]
+        instanceIDParent <- configInfo[tolower(configInfo$name)==tolower(paste0("instanceid_",ifelse(parent=="household","MainDataFrame",parent),"_",child)), "value"]
+        parentDf <- read.csv(paste(mainDir,"/data/",parent,".csv",sep = ""),stringsAsFactors = F)
+        dataFrame <- left_join(dataFrame, parentDf, by=setNames(instanceIDChild, instanceIDParent))
+        if(parent=="household"){
+          break
+        }else{
+          child <- levelsOfDF[levelsOfDF$name==parent, "name"]
+          parent <- levelsOfDF[levelsOfDF$name==parent, "parent"]
+        }
+
+      }
+      
+      #dataFrame <- left_join(household, dataFrame, by="responseID")
+      
       write.csv(dataFrame,paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""), row.names = FALSE, na = "")
       cat("\n\nload",dbr,"and create all needed files for it..\n")
       
     }
-
-    
     ## Compute indicators if defined ##################################################
     cat("\n\nCompute indicators if defined..\n")
     if(app=="shiny"){
       progress$set(message = "Computing indicators (if defined) in progress...")
       updateProgress()
     }
-    kobo_create_indicators()
+    kobo_create_indicators(form)
     
     dico <- read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
     household <- read.csv(paste(mainDir,"/data/household.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")

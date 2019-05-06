@@ -113,11 +113,13 @@ It might take a while as a few other packages have to be installed or loaded. On
 kobo_shiny("app_main_koboloadeR.R")
 ```  
 
-
-
 This will launch a graphic interface with other instructions and options.
 
 For better performances, select "Open in Browser" on the top of the window.
+
+Alternatively, you can use the __console mode__ by running the file `run-analysis.R`. Note however that this implies that you configure correctly on your own the full configuration within the xlform file. 
+
+
 
 ## Get your data
 

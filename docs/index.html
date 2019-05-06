@@ -83,7 +83,7 @@
 <div id="introduction" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1></div>
-<p>koboloadeR is a R package to conduct data discovery and analysis for data collected through <a href="https://www.kobotoolbox.org/">KoboToolbox</a>, <a href="https://opendatakit.org/">ODK</a>, <a href="https://ona.io/home/">ONA</a> or any <strong><a href="http://xlsform.org">xlsform</a></strong> compliant data collection platform. This package first builds on the capacity of UNHCR Kobo server @ <a href="http://kobo.unhcr.org" class="uri">http://kobo.unhcr.org</a> but it can also be used from any structured dataset.</p>
+<p>koboloadeR is a R package to conduct data discovery and analysis for data collected through <a href="https://www.kobotoolbox.org/">KoboToolbox</a>, <a href="https://opendatakit.org/">ODK</a>, <a href="https://ona.io/home/">ONA</a> or any <strong><a href="http://xlsform.org">xlsform</a></strong> compliant data collection platform. This package first builds on the capacity of UNHCR Kobo server @ <a href="http://kobo.unhcr.org" class="uri">http://kobo.unhcr.org</a> but it can also be used from any structured dataset. It also comes as a companion tool to the <a href="https://unhcr.github.io/Integrated-framework-household-survey">Integrated Framework for Household Survey</a></p>
 </div>
 <div id="approach" class="section level1">
 <h1 class="hasAnchor">
@@ -175,9 +175,10 @@ install_github("unhcr/koboloadeR", ref = "gh-pages")
 
 kobo_projectinit() # Creates folders necessary and transfer files needed</a></code></pre>
 <p>It might take a while as a few other packages have to be installed or loaded. Once the see the " &gt;" again at the beginning of the line, you can run:</p>
-<pre><code><a href="reference/kobo_shiny.html">kobo_shiny("app_koboloadeR.R")</a></code></pre>
+<pre><code><a href="reference/kobo_shiny.html">kobo_shiny("app_main_koboloadeR.R")</a></code></pre>
 <p>This will launch a graphic interface with other instructions and options.</p>
 <p>For better performances, select “Open in Browser” on the top of the window.</p>
+<p>Alternatively, you can use the <strong>console mode</strong> by running the file <code>run-analysis.R</code>. Note however that this implies that you configure correctly on your own the full configuration within the xlform file.</p>
 </div>
 <div id="get-your-data" class="section level2">
 <h2 class="hasAnchor">

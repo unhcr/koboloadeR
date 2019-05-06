@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Retrieve the Number of Submissions in a Specified Dataset — kobo_submission_count • koboloadeR</title>
+<title>Edit XLS form — kobo_edit_form • koboloadeR</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Retrieve the Number of Submissions in a Specified Dataset — kobo_submission_count" />
+<meta property="og:title" content="Edit XLS form — kobo_edit_form" />
 
-<meta property="og:description" content="Retrieves the number of submissions made to a specified dataset." />
+<meta property="og:description" content="This function used to change the data of sheets in the xlsform and apply all required styles for each sheet" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -114,56 +114,57 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Retrieve the Number of Submissions in a Specified Dataset</h1>
-    <small class="dont-index">Source: <a href='https://github.com/unhcr/koboloadeR/blob/master/R/kobo_submission_count.R'><code>R/kobo_submission_count.R</code></a></small>
-    <div class="hidden name"><code>kobo_submission_count.Rd</code></div>
+    <h1>Edit XLS form</h1>
+    <small class="dont-index">Source: <a href='https://github.com/unhcr/koboloadeR/blob/master/R/kobo_edit_form.R'><code>R/kobo_edit_form.R</code></a></small>
+    <div class="hidden name"><code>kobo_edit_form.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Retrieves the number of submissions made to a specified dataset.</p>
+    <p>This function used to change the data of sheets in the xlsform and apply all required styles for each sheet</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>kobo_submission_count</span>(<span class='no'>formid</span>, <span class='kw'>user</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>api</span> <span class='kw'>=</span> <span class='st'>"unhcr"</span>)</pre>
+    <pre class="usage"><span class='fu'>kobo_edit_form</span>(<span class='kw'>form</span> <span class='kw'>=</span> <span class='st'>"form.xls"</span>, <span class='kw'>survey</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>choices</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>indicator</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>settings</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>formid</th>
-      <td><p>The ID of the form to be accessed (as a character string).</p></td>
+      <th>form</th>
+      <td><p>The full filename of the form to be accessed (xls or xlsx file).
+It is assumed that the form is stored in the data folder.</p></td>
     </tr>
     <tr>
-      <th>user</th>
-      <td><p>Optional. A single string indicating the username and password
-(in the form of <code>"username:password"</code>), or a character vector or list,
-length 2, with the first value being the "username", and the second being
-the "password".</p></td>
+      <th>survey</th>
+      <td><p>Dataframe that represent the data of survey sheet in the xlsform</p></td>
     </tr>
     <tr>
-      <th>api</th>
-      <td><p>The URL at which the API can be accessed.
-Defaults to "kobo", which loads the KoBo Toolbox API.</p></td>
+      <th>choices</th>
+      <td><p>Dataframe that represent the data of choices sheet in the xlsform</p></td>
+    </tr>
+    <tr>
+      <th>indicator</th>
+      <td><p>Dataframe that represent the data of indicator sheet in the xlsform</p></td>
+    </tr>
+    <tr>
+      <th>settings</th>
+      <td><p>Dataframe that represent the data of settings sheet in the xlsform</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A single number indicating the number of submissions received.</p>
+    <p>No return, this function edit the original XLSform directly</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>kobo_submission_count</span>(<span class='st'>"15051"</span>)</div><div class='output co'>#&gt; Downloading: 55 B     Downloading: 55 B     Downloading: 55 B     Downloading: 55 B     
-#&gt; </div><div class='output co'>#&gt; <span class='message'>Parsed with column specification:</span>
-#&gt; <span class='message'>cols(</span>
-#&gt; <span class='message'>  detail = <span style='color: #BB0000;'>col_character()</span><span></span>
-#&gt; <span class='message'>)</span></div><div class='output co'>#&gt; NULL</div><div class='input'><span class='fu'>kobo_submission_count</span>(<span class='st'>"31511"</span>, <span class='kw'>api</span> <span class='kw'>=</span> <span class='st'>"kobohr"</span>)</div><div class='output co'>#&gt; Downloading: 55 B     Downloading: 55 B     Downloading: 55 B     Downloading: 55 B     
-#&gt; </div><div class='output co'>#&gt; <span class='message'>Parsed with column specification:</span>
-#&gt; <span class='message'>cols(</span>
-#&gt; <span class='message'>  detail = </span><span style='color: #BB0000;'>col_character()</span><span></span>
-#&gt; <span class='message'>)</span></div><div class='output co'>#&gt; NULL</div><div class='input'>
-</div></span></pre>
+    <pre class="examples"><div class='input'><span class='fu'>kobo_edit_form</span>()</div><div class='output co'>#&gt; Workbook has no sheets!</div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='input'>
+</div><span class='co'># NOT RUN {</span>
+<span class='fu'>kobo_edit_form</span>(<span class='st'>"myform.xls"</span>)
+<span class='co'># }</span><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -176,7 +177,7 @@ Defaults to "kobo", which loads the KoBo Toolbox API.</p></td>
     </ul>
 
     <h2>Author</h2>
-    <p>Ananda Mahto</p>
+    <p>Maher Daoud</p>
   </div>
 </div>
 

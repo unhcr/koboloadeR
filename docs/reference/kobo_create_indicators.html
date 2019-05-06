@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Analysis project initiation — kobo_projectinit • koboloadeR</title>
+<title>Create Indicators — kobo_create_indicators • koboloadeR</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Analysis project initiation — kobo_projectinit" />
+<meta property="og:title" content="Create Indicators — kobo_create_indicators" />
 
-<meta property="og:description" content="Create analysis project structure" />
+<meta property="og:description" content="Function to compute indicators from indicator sheet" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -114,46 +114,36 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Analysis project initiation</h1>
-    <small class="dont-index">Source: <a href='https://github.com/unhcr/koboloadeR/blob/master/R/kobo_projectinit.R'><code>R/kobo_projectinit.R</code></a></small>
-    <div class="hidden name"><code>kobo_projectinit.Rd</code></div>
+    <h1>Create Indicators</h1>
+    <small class="dont-index">Source: <a href='https://github.com/unhcr/koboloadeR/blob/master/R/kobo_create_indicators.R'><code>R/kobo_create_indicators.R</code></a></small>
+    <div class="hidden name"><code>kobo_create_indicators.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Create analysis project structure</p>
+    <p>Function to compute indicators from indicator sheet</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>kobo_projectinit</span>()</pre>
-        
+    <pre class="usage"><span class='fu'>kobo_create_indicators</span>(<span class='kw'>form</span> <span class='kw'>=</span> <span class='st'>"form.xls"</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>form</th>
+      <td><p>The full filename of the form to be accessed (xls or xlsx file).
+It is assumed that the form is stored in the data folder.</p></td>
+    </tr>
+    </table>
+    
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A structure of directory and scripts in order to set up quickly a project.</p>
+    <p>No return, all results will be saved inside new CSV files</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>kobo_projectinit</span>()</div><div class='output co'>#&gt; Let's create various standard folders and copy some analysis script
-#&gt; Perso exists in mainDir and is a directory.
-#&gt; Code exists in mainDir and is a directory.
-#&gt; You have multiple library path! 
-#&gt; script exists in subDir and is a directory.
-#&gt; shiny_app exists in subDir and is a directory.
-#&gt; www exists in subDir and is a directory.
-#&gt; css exists in subDir and is a directory.
-#&gt; fonts exists in subDir and is a directory.
-#&gt; image exists in subDir and is a directory.
-#&gt; Data exists in mainDir and is a directory.
-#&gt; Out directory exists in your project directory and is a directory.
-#&gt; bar_multi directory exists in out directory and is a directory.
-#&gt; disagg_multi directory exists in out directory and is a directory.
-#&gt; bar_one directory exists in out directory and is a directory.
-#&gt; disagg_one directory exists in out directory and is a directory.
-#&gt; crunching_reports directory exists in out directory and is a directory.
-#&gt; cluster_reports directory exists in out directory and is a directory.
-#&gt; anonymisation_reports directory exists in out directory and is a directory.
-#&gt; Please open now the file called 0-config.R within the ++code++ folder and configure the path to the form and the dataset. 
-#&gt;  Package Installation progress so far.. :  100%  -  100% 
+    <pre class="examples"><div class='input'><span class='fu'>kobo_create_indicators</span>()</div><div class='output co'>#&gt; Package Installation progress so far.. :  100%  -  100% 
 #&gt; 
 #&gt; ade4  is already installed on your computer 
 #&gt; Package Installation progress so far.. :  100%  -  100% 
@@ -505,12 +495,76 @@
 #&gt; 
 #&gt; Perfect, there's no missing package 
 #&gt; 
+#&gt; </div><div class='output co'>#&gt; <span class='message'>Loading required package: viridisLite</span></div><div class='output co'>#&gt; <span class='message'>corrplot 0.84 loaded</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: grid</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘zoo’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    as.Date, as.Date.numeric</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘lubridate’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:plyr’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    here</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:data.table’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    hour, isoweek, mday, minute, month, quarter, second, wday, week,</span>
+#&gt; <span class='message'>    yday, year</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:base’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    date</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘gridExtra’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:gdata’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    combine</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:dplyr’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    combine</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘scales’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:viridis’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    viridis_pal</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:readr’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    col_factor</span></div><div class='output co'>#&gt; <span class='message'>Registered S3 method overwritten by 'rvest':</span>
+#&gt; <span class='message'>  method            from</span>
+#&gt; <span class='message'>  read_xml.response xml2</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘kableExtra’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:dplyr’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    group_rows</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: sylly</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘sylly’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:testthat’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    describe</span></div><div class='output co'>#&gt; <span class='message'>For information on available language packages for 'koRpus', run</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>  available.koRpus.lang()</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>and see ?install.koRpus.lang()</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘koRpus’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:readr’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    tokenize</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: Hmisc</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: survival</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: Formula</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘Hmisc’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:koRpus’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    describe</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:sylly’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    describe</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:testthat’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    describe</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:simFrame’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    stratify</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:ape’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    zoom</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:dplyr’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    src, summarize</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:plyr’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    is.discrete, summarize</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    format.pval, units</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: carData</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘car’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:dplyr’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    recode</span></div><div class='output co'>#&gt; 
+#&gt; 
+#&gt; load all required data files..
+#&gt; There was an error: You have not defined indicators within your xlsform file. 
 #&gt; </div><div class='input'>
+</div><span class='co'># NOT RUN {</span>
+<span class='fu'>kobo_create_indicators</span>(<span class='st'>"myform.xls"</span>)
+<span class='co'># }</span><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
       
@@ -518,7 +572,7 @@
     </ul>
 
     <h2>Author</h2>
-    <p>Edouard Legoupil, Elliott MEesseiller</p>
+    <p>Maher Daoud</p>
   </div>
 </div>
 

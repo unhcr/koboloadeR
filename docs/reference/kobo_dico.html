@@ -125,7 +125,7 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>kobo_dico</span>(<span class='no'>form</span>)</pre>
+    <pre class="usage"><span class='fu'>kobo_dico</span>(<span class='kw'>form</span> <span class='kw'>=</span> <span class='st'>"form.xls"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -145,7 +145,41 @@ It is assumed that the form is stored in the data folder.</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>kobo_dico</span>()</div><div class='output co'>#&gt; 
 #&gt;  Your form should be placed within the `data` folder. 
-#&gt;  </div><div class='output co'>#&gt; <span class='error'>Error in paste0("data/", form): argument "form" is missing, with no default</span></div><div class='input'>
+#&gt;  
+#&gt; Checking now for additional information within your xlsform. Note that you can insert them in the xls and re-run the function! 
+#&gt;  
+#&gt;  1- No column `labelReport` in your survey worksheet. Creating a dummy one for the moment...
+#&gt; 1- Good: You have a column `disaggregation` in your survey worksheet.
+#&gt; 2- Good: You have a column `correlate` in your survey worksheet. This will be used to define the variables that should be checked for correlation between each others.
+#&gt; 3- Good: You have a column `chapter` in your survey worksheet. This will be used to breakdown the generated report
+#&gt; 4- No column `structuralequation.risk` in your survey worksheet. Creating a dummy one for the moment...
+#&gt; 4- No column `structuralequation.coping` in your survey worksheet. Creating a dummy one for the moment...
+#&gt; 4- No column `structuralequation.resilience` in your survey worksheet. Creating a dummy one for the moment...
+#&gt; 5- Good: You have a column `anonymise` in your survey worksheet. This will be used to anonymise the dataset.
+#&gt; 6- Good: You have a column `variable` in your survey worksheet. This will be used to flag ordinal variable.
+#&gt; 7- No column `clean` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
+#&gt; 8- No column `cluster` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
+#&gt; 9- No column `predict` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
+#&gt; 10- No column `mappoint` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
+#&gt; 11- No column `mappoly` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
+#&gt;  
+#&gt;  Now extracting list name from questions type.
+#&gt;  
+#&gt; 
+#&gt;  Be careful! The current function only support 2 levels of nested repeat - for instance household / Case / Individual. 
+#&gt;  
+#&gt;  
+#&gt;  Now rebuilding the variable full path in order to match with variable name from the exported dataset. 
+#&gt; 
+#&gt;       Note that there should not be any dots in the orginal variables. 
+#&gt; 
+#&gt;       Double Check as well there's no duplicate for the name column in the survey worksheet
+#&gt;  
+#&gt; 12 -  No column `labelReport` in your `choices` worksheet. Creating a dummy one for the moment...
+#&gt; 12 -  Good: You have a column `order` in your `choices` worksheet.
+#&gt; 13 -  No column `weight` in your `choices` worksheet. Creating a dummy one for the moment...
+#&gt; 14 -  No column `recategorise` in your `choices` worksheet. Creating a dummy one for the moment...
+#&gt; 13 -  No column `score` in your `choices` worksheet. Creating a dummy one for the moment...</div><div class='input'>
 </div><span class='co'># NOT RUN {</span>
 <span class='fu'>kobo_dico</span>(<span class='st'>"myform.xls"</span>)
 <span class='co'># }</span><div class='input'>

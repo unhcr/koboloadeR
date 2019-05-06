@@ -1,4 +1,12 @@
 # NEWS
+
+## koboloadeR 0.2
+
+ * Added a shinapp to provide a gui fo rthe package
+ 
+ * Turned previous scripts into functions
+
+
 ## koboloadeR 0.1.4
 
  * Added a template for report generation in word as well as specific version of chart loop to be inserted in the report

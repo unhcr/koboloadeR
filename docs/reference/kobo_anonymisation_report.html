@@ -129,27 +129,35 @@ The report is generated from functions released within sdcmicro package from the
     
     </div>
 
-    <pre class="usage"><span class='fu'>kobo_anonymisation_report</span>(<span class='no'>frame</span>, <span class='no'>dico</span>)</pre>
+    <pre class="usage"><span class='fu'>kobo_anonymisation_report</span>(<span class='no'>frame</span>, <span class='kw'>form</span> <span class='kw'>=</span> <span class='st'>"form.xls"</span>, <span class='kw'>app</span> <span class='kw'>=</span> <span class='st'>"console"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>dico</th>
-      <td><p>Generated from kobo_dico function</p></td>
+      <th>frame</th>
+      <td><p>kobo or odk dataset to use</p></td>
     </tr>
     <tr>
-      <th>kobo</th>
-      <td><p>or odk dataset to use</p></td>
+      <th>form</th>
+      <td><p>The full filename of the form to be accessed (xls or xlsx file).</p></td>
+    </tr>
+    <tr>
+      <th>app</th>
+      <td><p>The place where the function has been executed, the default is the console and the second option is the shiny app</p></td>
     </tr>
     </table>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='kobo_anonymise.html'>kobo_anonymise</a></span>()</div><div class='output co'>#&gt; <span class='error'>Error in kobo_anonymise(): argument "dico" is missing, with no default</span></div><div class='input'>
-</div><span class='co'># NOT RUN {</span>
-<span class='fu'>kobo_anonymisation_report</span>(<span class='no'>frame</span>, <span class='no'>dico</span>)
-<span class='co'># }</span><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>kobo_anonymisation_report</span>()</div><div class='output co'>#&gt; <span class='warning'>Warning: cannot open file '/home/edouard/R-project/koboloadeR-ghpages/docs/reference/data/dico_form.xls.csv': No such file or directory</span></div><div class='output co'>#&gt; [1] "kobo_anonymisation_report_ERROR"</div><div class='output co'>#&gt; $message
+#&gt; [1] "cannot open the connection"
+#&gt; 
+#&gt; $call
+#&gt; file(file, "rt")
+#&gt; 
+#&gt; attr(,"class")
+#&gt; [1] "try-error"</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Analysis project initiation — kobo_projectinit • koboloadeR</title>
+<title>Kobo Load Data — kobo_load_data • koboloadeR</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Analysis project initiation — kobo_projectinit" />
+<meta property="og:title" content="Kobo Load Data — kobo_load_data" />
 
-<meta property="og:description" content="Create analysis project structure" />
+<meta property="og:description" content="Load form, building dictionnary, loading all required data into the environment, Check to split select_multiple if data is extracted from ODK, Clean variable if any and Re-encoding data based on the dictionnary" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -114,46 +114,40 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Analysis project initiation</h1>
-    <small class="dont-index">Source: <a href='https://github.com/unhcr/koboloadeR/blob/master/R/kobo_projectinit.R'><code>R/kobo_projectinit.R</code></a></small>
-    <div class="hidden name"><code>kobo_projectinit.Rd</code></div>
+    <h1>Kobo Load Data</h1>
+    <small class="dont-index">Source: <a href='https://github.com/unhcr/koboloadeR/blob/master/R/kobo_load_data.R'><code>R/kobo_load_data.R</code></a></small>
+    <div class="hidden name"><code>kobo_load_data.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Create analysis project structure</p>
+    <p>Load form, building dictionnary, loading all required data into the environment, Check to split select_multiple if data is extracted from ODK, Clean variable if any and Re-encoding data based on the dictionnary</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>kobo_projectinit</span>()</pre>
-        
+    <pre class="usage"><span class='fu'>kobo_load_data</span>(<span class='kw'>form</span> <span class='kw'>=</span> <span class='st'>"form.xls"</span>, <span class='kw'>app</span> <span class='kw'>=</span> <span class='st'>"console"</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>form</th>
+      <td><p>The full filename of the form to be accessed (xls or xlsx file).
+It is assumed that the form is stored in the data folder.</p></td>
+    </tr>
+    <tr>
+      <th>app</th>
+      <td><p>The place where the function has been executed, the default is the console and the second option is the shiny app</p></td>
+    </tr>
+    </table>
+    
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A structure of directory and scripts in order to set up quickly a project.</p>
+    <p>No return, all results will be saved inside new CSV files</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>kobo_projectinit</span>()</div><div class='output co'>#&gt; Let's create various standard folders and copy some analysis script
-#&gt; Perso exists in mainDir and is a directory.
-#&gt; Code exists in mainDir and is a directory.
-#&gt; You have multiple library path! 
-#&gt; script exists in subDir and is a directory.
-#&gt; shiny_app exists in subDir and is a directory.
-#&gt; www exists in subDir and is a directory.
-#&gt; css exists in subDir and is a directory.
-#&gt; fonts exists in subDir and is a directory.
-#&gt; image exists in subDir and is a directory.
-#&gt; Data exists in mainDir and is a directory.
-#&gt; Out directory exists in your project directory and is a directory.
-#&gt; bar_multi directory exists in out directory and is a directory.
-#&gt; disagg_multi directory exists in out directory and is a directory.
-#&gt; bar_one directory exists in out directory and is a directory.
-#&gt; disagg_one directory exists in out directory and is a directory.
-#&gt; crunching_reports directory exists in out directory and is a directory.
-#&gt; cluster_reports directory exists in out directory and is a directory.
-#&gt; anonymisation_reports directory exists in out directory and is a directory.
-#&gt; Please open now the file called 0-config.R within the ++code++ folder and configure the path to the form and the dataset. 
-#&gt;  Package Installation progress so far.. :  100%  -  100% 
+    <pre class="examples"><div class='input'><span class='fu'>kobo_load_data</span>()</div><div class='output co'>#&gt; Package Installation progress so far.. :  100%  -  100% 
 #&gt; 
 #&gt; ade4  is already installed on your computer 
 #&gt; Package Installation progress so far.. :  100%  -  100% 
@@ -505,12 +499,74 @@
 #&gt; 
 #&gt; Perfect, there's no missing package 
 #&gt; 
-#&gt; </div><div class='input'>
+#&gt; 
+#&gt; 
+#&gt; 
+#&gt; 
+#&gt;  Generate dictionnary from the xlsform 
+#&gt; 
+#&gt; 
+#&gt; 
+#&gt; 
+#&gt;  Your form should be placed within the `data` folder. 
+#&gt;  
+#&gt; Checking now for additional information within your xlsform. Note that you can insert them in the xls and re-run the function! 
+#&gt;  
+#&gt;  1- No column `labelReport` in your survey worksheet. Creating a dummy one for the moment...
+#&gt; 1- Good: You have a column `disaggregation` in your survey worksheet.
+#&gt; 2- Good: You have a column `correlate` in your survey worksheet. This will be used to define the variables that should be checked for correlation between each others.
+#&gt; 3- Good: You have a column `chapter` in your survey worksheet. This will be used to breakdown the generated report
+#&gt; 4- No column `structuralequation.risk` in your survey worksheet. Creating a dummy one for the moment...
+#&gt; 4- No column `structuralequation.coping` in your survey worksheet. Creating a dummy one for the moment...
+#&gt; 4- No column `structuralequation.resilience` in your survey worksheet. Creating a dummy one for the moment...
+#&gt; 5- Good: You have a column `anonymise` in your survey worksheet. This will be used to anonymise the dataset.
+#&gt; 6- Good: You have a column `variable` in your survey worksheet. This will be used to flag ordinal variable.
+#&gt; 7- No column `clean` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
+#&gt; 8- No column `cluster` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
+#&gt; 9- No column `predict` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
+#&gt; 10- No column `mappoint` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
+#&gt; 11- No column `mappoly` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
+#&gt;  
+#&gt;  Now extracting list name from questions type.
+#&gt;  
+#&gt; 
+#&gt;  Be careful! The current function only support 2 levels of nested repeat - for instance household / Case / Individual. 
+#&gt;  
+#&gt;  
+#&gt;  Now rebuilding the variable full path in order to match with variable name from the exported dataset. 
+#&gt; 
+#&gt;       Note that there should not be any dots in the orginal variables. 
+#&gt; 
+#&gt;       Double Check as well there's no duplicate for the name column in the survey worksheet
+#&gt;  
+#&gt; 12 -  No column `labelReport` in your `choices` worksheet. Creating a dummy one for the moment...
+#&gt; 12 -  Good: You have a column `order` in your `choices` worksheet.
+#&gt; 13 -  No column `weight` in your `choices` worksheet. Creating a dummy one for the moment...
+#&gt; 14 -  No column `recategorise` in your `choices` worksheet. Creating a dummy one for the moment...
+#&gt; 13 -  No column `score` in your `choices` worksheet. Creating a dummy one for the moment...
+#&gt; 
+#&gt; 
+#&gt; 
+#&gt;  Load original dataset 
+#&gt; 
+#&gt; 
+#&gt; </div><div class='output co'>#&gt; <span class='warning'>Warning: cannot open file '/home/edouard/R-project/koboloadeR-ghpages/docs/reference/data/MainDataFrame.csv': No such file or directory</span></div><div class='output co'>#&gt; [1] "kobo_load_data_ERROR"</div><div class='output co'>#&gt; $message
+#&gt; [1] "cannot open the connection"
+#&gt; 
+#&gt; $call
+#&gt; file(file, "rt")
+#&gt; 
+#&gt; attr(,"class")
+#&gt; [1] "try-error"</div><div class='input'>
+</div><span class='co'># NOT RUN {</span>
+<span class='fu'>kobo_load_data</span>(<span class='st'>"myform.xls"</span>)
+<span class='co'># }</span><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
       
@@ -518,7 +574,7 @@
     </ul>
 
     <h2>Author</h2>
-    <p>Edouard Legoupil, Elliott MEesseiller</p>
+    <p>Maher Daoud</p>
   </div>
 </div>
 

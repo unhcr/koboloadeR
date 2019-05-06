@@ -131,7 +131,7 @@ kobo_projectconfig <- function() {
 
 
 
-  mainDir <- getwd()
+  mainDir <- kobo_getMainDirectory()
 
 
 

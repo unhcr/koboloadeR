@@ -1,6 +1,6 @@
 # NEWS
 
-## koboloadeR 0.2
+## koboloadeR 0.1.5
 
  * Added a shinapp to provide a gui fo rthe package
  

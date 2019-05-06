@@ -110,7 +110,7 @@ It might take a while as a few other packages have to be installed or loaded. On
 
 
 ```
-kobo_shiny("app_koboloadeR.R")
+kobo_shiny("app_main_koboloadeR.R")
 ```  
 
 

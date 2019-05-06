@@ -1,0 +1,158 @@
+#' @name kobo_edit_form
+#' @rdname kobo_edit_form
+#' @title  Edit XLS form
+#'
+#' @description  This function used to change the data of sheets in the xlsform and apply all required styles for each sheet 
+#'
+#' @param form The full filename of the form to be accessed (xls or xlsx file).
+#' It is assumed that the form is stored in the data folder.
+#'
+#' @param survey Dataframe that represent the data of survey sheet in the xlsform
+#' @param choices Dataframe that represent the data of choices sheet in the xlsform
+#' @param indicator Dataframe that represent the data of indicator sheet in the xlsform
+#' @param settings Dataframe that represent the data of settings sheet in the xlsform 
+#'
+#' @return No return, this function edit the original XLSform directly
+#'
+#' @author Maher Daoud
+#'
+#' @examples
+#' kobo_edit_form()
+#'
+#' @examples
+#' \dontrun{
+#' kobo_edit_form("myform.xls")
+#' }
+#'
+#' @export kobo_edit_form
+#' 
+
+kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, indicator = NULL, settings = NULL) {
+  
+  wb <- xlsx::createWorkbook(type = "xls") #create xls workbook
+  mainDir <- kobo_getMainDirectory()
+  form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
+  
+  if(is.null(survey)){
+    survey <- tryCatch({
+      as.data.frame(read_excel(form_tmp, sheet = "survey"),
+                    stringsAsFactors = FALSE) #read survey sheet from the form
+    }, error = function(err) {
+      data.frame( #if it doesn't exist, we need to create empty dataframe with those fields
+        type = character(),
+        name = character(),
+        label = character(),
+        variable = character(),
+        disaggregation = character(),
+        chapter = character(),
+        structuralequation.risk = character(),
+        structuralequation.coping = character(),
+        structuralequation.resilience = character(),
+        anonymise = character(),
+        correlate = character(),
+        clean = character(),
+        cluster = character(),
+        predict = character(),
+        mappoint = character(),
+        mappoly = character(),
+        stringsAsFactors = FALSE
+      )
+    })
+  }
+  
+  if(!is.null(survey)){
+    survey[is.na(survey)] <-  ""
+    sheetname <- "survey"
+    if(!is.null(xlsx::getSheets(wb)[[sheetname]]))
+      xlsx::removeSheet(wb, sheetname)
+    surveySheet <- xlsx::createSheet(wb, sheetname) #create survey sheet in wb
+    xlsx::addDataFrame(survey, surveySheet, col.names=TRUE, row.names=FALSE) #add survey dataframe in the survey sheet
+  }
+  
+  #################################### choices sheet ######################################
+  if(is.null(choices)){
+    choices <- tryCatch({
+      as.data.frame(read_excel(form_tmp, sheet = "choices"),
+                    stringsAsFactors = FALSE) #read survey sheet from the form
+    }, error = function(err) {
+      data.frame( #if it doesn't exist, we need to create empty dataframe with those fields
+        list_name = character(),
+        name = character(),
+        label = character(),
+        order = character(),
+        stringsAsFactors = FALSE
+      )
+    })
+  }
+  if(!is.null(choices)){
+    sheetname <- "choices"
+    if(!is.null(xlsx::getSheets(wb)[[sheetname]]))
+      xlsx::removeSheet(wb, sheetname)
+    choicesSheet <- xlsx::createSheet(wb, sheetName=sheetname)
+    xlsx::addDataFrame(choices, choicesSheet, col.names=TRUE, row.names=FALSE)
+  }
+  #################################### indicator sheet ######################################
+  if(is.null(indicator)){
+    indicator <- tryCatch({
+      as.data.frame(read_excel(form_tmp, sheet = "indicator"),stringsAsFactors = FALSE)
+    }, error = function(err) {
+      data.frame(
+        type = character(),
+        fullname = character(),
+        label = character(),
+        chapter = character(),
+        disaggregation = character(),
+        correlate = character(),
+        sensitive = character(),
+        anonymise = character(),
+        cluster = character(),
+        predict = character(),
+        variable = character(),
+        mappoint = character(),
+        mappoly = character(),
+        structuralequation = character(),
+        frame = character(),
+        listname = character(),
+        calculation = character(),
+        stringsAsFactors = FALSE
+      )
+    })
+  }
+  if(!is.null(indicator)){
+    sheetname <- "indicator"
+    if(!is.null(xlsx::getSheets(wb)[[sheetname]]))
+      xlsx::removeSheet(wb, sheetname)
+    indicatorSheet <- xlsx::createSheet(wb, sheetName=sheetname)
+    xlsx::addDataFrame(indicator, indicatorSheet, col.names=TRUE, row.names=FALSE)
+  }
+  
+  #################################### settings sheet ######################################
+  if(is.null(settings)){
+    settings <- tryCatch({
+      as.data.frame(read_excel(form_tmp, sheet = "settings"),
+                    stringsAsFactors = FALSE)
+    }, error = function(err) {
+      data.frame(
+        name = character(),
+        label = character(),
+        value = character(),
+        path = character(),
+        stringsAsFactors = FALSE
+      )
+    })
+  }
+  if(!is.null(settings)){
+    sheetname <- "settings"
+    
+    if(!is.null(xlsx::getSheets(wb)[[sheetname]]))
+      xlsx::removeSheet(wb, sheetname)
+    settingsSheet <- xlsx::createSheet(wb, sheetName=sheetname) #create sheet with settings name
+    xlsx::addDataFrame(settings, settingsSheet, col.names=TRUE, row.names=FALSE) #add settings data frame to this sheet
+  }
+  
+  if (file.exists(form_tmp)) file.remove(form_tmp)
+  xlsx::saveWorkbook(wb, form_tmp)
+  
+}
+NULL
+

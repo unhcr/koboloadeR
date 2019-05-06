@@ -34,7 +34,12 @@ Depends:
     shinyalert,
     ape,
     sp,
-    gdata
+    gdata,
+    rhandsontable,
+    stringr,
+    simFrame,
+    classInt,
+    ggrepel
 Suggests:
     shiny
 URL: https://github.com/unhcr/koboloadeR

@@ -55,6 +55,7 @@ kobo_get_dataframes_levels <- function(form="form.xls") {
     survey$type <- tolower(survey$type)
     survey$type <- str_replace(survey$type,"_"," ")
     survey$type <- str_replace(survey$type,"-"," ")
+    survey <- survey[!is.na(survey$type),]
     survey <- survey[survey$type=="begin repeat" | survey$type=="end repeat", ]
     
     result <- data.frame(
@@ -97,6 +98,8 @@ kobo_get_dataframes_levels <- function(form="form.xls") {
         opcl[opcl$name == tempName,"open"] = F
       }
     }
+    result$level <- as.integer(result$level)
+    result <- result[order(result$level, result$parent),]
     return(result)
   }, error = function(err) {
     print("kkobo_get_dataframes_levels_ERROR")

@@ -494,6 +494,19 @@ kobo_projectinit <- function() {
       dir.create(file.path(mainDirectory, subDir))
     }
     
+    
+    mainDirectory <- paste0(mainDir,"/out")
+    subDir <- "/ddi"
+    if (file.exists(paste(mainDirectory, subDir, "/", sep = "/", collapse = "/"))) {
+      cat("ddi directory exists in out directory and is a directory.\n")
+    } else if (file.exists(paste(mainDirectory, subDir, sep = "/", collapse = "/"))) {
+      cat("ddi directory exists in your out directory.\n")
+      # you will probably want to handle this separately
+    } else {
+      cat("ddi directory does not exist in your out directory - creating now!\n ")
+      dir.create(file.path(mainDirectory, subDir))
+    }
+    
     ## reset the correct Working directory
     setwd(mainDir)
     cat("Please open now the file called 0-config.R within the ++code++ folder and configure the path to the form and the dataset. \n ")

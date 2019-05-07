@@ -73,9 +73,12 @@ kobo_ddi <- function(form = "form.xls", app="console") {
     if(app=="shiny"){
       updateProgress()
     }
+    survey <- survey[!is.na(survey$chapter),]
     survey <- survey[c("type","name","labelReport","variable")]
     survey <- survey[!startsWith(tolower(survey$type), "select_multiple"),]
-    
+    survey <- survey[tolower(survey$type) != "begin_repeat" & tolower(survey$type) != "begin repeat" & tolower(survey$type) != "begin-repeat" &
+                       tolower(survey$type) != "end_repeat" & tolower(survey$type) != "end repeat" & tolower(survey$type) != "end-repeat" 
+                     ,]
     
     survey$listname <- sapply(survey[,"type"], function(x) {
       strsplit(x," ")[[1]][2]
@@ -138,11 +141,11 @@ kobo_ddi <- function(form = "form.xls", app="console") {
     }
     
     
-    dicoSelectMultiple <- dico[dico$type=="select_multiple",c("type","name","label","variable","listname")]
+    dicoSelectMultiple <- dico[dico$type=="select_multiple",c("type","fullname","label","variable","listname")]
     names(dicoSelectMultiple) <- c("type","name","labelReport","variable","listname")
     
     
-    var_ind <- rbind(survey, indicator,dicoSelectMultiple)
+    var_ind <- rbind(survey, indicator ,dicoSelectMultiple)
     
     dataDscr <- list()
     dataDscrNames <- c()
@@ -165,7 +168,6 @@ kobo_ddi <- function(form = "form.xls", app="console") {
           measurement = var_ind[i,"variable"],
           values = namesVal
         )
-        
         dataDscrNames <- c(dataDscrNames, var_ind[i,"name"])
       }else if(startsWith(tolower(var_ind[i,"type"]), "select_multiple")){
         ln <- var_ind[i,"listname"]
@@ -204,7 +206,6 @@ kobo_ddi <- function(form = "form.xls", app="console") {
     }
     
     ####################### MAIN DATAFRAME #####################
-    form="form.xls"
     configInfo <- kobo_get_config(form)
     configInfo <- configInfo[startsWith(tolower(configInfo$name), "instanceid"),]
     levelsOfDF <- kobo_get_dataframes_levels(form)
@@ -220,9 +221,9 @@ kobo_ddi <- function(form = "form.xls", app="console") {
         next
       }
       count  <- count + 1
-      dataFrame <- read.csv(paste(mainDir,"/data/",dbr,".csv",sep = ""),stringsAsFactors = F) 
+      dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""),stringsAsFactors = F) 
       dataFrame <- kobo_split_multiple(dataFrame, dico)
-      dataFrame <- kobo_clean(dataFrame, dico)
+      #dataFrame <- kobo_clean(dataFrame, dico)
       dataFrame <- kobo_label(dataFrame, dico)
       
       child <- levelsOfDF[levelsOfDF$name==dbr, "name"]
@@ -255,12 +256,23 @@ kobo_ddi <- function(form = "form.xls", app="console") {
     count <- count - 1
     while(count){
       temp <- read.csv(paste(mainDir,"/data/group",count,".csv",sep = ""), stringsAsFactors = F)
+
+      unColChild <- temp[,"responseID"]
+      temp <- temp[,colnames(temp)!=instanceIDChild]
+      unCN <- colnames(temp)[!colnames(temp) %in% colnames(allframes)]
+      unCN <- c("responseID", unCN)
+      temp[instanceIDChild] <- unColChild
+      temp <- temp[ unCN ]
+      
       allframes <- full_join(allframes, temp, "responseID")
       count <- count - 1
     }
     
     ############################################################
     
+    dataDscrNames <- dataDscrNames[dataDscrNames %in% colnames(allframes)]
+    dataDscr <- dataDscr[dataDscrNames]
+    allframes <- allframes[dataDscrNames]
     
     codeBook <- list(
       fileDscr = list(

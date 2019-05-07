@@ -573,6 +573,7 @@ server <- shinyServer(function(input, output, session) {
                          uiOutput("showInputOfInstanceIDBody"),
                          size = "l",
                          footer = tagList(
+                           modalButton("Exit", icon("sign-out-alt")),
                            actionButton("saveInstanceIDButton", "Save", class="toolButton", style="height: 35px;")
                          )
       ))
@@ -591,7 +592,7 @@ server <- shinyServer(function(input, output, session) {
   
   output$showInputOfInstanceIDBody <- renderText({
     s <- ""
-    levelsOfDF <- kobo_get_dataframes_levels()
+    levelsOfDF <- kobo_get_dataframes_levels("form2.xls")
     levelsOfDF <- levelsOfDF[levelsOfDF$name!="MainDataFrame",]
     for (i in 1:nrow(levelsOfDF)) {
       child  <- levelsOfDF[i, "name"]
@@ -673,7 +674,7 @@ server <- shinyServer(function(input, output, session) {
 
       configInfo <- kobo_get_config()
       configInfo <- configInfo[!startsWith(tolower(configInfo$name), "instanceid"),]
-      levelsOfDF <- kobo_get_dataframes_levels()
+      levelsOfDF <- kobo_get_dataframes_levels("form2.xls")
       levelsOfDF <- levelsOfDF[levelsOfDF$name!="MainDataFrame",]
       for (i in 1:nrow(levelsOfDF)) {
         child  <- levelsOfDF[i, "name"]
@@ -704,35 +705,22 @@ server <- shinyServer(function(input, output, session) {
           )
           return(FALSE)
         }
-        print(data.frame(
-          name = paste0("instanceID_", child, "_", parent),
-          label = paste0("The instanceID between the child (",child,")", " and the parent (",parent,")"),
-          value = input[[paste("instanceIDInput", child, "child", parent, "parent", sep = "")]],
-          path = "", stringsAsFactors = F
-        ))
+
         configInfo <- rbind(configInfo,
-                            data.frame(
-                              name = paste0("instanceID_", child, "_", parent),
-                              label = paste0("The instanceID between the child (",child,")", " and the parent (",parent,")"),
-                              value = input[[paste("instanceIDInput", child, "child", parent, "parent", sep = "")]],
-                              path = "", stringsAsFactors = F
+                            c(
+                              paste0("instanceID_", child, "_", parent),
+                              paste0("The instanceID between the child (",child,")", " and the parent (",parent,")"),
+                              input[[paste("instanceIDInput", child, "child", parent, "parent", sep = "")]],
+                              path = ""
                             )
                             )
         
-        print(
-          data.frame(
-            name = paste0("instanceID_", parent, "_", child),
-            label = paste0("The instanceID between the parent (",parent,")", " and the child (",child,")"),
-            value = input[[paste("instanceIDInput", parent, "parent", child, "child", sep = "")]],
-            path = "", stringsAsFactors = F
-          )
-        )
         configInfo <- rbind(configInfo,
-                            data.frame(
-                              name = paste0("instanceID_", parent, "_", child),
-                              label = paste0("The instanceID between the parent (",parent,")", " and the child (",child,")"),
-                              value = input[[paste("instanceIDInput", parent, "parent", child, "child", sep = "")]],
-                              path = "", stringsAsFactors = F
+                            c(
+                              paste0("instanceID_", parent, "_", child),
+                              paste0("The instanceID between the parent (",parent,")", " and the child (",child,")"),
+                              input[[paste("instanceIDInput", parent, "parent", child, "child", sep = "")]],
+                              path = ""
                             )
                             
         )
@@ -767,11 +755,13 @@ server <- shinyServer(function(input, output, session) {
           check.names = F
         )
       })
-      
+
       if(!"cluster" %in% colnames(survey)){
         survey$cluster <- NA
+      }else{
+        ind <- which(tolower(survey$cluster)=="id")
+        survey[ind, "cluster"] <- NA
       }
-      survey[!is.na(survey$cluster) & survey$cluster=="id", "cluster"] <- NA
       survey[survey$name==input$clusterIDInput, "cluster"] <- "id"
       
       updateProgress()

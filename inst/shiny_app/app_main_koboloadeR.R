@@ -589,48 +589,64 @@ server <- shinyServer(function(input, output, session) {
     })
   }
   
-  output$showInputOfInstanceIDBody <- renderUI({
-    column(width = 12,
-           column(width = 8, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                  h4("Select the unique variable for all data files?"),
-                  div(class="help-tip-small",style="top: 0px; right: 25px;",
-                      p(
-                        span("This is the ID that will be used to join the main dataframe with other dataframes",style="display: block;")
-                      )
-                  )
-           ),
-           column(width = 4, offset = 0,
-                  selectInput("instanceIDInput", label = NULL,choices = c("-- select --",colnames(projectConfigurationInfo$data[["data"]])))
-           ),
-           
-           column(width = 8, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                  h4("Select the ID variable for cluster report?"),
-                  div(class="help-tip-small",style="top: 0px; right: 25px;",
-                      p(
-                        span("This is the ID that will be used for kobo_cluster_report function.",style="display: block;")
-                      )
-                  )
-           ),
-           column(width = 4, offset = 0,
-                  selectInput("clusterIDInput", label = NULL,choices = c("-- select --",colnames(projectConfigurationInfo$data[["data"]])))
-           )
-    )
+  output$showInputOfInstanceIDBody <- renderText({
+    s <- ""
+    levelsOfDF <- kobo_get_dataframes_levels()
+    levelsOfDF <- levelsOfDF[levelsOfDF$name!="MainDataFrame",]
+    for (i in 1:nrow(levelsOfDF)) {
+      child  <- levelsOfDF[i, "name"]
+      parent <- levelsOfDF[i, "parent"]
+      colnamesOfChild <-  colnames(read.csv(paste0(mainDir(), "/data/", child, ".csv"), stringsAsFactors = FALSE))
+      colnamesOfParent <- colnames(read.csv(paste0(mainDir(), "/data/", parent, ".csv"), stringsAsFactors = FALSE))
+      style <- ""
+      if( as.integer(i/2) == i/2 ){
+        style <- "border-bottom: 1px solid lightgray;padding: 20px 0px;"
+      }else{
+        style <- "border-bottom: 1px solid lightgray; background-color: #f8f8ff; padding: 20px 0px;"
+      }
+      s <- paste(s,
+                 column(width = 12, style = style,
+                        column(width = 3,
+                               h4(paste("The instanceID between the child (",child,")",sep = ""))
+                               ),
+                        column(width = 3, offset = 0,
+                               selectInput(paste("instanceIDInput", child, "child", parent, "parent", sep = ""), label = NULL,choices = c("-- select --",colnamesOfChild))
+                               ),
+                        
+                        column(width = 3,
+                                 h4(paste("and the parent (",parent,")",sep = ""))
+                        ),
+                        column(width = 3, offset = 0,
+                               selectInput(paste("instanceIDInput", parent, "parent", child, "child", sep = ""), label = NULL,choices = c("-- select --",colnamesOfParent))
+                               )
+                   )
+                 ,sep = "")
+    }
+    s <- box(width = 12, title = "Instance ID", status = "primary", solidHeader = T, collapsible = T, 
+                       HTML(s)
+             )
+    
+    s <- paste(s,
+          box(width = 12, title = "Cluster ID", status = "primary", solidHeader = T, collapsible = T, 
+                column(width = 8, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                       h4("Select the ID variable for cluster report?"),
+                       div(class="help-tip-small",style="top: 0px; right: 25px;",
+                           p(
+                             span("This is the ID that will be used for kobo_cluster_report function.",style="display: block;")
+                           )
+                       )
+                ),
+                column(width = 4, offset = 0,
+                       selectInput("clusterIDInput", label = NULL,choices = c("-- select --",colnames(projectConfigurationInfo$data[["data"]])))
+                )
+              )
+    ,sep = "")
+    return(s)
+    
   })
   
   observeEvent(input$saveInstanceIDButton, {
     tryCatch({
-      if(sum(input$instanceIDInput == "-- select --")){
-        print("hjhgjhgyukiul")
-        shinyalert("Instance ID is required",
-                   "You can't save the settings without selecting one of the variables",
-                   type = "error",
-                   closeOnClickOutside = FALSE,
-                   confirmButtonCol = "#ff4d4d",
-                   animation = FALSE,
-                   showConfirmButton = TRUE
-        )
-        return(FALSE)
-      }
       if(sum(input$clusterIDInput == "-- select --")){
         print("hgdtrhrfthdg")
         shinyalert("Cluster ID is required",
@@ -643,8 +659,6 @@ server <- shinyServer(function(input, output, session) {
         )
         return(FALSE)
       }
-      
-      
       progress <- shiny::Progress$new()
       progress$set(message = "Save IDs in progress...", value = 0)
       on.exit(progress$close())
@@ -656,41 +670,75 @@ server <- shinyServer(function(input, output, session) {
         progress$set(value = value, detail = detail)
       }
       updateProgress()
-      
-      
-      for(i in 1:(length(projectConfigurationInfo$data[["beginRepeatList"]]))){
-        inFile <- input[[paste("fileInput",projectConfigurationInfo$data[["beginRepeatList"]][i],sep = "")]]
-        if (!is.null(inFile)){
-          dataFile <- read.csv(inFile$datapath, header=TRUE, sep=input[[paste("separator",projectConfigurationInfo$data[["beginRepeatList"]][i],sep = "")]], stringsAsFactors = FALSE)
-          fileName <- paste("/",projectConfigurationInfo$data[["beginRepeatList"]][i], ".csv", sep="")
-          if(!input$instanceIDInput %in% colnames(dataFile)){
-            shinyalert("Instance ID Non-Existent",
-                       paste ("Instance ID does not existent in", projectConfigurationInfo$data[["beginRepeatList"]][i]),
-                       type = "error",
-                       closeOnClickOutside = FALSE,
-                       confirmButtonCol = "#ff4d4d",
-                       animation = FALSE,
-                       showConfirmButton = TRUE
-            )
-            return(FALSE)
-          }
-        }
-      }
-      
-      
+
       configInfo <- kobo_get_config()
-      updateProgress()
-      instanceID <- configInfo[configInfo$name=="instanceID","value"]
-      if(length(instanceID)==0){
-        configInfo <- rbind(configInfo, c("instanceID", "The unique id between data files", input$instanceIDInput, NA) )
-      }else{
-        if(is.na(instanceID)){
-          configInfo <- rbind(configInfo, c("instanceID", "The unique id between data files", input$instanceIDInput, NA) )
-        }else{
-          configInfo[configInfo$name=="instanceID","value"] <- input$instanceIDInput
+      configInfo <- configInfo[!startsWith(tolower(configInfo$name), "instanceid"),]
+      levelsOfDF <- kobo_get_dataframes_levels()
+      levelsOfDF <- levelsOfDF[levelsOfDF$name!="MainDataFrame",]
+      for (i in 1:nrow(levelsOfDF)) {
+        child  <- levelsOfDF[i, "name"]
+        parent <- levelsOfDF[i, "parent"]
+        
+        if(sum(input[[paste("instanceIDInput", child, "child", parent, "parent", sep = "")]] == "-- select --")){
+          print("gfdhfgfdfhjhjd")
+          shinyalert("Instance ID is required",
+                     "You can't save the settings without selecting one of the variables",
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          return(FALSE)
         }
+        
+        if(sum(input[[paste("instanceIDInput", parent, "parent", child, "child", sep = "")]] == "-- select --")){
+          print("fgdjhgjkmhlkjl")
+          shinyalert("Instance ID is required",
+                     "You can't save the settings without selecting one of the variables",
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          return(FALSE)
+        }
+        print(data.frame(
+          name = paste0("instanceID_", child, "_", parent),
+          label = paste0("The instanceID between the child (",child,")", " and the parent (",parent,")"),
+          value = input[[paste("instanceIDInput", child, "child", parent, "parent", sep = "")]],
+          path = "", stringsAsFactors = F
+        ))
+        configInfo <- rbind(configInfo,
+                            data.frame(
+                              name = paste0("instanceID_", child, "_", parent),
+                              label = paste0("The instanceID between the child (",child,")", " and the parent (",parent,")"),
+                              value = input[[paste("instanceIDInput", child, "child", parent, "parent", sep = "")]],
+                              path = "", stringsAsFactors = F
+                            )
+                            )
+        
+        print(
+          data.frame(
+            name = paste0("instanceID_", parent, "_", child),
+            label = paste0("The instanceID between the parent (",parent,")", " and the child (",child,")"),
+            value = input[[paste("instanceIDInput", parent, "parent", child, "child", sep = "")]],
+            path = "", stringsAsFactors = F
+          )
+        )
+        configInfo <- rbind(configInfo,
+                            data.frame(
+                              name = paste0("instanceID_", parent, "_", child),
+                              label = paste0("The instanceID between the parent (",parent,")", " and the child (",child,")"),
+                              value = input[[paste("instanceIDInput", parent, "parent", child, "child", sep = "")]],
+                              path = "", stringsAsFactors = F
+                            )
+                            
+        )
       }
       
+      updateProgress()
       mainDir <- kobo_getMainDirectory()
       form_tmp <- paste(mainDir, "data", "form.xls", sep = "/", collapse = "/")
       survey <- tryCatch({
@@ -723,6 +771,7 @@ server <- shinyServer(function(input, output, session) {
       if(!"cluster" %in% colnames(survey)){
         survey$cluster <- NA
       }
+      survey[!is.na(survey$cluster) & survey$cluster=="id", "cluster"] <- NA
       survey[survey$name==input$clusterIDInput, "cluster"] <- "id"
       
       updateProgress()
@@ -6897,6 +6946,132 @@ server <- shinyServer(function(input, output, session) {
       )
     })
   })
+  
+  
+  
+  
+  
+  ####################################### Data Dissemination page ############################################
+  output$dataDissemination <- renderUI({
+    if(!projectConfigurationInfo$log[["isDataProcessingCompleted"]]){
+      infoBox(
+        width = 12,strong("Warning"),h4("You cannot proceed without completing Data Processing section",align="center")
+        ,icon = icon("exclamation-triangle"),
+        color = "yellow"
+      )
+    }else{
+      column(width = 12, align="center",
+             column(width = 12, align="center",style="margin-bottom:15px;",
+                    column(width = 6, align="center",
+                           actionButton("ddiButton", "Generate a DDI file", class="toolButton006495", style="height: 700px; font-size: xx-large; width: 100%;") 
+                    ),
+                    column(width = 6, align="center",
+                           actionButton("hdxButton", "Export to HDX", class="toolButtonE0A025", style="height: 700px; font-size: xx-large; width: 100%;")
+                    )
+             )
+      )
+    }
+  })
+  ##################Generate a DDI file################
+  observeEvent(input$ddiButton,{
+    tryCatch({
+      result <- kobo_ddi(app="shiny")
+      if(class(result) == "try-error"){
+        shinyalert("Error",
+                   result,
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }else{
+        shinyalert("Wooooow",
+                   "Done!! XML file in the OUT folder",
+                   type = "success",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#28A8E2",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        showModal(showDDIfilesLinks())
+      }
+      
+    }, error = function(err) {
+      print("lkjjhhgkjg")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  
+  showDDIfilesLinks <- function() {
+    tryCatch({
+      return(modalDialog(id="showDDIfilesPopUp", 
+                         title = "DDI Files",
+                         uiOutput("ddiFilesBody"),
+                         size = "l",
+                         footer = tagList(
+                           modalButton("Exit", icon("sign-out-alt"))
+                         )
+      )
+      )
+      
+    }, error = function(err) {
+      print("ydhffhgjhgf")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  }
+  
+  output$ddiFilesBody <- renderText({
+    tryCatch({
+      s <- ""
+      mainPath <- paste(kobo_getMainDirectory(),"/out/ddi/", sep = "")
+      filesNames <- list.files(mainPath)
+      filesNames <- sort(filesNames)
+      for (fn in filesNames) {
+        s <- paste(s,
+                   box(width = 6, title = fn, solidHeader = FALSE, status = "primary", collapsed = F, collapsible = F,
+                       downloadLink(paste("download",fn,sep = ""), paste("Download",fn))
+                   )
+                   ,sep="")
+        
+      }
+      lapply(1:length(filesNames), function(m) {
+        output[[paste("download",filesNames[m],sep = "")]] <- downloadHandler(
+          filename = filesNames[m],
+          content = function(file) {
+            file.copy(paste(kobo_getMainDirectory(),"/out/ddi/",filesNames[m], sep = ""), file)
+          }
+        )
+      })
+      return(s)
+    }, error = function(err) {
+      print("ytfjyhjtyhrthe")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
+  
   
 })
 

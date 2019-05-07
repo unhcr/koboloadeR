@@ -182,7 +182,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
       #("source(paste0(mainDirroot,\"/code/0-theme.R\"))", file = chapter.name , sep = "\n", append = TRUE)
       cat("library(koboloadeR)", file = chapter.name , sep = "\n", append = TRUE)
       cat("## Load all required packages", file = chapter.name , sep = "\n", append = TRUE)
-      cat("kobo_load_data()", file = chapter.name , sep = "\n", append = TRUE)
+      #cat("kobo_load_data()", file = chapter.name , sep = "\n", append = TRUE)
       #  cat("source(paste0(mainDirroot,\"/code/0-packages.R\"))", file = chapter.name , sep = "\n", append = TRUE)
       cat("## Provide below the name of the form in xsl form - format should be xls not xlsx", file = chapter.name , sep = "\n", append = TRUE)
       cat(paste0("form <- \"",form,"\""), file = chapter.name , sep = "\n", append = TRUE)

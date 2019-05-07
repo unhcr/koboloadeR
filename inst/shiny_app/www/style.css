@@ -901,7 +901,7 @@ li.active > a[data-value="infoAPC"]{
   }
 }
 
-#showInputOfInstanceIDPopUp, #showSamplingMoreParmPopUp{
+#showSamplingMoreParmPopUp{
     min-height: 150px;
 }
 
@@ -1087,6 +1087,7 @@ li.active > a[data-value="infoAPC"]{
   width:100%;
   transition:800ms ease all;
 }
+
 .toolButton0093D1, .toolButton0093D1:focus, .toolButton0093D1:active:focus{
   background:#0093D1;
   color:#fff;
@@ -1163,7 +1164,7 @@ li.active > a[data-value="infoAPC"]{
   transition:800ms ease all;
 }
 
-#showCrunchingReportPopUp, #showClusterReportPopUp, #showAnonymisationReportPopUp{
+#showCrunchingReportPopUp, #showClusterReportPopUp, #showAnonymisationReportPopUp, #showInputOfInstanceIDPopUp, #showDDIfilesPopUp{
     min-height: 650px;
     max-height: 650px;
     overflow-y: auto;

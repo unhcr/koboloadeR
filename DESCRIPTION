@@ -39,7 +39,8 @@ Depends:
     stringr,
     simFrame,
     classInt,
-    ggrepel
+    ggrepel,
+    DDIwR
 Suggests:
     shiny
 URL: https://github.com/unhcr/koboloadeR

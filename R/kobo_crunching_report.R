@@ -40,6 +40,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
     ## Load all required packages
     kobo_load_packages()
     configInfo <- kobo_get_config()
+    configInfo <- configInfo[!is.na(configInfo$name),]
     mainDir <- kobo_getMainDirectory()
     form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
     library(koboloadeR)

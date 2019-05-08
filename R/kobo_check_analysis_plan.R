@@ -175,73 +175,73 @@ kobo_check_analysis_plan <- function(form = "form.xls") {
         stringsAsFactors = FALSE
       )
     })
+    
     indicator <- indicator[!is.na(indicator$fullname),]
     
-    if(!"label"%in%colnames(indicator)){
-      result$flag <- F
-      countE <- countE+1
-      result$labelReportNotExisInd <- paste(countE,"-"," Indicator sheet does not contain label column, you must fist labelReport before Data Processing", sep = "")
-      result$message <- paste(result$message, "\n", result$labelReportNotExisInd,sep = "")
-    }else{
-      if(mean(str_length(indicator$label) <= 85, na.rm=T) != 1){
+    if(nrow(indicator)>0){
+      if(!"label"%in%colnames(indicator)){
         result$flag <- F
         countE <- countE+1
-        temp <- indicator[str_length(indicator$label) > 85,"fullname"]
-        temp <- paste(temp, sep = " ", collapse = " ,")
-        result$labelReportLengthInd <- paste(countE,"-"," Please make sure that all label length are less than 85 character in indicator sheet where fullname equal: ",temp , sep = "")
-        result$message <- paste(result$message, "\n", result$labelReportLengthInd,sep = "")
+        result$labelReportNotExisInd <- paste(countE,"-"," Indicator sheet does not contain label column, you must fist labelReport before Data Processing", sep = "")
+        result$message <- paste(result$message, "\n", result$labelReportNotExisInd,sep = "")
+      }else{
+        if(mean(str_length(indicator$label) <= 85, na.rm=T) != 1){
+          result$flag <- F
+          countE <- countE+1
+          temp <- indicator[str_length(indicator$label) > 85,"fullname"]
+          temp <- paste(temp, sep = " ", collapse = " ,")
+          result$labelReportLengthInd <- paste(countE,"-"," Please make sure that all label length are less than 85 character in indicator sheet where fullname equal: ",temp , sep = "")
+          result$message <- paste(result$message, "\n", result$labelReportLengthInd,sep = "")
+        }
+        temp <- indicator[is.na(indicator$label),"label"]
+        if(length(temp)>0){
+          result$flag <- F
+          countE <- countE+1
+          result$labelInd <- paste(countE,"-"," Please make sure that you fill all cells of label column in the indicator sheet", sep = "")
+          result$message <- paste(result$message, "\n", result$labelInd,sep = "")
+        }
       }
-      temp <- indicator[is.na(indicator$label),"label"]
+      temp <- indicator[is.na(indicator$type) | !indicator$type %in% c("integer","numeric","select_one"),"type"]
       if(length(temp)>0){
         result$flag <- F
         countE <- countE+1
-        result$labelInd <- paste(countE,"-"," Please make sure that you fill all cells of label column in the indicator sheet", sep = "")
-        result$message <- paste(result$message, "\n", result$labelInd,sep = "")
+        result$typeInd <- paste(countE,"-"," Please make sure that you fill all cells of type column in the indicator sheet", sep = "")
+        result$message <- paste(result$message, "\n", result$typeInd,sep = "")
+      }
+      
+      temp <- indicator[is.na(indicator$chapter),"chapter"]
+      if(length(temp)>0){
+        result$flag <- F
+        countE <- countE+1
+        result$chapterInd <- paste(countE,"-"," Please make sure that you fill all cells of chapter column in the indicator sheet", sep = "")
+        result$message <- paste(result$message, "\n", result$chapterInd,sep = "")
+      }
+      
+      temp <- indicator[is.na(indicator$frame),"frame"]
+      if(length(temp)>0){
+        result$flag <- F
+        countE <- countE+1
+        result$frameInd <- paste(countE,"-"," Please make sure that you fill all cells of frame column in the indicator sheet", sep = "")
+        result$message <- paste(result$message, "\n", result$frameInd,sep = "")
+      }
+      
+      temp <- indicator[is.na(indicator$calculation),"calculation"]
+      if(length(temp)>0){
+        result$flag <- F
+        countE <- countE+1
+        result$calculationInd <- paste(countE,"-"," Please make sure that you fill all cells of calculation column in the indicator sheet", sep = "")
+        result$message <- paste(result$message, "\n", result$calculationInd,sep = "")
+      }
+      
+      temp <- indicator[indicator$type=="select_one","listname"]
+      temp <- temp[is.na(temp)]
+      if(length(temp)>0){
+        result$flag <- F
+        countE <- countE+1
+        result$listnameInd <- paste(countE,"-"," Please make sure that you fill all cells of listname column where type is 'select_one' in the indicator sheet", sep = "")
+        result$message <- paste(result$message, "\n", result$listnameInd,sep = "")
       }
     }
-    temp <- indicator[is.na(indicator$type) | !indicator$type %in% c("integer","numeric","select_one"),"type"]
-    if(length(temp)>0){
-      result$flag <- F
-      countE <- countE+1
-      result$typeInd <- paste(countE,"-"," Please make sure that you fill all cells of type column in the indicator sheet", sep = "")
-      result$message <- paste(result$message, "\n", result$typeInd,sep = "")
-    }
-    
-
-    
-    temp <- indicator[is.na(indicator$chapter),"chapter"]
-    if(length(temp)>0){
-      result$flag <- F
-      countE <- countE+1
-      result$chapterInd <- paste(countE,"-"," Please make sure that you fill all cells of chapter column in the indicator sheet", sep = "")
-      result$message <- paste(result$message, "\n", result$chapterInd,sep = "")
-    }
-    
-    temp <- indicator[is.na(indicator$frame),"frame"]
-    if(length(temp)>0){
-      result$flag <- F
-      countE <- countE+1
-      result$frameInd <- paste(countE,"-"," Please make sure that you fill all cells of frame column in the indicator sheet", sep = "")
-      result$message <- paste(result$message, "\n", result$frameInd,sep = "")
-    }
-    
-    temp <- indicator[is.na(indicator$calculation),"calculation"]
-    if(length(temp)>0){
-      result$flag <- F
-      countE <- countE+1
-      result$calculationInd <- paste(countE,"-"," Please make sure that you fill all cells of calculation column in the indicator sheet", sep = "")
-      result$message <- paste(result$message, "\n", result$calculationInd,sep = "")
-    }
-    
-    temp <- indicator[indicator$type=="select_one","listname"]
-    temp <- temp[is.na(temp)]
-    if(length(temp)>0){
-      result$flag <- F
-      countE <- countE+1
-      result$listnameInd <- paste(countE,"-"," Please make sure that you fill all cells of listname column where type is 'select_one' in the indicator sheet", sep = "")
-      result$message <- paste(result$message, "\n", result$listnameInd,sep = "")
-    }
-    
     return(result)
   
   }, error = function(err) {

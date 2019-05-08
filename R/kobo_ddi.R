@@ -208,6 +208,7 @@ kobo_ddi <- function(form = "form.xls", app="console") {
     ####################### MAIN DATAFRAME #####################
     configInfo <- kobo_get_config(form)
     configInfo <- configInfo[startsWith(tolower(configInfo$name), "instanceid"),]
+    configInfo <- configInfo[!is.na(configInfo$name),]
     levelsOfDF <- kobo_get_dataframes_levels(form)
     levelsOfDF <- levelsOfDF[levelsOfDF$name!="MainDataFrame",]
     levelsOfDF[levelsOfDF$parent=="MainDataFrame","parent"] <- "household"
@@ -216,7 +217,6 @@ kobo_ddi <- function(form = "form.xls", app="console") {
     
     count<-0
     for (dbr in levelsOfDF$name) {
-      print(levelsOfDF[levelsOfDF$name==dbr, "flag"])
       if(levelsOfDF[levelsOfDF$name==dbr, "flag"]==F){
         next
       }

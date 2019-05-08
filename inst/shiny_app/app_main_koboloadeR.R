@@ -592,7 +592,7 @@ server <- shinyServer(function(input, output, session) {
   
   output$showInputOfInstanceIDBody <- renderText({
     s <- ""
-    levelsOfDF <- kobo_get_dataframes_levels("form2.xls")
+    levelsOfDF <- kobo_get_dataframes_levels()
     levelsOfDF <- levelsOfDF[levelsOfDF$name!="MainDataFrame",]
     for (i in 1:nrow(levelsOfDF)) {
       child  <- levelsOfDF[i, "name"]
@@ -673,8 +673,9 @@ server <- shinyServer(function(input, output, session) {
       updateProgress()
 
       configInfo <- kobo_get_config()
+      configInfo <- configInfo[!is.na(configInfo$name),]
       configInfo <- configInfo[!startsWith(tolower(configInfo$name), "instanceid"),]
-      levelsOfDF <- kobo_get_dataframes_levels("form2.xls")
+      levelsOfDF <- kobo_get_dataframes_levels()
       levelsOfDF <- levelsOfDF[levelsOfDF$name!="MainDataFrame",]
       for (i in 1:nrow(levelsOfDF)) {
         child  <- levelsOfDF[i, "name"]
@@ -762,8 +763,14 @@ server <- shinyServer(function(input, output, session) {
         ind <- which(tolower(survey$cluster)=="id")
         survey[ind, "cluster"] <- NA
       }
-      survey[survey$name==input$clusterIDInput, "cluster"] <- "id"
-      
+      if(length(survey[!is.na(survey$name) & survey$name=="X_index", "cluster"]) == 0){
+        survey[length(survey)+1, "type"] <- "text"
+        survey[length(survey)+1, "name"] <- "X_index"#input$clusterIDInput
+        survey[length(survey)+1, "cluster"] <- "id"
+      }else{
+        survey[!is.na(survey$name) & survey$name=="X_index", "cluster"] <- "id"
+      }
+
       updateProgress()
       kobo_edit_form(survey = survey, settings = configInfo)
       removeModal()
@@ -931,7 +938,21 @@ server <- shinyServer(function(input, output, session) {
           progress$set(value = value, detail = detail)
         }
         updateProgress()
-        kobo_prepare_form()
+        
+        result <- kobo_prepare_form()
+        
+        if(class(result) == "try-error"){
+          shinyalert("Error",
+                     result,
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          return(FALSE)
+        }
+        
         updateProgress()
         
         survey <- tryCatch({
@@ -1377,6 +1398,7 @@ server <- shinyServer(function(input, output, session) {
       }
       
       configInfo <- kobo_get_config()
+      configInfo <- configInfo[!is.na(configInfo$name),]
       configInfo <- configInfo[!configInfo$name %in% settingsDF$name, ]
       settingsDF <- rbind(settingsDF, configInfo)
       
@@ -1420,6 +1442,7 @@ server <- shinyServer(function(input, output, session) {
       )
     })
   })
+  
   showSamplingMoreParm <- function() {
     tryCatch({
       return(modalDialog(id="showSamplingMoreParmPopUp", 
@@ -1611,7 +1634,7 @@ server <- shinyServer(function(input, output, session) {
   lastMenuItem <- reactiveValues(v=NULL)
   
   output$analysisPlanConfiguration <- renderUI({
-    if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
+    if(F){#if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
       infoBox(
         width = 12,strong("Warning"),h4("You cannot proceed without completing Project Configuration section",align="center")
         ,icon = icon("exclamation-triangle"),
@@ -1775,7 +1798,22 @@ server <- shinyServer(function(input, output, session) {
         progress$set(value = value, detail = detail)
       }
       updateProgress()
-      kobo_prepare_form()
+      
+      result <- kobo_prepare_form()
+      
+      if(class(result) == "try-error"){
+        shinyalert("Error",
+                   result,
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
+      
       updateProgress()
       
       shinyalert("Done, xlsform styled using 'kobo_prepare_form' function",
@@ -5628,11 +5666,19 @@ server <- shinyServer(function(input, output, session) {
       indicator <- as.data.frame(read_excel(form_tmp, sheet = "indicator"),
                                  stringsAsFactors = FALSE)
       updateProgress()
-      survey[!is.na(survey$chapter) & survey$chapter==selChap,"chapter"] <- NA
-      indicator[!is.na(indicator$chapter) & indicator$chapter==selChap,"chapter"] <- NA
+      if(nrow(survey)>0){
+        survey[!is.na(survey$chapter) & survey$chapter==selChap,"chapter"] <- NA
+      }
+      if(nrow(indicator)>0){
+        indicator[!is.na(indicator$chapter) & indicator$chapter==selChap,"chapter"] <- NA
+      }
       updateProgress()
-      survey[!is.na(survey$name) & survey$name %in% selectedVar,"chapter"] <- input$chapterNameInput
-      indicator[!is.na(indicator$fullname) & indicator$fullname %in% selectedInd,"chapter"] <- input$chapterNameInput
+      if(nrow(survey)>0){
+        survey[!is.na(survey$name) & survey$name %in% selectedVar,"chapter"] <- input$chapterNameInput
+      }
+      if(nrow(indicator)>0){
+        indicator[!is.na(indicator$fullname) & indicator$fullname %in% selectedInd,"chapter"] <- input$chapterNameInput
+      }
       updateProgress()
       kobo_edit_form(survey = survey, indicator = indicator)
       updateProgress()
@@ -6030,7 +6076,7 @@ server <- shinyServer(function(input, output, session) {
   observe({
     tryCatch({
       
-      if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
+      if(F){#if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
         return(NULL)
       }
       relabelingSurvey <- c()

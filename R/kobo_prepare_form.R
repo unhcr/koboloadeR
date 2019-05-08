@@ -78,6 +78,9 @@ kobo_prepare_form <- function(form = "form.xls") {
     ## Rename the variable label
     names(survey)[tolower(names(survey)) == "label::english"] <- "label"
     names(survey)[tolower(names(survey)) == "hint::english"] <- "hint"
+    if(sum(namesOfSur %in% colnames(survey)) != length(namesOfSur)){
+      return(structure('Please make sure the survey sheet have the following columns "type", "name" , "label"', class = "try-error"))
+    }
     cat("Checking now for additional information within your xlsform. Note that you can insert them in the xls and re-run the function! \n \n ")
     ### add column if not present #################################################
     if ("labelReport" %in% colnames(survey)) {
@@ -328,6 +331,12 @@ kobo_prepare_form <- function(form = "form.xls") {
     
     ## Rename the variable label
     names(choices)[tolower(names(choices)) == "label::english"] <- "label"
+    
+    namesOfCho <- c("list_name", "name", "label")
+    
+    if(sum(namesOfCho %in% colnames(choices)) != length(namesOfCho)){
+      return(structure('Please make sure the choices sheet have the following columns "type", "name" , "label"', class = "try-error"))
+    }
     
     ### add column if not present #################################################
     if ("order" %in% colnames(choices)) {

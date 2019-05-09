@@ -5746,16 +5746,20 @@ server <- shinyServer(function(input, output, session) {
         return(FALSE)
       }
       if(las == "relabelingSurvey"){
-        userRelabelingSurvey <- sheets[["relabelingSurvey"]]
+        userSurvey <- sheets[["relabelingSurvey"]]
         form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
         mainSurvey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
                                     stringsAsFactors = FALSE)
         
-        if(identical(as.character(mainSurvey["labelReport"]),as.character(userRelabelingSurvey["labelReport"])) &
-           identical(as.character(mainSurvey["hintReport"]),as.character(userRelabelingSurvey["hintReport"]))
-        ){
+        origin <- mainSurvey[rownames(mainSurvey) %in% rownames(userSurvey),colnames(userSurvey)]
+        newSur <- userSurvey 
+        origin <- as.data.frame(sapply(origin,as.character),stringsAsFactors = F)
+        newSur <- as.data.frame(sapply(newSur,as.character),stringsAsFactors = F)
+        
+        if(identical(origin,newSur)){
           return(FALSE)
         }
+        
         projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- FALSE
         projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- FALSE
         progress <- shiny::Progress$new()
@@ -5770,10 +5774,25 @@ server <- shinyServer(function(input, output, session) {
         }
         updateProgress()
         
-        mainSurvey["labelReport"] = userRelabelingSurvey["labelReport"]
-        mainSurvey["hintReport"] = userRelabelingSurvey["hintReport"]
+        columnsMainNotUser <- colnames(mainSurvey)[!colnames(mainSurvey) %in% colnames(userSurvey)]
+        userSurvey[,columnsMainNotUser]<-NA
+        userSurvey<-userSurvey[colnames(mainSurvey)]
         
-        kobo_edit_form(survey = mainSurvey)
+        updateProgress()
+        
+        
+        newSurvey <- rbind(mainSurvey[!rownames(mainSurvey) %in% rownames(userSurvey),],
+                           userSurvey
+        )
+        newSurvey <- newSurvey[ order(as.numeric(row.names(newSurvey))), ]
+        updateProgress()
+        
+        for (field in columnsMainNotUser) {
+          newSurvey[,field] <- mainSurvey[,field]
+        }
+        
+        updateProgress()
+        kobo_edit_form(survey = newSurvey)
         updateProgress()
       }
       else if(las == "relabelingChoices"){
@@ -6154,6 +6173,16 @@ server <- shinyServer(function(input, output, session) {
         relabelingSurvey[,"hintReport"] <- as.character(relabelingSurvey[,"hintReport"])
         relabelingSurvey <- relabelingSurvey[reqNames]
       }
+      
+      relabelingSurvey <- relabelingSurvey[startsWith(tolower(relabelingSurvey$type), "select_one") |
+                                              startsWith(tolower(relabelingSurvey$type), "select_multiple") |
+                                               startsWith(tolower(relabelingSurvey$type), "integer") |
+                                               startsWith(tolower(relabelingSurvey$type), "decimal") |
+                                               startsWith(tolower(relabelingSurvey$type), "geopoint") |
+                                               startsWith(tolower(relabelingSurvey$type), "calculate") |
+                                               startsWith(tolower(relabelingSurvey$type), "date") 
+                                             ,]
+      
       
       relabelingSurvey <- relabelingSurvey[ order(as.numeric(row.names(relabelingSurvey))), ]
       if(nrow(relabelingSurvey)==0){

@@ -53,14 +53,20 @@ The `koboloadeR` package allows to:
 ## Prerequisite
 To be able to use koboloadeR you will need:
 
- * R: download here: https://cran.rstudio.com/). For Windows, choose "install R for the first time".
+
+ * Java JRE  (https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html): JAVA is required to manipulate excel files.
+
+ * R (https://cran.rstudio.com/). For Windows, choose "install R for the first time".
+ 
+ * **Only for windows user** RTools (https://cran.r-project.org/bin/windows/Rtools/)  - This executable is needed to install the package from github.
 
  * R Studio  (https://www.rstudio.com/products/rstudio/download/#download)
 
-
+ 
 ## Software installation  
-
+ * Install Java JRE: please make sure that JAVA_HOME is actually recorded as an [Environment Variable](https://java.com/en/download/help/path.xml). Note in some case, you may need to reboot your computer to ensure that this environement variable is properly accounted for.
  * Install R: follow instruction from the installer.
+ * Install RTools: follow instruction from the installer.
  * Install R Studio: follow instruction from the installer
  * Launch R Studio
 
@@ -68,10 +74,10 @@ To be able to use koboloadeR you will need:
 
 Note that the package is still in beta-version. We hope to have soon a release available on CRAN.
 
-* Open R studio interface and within the R console, install 'devtool' package: 
+* Open R studio interface and within the R console, install `devtools` package: 
 
 ```
-install.packages("devtools")
+devtools::install.packages("devtools")
 ```
 
 * Install koboloadeR: 

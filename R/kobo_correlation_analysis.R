@@ -29,100 +29,88 @@ kobo_correlation_analysis <- function(form = "form.xls", frame, target, app="con
       return(structure("Error: the target doesn't exist in the frame", class = "try-error"))
     }
     mainDir <- kobo_getMainDirectory()
-    form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
-    survey <- tryCatch({
-      as.data.frame(read_excel(form_tmp, sheet = "survey"),
-                    stringsAsFactors = FALSE) #read survey sheet from the form
-    }, 
-    error = function(err) {
-      data.frame( #if it doesn't exist, we need to create empty dataframe with those fields
-        type = character(),
-        name = character(),
-        label = character(),
-        labelReport = character(),
-        variable = character(),
-        disaggregation = character(),
-        chapter = character(),
-        structuralequation.risk = character(),
-        structuralequation.coping = character(),
-        structuralequation.resilience = character(),
-        anonymise = character(),
-        correlate = character(),
-        clean = character(),
-        cluster = character(),
-        predict = character(),
-        mappoint = character(),
-        mappoly = character(),
-        stringsAsFactors = FALSE
-      )
-    })
-    indicator <- tryCatch({
-      as.data.frame(read_excel(form_tmp, sheet = "indicator"),stringsAsFactors = FALSE)
-    },
-    error = function(err) {
-      data.frame(
-        type = character(),
-        fullname = character(),
-        label = character(),
-        chapter = character(),
-        disaggregation = character(),
-        correlate = character(),
-        sensitive = character(),
-        anonymise = character(),
-        cluster = character(),
-        predict = character(),
-        variable = character(),
-        mappoint = character(),
-        mappoly = character(),
-        structuralequation = character(),
-        frame = character(),
-        listname = character(),
-        calculation = character(),
-        stringsAsFactors = FALSE
-      )
-    })
     
-    survey <- survey[c("type","name","variable")]
-    indicator <- indicator[c("type","fullname","variable")]
-    names(indicator) <- c("type","name","variable")
-    var_ind <- rbind(survey, indicator)
+    dico <- read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "", stringsAsFactors = F)
+    
+    dico <- dico[c("type","fullname","variable","listname","labelchoice","order")]
+    names(dico) <- c("type","name","variable","listname","labelchoice","order")
+    
+    
+    dico <- dico[tolower(dico$type)=="select_one" |
+                         tolower(dico$type)=="select_multiple" |
+                         tolower(dico$type)=="integer" |
+                         tolower(dico$type) == "decimal" |
+                         tolower(dico$type) == "numeric" |
+                         tolower(dico$type) == "date"
+                       ,]
     
     result <- list()
     
-    targetVar <- frame[,target]
-    var_ind <- var_ind[!is.na(var_ind$name),]
-    targetType <- var_ind[var_ind$name == "calcu_USD_Housing", "variable"]
-    targetType <- ifelse(targetType=="integer","numeric", ifelse(targetType=="ordinal","factor",targetType))
+    dico <- dico[!is.na(dico$name),]
+    targetType <- dico[dico$name == target, "variable"]
+    if(is.null(targetType) | length(targetType)==0 | is.na(targetType)){
+      return(structure(paste(target,", does not exist in the survey or indicator sheet!!"), class = "try-error"))
+    }
+
+    
+    if(targetType == "factor"){
+      frame[, target] <- factor(frame[, target])
+    }else if(targetType == "ordinal"){
+      ln <- dico[dico$name == target, "listname"]
+      ordersNames <- dico[dico$listname==ln, c("labelchoice","order")]
+      ordersNames <- ordersNames[complete.cases(ordersNames),]
+      ordersNames <- ordersNames[order(ordersNames$order),]
+      frame[, target] <- factor(frame[, target], order = TRUE, levels = ordersNames$labelchoice)
+    }else if(targetType == "numeric"){
+      frame[, target] <- as.numeric(frame[, target])
+    }else if(targetType == "integer"){
+      frame[, target] <- as.integer(frame[, target])
+    }
+    
     
     for (ind in colnames(frame)) {
       if(ind == target){
         next
       }
-      if(sum(var_ind$name == ind)){
+      if(sum(dico$name == ind) == 0){
+        cat(paste(ind,", does not exist!"))
         next
       }
       independent <- frame[,ind]
-      independentType <- var_ind[var_ind$name == ind, "variable"]
-      independentType <- ifelse(independentType=="integer","numeric", ifelse(independentType=="ordinal","factor",independentType))
-      if(targetType == 'numeric'){
-        if(independentType == 'numeric'){
-          correlation <- cor(targetVar, independent)
-          if(correlation > 0.29 | correlation < -0.29){
-            print(paste(targetVar, "<-------->" ,independent))
-          }
-        }else{
-          test  <- aov(targetVar~independent)
-          p_value <- summary(test)[[1]][["Pr(>F)"]][1]
-          if(p_value <= 0.01 ){
-            print(paste(targetVar, "<-------->" ,independent))
-          }
-        }
+      df <- frame[c(target, ind)]
+      countBefore <- nrow(df)
+      df <- df[complete.cases(df),]
+      countAfter <- nrow(df)
+      names(df) <- c("target", "independent")
+      
+      # percCount <- countAfter / countBefore
+      # 
+      # if(percCount < 0.5){
+      #   print(paste(ind,", perc less than 0.5"))
+      #   next
+      # }
+      independentType <- dico[dico$name == ind, "variable"]
+      if(is.null(independentType) | length(independentType)==0 | is.na(independentType)){
+        cat(paste(ind,", does not exist in the survey or indicator sheet!!"))
+        next
+        #return(structure(paste(ind,", does not exist in the survey or indicator sheet!!"), class = "try-error"))
       }
-      
-      
+      if(independentType == "factor"){
+        frame[, ind] <- factor(frame[, ind])
+      }else if(independentType == "ordinal"){
+        ln <- dico[dico$name == ind, "listname"]
+        ordersNames <- dico[dico$listname==ln, c("labelchoice","order")]
+        ordersNames <- ordersNames[complete.cases(ordersNames),]
+        ordersNames <- ordersNames[order(ordersNames$order),]
+        frame[, ind] <- factor(frame[, ind], order = TRUE, levels = ordersNames$labelchoice)
+      }else if(independentType == "numeric"){
+        frame[, ind] <- as.numeric(frame[, ind])
+      }else if(independentType == "integer"){
+        frame[, ind] <- as.integer(frame[, ind])
+      }
     }
     
-    return(result())
+    return(result)
   }, error = function(err) {
     print("kobo_correlation_analysis_ERROR")
     return(structure(err, class = "try-error"))

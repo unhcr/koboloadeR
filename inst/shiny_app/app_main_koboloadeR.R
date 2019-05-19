@@ -6,11 +6,6 @@ D#
 #
 #    http://shiny.rstudio.com/
 #
-
-
-kobo_projectinit()
-
-
 header <- dashboardHeader(title = NULL, disable = TRUE,
                           titleWidth = 0
 )
@@ -552,6 +547,7 @@ server <- shinyServer(function(input, output, session) {
       progress$close()
       
       showModal(showInputOfInstanceID())
+
       
     }, error = function(err) {
       print("903gjrvgof")
@@ -594,39 +590,42 @@ server <- shinyServer(function(input, output, session) {
     s <- ""
     levelsOfDF <- kobo_get_dataframes_levels()
     levelsOfDF <- levelsOfDF[levelsOfDF$name!="MainDataFrame",]
-    for (i in 1:nrow(levelsOfDF)) {
-      child  <- levelsOfDF[i, "name"]
-      parent <- levelsOfDF[i, "parent"]
-      colnamesOfChild <-  colnames(read.csv(paste0(mainDir(), "/data/", child, ".csv"), stringsAsFactors = FALSE))
-      colnamesOfParent <- colnames(read.csv(paste0(mainDir(), "/data/", parent, ".csv"), stringsAsFactors = FALSE))
-      style <- ""
-      if( as.integer(i/2) == i/2 ){
-        style <- "border-bottom: 1px solid lightgray;padding: 20px 0px;"
-      }else{
-        style <- "border-bottom: 1px solid lightgray; background-color: #f8f8ff; padding: 20px 0px;"
-      }
-      s <- paste(s,
-                 column(width = 12, style = style,
-                        column(width = 3,
-                               h4(paste("The instanceID between the child (",child,")",sep = ""))
-                               ),
-                        column(width = 3, offset = 0,
-                               selectInput(paste("instanceIDInput", child, "child", parent, "parent", sep = ""), label = NULL,choices = c("-- select --",colnamesOfChild))
-                               ),
-                        
-                        column(width = 3,
-                                 h4(paste("and the parent (",parent,")",sep = ""))
-                        ),
-                        column(width = 3, offset = 0,
-                               selectInput(paste("instanceIDInput", parent, "parent", child, "child", sep = ""), label = NULL,choices = c("-- select --",colnamesOfParent))
-                               )
-                   )
-                 ,sep = "")
-    }
-    s <- box(width = 12, title = "Instance ID", status = "primary", solidHeader = T, collapsible = T, 
-                       HTML(s)
-             )
     
+    if(nrow(levelsOfDF)!=0){
+      for (i in 1:nrow(levelsOfDF)) {
+        child  <- levelsOfDF[i, "name"]
+        parent <- levelsOfDF[i, "parent"]
+        colnamesOfChild <-  colnames(read.csv(paste0(mainDir(), "/data/", child, ".csv"), stringsAsFactors = FALSE))
+        colnamesOfParent <- colnames(read.csv(paste0(mainDir(), "/data/", parent, ".csv"), stringsAsFactors = FALSE))
+        style <- ""
+        if( as.integer(i/2) == i/2 ){
+          style <- "border-bottom: 1px solid lightgray;padding: 20px 0px;"
+        }else{
+          style <- "border-bottom: 1px solid lightgray; background-color: #f8f8ff; padding: 20px 0px;"
+        }
+        s <- paste(s,
+                   column(width = 12, style = style,
+                          column(width = 3,
+                                 h4(paste("The instanceID between the child (",child,")",sep = ""))
+                                 ),
+                          column(width = 3, offset = 0,
+                                 selectInput(paste("instanceIDInput", child, "child", parent, "parent", sep = ""), label = NULL,choices = c("-- select --",colnamesOfChild))
+                                 ),
+                          
+                          column(width = 3,
+                                   h4(paste("and the parent (",parent,")",sep = ""))
+                          ),
+                          column(width = 3, offset = 0,
+                                 selectInput(paste("instanceIDInput", parent, "parent", child, "child", sep = ""), label = NULL,choices = c("-- select --",colnamesOfParent))
+                                 )
+                     )
+                   ,sep = "")
+      }
+      
+      s <- box(width = 12, title = "Instance ID", status = "primary", solidHeader = T, collapsible = T, 
+                         HTML(s)
+               )
+    }
     s <- paste(s,
           box(width = 12, title = "Cluster ID", status = "primary", solidHeader = T, collapsible = T, 
                 column(width = 8, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
@@ -677,56 +676,58 @@ server <- shinyServer(function(input, output, session) {
       configInfo <- configInfo[!startsWith(tolower(configInfo$name), "instanceid"),]
       levelsOfDF <- kobo_get_dataframes_levels()
       levelsOfDF <- levelsOfDF[levelsOfDF$name!="MainDataFrame",]
-      for (i in 1:nrow(levelsOfDF)) {
-        child  <- levelsOfDF[i, "name"]
-        parent <- levelsOfDF[i, "parent"]
-        
-        if(sum(input[[paste("instanceIDInput", child, "child", parent, "parent", sep = "")]] == "-- select --")){
-          print("gfdhfgfdfhjhjd")
-          shinyalert("Instance ID is required",
-                     "You can't save the settings without selecting one of the variables",
-                     type = "error",
-                     closeOnClickOutside = FALSE,
-                     confirmButtonCol = "#ff4d4d",
-                     animation = FALSE,
-                     showConfirmButton = TRUE
-          )
-          return(FALSE)
-        }
-        
-        if(sum(input[[paste("instanceIDInput", parent, "parent", child, "child", sep = "")]] == "-- select --")){
-          print("fgdjhgjkmhlkjl")
-          shinyalert("Instance ID is required",
-                     "You can't save the settings without selecting one of the variables",
-                     type = "error",
-                     closeOnClickOutside = FALSE,
-                     confirmButtonCol = "#ff4d4d",
-                     animation = FALSE,
-                     showConfirmButton = TRUE
-          )
-          return(FALSE)
-        }
-
-        configInfo <- rbind(configInfo,
-                            c(
-                              paste0("instanceID_", child, "_", parent),
-                              paste0("The instanceID between the child (",child,")", " and the parent (",parent,")"),
-                              input[[paste("instanceIDInput", child, "child", parent, "parent", sep = "")]],
-                              path = ""
-                            )
-                            )
-        
-        configInfo <- rbind(configInfo,
-                            c(
-                              paste0("instanceID_", parent, "_", child),
-                              paste0("The instanceID between the parent (",parent,")", " and the child (",child,")"),
-                              input[[paste("instanceIDInput", parent, "parent", child, "child", sep = "")]],
-                              path = ""
-                            )
-                            
-        )
-      }
       
+      if(nrow(levelsOfDF)!=0){
+        for (i in 1:nrow(levelsOfDF)) {
+          child  <- levelsOfDF[i, "name"]
+          parent <- levelsOfDF[i, "parent"]
+          
+          if(sum(input[[paste("instanceIDInput", child, "child", parent, "parent", sep = "")]] == "-- select --")){
+            print("gfdhfgfdfhjhjd")
+            shinyalert("Instance ID is required",
+                       "You can't save the settings without selecting one of the variables",
+                       type = "error",
+                       closeOnClickOutside = FALSE,
+                       confirmButtonCol = "#ff4d4d",
+                       animation = FALSE,
+                       showConfirmButton = TRUE
+            )
+            return(FALSE)
+          }
+          
+          if(sum(input[[paste("instanceIDInput", parent, "parent", child, "child", sep = "")]] == "-- select --")){
+            print("fgdjhgjkmhlkjl")
+            shinyalert("Instance ID is required",
+                       "You can't save the settings without selecting one of the variables",
+                       type = "error",
+                       closeOnClickOutside = FALSE,
+                       confirmButtonCol = "#ff4d4d",
+                       animation = FALSE,
+                       showConfirmButton = TRUE
+            )
+            return(FALSE)
+          }
+  
+          configInfo <- rbind(configInfo,
+                              c(
+                                paste0("instanceID_", child, "_", parent),
+                                paste0("The instanceID between the child (",child,")", " and the parent (",parent,")"),
+                                input[[paste("instanceIDInput", child, "child", parent, "parent", sep = "")]],
+                                path = ""
+                              )
+                              )
+          
+          configInfo <- rbind(configInfo,
+                              c(
+                                paste0("instanceID_", parent, "_", child),
+                                paste0("The instanceID between the parent (",parent,")", " and the child (",child,")"),
+                                input[[paste("instanceIDInput", parent, "parent", child, "child", sep = "")]],
+                                path = ""
+                              )
+                              
+          )
+        }
+      }
       updateProgress()
       mainDir <- kobo_getMainDirectory()
       form_tmp <- paste(mainDir, "data", "form.xls", sep = "/", collapse = "/")
@@ -765,7 +766,7 @@ server <- shinyServer(function(input, output, session) {
       }
       if(length(survey[!is.na(survey$name) & survey$name=="X_index", "cluster"]) == 0){
         survey[length(survey)+1, "type"] <- "text"
-        survey[length(survey)+1, "name"] <- "X_index"#input$clusterIDInput
+        survey[length(survey)+1, "name"] <- input$clusterIDInput
         survey[length(survey)+1, "cluster"] <- "id"
       }else{
         survey[!is.na(survey$name) & survey$name=="X_index", "cluster"] <- "id"
@@ -1634,7 +1635,7 @@ server <- shinyServer(function(input, output, session) {
   lastMenuItem <- reactiveValues(v=NULL)
   
   output$analysisPlanConfiguration <- renderUI({
-    if(F){#if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
+    if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
       infoBox(
         width = 12,strong("Warning"),h4("You cannot proceed without completing Project Configuration section",align="center")
         ,icon = icon("exclamation-triangle"),
@@ -6094,8 +6095,10 @@ server <- shinyServer(function(input, output, session) {
   
   observe({
     tryCatch({
-      
-      if(F){#if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
+      if(is.null(projectConfigurationInfo$log[["isRecordSettingsCompleted"]])){
+        return(NULL)
+      }
+      if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
         return(NULL)
       }
       relabelingSurvey <- c()

@@ -27,5 +27,5 @@ kobo_crunching_report("myform.xls")
 
 }
 \author{
-Maher Daoud
+Edouard Legoupil, Maher Daoud
 }

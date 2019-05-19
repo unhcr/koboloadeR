@@ -86,18 +86,18 @@ kobo_projectinit <- function() {
       } else {path_correct <- as.character(path[2,1])}
     }
     
-    subsubDir <- "script"
-    if (file.exists(paste(mainDir, subDir,"/",subsubDir,"/", sep = "/", collapse = "/"))) {
-      cat("script exists in subDir and is a directory.\n")
-    } else if (file.exists(paste(mainDir, subDir, subsubDir, sep = "/", collapse = "/"))) {
-      cat("script directory exists in your project directory.\n")
-      # you will probably want to handle this separately
-    } else {
-      cat("script directory does not exist in your project directory - creating now!\n ")
-      dir.create(file.path(mainDir, subDir,subsubDir))
-    }
+    # subsubDir <- "script"
+    # if (file.exists(paste(mainDir, subDir,"/",subsubDir,"/", sep = "/", collapse = "/"))) {
+    #   cat("script exists in subDir and is a directory.\n")
+    # } else if (file.exists(paste(mainDir, subDir, subsubDir, sep = "/", collapse = "/"))) {
+    #   cat("script directory exists in your project directory.\n")
+    #   # you will probably want to handle this separately
+    # } else {
+    #   cat("script directory does not exist in your project directory - creating now!\n ")
+    #   dir.create(file.path(mainDir, subDir,subsubDir))
+    # }
     
-    destfile = paste0(mainDir,"/code/script/run-analysis.R")
+    destfile = paste0(mainDir,"/code/run-analysis.R")
     if (!file.exists(destfile)) {
       file.copy(paste(path_correct,"/koboloadeR/script/run-analysis.R",sep = ""), destfile)
     }else{

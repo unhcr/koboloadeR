@@ -6,7 +6,7 @@
 #' 
 #' @return No return
 #'
-#' @author Maher Daoud
+#' @author Edouard Legoupil, Maher Daoud
 #'
 #' @examples
 #' kobo_load_packages()

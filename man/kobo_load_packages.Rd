@@ -18,5 +18,5 @@ kobo_load_packages()
 
 }
 \author{
-Maher Daoud
+Edouard Legoupil, Maher Daoud
 }

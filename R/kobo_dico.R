@@ -343,7 +343,7 @@ kobo_dico <- function(form="form.xls") {
   }
 
   ## a few colummns to adjust to match questions & choices
-  survey$labelchoice <- survey$label
+  survey$labelchoice <- survey$labelReport #survey$label
   survey$order <- ""
   survey$weight <- ""
   survey$score <- ""
@@ -400,8 +400,8 @@ kobo_dico <- function(form="form.xls") {
   {cat("13 -  No column `score` in your `choices` worksheet. Creating a dummy one for the moment...\n");
     choices$score <- ""}
 
-  choices <- choices[,c("listname",  "name",  "label", "order", "weight","score","recategorise")]
-  names(choices)[names(choices) == "label"] <- "labelchoice"
+  choices <- choices[,c("listname",  "name",  "labelReport", "order", "weight","score","recategorise")]
+  names(choices)[names(choices) == "labelReport"] <- "labelchoice"
   #rm(choices)
   choices <- join(x = choices, y = survey, by = "listname", type = "left")
 

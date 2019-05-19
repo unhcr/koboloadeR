@@ -9,7 +9,7 @@
 #'
 #' @return No return, All results will be saved on RMD files and Word files
 #'
-#' @author Maher Daoud
+#' @author Edouard Legoupil, Maher Daoud
 #'
 #' @examples
 #' kobo_crunching_report()

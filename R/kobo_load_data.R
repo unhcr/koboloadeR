@@ -11,7 +11,7 @@
 #'
 #' @return No return, all results will be saved inside new CSV files
 #'
-#' @author Maher Daoud
+#' @author Edouard Legoupil, Maher Daoud
 #'
 #' @examples
 #' kobo_load_data()
@@ -110,86 +110,102 @@ kobo_load_data <- function(form = "form.xls", app="console") {
     configInfo <- configInfo[startsWith(tolower(configInfo$name), "instanceid"),]
     levelsOfDF <- kobo_get_dataframes_levels(form)
     levelsOfDF <- levelsOfDF[levelsOfDF$name!="MainDataFrame",]
-    levelsOfDF[levelsOfDF$parent=="MainDataFrame","parent"] <- "household"
-    
+    if(nrow(levelsOfDF)!=0){
+      levelsOfDF[levelsOfDF$parent=="MainDataFrame","parent"] <- "household"
+    }
     #ataBeginRepeat <- kobo_get_begin_repeat("form2.xls")
     #dataBeginRepeat <- dataBeginRepeat$names
     
-    for (dbr in levelsOfDF$name) {
-      cat("\n\nload all required data files..\n")
-      if(app=="shiny"){
-        progress$set(message = paste("loading",dbr,"file in progress..."))
-        updateProgress()
-      }
-      dataFrame <- read.csv(paste(mainDir,"/data/",dbr,".csv",sep = ""),stringsAsFactors = F) 
-      if(app=="shiny"){
-        progress$set(message = paste("Splitting",dbr,"file in progress..."))
-        updateProgress()
-      }
-      dataFrame <- kobo_split_multiple(dataFrame, dico)
-      if(app=="shiny"){
-        progress$set(message = paste("Cleaning",dbr,"file in progress..."))
-        updateProgress()
-      }
-      dataFrame <- kobo_clean(dataFrame, dico)
-      if(app=="shiny"){
-        progress$set(message = paste("Labeling",dbr,"file in progress..."))
-        updateProgress()
-      }
-      dataFrame <- kobo_label(dataFrame, dico)
-      
-      write.csv(dataFrame,paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""), row.names = FALSE, na = "")
-      cat("\n\nload",dbr,"and create all needed files for it..\n")
-      
-    }
+    if(nrow(levelsOfDF)!=0){
     
-    for (dbr in levelsOfDF$name) {
-      if(app=="shiny"){
-        progress$set(message = paste("loading",dbr,"file in progress..."))
-        updateProgress()
-      }
-      dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""),stringsAsFactors = F) 
-      child <- levelsOfDF[levelsOfDF$name==dbr, "name"]
-      parent <- levelsOfDF[levelsOfDF$name==dbr, "parent"]
-      while (T) {
-        instanceIDChild  <- configInfo[tolower(configInfo$name)==tolower(paste0("instanceid_",child,"_",ifelse(parent=="household","MainDataFrame",parent))), "value"]
-        instanceIDParent <- configInfo[tolower(configInfo$name)==tolower(paste0("instanceid_",ifelse(parent=="household","MainDataFrame",parent),"_",child)), "value"]
-        if(parent=="household"){
-          parentDf <- read.csv(paste(mainDir,"/data/",parent,".csv",sep = ""),stringsAsFactors = F)
-        }else{
-          parentDf <- read.csv(paste(mainDir,"/data/",parent,"-edited.csv",sep = ""),stringsAsFactors = F)
+      for (dbr in levelsOfDF$name) {
+        cat("\n\nload all required data files..\n")
+        if(app=="shiny"){
+          progress$set(message = paste("loading",dbr,"file in progress..."))
+          updateProgress()
         }
-        unColChild <- dataFrame[,instanceIDChild]
-        dataFrame <- dataFrame[,colnames(dataFrame)!=instanceIDChild]
-        unCN <- colnames(dataFrame)[!colnames(dataFrame) %in% colnames(parentDf)]
-        unCN <- c(instanceIDChild, unCN, "jointemp")
-        dataFrame[instanceIDChild] <- unColChild
-        dataFrame["jointemp"] <- unColChild
-        parentDf["jointemp"] <- parentDf[,instanceIDParent]
-        
-        dataFrame <- dataFrame[ unCN ]
-        
-        dataFrame <- left_join(dataFrame, parentDf, by="jointemp")
-        dataFrame["jointemp"] <- NULL
-        
-        if(parent=="household"){
-          break
-        }else{
-          child <- levelsOfDF[levelsOfDF$name==parent, "name"]
-          parent <- levelsOfDF[levelsOfDF$name==parent, "parent"]
+        dataFrame <- read.csv(paste(mainDir,"/data/",dbr,".csv",sep = ""),stringsAsFactors = F) 
+        if(app=="shiny"){
+          progress$set(message = paste("Splitting",dbr,"file in progress..."))
+          updateProgress()
         }
+        dataFrame <- kobo_split_multiple(dataFrame, dico)
+        if(app=="shiny"){
+          progress$set(message = paste("Cleaning",dbr,"file in progress..."))
+          updateProgress()
+        }
+        dataFrame <- kobo_clean(dataFrame, dico)
+        if(app=="shiny"){
+          progress$set(message = paste("Labeling",dbr,"file in progress..."))
+          updateProgress()
+        }
+        dataFrame <- kobo_label(dataFrame, dico)
+        
+        write.csv(dataFrame,paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""), row.names = FALSE, na = "")
+        cat("\n\nload",dbr,"and create all needed files for it..\n")
+        
       }
-      
-      write.csv(dataFrame,paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""), row.names = FALSE, na = "")
-    }
+      for (dbr in levelsOfDF$name) {
+        if(app=="shiny"){
+          progress$set(message = paste("loading",dbr,"file in progress..."))
+          updateProgress()
+        }
+        dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""),stringsAsFactors = F) 
+        child <- levelsOfDF[levelsOfDF$name==dbr, "name"]
+        parent <- levelsOfDF[levelsOfDF$name==dbr, "parent"]
+        while (T) {
+          instanceIDChild  <- configInfo[tolower(configInfo$name)==tolower(paste0("instanceid_",child,"_",ifelse(parent=="household","MainDataFrame",parent))), "value"]
+          instanceIDParent <- configInfo[tolower(configInfo$name)==tolower(paste0("instanceid_",ifelse(parent=="household","MainDataFrame",parent),"_",child)), "value"]
+          if(parent=="household"){
+            parentDf <- read.csv(paste(mainDir,"/data/",parent,".csv",sep = ""),stringsAsFactors = F)
+          }else{
+            parentDf <- read.csv(paste(mainDir,"/data/",parent,"-edited.csv",sep = ""),stringsAsFactors = F)
+          }
+          unColChild <- dataFrame[,instanceIDChild]
+          dataFrame <- dataFrame[,colnames(dataFrame)!=instanceIDChild]
+          unCN <- colnames(dataFrame)[!colnames(dataFrame) %in% colnames(parentDf)]
+          
+          if(instanceIDChild != instanceIDParent){
+            unCN <- c(instanceIDChild, unCN, "jointemp")
+            dataFrame[instanceIDChild] <- unColChild
+            dataFrame["jointemp"] <- unColChild
+          }else{
+            unCN <- c(unCN, "jointemp")
+            dataFrame["jointemp"] <- unColChild
+          }
+          
+          parentDf["jointemp"] <- parentDf[,instanceIDParent]
+          
+          dataFrame <- dataFrame[ unCN ]
+          
+          dataFrame <- left_join(dataFrame, parentDf, by="jointemp")
+          dataFrame["jointemp"] <- NULL
+          
+          if(parent=="household"){
+            break
+          }else{
+            child <- levelsOfDF[levelsOfDF$name==parent, "name"]
+            parent <- levelsOfDF[levelsOfDF$name==parent, "parent"]
+          }
+        }
+        
+        write.csv(dataFrame,paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""), row.names = FALSE, na = "")
+      }
     
+    }
     ## Compute indicators if defined ##################################################
     cat("\n\nCompute indicators if defined..\n")
     if(app=="shiny"){
       progress$set(message = "Computing indicators (if defined) in progress...")
       updateProgress()
     }
-    kobo_create_indicators(form)
+
+    result <-  kobo_create_indicators(form)
+    if(class(result) == "try-error"){
+      return(structure(result, class = "try-error"))
+    }
+    
+    
     
     dico <- read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
     household <- read.csv(paste(mainDir,"/data/household.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")

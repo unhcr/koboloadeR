@@ -58,6 +58,15 @@ kobo_get_dataframes_levels <- function(form="form.xls") {
     survey <- survey[!is.na(survey$type),]
     survey <- survey[survey$type=="begin repeat" | survey$type=="end repeat", ]
     
+    if(nrow(survey)==0){
+      return(data.frame(
+        name = "MainDataFrame",
+        level = 1,
+        parent = "root"
+        ,stringsAsFactors = F
+      ))
+    }
+    
     result <- data.frame(
       name = "MainDataFrame",
       level = 1,

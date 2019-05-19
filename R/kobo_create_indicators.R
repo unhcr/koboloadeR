@@ -10,7 +10,7 @@
 #'
 #' @return No return, all results will be saved inside new CSV files
 #'
-#' @author Maher Daoud
+#' @author Edouard Legoupil, Maher Daoud
 #'
 #' @examples
 #' kobo_create_indicators()

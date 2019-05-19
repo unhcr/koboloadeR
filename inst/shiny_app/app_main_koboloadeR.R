@@ -6,11 +6,6 @@ D#
 #
 #    http://shiny.rstudio.com/
 #
-
-
-kobo_projectinit()
-
-
 header <- dashboardHeader(title = NULL, disable = TRUE,
                           titleWidth = 0
 )
@@ -552,6 +547,7 @@ server <- shinyServer(function(input, output, session) {
       progress$close()
       
       showModal(showInputOfInstanceID())
+
       
     }, error = function(err) {
       print("903gjrvgof")
@@ -592,41 +588,44 @@ server <- shinyServer(function(input, output, session) {
   
   output$showInputOfInstanceIDBody <- renderText({
     s <- ""
-    levelsOfDF <- kobo_get_dataframes_levels("form2.xls")
+    levelsOfDF <- kobo_get_dataframes_levels()
     levelsOfDF <- levelsOfDF[levelsOfDF$name!="MainDataFrame",]
-    for (i in 1:nrow(levelsOfDF)) {
-      child  <- levelsOfDF[i, "name"]
-      parent <- levelsOfDF[i, "parent"]
-      colnamesOfChild <-  colnames(read.csv(paste0(mainDir(), "/data/", child, ".csv"), stringsAsFactors = FALSE))
-      colnamesOfParent <- colnames(read.csv(paste0(mainDir(), "/data/", parent, ".csv"), stringsAsFactors = FALSE))
-      style <- ""
-      if( as.integer(i/2) == i/2 ){
-        style <- "border-bottom: 1px solid lightgray;padding: 20px 0px;"
-      }else{
-        style <- "border-bottom: 1px solid lightgray; background-color: #f8f8ff; padding: 20px 0px;"
-      }
-      s <- paste(s,
-                 column(width = 12, style = style,
-                        column(width = 3,
-                               h4(paste("The instanceID between the child (",child,")",sep = ""))
-                               ),
-                        column(width = 3, offset = 0,
-                               selectInput(paste("instanceIDInput", child, "child", parent, "parent", sep = ""), label = NULL,choices = c("-- select --",colnamesOfChild))
-                               ),
-                        
-                        column(width = 3,
-                                 h4(paste("and the parent (",parent,")",sep = ""))
-                        ),
-                        column(width = 3, offset = 0,
-                               selectInput(paste("instanceIDInput", parent, "parent", child, "child", sep = ""), label = NULL,choices = c("-- select --",colnamesOfParent))
-                               )
-                   )
-                 ,sep = "")
-    }
-    s <- box(width = 12, title = "Instance ID", status = "primary", solidHeader = T, collapsible = T, 
-                       HTML(s)
-             )
     
+    if(nrow(levelsOfDF)!=0){
+      for (i in 1:nrow(levelsOfDF)) {
+        child  <- levelsOfDF[i, "name"]
+        parent <- levelsOfDF[i, "parent"]
+        colnamesOfChild <-  colnames(read.csv(paste0(mainDir(), "/data/", child, ".csv"), stringsAsFactors = FALSE))
+        colnamesOfParent <- colnames(read.csv(paste0(mainDir(), "/data/", parent, ".csv"), stringsAsFactors = FALSE))
+        style <- ""
+        if( as.integer(i/2) == i/2 ){
+          style <- "border-bottom: 1px solid lightgray;padding: 20px 0px;"
+        }else{
+          style <- "border-bottom: 1px solid lightgray; background-color: #f8f8ff; padding: 20px 0px;"
+        }
+        s <- paste(s,
+                   column(width = 12, style = style,
+                          column(width = 3,
+                                 h4(paste("The instanceID between the child (",child,")",sep = ""))
+                                 ),
+                          column(width = 3, offset = 0,
+                                 selectInput(paste("instanceIDInput", child, "child", parent, "parent", sep = ""), label = NULL,choices = c("-- select --",colnamesOfChild))
+                                 ),
+                          
+                          column(width = 3,
+                                   h4(paste("and the parent (",parent,")",sep = ""))
+                          ),
+                          column(width = 3, offset = 0,
+                                 selectInput(paste("instanceIDInput", parent, "parent", child, "child", sep = ""), label = NULL,choices = c("-- select --",colnamesOfParent))
+                                 )
+                     )
+                   ,sep = "")
+      }
+      
+      s <- box(width = 12, title = "Instance ID", status = "primary", solidHeader = T, collapsible = T, 
+                         HTML(s)
+               )
+    }
     s <- paste(s,
           box(width = 12, title = "Cluster ID", status = "primary", solidHeader = T, collapsible = T, 
                 column(width = 8, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
@@ -673,59 +672,62 @@ server <- shinyServer(function(input, output, session) {
       updateProgress()
 
       configInfo <- kobo_get_config()
+      configInfo <- configInfo[!is.na(configInfo$name),]
       configInfo <- configInfo[!startsWith(tolower(configInfo$name), "instanceid"),]
-      levelsOfDF <- kobo_get_dataframes_levels("form2.xls")
+      levelsOfDF <- kobo_get_dataframes_levels()
       levelsOfDF <- levelsOfDF[levelsOfDF$name!="MainDataFrame",]
-      for (i in 1:nrow(levelsOfDF)) {
-        child  <- levelsOfDF[i, "name"]
-        parent <- levelsOfDF[i, "parent"]
-        
-        if(sum(input[[paste("instanceIDInput", child, "child", parent, "parent", sep = "")]] == "-- select --")){
-          print("gfdhfgfdfhjhjd")
-          shinyalert("Instance ID is required",
-                     "You can't save the settings without selecting one of the variables",
-                     type = "error",
-                     closeOnClickOutside = FALSE,
-                     confirmButtonCol = "#ff4d4d",
-                     animation = FALSE,
-                     showConfirmButton = TRUE
-          )
-          return(FALSE)
-        }
-        
-        if(sum(input[[paste("instanceIDInput", parent, "parent", child, "child", sep = "")]] == "-- select --")){
-          print("fgdjhgjkmhlkjl")
-          shinyalert("Instance ID is required",
-                     "You can't save the settings without selecting one of the variables",
-                     type = "error",
-                     closeOnClickOutside = FALSE,
-                     confirmButtonCol = "#ff4d4d",
-                     animation = FALSE,
-                     showConfirmButton = TRUE
-          )
-          return(FALSE)
-        }
-
-        configInfo <- rbind(configInfo,
-                            c(
-                              paste0("instanceID_", child, "_", parent),
-                              paste0("The instanceID between the child (",child,")", " and the parent (",parent,")"),
-                              input[[paste("instanceIDInput", child, "child", parent, "parent", sep = "")]],
-                              path = ""
-                            )
-                            )
-        
-        configInfo <- rbind(configInfo,
-                            c(
-                              paste0("instanceID_", parent, "_", child),
-                              paste0("The instanceID between the parent (",parent,")", " and the child (",child,")"),
-                              input[[paste("instanceIDInput", parent, "parent", child, "child", sep = "")]],
-                              path = ""
-                            )
-                            
-        )
-      }
       
+      if(nrow(levelsOfDF)!=0){
+        for (i in 1:nrow(levelsOfDF)) {
+          child  <- levelsOfDF[i, "name"]
+          parent <- levelsOfDF[i, "parent"]
+          
+          if(sum(input[[paste("instanceIDInput", child, "child", parent, "parent", sep = "")]] == "-- select --")){
+            print("gfdhfgfdfhjhjd")
+            shinyalert("Instance ID is required",
+                       "You can't save the settings without selecting one of the variables",
+                       type = "error",
+                       closeOnClickOutside = FALSE,
+                       confirmButtonCol = "#ff4d4d",
+                       animation = FALSE,
+                       showConfirmButton = TRUE
+            )
+            return(FALSE)
+          }
+          
+          if(sum(input[[paste("instanceIDInput", parent, "parent", child, "child", sep = "")]] == "-- select --")){
+            print("fgdjhgjkmhlkjl")
+            shinyalert("Instance ID is required",
+                       "You can't save the settings without selecting one of the variables",
+                       type = "error",
+                       closeOnClickOutside = FALSE,
+                       confirmButtonCol = "#ff4d4d",
+                       animation = FALSE,
+                       showConfirmButton = TRUE
+            )
+            return(FALSE)
+          }
+  
+          configInfo <- rbind(configInfo,
+                              c(
+                                paste0("instanceID_", child, "_", parent),
+                                paste0("The instanceID between the child (",child,")", " and the parent (",parent,")"),
+                                input[[paste("instanceIDInput", child, "child", parent, "parent", sep = "")]],
+                                path = ""
+                              )
+                              )
+          
+          configInfo <- rbind(configInfo,
+                              c(
+                                paste0("instanceID_", parent, "_", child),
+                                paste0("The instanceID between the parent (",parent,")", " and the child (",child,")"),
+                                input[[paste("instanceIDInput", parent, "parent", child, "child", sep = "")]],
+                                path = ""
+                              )
+                              
+          )
+        }
+      }
       updateProgress()
       mainDir <- kobo_getMainDirectory()
       form_tmp <- paste(mainDir, "data", "form.xls", sep = "/", collapse = "/")
@@ -762,8 +764,14 @@ server <- shinyServer(function(input, output, session) {
         ind <- which(tolower(survey$cluster)=="id")
         survey[ind, "cluster"] <- NA
       }
-      survey[survey$name==input$clusterIDInput, "cluster"] <- "id"
-      
+      if(length(survey[!is.na(survey$name) & survey$name=="X_index", "cluster"]) == 0){
+        survey[length(survey)+1, "type"] <- "text"
+        survey[length(survey)+1, "name"] <- input$clusterIDInput
+        survey[length(survey)+1, "cluster"] <- "id"
+      }else{
+        survey[!is.na(survey$name) & survey$name=="X_index", "cluster"] <- "id"
+      }
+
       updateProgress()
       kobo_edit_form(survey = survey, settings = configInfo)
       removeModal()
@@ -931,7 +939,21 @@ server <- shinyServer(function(input, output, session) {
           progress$set(value = value, detail = detail)
         }
         updateProgress()
-        kobo_prepare_form()
+        
+        result <- kobo_prepare_form()
+        
+        if(class(result) == "try-error"){
+          shinyalert("Error",
+                     result,
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          return(FALSE)
+        }
+        
         updateProgress()
         
         survey <- tryCatch({
@@ -1377,6 +1399,7 @@ server <- shinyServer(function(input, output, session) {
       }
       
       configInfo <- kobo_get_config()
+      configInfo <- configInfo[!is.na(configInfo$name),]
       configInfo <- configInfo[!configInfo$name %in% settingsDF$name, ]
       settingsDF <- rbind(settingsDF, configInfo)
       
@@ -1420,6 +1443,7 @@ server <- shinyServer(function(input, output, session) {
       )
     })
   })
+  
   showSamplingMoreParm <- function() {
     tryCatch({
       return(modalDialog(id="showSamplingMoreParmPopUp", 
@@ -1775,7 +1799,22 @@ server <- shinyServer(function(input, output, session) {
         progress$set(value = value, detail = detail)
       }
       updateProgress()
-      kobo_prepare_form()
+      
+      result <- kobo_prepare_form()
+      
+      if(class(result) == "try-error"){
+        shinyalert("Error",
+                   result,
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
+      
       updateProgress()
       
       shinyalert("Done, xlsform styled using 'kobo_prepare_form' function",
@@ -5628,11 +5667,19 @@ server <- shinyServer(function(input, output, session) {
       indicator <- as.data.frame(read_excel(form_tmp, sheet = "indicator"),
                                  stringsAsFactors = FALSE)
       updateProgress()
-      survey[!is.na(survey$chapter) & survey$chapter==selChap,"chapter"] <- NA
-      indicator[!is.na(indicator$chapter) & indicator$chapter==selChap,"chapter"] <- NA
+      if(nrow(survey)>0){
+        survey[!is.na(survey$chapter) & survey$chapter==selChap,"chapter"] <- NA
+      }
+      if(nrow(indicator)>0){
+        indicator[!is.na(indicator$chapter) & indicator$chapter==selChap,"chapter"] <- NA
+      }
       updateProgress()
-      survey[!is.na(survey$name) & survey$name %in% selectedVar,"chapter"] <- input$chapterNameInput
-      indicator[!is.na(indicator$fullname) & indicator$fullname %in% selectedInd,"chapter"] <- input$chapterNameInput
+      if(nrow(survey)>0){
+        survey[!is.na(survey$name) & survey$name %in% selectedVar,"chapter"] <- input$chapterNameInput
+      }
+      if(nrow(indicator)>0){
+        indicator[!is.na(indicator$fullname) & indicator$fullname %in% selectedInd,"chapter"] <- input$chapterNameInput
+      }
       updateProgress()
       kobo_edit_form(survey = survey, indicator = indicator)
       updateProgress()
@@ -5700,16 +5747,20 @@ server <- shinyServer(function(input, output, session) {
         return(FALSE)
       }
       if(las == "relabelingSurvey"){
-        userRelabelingSurvey <- sheets[["relabelingSurvey"]]
+        userSurvey <- sheets[["relabelingSurvey"]]
         form_tmp <- paste(mainDir(), "data", "form.xls", sep = "/", collapse = "/")
         mainSurvey <- as.data.frame(read_excel(form_tmp, sheet = "survey"),
                                     stringsAsFactors = FALSE)
         
-        if(identical(as.character(mainSurvey["labelReport"]),as.character(userRelabelingSurvey["labelReport"])) &
-           identical(as.character(mainSurvey["hintReport"]),as.character(userRelabelingSurvey["hintReport"]))
-        ){
+        origin <- mainSurvey[rownames(mainSurvey) %in% rownames(userSurvey),colnames(userSurvey)]
+        newSur <- userSurvey 
+        origin <- as.data.frame(sapply(origin,as.character),stringsAsFactors = F)
+        newSur <- as.data.frame(sapply(newSur,as.character),stringsAsFactors = F)
+        
+        if(identical(origin,newSur)){
           return(FALSE)
         }
+        
         projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- FALSE
         projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- FALSE
         progress <- shiny::Progress$new()
@@ -5724,10 +5775,25 @@ server <- shinyServer(function(input, output, session) {
         }
         updateProgress()
         
-        mainSurvey["labelReport"] = userRelabelingSurvey["labelReport"]
-        mainSurvey["hintReport"] = userRelabelingSurvey["hintReport"]
+        columnsMainNotUser <- colnames(mainSurvey)[!colnames(mainSurvey) %in% colnames(userSurvey)]
+        userSurvey[,columnsMainNotUser]<-NA
+        userSurvey<-userSurvey[colnames(mainSurvey)]
         
-        kobo_edit_form(survey = mainSurvey)
+        updateProgress()
+        
+        
+        newSurvey <- rbind(mainSurvey[!rownames(mainSurvey) %in% rownames(userSurvey),],
+                           userSurvey
+        )
+        newSurvey <- newSurvey[ order(as.numeric(row.names(newSurvey))), ]
+        updateProgress()
+        
+        for (field in columnsMainNotUser) {
+          newSurvey[,field] <- mainSurvey[,field]
+        }
+        
+        updateProgress()
+        kobo_edit_form(survey = newSurvey)
         updateProgress()
       }
       else if(las == "relabelingChoices"){
@@ -6029,7 +6095,9 @@ server <- shinyServer(function(input, output, session) {
   
   observe({
     tryCatch({
-      
+      if(is.null(projectConfigurationInfo$log[["isRecordSettingsCompleted"]])){
+        return(NULL)
+      }
       if(!projectConfigurationInfo$log[["isRecordSettingsCompleted"]]){
         return(NULL)
       }
@@ -6108,6 +6176,16 @@ server <- shinyServer(function(input, output, session) {
         relabelingSurvey[,"hintReport"] <- as.character(relabelingSurvey[,"hintReport"])
         relabelingSurvey <- relabelingSurvey[reqNames]
       }
+      
+      relabelingSurvey <- relabelingSurvey[startsWith(tolower(relabelingSurvey$type), "select_one") |
+                                              startsWith(tolower(relabelingSurvey$type), "select_multiple") |
+                                               startsWith(tolower(relabelingSurvey$type), "integer") |
+                                               startsWith(tolower(relabelingSurvey$type), "decimal") |
+                                               startsWith(tolower(relabelingSurvey$type), "geopoint") |
+                                               startsWith(tolower(relabelingSurvey$type), "calculate") |
+                                               startsWith(tolower(relabelingSurvey$type), "date") 
+                                             ,]
+      
       
       relabelingSurvey <- relabelingSurvey[ order(as.numeric(row.names(relabelingSurvey))), ]
       if(nrow(relabelingSurvey)==0){

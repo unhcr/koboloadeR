@@ -27,5 +27,5 @@ kobo_load_data("myform.xls")
 
 }
 \author{
-Maher Daoud
+Edouard Legoupil, Maher Daoud
 }

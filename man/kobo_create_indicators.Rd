@@ -25,5 +25,5 @@ kobo_create_indicators("myform.xls")
 
 }
 \author{
-Maher Daoud
+Edouard Legoupil, Maher Daoud
 }

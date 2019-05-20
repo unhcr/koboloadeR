@@ -6128,7 +6128,7 @@ server <- shinyServer(function(input, output, session) {
         
         if("hint" %in% colnames(relabelingSurvey)){
           reqNames <- c(reqNames, "hint", "hintReport")
-          relabelingSurvey[,"hint"] <- as.character(survey[,"hint"])
+          relabelingSurvey[,"hint"] <- as.character(relabelingSurvey[,"hint"])
         }else{
           reqNames <- c(reqNames, "hintReport")
         } 

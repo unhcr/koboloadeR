@@ -1,6 +1,6 @@
 #' @name kobo_dico
 #' @rdname kobo_dico
-#' @title  Data dictionnary
+#' @title  Create Data dictionnary an the xlsform
 #'
 #' @description  Produce a data dictionnary based on the xlsform for the project
 #'

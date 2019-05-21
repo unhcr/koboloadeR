@@ -2,7 +2,7 @@
 % Please edit documentation in R/kobo_crunching_report.R
 \name{kobo_crunching_report}
 \alias{kobo_crunching_report}
-\title{crunching Report}
+\title{Generate Data Crunching Report}
 \usage{
 kobo_crunching_report(form = "form.xls", app = "console")
 }

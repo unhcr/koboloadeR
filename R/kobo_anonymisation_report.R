@@ -1,6 +1,6 @@
 #' @name kobo_anonymisation_report
 #' @rdname kobo_anonymisation_report
-#' @title  Generate anonymised dataset
+#' @title  Generate a report displaying disclosure risk for Statistical Disclosure Control
 #'
 #' @description  Automatically produce a disclosure risk measurement report.
 #'
@@ -39,17 +39,17 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
     configInfo <- kobo_get_config()
     mainDir <- kobo_getMainDirectory()
     form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
-  
+
     dico <- read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
     framename <- deparse(substitute(frame))
     write.csv(frame, paste0(mainDir,"/data/anomreport-",framename,".csv"), row.names = FALSE, na = "")
-  
+
     ## Check that all those selectedVars are in the frame ####
     check <- as.data.frame(names(frame))
     names(check)[1] <- "fullname"
     check$id <- row.names(check)
-  
-  
+
+
     #### Check presence of variable for anom plan...
     if(app=="shiny"){
       progress$set(message = "Check presence of variable for anom plan...")
@@ -58,28 +58,28 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
     selected.key <- dico[ which(dico$anonymise == "key" & dico$type == "select_one" ) , ]
     selected.key <- join(x = selected.key, y = check, by = "fullname", type = "left")
     selected.key <- selected.key[!is.na(selected.key$id),  ]
-  
-    if ( nrow(selected.key) == 0) { 
-      cat("You have not selected key variables for your dataset! \n") 
+
+    if ( nrow(selected.key) == 0) {
+      cat("You have not selected key variables for your dataset! \n")
       return(structure("You have not selected key variables for your dataset!", class = "try-error"))
     } else {
           selected.sensible <- dico[ which(dico$anonymise == "sensitive" & dico$type == "select_one" ), ]
           selected.sensible <- join(x = selected.sensible, y = check, by = "fullname", type = "left")
           selected.sensible <- selected.sensible[!is.na(selected.sensible$id), ]
-  
+
           selected.num <- dico[ which(dico$anonymise == "outlier" ), ]
           selected.num <- join(x = selected.num, y = check, by = "fullname", type = "left")
           selected.num <- selected.num[!is.na(selected.num$id),  ]
-  
-  
+
+
           reportanom  <- paste0(mainDir,"/code/anonymisation-report-",framename,".Rmd")
-  
+
           ## TO DO : CHECK IF FILE EXIST - AND REQUEST USER TO DELETE BEFORE REGENERATING - SUGGESTING TO SAVE PREVIOUS UNDER NEW NAME
           if (file.exists(reportanom)) file.remove(reportanom)
-  
+
           #form <- "form.xls"
           #kobo_dico(form)
-  
+
           cat("---", file = reportanom , sep = "\n", append = TRUE)
           cat("title: \"Data Anonymization & Statistical Disclosure Risk Analysis Report\"", file = reportanom , sep = "\n", append = TRUE)
           cat("author: \"Generated with [Koboloader](https://github.com/unhcr/koboloadeR) and [sdcMicro](https://cran.r-project.org/web/packages/sdcMicro/sdcMicro.pdf)\"", file = reportanom , sep = "\n", append = TRUE)
@@ -96,9 +96,9 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           cat("---", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
-  
+
           ## r setup ################
-  
+
           cat("```{r setup, include = FALSE, echo = FALSE, warning = FALSE, message = FALSE, cache=FALSE}", file = reportanom , sep = "\n", append = TRUE)
           cat("mainDir <- getwd()", file = reportanom , sep = "\n", append = TRUE)
           cat("mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 5)", file = reportanom , sep = "\n", append = TRUE)
@@ -115,10 +115,10 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           #cat("kobo_dico(form)", file = reportanom , sep = "\n", append = TRUE)
           cat("dico <- read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
-  
+
           cat(paste0("dataanom <- read.csv(paste0(mainDirroot,\"/data/anomreport-",framename,".csv\"), sep = \",\", encoding = \"UTF-8\", na.strings = \"\")"), file = reportanom , sep = "\n", append = TRUE)
-  
-  
+
+
         #  cat(paste0("dataanom <- read.csv(paste0(mainDirroot,\"/data/anomreport-",framename,".csv\")    , sep = \";\", encoding = \"UTF-8\", na.strings = \"\")", file = reportanom , sep = "\n", append = TRUE))
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("numrow <- nrow(dataanom) ", file = reportanom , sep = "\n", append = TRUE)
@@ -164,14 +164,14 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           cat("# Create subset of file with observation and selected variables & remove duplicated rows based on IDH", file = reportanom , sep = "\n", append = TRUE)
           cat("dataanom.anom <- dataanom[ which(!duplicated(dataanom$id)), c('id',", file = reportanom , sep = "\n", append = TRUE)
           cat(" selected.keyVars,", file = reportanom , sep = "\n", append = TRUE)
-  
+
           if ( nrow(selected.sensible) == 0) { cat("\n") } else {
               cat(" selected.sensibleVars,", file = reportanom , sep = "\n", append = TRUE) }
-  
+
           if ( nrow(selected.num) == 0) { cat("\n") } else {
           cat(" selected.numVars,", file = reportanom , sep = "\n", append = TRUE) }
-  
-  
+
+
           cat(" selected.weightVar)]", file = reportanom , sep = "\n", append = TRUE)
           cat("#dataanom.anom <- kobo_label(dataanom.anom , dico)", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
@@ -179,27 +179,27 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("# Create initial sdc object for selected variables", file = reportanom , sep = "\n", append = TRUE)
           cat("sdc.dataanom <- createSdcObj(dat = dataanom.anom,", file = reportanom , sep = "\n", append = TRUE)
-  
+
           cat(" keyVars = selected.keyVars,", file = reportanom , sep = "\n", append = TRUE)
-  
+
          # if ( nrow(selected.sensible) == 0) {
              # cat(" sensibleVars = NULL,", file = reportanom , sep = "\n", append = TRUE) } else {
              # cat(" sensibleVars = selected.sensibleVars,", file = reportanom , sep = "\n", append = TRUE)}
-  
+
           if ( nrow(selected.num) == 0) {
               cat(" numVars = NULL,", file = reportanom , sep = "\n", append = TRUE)  } else {
               cat(" numVars = selected.numVars,", file = reportanom , sep = "\n", append = TRUE) }
-  
+
           cat(" pramVars = NULL,", file = reportanom , sep = "\n", append = TRUE)
-  
+
           cat(" weightVar = selected.weightVar)", file = reportanom , sep = "\n", append = TRUE)
-  
+
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("```", file = reportanom , sep = "\n", append = TRUE)
-  
-  
+
+
           # Introduction #######
-  
+
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("# Introduction", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
@@ -231,7 +231,7 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
-  
+
           ## Report Content##################
           cat("## Report Content", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
@@ -263,9 +263,9 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("It can also help to define some potential recoding for those variables. Global recoding is a non-perturbative method that can be applied to both categorical and continuous key variables. The basic idea of recoding a categorical variable is to combine several categories into a new, less informative category. A frequent use case is the recoding of age given in years into age-groups. If the method is applied to a continuous variable, it means to discretize the variable. ", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
-  
+
           ## Categoric Key variables ###############
-  
+
           cat("## Categoric Key variables ", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("Also called _implicit identifiers_ or _quasi-identifiers_: Set of variables that, in combination, can be linked to external information to re-identify respondents in the released dataset (gender, age, occupation, specific needs, region..)", file = reportanom , sep = "\n", append = TRUE)
@@ -281,7 +281,7 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           cat("```", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
-  
+
           ## ## Numeric Key variables ######
           cat("## Numeric Key variables ", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
@@ -297,17 +297,17 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("```", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
-  
+
           ## Sensitive variables #############
           cat("## Sensitive variables", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("Variables whose values must not be discovered for any respondent. Determination is often subject to legal and ethical concerns (Protection risk, Vulnerabilities..)", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
-  
+
           if ( nrow(selected.sensible) == 0) {
-  
+
             cat(" You have not defined sensitive variables in your disclosure scenerios. \n", file = reportanom , sep = "\n", append = TRUE) } else {
-  
+
           cat("```{r configsensi, echo = FALSE, warning = FALSE, message = FALSE, eval= TRUE}", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
@@ -317,9 +317,9 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           cat("```", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)}
-  
+
           # Measuring Disclosure Risk ##########
-  
+
           cat("# Measuring Disclosure Risk", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
@@ -336,14 +336,14 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           cat("Risk evaluation is based on the concept of uniqueness in the sample and/or in the population. The focus is on individual units that possess rare combinations of selected key variables.  The assumption is that units having rare combinations of key variables can be more easily identified and thus have a higher risk of re-identification/disclosure. It is possible to cross-tabulate all identifying variables and view their cast.  Keys possessed by only very few individuals are considered risky, especially if these observations also have small sampling weights. This means that the expected number of individuals with these patterns is expected to be low in the population as well.", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("Two approaches can be used to determine the global risk for a dataset using individual risks: ", file = reportanom , sep = "\n", append = TRUE)
-  
+
           # cat("\n", file = reportanom , sep = "\n", append = TRUE)
-  
+
           #cat("Benchmark: This approach counts the number of observations that can be considered risky and also have higher risk as the main part of the data. For example, we consider units with individual risks being both >= 0 : 1 and twice as large as the median of all individual risks + 2 times the median absolute deviation (MAD) of all unit risks. ", file = reportanom , sep = "\n", append = TRUE)
-  
+
           #cat("\n", file = reportanom , sep = "\n", append = TRUE)
-  
-  
+
+
           cat(" * Global risk: The sum of the individual risks in the dataset gives the expected number of re-identifications.", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
@@ -388,7 +388,7 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           cat("                                                                   \"Individual Risk is higher than 15% and lower than 30%\",", file = reportanom , sep = "\n", append = TRUE)
           cat("                                                                   \"Individual Risk is higher than 30% and lower than 50%\",", file = reportanom , sep = "\n", append = TRUE)
           cat("                                                                   \"Individual Risk is higher than 50% and lower than 100%\"))", file = reportanom , sep = "\n", append = TRUE)
-  
+
           cat("risksum2 <- as.data.frame(cbind(table(risksum$class.fixed.name ), prop.table(table(risksum$class.fixed.name ))))", file = reportanom , sep = "\n", append = TRUE)
           cat("risksum2$class.fixed.name <- row.names(risksum2) ", file = reportanom , sep = "\n", append = TRUE)
           cat("risksum2$class.fixed.name <- factor(risksum2$class.fixed.name, levels = c(", file = reportanom , sep = "\n", append = TRUE)
@@ -401,8 +401,8 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           cat("  \"Individual Risk is higher than 0.1% and lower than 1%\",", file = reportanom , sep = "\n", append = TRUE)
           cat("  \"Individual Risk is lower than 0.1%\"))", file = reportanom , sep = "\n", append = TRUE)
           cat("risksum2$percentreponse <- paste0(round(risksum2$V2*100,digits = 1),\"%\")", file = reportanom , sep = "\n", append = TRUE)
-  
-  
+
+
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("## and now the graph", file = reportanom , sep = "\n", append = TRUE)
@@ -427,13 +427,13 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
-  
+
           ## ## Risk for categoric variables #########
           cat("## Risk for categoric variables", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
-  
-  
+
+
           ## k-anonymity ########
           cat("### Observations violating k-anonymity", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
@@ -445,17 +445,17 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           cat("## displays information about 2- and 3-anonymity", file = reportanom , sep = "\n", append = TRUE)
           cat("#print(sdc.dataanom, type = \"kAnon\")", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
-  
+
           cat("cat(\" # of observations that violate 2-anonymity \n\")", file = reportanom , sep = "\n", append = TRUE)
           cat("nrow(dataanom.anom[sdc.dataanom@risk$individual[,2] < 2,])", file = reportanom , sep = "\n", append = TRUE)
-  
+
           cat("cat(\" # of observations that violate 3-anonymity \n\")", file = reportanom , sep = "\n", append = TRUE)
           cat("nrow(dataanom.anom[sdc.dataanom@risk$individual[,2] < 3,])", file = reportanom , sep = "\n", append = TRUE)
-  
+
           cat("cat(\" # of observations that violate 5-anonymity \n\")", file = reportanom , sep = "\n", append = TRUE)
           cat("nrow(dataanom.anom[sdc.dataanom@risk$individual[,2] < 5,])", file = reportanom , sep = "\n", append = TRUE)
-  
-  
+
+
           cat("# Show lines with variables that violate k-anonymity", file = reportanom , sep = "\n", append = TRUE)
           cat("#dataanom.anom[sdc.dataanom@risk$individual[,2] < 3,]", file = reportanom , sep = "\n", append = TRUE)
           cat("#dataanom.anom[sdc.dataanom@risk$individual[,2] < 5,]", file = reportanom , sep = "\n", append = TRUE)
@@ -465,18 +465,18 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
-  
+
           ## l-diversity score #######
           cat("### Distribution of the distinct l-diversity score", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("The objective is to avoid that records sharing a combination of key attributes in a k-anonymous data set also share the values for one or more confidential attributes. There's a need to ensure that the sensitive variable has at least l-distinct values for each group of observations with the same pattern of key variables.", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
-  
+
           if ( nrow(selected.sensible) == 0) {
-  
+
             cat(" You have not defined sensitive variables in your disclosure scenerios. \n", file = reportanom , sep = "\n", append = TRUE) } else {
-  
-  
+
+
           cat("```{r ldivrisk, echo = FALSE, warning = FALSE, message = FALSE, eval= TRUE, comment = \"\"}", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("for (h in 1:length(selected.sensibleVars))", file = reportanom , sep = "\n", append = TRUE)
@@ -491,7 +491,7 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("```", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE) }
-  
+
           ## Local suppression to achieve basic anonymisation target #####
           cat("# Local suppression to achieve basic anonymisation target", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
@@ -523,18 +523,18 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           cat("```", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
-  
+
           ## ## Local suppression for individual risk containment ####
           cat("## Local suppression for individual risk containment", file = reportanom , sep = "\n", append = TRUE)
-  
+
           cat("When using sample based dataset, k-Anonymity can be difficult to achieve. In this case, using Individual Risk threshold is an option to consider. A 15% threshold can be used as a reference.", file = reportanom , sep = "\n", append = TRUE)
-  
+
           cat("```{r supprtre, echo = FALSE, warning = FALSE, message = FALSE, eval= TRUE, comment = \"\"}", file = reportanom , sep = "\n", append = TRUE)
-  
+
           cat("for (h in 1:length(selected.keyVars))", file = reportanom , sep = "\n", append = TRUE)
           cat("{", file = reportanom , sep = "\n", append = TRUE)
             cat("# h <-1  ", file = reportanom , sep = "\n", append = TRUE)
-  
+
           cat("sdc.dataanom15 <- localSupp(sdc.dataanom, keyVar = selected.keyVars[h], threshold = 0.15)  ", file = reportanom , sep = "\n", append = TRUE)
           cat("sdc.dataanom.localsuppressiont15  <- t(as.data.frame(sdc.dataanom15@localSuppression$supps))", file = reportanom , sep = "\n", append = TRUE)
           cat("sdc.dataanom.localsuppressiont15  <- as.data.frame(sdc.dataanom15@localSuppression$supps)", file = reportanom , sep = "\n", append = TRUE)
@@ -544,41 +544,41 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           cat("cat(paste0(\"Needed suppressions to achieve a 15% individual risk threshold for variable: \", selected.key1[h, c(\"label\")]))", file = reportanom , sep = "\n", append = TRUE)
           cat("cat(\"\n\n\")", file = reportanom , sep = "\n", append = TRUE)
           cat("print(sdc.dataanom.localsuppressiont)", file = reportanom , sep = "\n", append = TRUE)
-  
+
           #  cat("kable(as.data.frame(sdc.dataanom.localsuppressiont15), caption = \"__Table__: Needed suppression to achieve 15% threshold for individual risk\") %>% kable_styling(position = \"center\")", file = reportanom , sep = "\n", append = TRUE)
           cat("}", file = reportanom , sep = "\n", append = TRUE)
-  
+
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("#print(sdc.dataanom, type = \"ls\")", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("```", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
-  
+
           ## ## Recoding categorical key variables ##########
           #cat("## Recoding categorical key variables", file = reportanom , sep = "\n", append = TRUE)
           #cat("\n", file = reportanom , sep = "\n", append = TRUE)
           #cat("\n", file = reportanom , sep = "\n", append = TRUE)
           #cat("```{r recod, echo = FALSE, warning = FALSE, message = FALSE, eval= TRUE, comment = \"\"}", file = reportanom , sep = "\n", append = TRUE)
           #cat("\n", file = reportanom , sep = "\n", append = TRUE)
-  
-  
+
+
           #cat("## shows information about categorical key variables before and after recoding", file = reportanom , sep = "\n", append = TRUE)
           #cat("print(sdc.dataanom, type = \"recode\")", file = reportanom , sep = "\n", append = TRUE)
           #cat("\n", file = reportanom , sep = "\n", append = TRUE)
           #cat("#print(sdc.dataanom, type = \"comp_numvars\")", file = reportanom , sep = "\n", append = TRUE)
           #cat("\n", file = reportanom , sep = "\n", append = TRUE)
           #cat("```", file = reportanom , sep = "\n", append = TRUE)
-  
+
           ## Annex : Disclosure Risk Control (SDC) treatment #####
           cat("# Annex: Disclosure Risk Control (SDC) treatment", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("Based on a given threshold for disclosure risk, the best method to protect a microdata set is hard to  determine  in  general.  For  a  particular microdata  set  the  best SDC  method  depends  on  the  intended uses of the data by the users, the willingness of the statistical agency to disseminate this data set, the legal aspects  of  releasing  these  data,  and  on  the  structure  of  the  data.", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
-  
+
           cat("## For categoric variables", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
-  
+
           ### Post-randomization (PRAM) ###
           cat("### Post-randomization (PRAM)", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
@@ -637,7 +637,7 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           cat("#calcRisks(sdc.dataanom)", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("```", file = reportanom , sep = "\n", append = TRUE)
-  
+
           if(app=="shiny"){
             progress$set(message = "Rendering Anonymisation report Now in progress...")
             updateProgress()
@@ -647,7 +647,7 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
         ## Put the report in the out folder
         file.rename(paste0(mainDir,"/code/anonymisation-report-",framename,".docx"), paste0(mainDir,"/out/anonymisation_reports/Anonymisation-report-", framename ,"-",Sys.Date(), "-chapter.docx"))
         cat(" Done!! Reports are in the folder OUT - Review the report- furter anonymise and regenerate as needed...\n")
-  
+
     }
   }, error = function(err) {
     print("kobo_anonymisation_report_ERROR")

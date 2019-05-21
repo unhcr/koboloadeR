@@ -1,6 +1,6 @@
 #' @name kobo_getMainDirectory
 #' @rdname kobo_getMainDirectory
-#' @title Main Directory for KoboloadeR package
+#' @title get Main Directory for a KoboloadeR project
 #'
 #' @description the function return the Main Directory for KoboloadeR packag
 #'
@@ -19,7 +19,7 @@
 kobo_getMainDirectory <- function() {
   tryCatch({
     mainDir <- gsub("/code/shiny_app", "",  getwd())
-    mainDir <- gsub("/inst/shiny_app", "",  mainDir) 
+    mainDir <- gsub("/inst/shiny_app", "",  mainDir)
     return(mainDir)
   }, error = function(err) {
     print("kobo_getMainDirectory_ERROR")

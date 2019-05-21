@@ -2,7 +2,7 @@
 % Please edit documentation in R/kobo_dico.R
 \name{kobo_dico}
 \alias{kobo_dico}
-\title{Data dictionnary}
+\title{Create Data dictionnary an the xlsform}
 \usage{
 kobo_dico(form = "form.xls")
 }

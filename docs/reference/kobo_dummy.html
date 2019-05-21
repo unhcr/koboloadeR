@@ -36,6 +36,7 @@
 Making decisions about research design and analysis strategies is often difficult before data is collected,
 because it is hard to imagine the exact form data will take.
 This function helps imagine what data will look like before they collect it.
+samplesize is set per defautl at 500 records
 Supported Features
 - Gnerate a data set with an output similar to the one needed in koboloader
 - respects ODK structure &quot;`relevant`&quot; skip logic (Some advanced functionality such as &quot;coalesce()&quot; not covered)
@@ -132,7 +133,8 @@ Supported Features
     <p>Automatically produce an dummy dataset in line with the structure of an xlsform.</p>
 <p>Making decisions about research design and analysis strategies is often difficult before data is collected,
 because it is hard to imagine the exact form data will take.
-This function helps imagine what data will look like before they collect it.</p>
+This function helps imagine what data will look like before they collect it.
+samplesize is set per defautl at 500 records</p>
 <p>Supported Features</p>
 <p>- Gnerate a data set with an output similar to the one needed in koboloader
 - respects ODK structure "`relevant`" skip logic (Some advanced functionality such as "coalesce()" not covered)
@@ -141,7 +143,7 @@ This function helps imagine what data will look like before they collect it.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>kobo_dummy</span>(<span class='kw'>dico</span> <span class='kw'>=</span> <span class='st'>"dico_form.xls.csv"</span>)</pre>
+    <pre class="usage"><span class='fu'>kobo_dummy</span>(<span class='kw'>form</span> <span class='kw'>=</span> <span class='st'>"form.xls"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

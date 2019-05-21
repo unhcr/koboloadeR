@@ -2,7 +2,7 @@
 % Please edit documentation in R/kobo_edit_form.R
 \name{kobo_edit_form}
 \alias{kobo_edit_form}
-\title{Edit XLS form}
+\title{Edit XLS form with shiny app for configuration}
 \usage{
 kobo_edit_form(form = "form.xls", survey = NULL, choices = NULL,
   indicator = NULL, settings = NULL)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/kobo_cluster_report.R
 \name{kobo_cluster_report}
 \alias{kobo_cluster_report}
-\title{Generate anonymised dataset}
+\title{Generate reports with various clusterisation techniques}
 \usage{
 kobo_cluster_report(frame, form = "form.xls", app = "console")
 }

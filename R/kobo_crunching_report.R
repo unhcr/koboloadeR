@@ -1,6 +1,6 @@
 #' @name kobo_crunching_report
 #' @rdname kobo_crunching_report
-#' @title crunching Report
+#' @title Generate Data Crunching Report
 #'
 #' @description Generate crunching Report that contains all descriptive statistics, correlation analysis, tabulation and data visualization for variables and indicators.
 #' @param form The full filename of the form to be accessed (xls or xlsx file).

@@ -22,11 +22,11 @@ options(width=120)
 
 ## Introduction
 
-Kooloader is designed to facilitate the analysis workflow of a survey collected through any xlsform compatible platform.
+KoboloadeR is designed to facilitate the analysis workflow of a survey collected through any xlsform compatible platform.
 
 The package is designed to support 2 user flow:
 
- * __Graphical User Interface - GUI__: A dedicated shynyapp `kobo_shiny("app_main_koboloadeR.R")` includes all instructions and options to run your project.
+ * __Graphical User Interface - GUI__: A dedicated shinyApp `kobo_shiny("app_main_koboloadeR.R")` includes all instructions and options to run your project.
 
  * __Console mode__ gives you way to run your analysis without GUI
 
@@ -38,7 +38,7 @@ First you will need to install all the required software described in the packag
 
 You can now create a project, enable the library with 
 
-Loads koboloadeR package  
+Loads KoboloadeR package  
 
 > library (koboloadeR)  
 
@@ -48,26 +48,6 @@ Creates folders necessary and transfer files needed. This function implement goo
 
 
 This will also push on your data folder a demo project with a form template that you can adapt according to your needs. Note that in the development of your form, in addition of this template, you can use the [Integrated Framework for Household survey knowledge base](https://unhcr.github.io/Integrated-framework-household-survey)
-
-## Generate dummy data
-
-**You can skip this step in case you already have your own questionnaire and dataset.**
-
-In order to run this tutorial, we will first generate a dummy dataset using the structure of the form. 
-
-This can be performed with 
-
-Define the path to your form file (note that we use `.xls` file only)  
-
-> form <- "form.xls"
-
-Now use the function to generate your dummy file.   
-
-> kobo_dummy_data(form)
-
-This function will generate multiple csv files as the template form includes `begin_group` elements corresponding to a hierarchical data structure.  A  hierarchical structure  is created  when  a  series of questions is repeated say for each member in the household, and combined with a household questionnaire. 
-
-All csv files will be saved per default in the `data` folder.
 
 
 ## Extend your xlsform 
@@ -88,6 +68,25 @@ Now we will automatically add the required additional structure for the analysis
 
 > kobo_prepare_form(form)
 
+## Generate dummy data
+
+**You can skip this step in case you already have your own questionnaire and dataset.**
+
+In order to run this tutorial, we will first generate a dummy dataset using the structure of the form. 
+
+This can be performed with 
+
+Define the path to your form file (note that we use `.xls` file only)  
+
+> form <- "form.xls"
+
+Now use the function to generate your dummy file.   
+
+> kobo_dummy_data(form)
+
+This function will generate multiple csv files as the template form includes `begin_group` elements corresponding to a hierarchical data structure.  A  hierarchical structure  is created  when  a  series of questions is repeated say for each member in the household, and combined with a household questionnaire. 
+
+All csv files will be saved per default in the `data` folder.
 
 ## Set up your project configuration
 

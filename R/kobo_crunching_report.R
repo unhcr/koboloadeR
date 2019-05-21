@@ -47,7 +47,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
 
     ### Load the data
     cat("\n\n Loading data. It is assumed that the cleaning, weighting & re-encoding has been done previously \n")
-    household <- read.csv(paste(mainDir,"/data/MainDataFrame.csv",sep = ""), encoding = "UTF-8", na.strings = "")
+    household <- read.csv(paste(mainDir,"/data/MainDataFrame-edited.csv",sep = ""), encoding = "UTF-8", na.strings = "")
 
     ###Form##########################################
     ## Load form
@@ -191,10 +191,10 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
 
 
       ## TO DO: Use config file to load the different frame
-      cat("household <- read.csv(paste0(mainDirroot,\"/data/MainDataFrame.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = chapter.name , sep = "\n", append = TRUE)
+      cat("household <- read.csv(paste0(mainDirroot,\"/data/MainDataFrame-edited.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = chapter.name , sep = "\n", append = TRUE)
 
       for (dbr in dataBeginRepeat) {
-        cat(paste(dbr, "<- read.csv(paste0(mainDirroot,\"/data/",dbr,"-edited.csv\"), encoding = \"UTF-8\", na.strings = \"\")", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
+        cat(paste(dbr, " <- read.csv(paste0(mainDirroot,\"/data/",dbr,"-edited.csv\"), encoding = \"UTF-8\", na.strings = \"\")", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
       }
 
 
@@ -361,8 +361,8 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
             #   cat(paste0("cat(\"No responses recorded for this question...\")"),file = chapter.name , sep = "\n", append = TRUE)
             #    cat("No responses recorded for this question...\n")
           }      else{
-            cat(paste0("## display table"),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("## Reorder factor"),file = chapter.name ,sep = "\n", append = TRUE)
+         #   cat(paste0("## display table"),file = chapter.name ,sep = "\n", append = TRUE)
+         #   cat(paste0("## Reorder factor"),file = chapter.name ,sep = "\n", append = TRUE)
 
 
             ## Check variable type to order the factor ####
@@ -378,7 +378,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
 
 
             cat(paste0("names(frequ)[1] <- \"", questions.shortname,"\""),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = chapter.name ,sep = "\n", append = TRUE)
+           # cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = chapter.name ,sep = "\n", append = TRUE)
             cat(paste0("## Frequency table with NA in order to get non response rate"),file = chapter.name ,sep = "\n", append = TRUE)
             cat(paste0("frequ1 <- as.data.frame(prop.table(table(", questions.variable,", useNA=\"ifany\")))"),file = chapter.name ,sep = "\n", append = TRUE)
             cat(paste0("frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]"),file = chapter.name ,sep = "\n", append = TRUE)
@@ -774,8 +774,8 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
           } else if (nrow(frequ) > 10) {
             cat(paste0("cat(\"There's too many potential values to display. We will only show the histogram. \n \")"),file = chapter.name ,sep = "\n", append = TRUE)
           } else{
-            cat(paste0("## display table"),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = chapter.name ,sep = "\n", append = TRUE)
+         #   cat(paste0("## display table"),file = chapter.name ,sep = "\n", append = TRUE)
+         #   cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = chapter.name ,sep = "\n", append = TRUE)
           }
 
           ## To do implement FD number of bin: https://www.r-bloggers.com/friday-function-nclass/
@@ -1051,7 +1051,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
               cat(paste0("names(frequ)[1] <- \"", questions.shortname,"\""),file = chapter.name ,sep = "\n", append = TRUE)
               cat(paste0("frequ[ ,3] <- paste0(round(frequ[ ,3]*100,digits = 1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
 
-              cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = chapter.name ,sep = "\n", append = TRUE)
+          #    cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = chapter.name ,sep = "\n", append = TRUE)
 
               cat(paste0("frequ1 <- castdata[castdata$Var1!=\"\", ]"),file = chapter.name ,sep = "\n", append = TRUE)
               cat(paste0("frequ1[ ,4] <- paste0(round(frequ1[ ,3]*100,digits = 1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)

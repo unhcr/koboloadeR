@@ -51,8 +51,6 @@ The methods above can be reference in the column
 MethodDescription
 ------------------------------Remove
 Data is removed entirely from the data set. The data is preserved in the original file.ReferenceData is removed entirely from the data set and is copied into a reference file. A random unique identifier field is added to the reference file and the data set so that they can be joined together in future.  The reference file is never shared and the data is also preserved in the original file.
-MaskThe data values are replaced with meaningless values but the categories are preserved. A reference file is created to link the original value with the meaningless value. Typically applied to categorical data. For example, Town names could be masked with random combinations of letters. It would still be possible to perform statisitical analysis on the data but the person running the analysis would not be able to identify the original values, they would only become meaningful when replaced with the original values. The reference file is never shared and the data is also preserved in the original file.Generalise
-Continuous data is turned into categorical or ordinal data by summarising it into ranges. For example, Age could be turned into age ranges, Weight could be turned into ranges. It can also apply to categorical data where parent groups are created. For example, illness is grouped into illness type. Generalised data can also be masked for extra anonymisation. The data is preserved in the original file.MethodDescription
 " />
 <meta name="twitter:card" content="summary" />
 
@@ -161,13 +159,11 @@ Continuous data is turned into categorical or ordinal data by summarising it int
 <tr><td></td><td><strong>Method</strong></td><td></td><td></td><td><strong>Description</strong></td><td></td></tr>
 <tr><td></td><td>----------------</td><td>--------------</td><td></td><td><strong>Remove</strong></td><td></td></tr>
 <tr><td>Data is removed entirely from the data set. The data is preserved in the original file.</td><td></td><td><strong>Reference</strong></td><td></td><td>Data is removed entirely from the data set and is copied into a reference file. A random unique identifier field is added to the reference file and the data set so that they can be joined together in future.  The reference file is never shared and the data is also preserved in the original file.</td><td></td></tr>
-<tr><td><strong>Mask</strong></td><td></td><td>The data values are replaced with meaningless values but the categories are preserved. A reference file is created to link the original value with the meaningless value. Typically applied to categorical data. For example, Town names could be masked with random combinations of letters. It would still be possible to perform statisitical analysis on the data but the person running the analysis would not be able to identify the original values, they would only become meaningful when replaced with the original values. The reference file is never shared and the data is also preserved in the original file.</td><td></td><td><strong>Generalise</strong></td><td></td></tr>
-<tr><td>Continuous data is turned into categorical or ordinal data by summarising it into ranges. For example, Age could be turned into age ranges, Weight could be turned into ranges. It can also apply to categorical data where parent groups are created. For example, illness is grouped into illness type. Generalised data can also be masked for extra anonymisation. The data is preserved in the original file.</td><td></td><td><strong>Method</strong></td><td></td><td></td><td><strong>Description</strong></td></tr>
 </table>
     
     </div>
 
-    <pre class="usage"><span class='fu'>kobo_anonymise</span>(<span class='no'>frame</span>, <span class='no'>dico</span>)</pre>
+    <pre class="usage"><span class='fu'>kobo_anonymise</span>(<span class='no'>frame</span>, <span class='kw'>dico</span> <span class='kw'>=</span> <span class='st'>"dico_form.xls.csv"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

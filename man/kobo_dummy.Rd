@@ -4,7 +4,7 @@
 \alias{kobo_dummy}
 \title{Remove direct identifier}
 \usage{
-kobo_dummy(dico = "dico_form.xls.csv")
+kobo_dummy(form = "form.xls")
 }
 \arguments{
 \item{dico}{file representing the xlsform data dictionnary - generated from kobo_dico()}
@@ -15,6 +15,7 @@ Automatically produce an dummy dataset in line with the structure of an xlsform.
 Making decisions about research design and analysis strategies is often difficult before data is collected,
 because it is hard to imagine the exact form data will take.
 This function helps imagine what data will look like before they collect it.
+samplesize is set per defautl at 500 records
 
  Supported Features
 

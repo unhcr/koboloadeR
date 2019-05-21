@@ -7,6 +7,7 @@
 #' Making decisions about research design and analysis strategies is often difficult before data is collected,
 #' because it is hard to imagine the exact form data will take.
 #' This function helps imagine what data will look like before they collect it.
+#' samplesize is set per defautl at 500 records
 #'
 #'  Supported Features
 #'
@@ -30,7 +31,7 @@
 #' }
 #'
 
-kobo_dummy <- function(dico = "dico_form.xls.csv") {
+kobo_dummy <- function(form = "form.xls") {
 
   ### Write dummy dataset
 
@@ -43,21 +44,21 @@ kobo_dummy <- function(dico = "dico_form.xls.csv") {
   # install.packages("sp")
   # library(charlatan)
   # library(fakir)
-  library(tidyverse)
-  library(truncnorm)
-  library(stringi)
-  library(OpenRepGrid)
-  library(sp)
+  # library(tidyverse)
+  # library(truncnorm)
+  # library(stringi)
+  # library(OpenRepGrid)
+  # library(sp)
 
   mainDir <- kobo_getMainDirectory()
 
   #form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
   #form <- "form.xls"
   #library(koboloadeR)
-  #kobo_dico(form_tmp)
+  kobo_dico(form)
   # dico <- read.csv("data/dico_form.xls.csv")
-  dico <- paste(mainDir, "data", dico, sep = "/", collapse = "/")
-  #dico <- read.csv(paste0(mainDir, "data/dico_", form, ".csv"))
+  #dico <- paste(mainDir, "data", dico, sep = "/", collapse = "/")
+  dico <- read.csv(paste0(mainDir, "/data/dico_", form, ".csv"))
 
   ## Extract constraint on data ###########
   ## From constraint  lower bounds &  upper bound
@@ -300,7 +301,7 @@ kobo_dummy <- function(dico = "dico_form.xls.csv") {
       }
     }
   }
-  write.csv(dummydata, "data/data.csv", row.names = FALSE)
+  write.csv(dummydata, "data/MainDataFrame.csv", row.names = FALSE)
 
   rm(categ_level, fullname, i , l, listname, lowerbound, upperbound, value, datacheck, dico.household,
      relevantifvalue, relevantifvar, relevantifvar2, samplesize, typedata)
@@ -333,13 +334,15 @@ kobo_dummy <- function(dico = "dico_form.xls.csv") {
     maxvariablefullname <- dico[ (dico$name == maxvariable & !(is.na(dico$fullname))), ]
     maxvariablefullname <- maxvariablefullname[!(is.na(maxvariablefullname$fullname)), c("fullname")]
     maxvariablefullname <- as.character(maxvariablefullname)
-    str(maxvariablefullname)
+    #str(maxvariablefullname)
 
     dummydatamaxvariable <- dummydata[ ,c("instanceID",maxvariablefullname )]
 
-    str(dummydatamaxvariable)
+    #str(dummydatamaxvariable)
     ## Account for NA - relevant nested table
     dummydatamaxvariable <- dummydatamaxvariable[ !(is.na(dummydatamaxvariable[ ,2])), ]
+
+
 
     # names(dummydata)
 
@@ -370,7 +373,9 @@ kobo_dummy <- function(dico = "dico_form.xls.csv") {
         relevantifvar2 <- as.character(dico.repeat1[dico.repeat1$name == relevantifvar, c("fullname")])
         relevantifvalue <- as.character(dico.repeat1[dico.repeat1$fullname == fullname, c("relevantifvalue")])
 
-        cat(paste0("Entering dummy data for nested table ", h, " - ", repeat_table, " for variable ", i, "- ", fullname, " / ", typedata,"\n"))
+        cat(paste0("Entering dummy data for nested table ", h, " - ", repeat_table,
+                   "for case ", j,
+                   " for variable ", i, "- ", fullname, " / ", typedata,"\n"))
         if (typedata %in% c("date") ) {
           dummydatarepeat[ , i + 1] <- sample(seq(as.Date('2017/01/01'), as.Date('2019/01/01'), by = "day"),
                                               replace = TRUE,
@@ -457,15 +462,13 @@ kobo_dummy <- function(dico = "dico_form.xls.csv") {
       }
       dummydatarepeatall <- rbind(dummydatarepeatall, dummydatarepeat)
       rm(dummydatarepeat)
-      cat(paste0("\n\n\n Finished generation of nested table ", h, " - ", repeat_table, "\n"))
 
     }
     write.csv(dummydatarepeatall, paste0("data/",repeat_table,".csv"), row.names = FALSE)
+    cat(paste0("\n\n\n Finished generation of nested table ", h, " - ", repeat_table, "\n"))
+    rm(dummydatarepeatall)
 
   }
-
-
-
 
 }
 NULL

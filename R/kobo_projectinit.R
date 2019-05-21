@@ -515,7 +515,7 @@ kobo_projectinit <- function() {
 
     ## reset the correct Working directory
     setwd(mainDir)
-    cat("Please open now the file called 0-config.R within the ++code++ folder and configure the path to the form and the dataset. \n ")
+    cat("Please open now the file called run-analysis.R within the ++code++ folder, configure the xlsform and get your dataset. \n ")
 
     kobo_load_packages() # Make sure that all the packages necessary are loaded.
   }, error = function(err) {

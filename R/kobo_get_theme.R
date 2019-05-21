@@ -28,7 +28,7 @@
 #' @export kobo_get_theme
 #'
 
-kobo_get_theme <- function(form = "form.xls") {
+kobo_get_theme <- function() {
 
   themeList <- list()
 

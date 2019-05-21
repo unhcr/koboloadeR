@@ -1,6 +1,6 @@
 #' @name kobo_cluster_report
 #' @rdname kobo_cluster_report
-#' @title  Generate anonymised dataset
+#' @title  Generate reports with various clusterisation techniques
 #'
 #' @description  Automatically produce a report exploring potential clusters within survey records.
 #'
@@ -42,12 +42,12 @@ kobo_cluster_report <- function(frame, form = "form.xls", app="console") {
     configInfo <- kobo_get_config()
     mainDir <- kobo_getMainDirectory()
     form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
-    
+
     # frame <- household
     # framename <- "household"
     framename <- deparse(substitute(frame))
     write.csv(frame, paste0(mainDir,"/data/clustering-report-",framename,".csv"), row.names = FALSE, na = "")
-  
+
     ## Check that all those selectedVars are in the frame ####
     if(app=="shiny"){
       progress$set(message = "Check that all those selectedVars are in the frame...")
@@ -56,9 +56,9 @@ kobo_cluster_report <- function(frame, form = "form.xls", app="console") {
     check <- as.data.frame(names(frame))
     names(check)[1] <- "fullname"
     check$id <- row.names(check)
-    
+
     dico <- read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
-  
+
     #### Check presence of variable for anom plan...
     if(app=="shiny"){
       progress$set(message = "Check presence of variable for anom plan...")
@@ -70,16 +70,16 @@ kobo_cluster_report <- function(frame, form = "form.xls", app="console") {
     selected.clusterVars <- as.character(selected.cluster[ , c("fullname")])
     #selected.clusterVars2 <- as.character(selected.cluster[ , c("name")])
     selected.clusterVars2 <- str_replace_all(as.character(selected.cluster[ , c("name")]), "_", ".")
-  
-  
+
+
     selected.id <- dico[ which(dico$cluster == "id"), ]
     selected.id <- join(x = selected.id, y = check, by = "fullname", type = "left")
     selected.id <- selected.id[!is.na(selected.id$id),  ]
     selected.idVars <- as.character(selected.id[ , c("fullname")])
-  
-  
+
+
     if (nrow(selected.cluster) == 0) {
-      cat ("You have not selected variables to cluster for your dataset! \n") 
+      cat ("You have not selected variables to cluster for your dataset! \n")
       return(structure("You have not selected variables to cluster for your dataset!", class = "try-error"))
     } else {
       if(app=="shiny"){
@@ -117,8 +117,8 @@ kobo_cluster_report <- function(frame, form = "form.xls", app="console") {
           cat("```", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-  
-  
+
+
           cat("```{r , echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE}", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("mainDir <- getwd()", file = reportcluster , sep = "\n", append = TRUE)
@@ -131,17 +131,17 @@ kobo_cluster_report <- function(frame, form = "form.xls", app="console") {
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("dico <- read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-  
+
           cat(paste0("datacluster <-  read.csv(paste0(mainDirroot,\"/data/clustering-report-",framename,".csv\"), sep = \",\", encoding = \"UTF-8\", na.strings = \"\")"), file = reportcluster , sep = "\n", append = TRUE)
-  
+
           cat("
           if(nrow(datacluster) > 10000) {
-            samplesize <- 10000 
-          } else{ 
-            samplesize <- nrow(datacluster) 
+            samplesize <- 10000
+          } else{
+            samplesize <- nrow(datacluster)
           }
           ", file = reportcluster , sep = "\n", append = TRUE)
-          
+
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("```", file = reportcluster , sep = "\n", append = TRUE)
           cat("# Executive Summary", file = reportcluster , sep = "\n", append = TRUE)
@@ -185,7 +185,7 @@ kobo_cluster_report <- function(frame, form = "form.xls", app="console") {
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("# Dimensionnality reduction  ", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-  
+
           ## First chunk ########
           cat("```{r, echo=FALSE, warning=FALSE}", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
@@ -356,9 +356,9 @@ kobo_cluster_report <- function(frame, form = "form.xls", app="console") {
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("```", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-  
-  
-  
+
+
+
           if(app=="shiny"){
             progress$set(message = "Rendering Clustering report Now in progress...")
             updateProgress()
@@ -368,7 +368,7 @@ kobo_cluster_report <- function(frame, form = "form.xls", app="console") {
         ## Put the report in the out folder
         file.rename(paste0(mainDir,"/code/clustering-report-",framename,".docx"), paste0(mainDir,"/out/cluster_reports/Clustering-report-", framename,"-" ,Sys.Date(), "-chapter.docx"))
         cat(" Done!! Reports are in the folder OUT - Review the report- furter review your clustering assumptions and regenerate as needed...\n")
-        
+
     }
   }, error = function(err) {
     print("kobo_cluster_report_ERROR")

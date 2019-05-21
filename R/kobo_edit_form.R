@@ -1,8 +1,8 @@
 #' @name kobo_edit_form
 #' @rdname kobo_edit_form
-#' @title  Edit XLS form
+#' @title  Edit XLS form with shiny app for configuration
 #'
-#' @description  This function used to change the data of sheets in the xlsform and apply all required styles for each sheet 
+#' @description  This function used to change the data of sheets in the xlsform and apply all required styles for each sheet
 #'
 #' @param form The full filename of the form to be accessed (xls or xlsx file).
 #' It is assumed that the form is stored in the data folder.
@@ -10,7 +10,7 @@
 #' @param survey Dataframe that represent the data of survey sheet in the xlsform
 #' @param choices Dataframe that represent the data of choices sheet in the xlsform
 #' @param indicator Dataframe that represent the data of indicator sheet in the xlsform
-#' @param settings Dataframe that represent the data of settings sheet in the xlsform 
+#' @param settings Dataframe that represent the data of settings sheet in the xlsform
 #'
 #' @return No return, this function edit the original XLSform directly
 #'
@@ -25,14 +25,14 @@
 #' }
 #'
 #' @export kobo_edit_form
-#' 
+#'
 
 kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, indicator = NULL, settings = NULL) {
-  
+
   wb <- xlsx::createWorkbook(type = "xls") #create xls workbook
   mainDir <- kobo_getMainDirectory()
   form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
-  
+
   if(is.null(survey)){
     survey <- tryCatch({
       as.data.frame(read_excel(form_tmp, sheet = "survey"),
@@ -59,7 +59,7 @@ kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, ind
       )
     })
   }
-  
+
   if(!is.null(survey)){
     survey[is.na(survey)] <-  ""
     sheetname <- "survey"
@@ -68,7 +68,7 @@ kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, ind
     surveySheet <- xlsx::createSheet(wb, sheetname) #create survey sheet in wb
     xlsx::addDataFrame(survey, surveySheet, col.names=TRUE, row.names=FALSE) #add survey dataframe in the survey sheet
   }
-  
+
   #################################### choices sheet ######################################
   if(is.null(choices)){
     choices <- tryCatch({
@@ -125,7 +125,7 @@ kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, ind
     indicatorSheet <- xlsx::createSheet(wb, sheetName=sheetname)
     xlsx::addDataFrame(indicator, indicatorSheet, col.names=TRUE, row.names=FALSE)
   }
-  
+
   #################################### settings sheet ######################################
   if(is.null(settings)){
     settings <- tryCatch({
@@ -143,16 +143,16 @@ kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, ind
   }
   if(!is.null(settings)){
     sheetname <- "settings"
-    
+
     if(!is.null(xlsx::getSheets(wb)[[sheetname]]))
       xlsx::removeSheet(wb, sheetname)
     settingsSheet <- xlsx::createSheet(wb, sheetName=sheetname) #create sheet with settings name
     xlsx::addDataFrame(settings, settingsSheet, col.names=TRUE, row.names=FALSE) #add settings data frame to this sheet
   }
-  
+
   if (file.exists(form_tmp)) file.remove(form_tmp)
   xlsx::saveWorkbook(wb, form_tmp)
-  
+
 }
 NULL
 

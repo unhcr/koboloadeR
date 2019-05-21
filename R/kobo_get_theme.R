@@ -2,11 +2,25 @@
 #' @rdname kobo_get_theme
 #' @title Get Themes
 #'
-#' @description Return all themes that are used for styling reports and charts 
+#' @description Return all themes that are used for styling reports and charts
 #'
 #' @return Return a list that contains all themes
 #'
-#' @author Maher Daoud
+#' @author Maher Daoud, Edouard Legoupil - with insiparation from bbc
+#'
+#'
+#' GENERAL THEME
+#' we'll use this for most of our charts and build on it when we need to
+#'
+#' THEME FOR 'WIDE' BAR CHARTS
+#' there are several bar charts that are very wide, and need some special formatting
+#'
+#' THEME FOR 'WIDE' BAR CHARTS
+#' we'll use this for small multiple charts.  these also have some special formatting requirements
+#'
+#' THEME FOR MAPS
+#' It's based on theme_minimal and basically resets all the axes.
+#' It also defined a very subtle grid and a warmgrey background, which gives it some sort of paper map feeling..
 #'
 #' @examples
 #' kobo_get_theme()
@@ -15,15 +29,9 @@
 #'
 
 kobo_get_theme <- function(form = "form.xls") {
-  
+
   themeList <- list()
-  
-  #----------------------------------------
-  # GENERAL THEME
-  # - we'll use this for most of our charts
-  #   and build on it when we need to
-  #----------------------------------------
-  
+
   themeList$theme.porttheme <-
     theme(text = element_text(family = "Gill Sans", color = "#444444")) +
     theme(plot.title = element_text(size = 24)) +
@@ -33,16 +41,7 @@ kobo_get_theme <- function(form = "form.xls") {
     theme(axis.text = element_text(size = 10)) +
     theme(axis.title.x = element_text(margin = margin(t = 20))) +
     theme(legend.title = element_blank())
-  
-  
-  
-  #------------------------------------
-  # THEME FOR 'WIDE' BAR CHARTS
-  # - there are several bar charts that
-  #   are very wide, and need some
-  #   special formatting
-  #------------------------------------
-  
+
   themeList$theme.widebar <-
     theme.porttheme +
     theme(plot.title = element_text(size = 30)) +
@@ -51,34 +50,18 @@ kobo_get_theme <- function(form = "form.xls") {
     theme(legend.text = element_text(size = 12)) +
     theme(legend.position = c(.9,.55)) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .4))
-  
-  
-  
-  #------------------------------------
-  # THEME FOR 'WIDE' BAR CHARTS
-  #  - we'll use this for small multiple
-  #    charts.  these also have some
-  #    special formatting requirements
-  #------------------------------------
-  
+
   themeList$theme.smallmult <-
     theme.porttheme +
     theme(axis.text = element_text(size = 6)) +
     theme(axis.text.x = element_text(angle = 90))
-  
-  
-  #------------------------------------
-  # THEME FOR Maps
-  # It's based on `theme_minimal` and basically resets all the axes.
-  # It also defined a very subtle grid and a warmgrey background, which gives it some sort of paper map feeling..
-  # The font used here is `Ubuntu Regular` – adapt to your liking, but the font must be installed on your OS.
-  #------------------------------------
-  
+
+
   themeList$theme_map <- function(...) {
     theme_minimal() +
       theme(
-        text = element_text(family = "Ubuntu Regular", color = "#22211d"),
-        
+        text = element_text(family = "Arial", color = "#22211d"),
+
         #------------
         ## Plot
         # plot.background = element_rect(fill = "transparent",colour = NA),
@@ -87,7 +70,7 @@ kobo_get_theme <- function(form = "form.xls") {
         plot.subtitle = element_text(size = 8, hjust = 0, color = "#4e4d47", margin = margin(b = -0.1, t = -0.1, l = 2, unit = "cm"), debug = F),
         plot.margin = unit(c(.5,.5,.2,.5), "cm"),
         plot.caption = element_text(size = 6, hjust = 0.92, margin = margin(t = 0.2, b = 0, unit = "cm"), color = "#939184"),
-        
+
         #------------
         ## Panel
         panel.border = element_blank(),
@@ -96,7 +79,7 @@ kobo_get_theme <- function(form = "form.xls") {
         panel.grid.minor = element_blank(),
         # panel.background = element_rect(fill = "#f5f5f2", color = NA),
         panel.spacing = unit(c(-.1,0.7,.2,1.7), "cm"),
-        
+
         #------------
         ## legend
         legend.title = element_text(size = 8),
@@ -108,7 +91,7 @@ kobo_get_theme <- function(form = "form.xls") {
         #legend.background = element_rect(fill = "transparent",colour = NA),
         # legend.background = element_rect(fill = "#f5f5f2", color = NA),
         legend.background = element_rect(fill = alpha('white', 0.0), color = NA),
-        
+
         #------------
         ## Axis
         axis.line = element_blank(),
@@ -120,6 +103,6 @@ kobo_get_theme <- function(form = "form.xls") {
         ...
       )
   }
-  
+
   return(themeList)
 }

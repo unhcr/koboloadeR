@@ -1,7 +1,7 @@
 # Introduction
 
 koboloadeR is a R package to conduct data discovery and analysis for data collected through  [KoboToolbox](https://www.kobotoolbox.org/), [ODK](https://opendatakit.org/), [ONA](https://ona.io/home/) or any __[xlsform](http://xlsform.org)__ compliant data collection platform.
-This package first builds on the capacity of UNHCR Kobo server @ http://kobo.unhcr.org but it can also be used from any structured dataset.
+This package first builds on the capacity of UNHCR Kobo server @ http://kobo.unhcr.org but it can also be used from any structured dataset. It also comes as a companion tool to the [Integrated Framework for Household Survey](https://unhcr.github.io/Integrated-framework-household-survey)
 
 # Approach
  
@@ -53,14 +53,20 @@ The `koboloadeR` package allows to:
 ## Prerequisite
 To be able to use koboloadeR you will need:
 
- * R: download here: https://cran.rstudio.com/). For Windows, choose "install R for the first time".
+
+ * Java JRE  (https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html): JAVA is required to manipulate excel files.
+
+ * R (https://cran.rstudio.com/). For Windows, choose "install R for the first time".
+ 
+ * **Only for windows user** RTools (https://cran.r-project.org/bin/windows/Rtools/)  - This executable is needed to install the package from github.
 
  * R Studio  (https://www.rstudio.com/products/rstudio/download/#download)
 
-
+ 
 ## Software installation  
-
+ * Install Java JRE: please make sure that JAVA_HOME is actually recorded as an [Environment Variable](https://java.com/en/download/help/path.xml). Note in some case, you may need to reboot your computer to ensure that this environement variable is properly accounted for.
  * Install R: follow instruction from the installer.
+ * Install RTools: follow instruction from the installer.
  * Install R Studio: follow instruction from the installer
  * Launch R Studio
 
@@ -68,10 +74,10 @@ To be able to use koboloadeR you will need:
 
 Note that the package is still in beta-version. We hope to have soon a release available on CRAN.
 
-* Open R studio interface and within the R console, install 'devtool' package: 
+* Open R studio interface and within the R console, install `devtools` package: 
 
 ```
-install.packages("devtools")
+devtools::install.packages("devtools")
 ```
 
 * Install koboloadeR: 
@@ -110,14 +116,16 @@ It might take a while as a few other packages have to be installed or loaded. On
 
 
 ```
-kobo_shiny("app_koboloadeR.R")
+kobo_shiny("app_main_koboloadeR.R")
 ```  
-
-
 
 This will launch a graphic interface with other instructions and options.
 
 For better performances, select "Open in Browser" on the top of the window.
+
+Alternatively, you can use the __console mode__ by running the file `run-analysis.R`. Note however that this implies that you configure correctly on your own the full configuration within the xlform file. 
+
+
 
 ## Get your data
 
@@ -370,6 +378,7 @@ Before anything else, try to restart the R session:
 * "Restart R"
 
 ## Can not install the package
+
 Note that in case you get the following error:
 
 ```
@@ -409,6 +418,18 @@ Sys.sleep(2)
 
 ```
 
+## Error in strptime(xx, f, tz = tz) :  unable to identify current timezone 'C':    please set environment variable 'TZ'
+
+```
+
+## enter this commaned to set up the time zone - you may change it to another anotherone.
+Sys.setenv(TZ='GMT')
+
+## Now you can check...
+Sys.timezone()
+Sys.getenv("TZ")
+
+```
 
 ### The application crashed
 If the application (graphic interface) crashes, make sure that all packages necessary are loaded with:

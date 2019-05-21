@@ -2,7 +2,7 @@
 % Please edit documentation in R/kobo_anonymisation_report.R
 \name{kobo_anonymisation_report}
 \alias{kobo_anonymisation_report}
-\title{Generate anonymised dataset}
+\title{Generate a report displaying disclosure risk for Statistical Disclosure Control}
 \usage{
 kobo_anonymisation_report(frame, form = "form.xls", app = "console")
 }

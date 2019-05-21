@@ -1,6 +1,6 @@
 #' @name kobo_weight
 #' @rdname kobo_weight
-#' @title  Weight the data
+#' @title  Weight a datset
 
 #' @description  Automatically weight the data according to the information of 0-config.R
 #' @param mainDir Path to the project's working directory: mainly for shiny app
@@ -56,7 +56,7 @@ kobo_weight <- function(mainDir = '') {
           fullname_strata <- as.character(dico[strat_row_n, "fullname"])
           fullname_strata <- data.frame(strsplit(fullname_strata, "\\."))
           fullname_strata <- data.frame(fullname_strata[-nrow(fullname_strata), ])
-          fullname_strata <-as.character(fullname_strata[nrow(fullname_strata), ])
+          fullname_strata <- as.character(fullname_strata[nrow(fullname_strata), ])
 
           names(stratas)[names(stratas) == "strata"] <- fullname_strata
           names(sampling)[names(sampling) == "strata"] <- fullname_strata
@@ -65,7 +65,7 @@ kobo_weight <- function(mainDir = '') {
         }
 
         col_stratas <- data.frame(colnames(stratas), stringsAsFactors = FALSE)
-        nrow_su <- data.frame(Strata=character(), nsu=numeric(), stringsAsFactors = FALSE)
+        nrow_su <- data.frame(Strata=character(), nsu = numeric(), stringsAsFactors = FALSE)
 
         for (j in 1:nrow(col_stratas)) {
           split_temp <- as.character(col_stratas[j,1])

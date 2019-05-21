@@ -17,5 +17,19 @@ kobo_get_theme()
 
 }
 \author{
-Maher Daoud
+Maher Daoud, Edouard Legoupil - with insiparation from bbc
+
+
+GENERAL THEME
+we'll use this for most of our charts and build on it when we need to
+
+THEME FOR 'WIDE' BAR CHARTS
+there are several bar charts that are very wide, and need some special formatting
+
+THEME FOR 'WIDE' BAR CHARTS
+we'll use this for small multiple charts.  these also have some special formatting requirements
+
+THEME FOR MAPS
+It's based on theme_minimal and basically resets all the axes.
+It also defined a very subtle grid and a warmgrey background, which gives it some sort of paper map feeling..
 }

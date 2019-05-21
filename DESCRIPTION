@@ -37,10 +37,13 @@ Depends:
     gdata,
     rhandsontable,
     stringr,
+    stringi,
     simFrame,
     classInt,
     ggrepel,
-    DDIwR
+    DDIwR,
+    truncnorm,
+    OpenRepGrid
 Suggests:
     shiny
 URL: https://github.com/unhcr/koboloadeR

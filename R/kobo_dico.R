@@ -1,6 +1,6 @@
 #' @name kobo_dico
 #' @rdname kobo_dico
-#' @title  Data dictionnary
+#' @title  Create Data dictionnary an the xlsform
 #'
 #' @description  Produce a data dictionnary based on the xlsform for the project
 #'
@@ -23,13 +23,13 @@
 #' @export kobo_dico
 #'
 
-kobo_dico <- function(form="form.xls") {
+kobo_dico <- function(form = "form.xls") {
 
   #kobo_form(formid, user = user, api = api)
   cat("\n Your form should be placed within the `data` folder. \n \n")
   # read the survey tab of ODK from
   mainDir <- kobo_getMainDirectory()
-  
+
   form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
 
 
@@ -50,7 +50,7 @@ kobo_dico <- function(form="form.xls") {
   } else
   {cat("1- No column `labelReport` in your survey worksheet. Creating a dummy one for the moment...\n");
     survey[,"labelReport"] <- substr(survey[,"label"],1,80)}
-  
+
   if ("disaggregation" %in% colnames(survey))
   {
   cat("1- Good: You have a column `disaggregation` in your survey worksheet.\n");
@@ -147,7 +147,8 @@ kobo_dico <- function(form="form.xls") {
   ## Avoid columns without names
   survey <- survey[ ,c("type",   "name" ,  "label", "labelReport",
                        #"repeatsummarize",
-                       "variable","disaggregation",  "chapter", "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise","correlate","clean","cluster","predict","mappoint","mappoly"
+                       "variable","disaggregation",  "chapter", "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
+                       "anonymise","correlate","clean","cluster","predict","mappoint","mappoly",
                       # "indicator","indicatorgroup","indicatortype",
                       # "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation"
                        #"indicator","select", "Comment", "indicatordirect", "indicatorgroup" ## This indicator reference
@@ -155,7 +156,7 @@ kobo_dico <- function(form="form.xls") {
                        #"label::Arabic" ,"hint::Arabic",
                        # "hint::English", "relevant",  "required", "constraint",   "constraint_message::Arabic",
                        # "constraint_message::English", "default",  "appearance", "calculation",  "read_only"  ,
-                       # "repeat_count"
+                        "relevant",  "required", "constraint", "repeat_count"
   )]
 
   ## need to delete empty rows from the form
@@ -171,13 +172,18 @@ kobo_dico <- function(form="form.xls") {
 
   ## Extract for select_one
   survey$listname <- with(survey, ifelse(grepl("select_one", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  survey$type) ,
-                                         paste0( substr(survey$type , (regexpr("select_one", survey$type , ignore.case=FALSE, fixed=TRUE))+10,250)),survey$listname))
+                                         paste0( substr(survey$type ,
+                                                        (regexpr("select_one", survey$type , ignore.case = FALSE, fixed = TRUE)) + 10, 250)),
+                                         survey$listname))
 
-  survey$type <- with(survey, ifelse(grepl("select_one", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  survey$type), paste0("select_one"),survey$type))
+  survey$type <- with(survey, ifelse(grepl("select_one", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  survey$type), paste0("select_one"),
+                                     survey$type))
 
   ## Extract for select multiple & clean type field
   survey$listname <- with(survey,  ifelse(grepl("select_multiple", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  survey$type),
-                                          paste0( substr(survey$type , (regexpr("select_multiple", survey$type , ignore.case=FALSE, fixed=TRUE))+16,250)),survey$listname ))
+                                          paste0( substr(survey$type ,
+                                                         (regexpr("select_multiple", survey$type , ignore.case = FALSE, fixed = TRUE)) + 16, 250)),
+                                          survey$listname ))
 
 
   survey$type <- with(survey, ifelse(grepl("select_multiple", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  survey$type), paste0("select_multiple_d"),survey$type))
@@ -188,7 +194,7 @@ kobo_dico <- function(form="form.xls") {
 
   ## handle case where we have "or_other"
   survey$listname <- with(survey, ifelse(grepl("or_other", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  survey$listname) ,
-                                         paste0( substr(survey$listname , 1, (nchar(survey$listname)-8 ))),
+                                         paste0( substr(survey$listname , 1, (nchar(survey$listname) - 8 ))),
                                          survey$listname))
 
   ## Remove trailing space
@@ -201,7 +207,7 @@ kobo_dico <- function(form="form.xls") {
   ### identify Repeat questions with nest levels
   cat("\n Be careful! The current function only support 2 levels of nested repeat - for instance household / Case / Individual. \n \n")
   survey$qrepeat <- ""
-  for(i in 2:nrow(survey))
+  for (i in 2:nrow(survey))
   {
     #Check based on repeat type
          if (survey[ i, c("type")] %in% c("begin repeat","begin_repeat") && survey[ i - 1, c("qrepeat")] == "")                  {survey[ i, c("qrepeat")]  <- "repeatnest1"}
@@ -218,25 +224,25 @@ kobo_dico <- function(form="form.xls") {
   survey$qrepeatlabel <- "household"
   nestable <- survey[survey$type %in% c("begin_repeat","begin repeat") , c("name","qrepeat","type")]
   nestable$name <- as.character(nestable$name)
-  for(i in 2:nrow(survey))
+  for (i in 2:nrow(survey))
   {
     # Now insert the repeat label based on name
     # i <-230
          if ( survey[ i, c("type")] == "begin repeat" )                                                {survey[ i, c("qrepeatlabel")]  <- survey[ i, c("name")]}
-    else if ( survey[ i, c("type")] !="end repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest1" )   {survey[ i, c("qrepeatlabel")]  <- survey[ i - 1, c("qrepeatlabel")] }
-    else if ( survey[ i, c("type")] !="end repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest2" )   {survey[ i, c("qrepeatlabel")]  <- survey[ i - 1, c("qrepeatlabel")] }
+    else if ( survey[ i, c("type")] != "end repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest1" )   {survey[ i, c("qrepeatlabel")]  <- survey[ i - 1, c("qrepeatlabel")] }
+    else if ( survey[ i, c("type")] != "end repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest2" )   {survey[ i, c("qrepeatlabel")]  <- survey[ i - 1, c("qrepeatlabel")] }
     else if ( survey[ i, c("type")] == "end repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest1")    {survey[ i, c("qrepeatlabel")]  <-  "household"}
     else if ( survey[ i, c("type")] == "end repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest2")    { nestabove <- as.character(survey[ i - 1, c("qrepeatlabel")])
-                                                                                                       nestabovenum <- as.integer(which(nestable$name == nestabove ) -1)
+                                                                                                       nestabovenum <- as.integer(which(nestable$name == nestabove ) - 1)
                                                                                                       survey[ i, c("qrepeatlabel")]  <-  as.character( nestable[ nestabovenum , 1] ) }
 
     ## Sometimes it seems that we get an underscore for type
     else if ( survey[ i, c("type")] == "begin_repeat" )                                                {survey[ i, c("qrepeatlabel")]  <- survey[ i, c("name")]}
-    else if ( survey[ i, c("type")] !="end_repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest1" )   {survey[ i, c("qrepeatlabel")]  <- survey[ i - 1, c("qrepeatlabel")] }
-    else if ( survey[ i, c("type")] !="end_repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest2" )   {survey[ i, c("qrepeatlabel")]  <- survey[ i - 1, c("qrepeatlabel")] }
+    else if ( survey[ i, c("type")] != "end_repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest1" )   {survey[ i, c("qrepeatlabel")]  <- survey[ i - 1, c("qrepeatlabel")] }
+    else if ( survey[ i, c("type")] != "end_repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest2" )   {survey[ i, c("qrepeatlabel")]  <- survey[ i - 1, c("qrepeatlabel")] }
     else if ( survey[ i, c("type")] == "end_repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest1")    {survey[ i, c("qrepeatlabel")]  <-  "household"}
     else if ( survey[ i, c("type")] == "end_repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest2")    { nestabove <- as.character(survey[ i - 1, c("qrepeatlabel")])
-                                                                                                        nestabovenum <- as.integer(which(nestable$name == nestabove ) -1)
+                                                                                                        nestabovenum <- as.integer(which(nestable$name == nestabove ) - 1)
                                                                                                         survey[ i, c("qrepeatlabel")]  <-  as.character( nestable[ nestabovenum , 1] ) }
 
     else   {survey[ i, c("qrepeatlabel")]  <-  "household"}
@@ -244,7 +250,7 @@ kobo_dico <- function(form="form.xls") {
 
   ### Get question levels in order to match the variable name
   survey$qlevel <- ""
-  for(i in 2:nrow(survey))
+  for (i in 2:nrow(survey))
   {      if (survey[ i, c("type")] == "begin group" && survey[ i - 1, c("qlevel")] == "" )      {survey[ i, c("qlevel")]  <-  "level1"}
     else if (survey[ i, c("type")] == "begin_group" && survey[ i - 1, c("qlevel")] == "" )      {survey[ i, c("qlevel")]  <-  "level1"}
 
@@ -292,7 +298,7 @@ kobo_dico <- function(form="form.xls") {
       Note that there should not be any dots in the orginal variables. \n
       Double Check as well there's no duplicate for the name column in the survey worksheet\n \n")
   survey$qgroup <- ""
-  for(i in 2:nrow(survey))
+  for (i in 2:nrow(survey))
   {
     #i <- 54
     #i <- 20
@@ -370,8 +376,8 @@ kobo_dico <- function(form="form.xls") {
   } else
   {cat("12 -  No column `labelReport` in your `choices` worksheet. Creating a dummy one for the moment...\n");
     choices[,"labelReport"] <- substr(choices[,"label"],1,80)}
-  
-  
+
+
   if ("order" %in% colnames(choices))
   {
     cat("12 -  Good: You have a column `order` in your `choices` worksheet.\n");
@@ -426,6 +432,7 @@ kobo_dico <- function(form="form.xls") {
     #names(survey) - "type" "name",  "fullname", "label",  "listname", "qrepeat"m  "qlevel",   "qgroup"
   choices2 <- choices[ ,c("type", "name", "namefull",  "labelfull", "labelReport", "chapter","disaggregation","correlate", "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise",
                           "clean","cluster","predict","mappoint","mappoly",
+                          "relevant",  "required", "constraint", "repeat_count",
                           "listname", "qrepeat","qrepeatlabel",  "qlevel", "qgroup", "labelchoice",
                          #"repeatsummarize",
                          "variable",
@@ -439,6 +446,7 @@ kobo_dico <- function(form="form.xls") {
 
   survey2 <-    survey[,c("type", "name",  "fullname", "label", "labelReport", "chapter", "disaggregation","correlate",  "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise",
                           "clean","cluster","predict","mappoint","mappoly",
+                          "relevant",  "required", "constraint", "repeat_count",
                           "listname", "qrepeat","qrepeatlabel",  "qlevel",   "qgroup", "labelchoice",
                           #"repeatsummarize",
                           "variable",

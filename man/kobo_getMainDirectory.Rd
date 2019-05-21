@@ -2,7 +2,7 @@
 % Please edit documentation in R/kobo_getMainDirectory.R
 \name{kobo_getMainDirectory}
 \alias{kobo_getMainDirectory}
-\title{Main Directory for KoboloadeR package}
+\title{get Main Directory for a KoboloadeR project}
 \usage{
 kobo_getMainDirectory()
 }

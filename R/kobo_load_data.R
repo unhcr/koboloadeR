@@ -41,10 +41,9 @@ kobo_load_data <- function(form = "form.xls", app="console") {
       updateProgress()
     }
     kobo_load_packages()
-    configInfo <- kobo_get_config(form)
-    configInfo <- configInfo[!is.na(configInfo$name),]
+    configInfoOrigin <- kobo_get_config(form)
+    configInfoOrigin <- configInfoOrigin[!is.na(configInfoOrigin$name),]
     mainDir <- kobo_getMainDirectory()
-    form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
     
     cat("\n\n\n Generate dictionnary from the xlsform \n\n\n\n")
     kobo_dico(form)
@@ -52,7 +51,7 @@ kobo_load_data <- function(form = "form.xls", app="console") {
     
     ## Load data #######################################################################
     cat("\n\n\n Load original dataset \n\n\n\n")
-    originalData <- read.csv(paste(mainDir,"/data/MainDataFrame.csv",sep = ""), sep = ",", encoding = "UTF-8", na.strings = "") 
+    originalData <- read.csv(configInfoOrigin[configInfoOrigin$name=="MainDataFrame", "path"], sep = ",", encoding = "UTF-8", na.strings = "") 
     
     ## Check to split select_multiple if data is extracted from ODK ###################
     cat("\n\n\n Now split select_multiple  variables \n\n\n\n")
@@ -72,21 +71,22 @@ kobo_load_data <- function(form = "form.xls", app="console") {
 
     ## Join with Weight file #########################################
     cat("\n\n\n Adding weight and removing some forms \n\n\n\n")
-    if(nrow(configInfo)==0){
+    if(nrow(configInfoOrigin)==0){
       cat("\n\n\n You need to enter the sampling methods and all required parameters in settings sheet before processed  \n\n\n\n")
       return(FALSE)
     }
-    if(configInfo[configInfo$name=="sample_type", "value"] != "No sampling(type 1)"){
-      if(app=="shiny"){
-        progress$set(message = "Adding weights with Main Data File in progress...")
-        updateProgress()
+    if(length(configInfoOrigin[configInfoOrigin$name=="sample_type", "value"])!=0){
+      if(configInfoOrigin[configInfoOrigin$name=="sample_type", "value"] != "No sampling(type 1)"){
+        if(app=="shiny"){
+          progress$set(message = "Adding weights with Main Data File in progress...")
+          updateProgress()
+        }
+        path <- configInfoOrigin[configInfoOrigin$name=="weights_info", "path"]
+        weight <- read.csv(path,stringsAsFactors = F)
+        variableName <- configInfoOrigin[configInfoOrigin$name=="variable_name", "value"]
+        household <- left_join(x = household, y = weight, by = variableName)
       }
-      path <- configInfo[configInfo$name=="weights_info", "path"]
-      weight <- read.csv(path,stringsAsFactors = F)
-      variableName <- configInfo[configInfo$name=="variable_name", "value"]
-      household <- left_join(x = household, y = weight, by = variableName)
     }
-    
     ## Cheking the labels matching... #################################################
     ## household is the default root data componnents to be used -- in order to deal with nested dataset
     if(app=="shiny"){
@@ -107,7 +107,7 @@ kobo_load_data <- function(form = "form.xls", app="console") {
       updateProgress()
     }
     
-    configInfo <- configInfo[startsWith(tolower(configInfo$name), "instanceid"),]
+    configInfo <- configInfoOrigin[startsWith(tolower(configInfoOrigin$name), "instanceid"),]
     levelsOfDF <- kobo_get_dataframes_levels(form)
     levelsOfDF <- levelsOfDF[levelsOfDF$name!="MainDataFrame",]
     if(nrow(levelsOfDF)!=0){
@@ -124,7 +124,9 @@ kobo_load_data <- function(form = "form.xls", app="console") {
           progress$set(message = paste("loading",dbr,"file in progress..."))
           updateProgress()
         }
-        dataFrame <- read.csv(paste(mainDir,"/data/",dbr,".csv",sep = ""),stringsAsFactors = F) 
+        
+        dataFrame <- read.csv(configInfoOrigin[configInfoOrigin$name==dbr,"path"], stringsAsFactors = F) 
+        
         if(app=="shiny"){
           progress$set(message = paste("Splitting",dbr,"file in progress..."))
           updateProgress()

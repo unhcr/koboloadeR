@@ -4,9 +4,18 @@
 #'
 #' @description  Automatically produce an dummy dataset in line with the structure of an xlsform.
 #'
-#'  This method should be used whenever Kobo or ODK forms are used as data collection tools and personal data is being collected.
-#'  Even when personal data is not being collected it still may be appropriate to apply the methodology since quasi-identifiable data
-#' @param  form xlsform file with .xls extension saved int he project data folder
+#' Making decisions about research design and analysis strategies is often difficult before data is collected,
+#' because it is hard to imagine the exact form data will take.
+#' This function helps imagine what data will look like before they collect it.
+#'
+#'  Supported Features
+#'
+#' - Gnerate a data set with an output similar to the one needed in koboloader
+#' - respects ODK structure "`relevant`" skip logic (Some advanced functionality such as "coalesce()" not covered)
+#'   "`constraint`" and "`repeat`"
+#' - adds InstandID column to link hierearchical data based on "`repeat_count`"
+#'
+#' @param  dico file representing the xlsform data dictionnary - generated from kobo_dico()
 #'
 #' @author Edouard Legoupil
 #'
@@ -21,7 +30,7 @@
 #' }
 #'
 
-kobo_dummy <- function(form) {
+kobo_dummy <- function(dico = "dico_form.xls.csv") {
 
   ### Write dummy dataset
 
@@ -32,20 +41,23 @@ kobo_dummy <- function(form) {
   # install.packages("stringi")
   # install.packages("OpenRepGrid")
   # install.packages("sp")
-  library(charlatan)
-  library(fakir)
+  # library(charlatan)
+  # library(fakir)
   library(tidyverse)
   library(truncnorm)
   library(stringi)
   library(OpenRepGrid)
   library(sp)
 
+  mainDir <- kobo_getMainDirectory()
 
+  #form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
   #form <- "form.xls"
-  library(koboloadeR)
-  kobo_dico(form)
-  dico <- read.csv("data/dico_form.xls.csv")
-
+  #library(koboloadeR)
+  #kobo_dico(form_tmp)
+  # dico <- read.csv("data/dico_form.xls.csv")
+  dico <- paste(mainDir, "data", dico, sep = "/", collapse = "/")
+  #dico <- read.csv(paste0(mainDir, "data/dico_", form, ".csv"))
 
   ## Extract constraint on data ###########
   ## From constraint  lower bounds &  upper bound

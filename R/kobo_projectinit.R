@@ -99,10 +99,10 @@ kobo_projectinit <- function() {
 
     destfile = paste0(mainDir,"/code/run-analysis.R")
     if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/run-analysis.R",sep = ""), destfile)
+      file.copy(paste(path_correct,"/koboloadeR/script/run-analysis.R",sep = ""), destfile)
     }else{
       file.remove(destfile)
-      file.copy(paste(path_correct,"/koboloadeR/run-analysis.R",sep = ""), destfile)
+      file.copy(paste(path_correct,"/koboloadeR/script/run-analysis.R",sep = ""), destfile)
     }
 
 
@@ -142,10 +142,10 @@ kobo_projectinit <- function() {
     #   file.copy(paste(path_correct,"/koboloadeR/script/4-generate-prediction.R", sep = ""), destfile)
     # }
     #
-    destfile = paste0(mainDir,"/code/report.Rmd")
-    if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/script/report.Rmd", sep = ""), destfile)
-    }
+    # destfile = paste0(mainDir,"/code/report.Rmd")
+    # if (!file.exists(destfile)) {
+    #   file.copy(paste(path_correct,"/koboloadeR/script/report.Rmd", sep = ""), destfile)
+    # }
 
     destfile = paste0(mainDir,"/code/style-unhcr-portrait.docx")
     if (!file.exists(destfile)) {

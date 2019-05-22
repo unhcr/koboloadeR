@@ -13,7 +13,7 @@ kobo_get_config(form = "form.xls")
 Return a dataframe that contains configuration of the project
 }
 \description{
-Return all configuration from settings sheet of xlsform
+Return all configuration from Analysis Settings sheet of xlsform
 }
 \examples{
 kobo_get_config()

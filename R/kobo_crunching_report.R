@@ -136,7 +136,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
         updateProgress()
       }
       cat(paste(i, " - Render chapter for ",as.character(chapters[ i , 1]),"\n" ))
-      chapter.name <- paste("code/",i,"-", chaptersname, "-chapter.Rmd", sep = "")
+      chapter.name <- paste(mainDir, "/code/",i,"-", chaptersname, "-chapter.Rmd", sep = "")
 
       ## TO DO : CHECK IF FILE EXIST - AND REQUEST USER TO DELETE BEFORE REGENERATING - SUGGESTING TO SAVE PREVIOUS UNDER NEW NAME
       if (file.exists(chapter.name)) file.remove(chapter.name)
@@ -191,7 +191,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
 
 
       ## TO DO: Use config file to load the different frame
-      cat("household <- read.csv(paste0(mainDirroot,\"/data/MainDataFrame.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = chapter.name , sep = "\n", append = TRUE)
+      cat("household <- read.csv(paste0(mainDirroot,\"/data/household.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = chapter.name , sep = "\n", append = TRUE)
 
       for (dbr in dataBeginRepeat) {
         cat(paste(dbr, "<- read.csv(paste0(mainDirroot,\"/data/",dbr,"-edited.csv\"), encoding = \"UTF-8\", na.strings = \"\")", sep = ""), file = chapter.name , sep = "\n", append = TRUE)

@@ -4,7 +4,7 @@
 \alias{kobo_get_theme}
 \title{Get Themes}
 \usage{
-kobo_get_theme(form = "form.xls")
+kobo_get_theme()
 }
 \value{
 Return a list that contains all themes

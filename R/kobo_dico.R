@@ -144,6 +144,34 @@ kobo_dico <- function(form = "form.xls") {
   {cat("11- No column `mappoly` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
     survey$mappoly <- ""}
 
+  if ("relevant" %in% colnames(survey))
+  {
+    cat("1- Good: You have a column `relevant` in your survey worksheet.\n");
+  } else
+  {cat("1- No column `relevant` in your survey worksheet. Creating a dummy one for the moment...\n");
+    survey[,"relevant"] <- ""}
+  
+  if ("required" %in% colnames(survey))
+  {
+    cat("1- Good: You have a column `required` in your survey worksheet.\n");
+  } else
+  {cat("1- No column `required` in your survey worksheet. Creating a dummy one for the moment...\n");
+    survey[,"required"] <- ""}
+  
+  if ("constraint" %in% colnames(survey))
+  {
+    cat("1- Good: You have a column `constraint` in your survey worksheet.\n");
+  } else
+  {cat("1- No column `constraint` in your survey worksheet. Creating a dummy one for the moment...\n");
+    survey[,"constraint"] <- ""}
+  
+  if ("repeat_count" %in% colnames(survey))
+  {
+    cat("1- Good: You have a column `repeat_count` in your survey worksheet.\n");
+  } else
+  {cat("1- No column `repeat_count` in your survey worksheet. Creating a dummy one for the moment...\n");
+    survey[,"repeat_count"] <- ""}
+  
   ## Avoid columns without names
   survey <- survey[ ,c("type",   "name" ,  "label", "labelReport",
                        #"repeatsummarize",

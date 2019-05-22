@@ -2,7 +2,7 @@
 #' @rdname kobo_get_config
 #' @title Get Configuration
 #'
-#' @description Return all configuration from settings sheet of xlsform 
+#' @description Return all configuration from Analysis Settings sheet of xlsform 
 #' 
 #' @param form The full filename of the form to be accessed (xls or xlsx file). where settings sheet contains all configuration of the project
 #' 
@@ -20,7 +20,7 @@ kobo_get_config <- function(form = "form.xls") {
   mainDir <- kobo_getMainDirectory()
   form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
   settings <- tryCatch({
-    as.data.frame(read_excel(form_tmp, sheet = "settings"),
+    as.data.frame(read_excel(form_tmp, sheet = "analysisSettings"),
                   stringsAsFactors = FALSE)
   }, error = function(err) {
     data.frame(

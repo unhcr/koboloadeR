@@ -5,7 +5,7 @@
 \title{Edit XLS form with shiny app for configuration}
 \usage{
 kobo_edit_form(form = "form.xls", survey = NULL, choices = NULL,
-  indicator = NULL, settings = NULL)
+  indicator = NULL, settings = NULL, analysisSettings = NULL)
 }
 \arguments{
 \item{form}{The full filename of the form to be accessed (xls or xlsx file).
@@ -18,6 +18,8 @@ It is assumed that the form is stored in the data folder.}
 \item{indicator}{Dataframe that represent the data of indicator sheet in the xlsform}
 
 \item{settings}{Dataframe that represent the data of settings sheet in the xlsform}
+
+\item{analysisSettings}{Dataframe that represent the data of analysisSettings sheet in the xlsform}
 }
 \value{
 No return, this function edit the original XLSform directly

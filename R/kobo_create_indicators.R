@@ -136,43 +136,43 @@ kobo_create_indicators <- function(form = "form.xls") {
           
           ## Build and run the formula to insert the indicator in the right frame  ###########################
           indic.formula <- paste0(indicator.frame,"$",indicator.fullname," <- ",indicator.calculation )
-          if (file.exists("code/temp.R")) file.remove("code/temp.R")
-          cat(paste('form <- "',form,'"',sep = ""), file = "code/temp.R" , sep = "\n", append = TRUE)
-          cat("mainDir <- kobo_getMainDirectory()", file = "code/temp.R" , sep = "\n", append = TRUE)
-          cat('form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")', file = "code/temp.R" , sep = "\n", append = TRUE)
-          cat('dataBeginRepeat <- kobo_get_begin_repeat()', file = "code/temp.R" , sep = "\n", append = TRUE)
-          cat('dataBeginRepeat <- dataBeginRepeat$names', file = "code/temp.R" , sep = "\n", append = TRUE)
-          cat('household <- read.csv(paste(mainDir,"/data/household.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")', file = "code/temp.R" , sep = "\n", append = TRUE)
+          if (file.exists(paste0(mainDir,"/code/temp.R") )) file.remove(paste0(mainDir,"/code/temp.R"))
+          cat(paste('form <- "',form,'"',sep = ""), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+          cat("mainDir <- kobo_getMainDirectory()", file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+          cat('form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+          cat('dataBeginRepeat <- kobo_get_begin_repeat()', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+          cat('dataBeginRepeat <- dataBeginRepeat$names', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+          cat('household <- read.csv(paste(mainDir,"/data/household.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           
           cat('
           for (dbr in dataBeginRepeat) {
             dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""),stringsAsFactors = F) 
             assign(dbr, dataFrame)
           }
-          ', file = "code/temp.R" , sep = "\n", append = TRUE)
+          ', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           
-          cat(indic.formula, file = "code/temp.R" , sep = "\n", append = TRUE)
-          cat("####", file = "code/temp.R" , sep = "\n", append = TRUE)
+          cat(indic.formula, file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+          cat("####", file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           
           ## do a check on indicator variable type
           indicator.type2 <- indicator.type
           ifelse(indicator.type == "select_one", indicator.type2 <- "character", indicator.type2 <- indicator.type)
           
           
-          cat(paste0(indicator.frame,"$",indicator.fullname," <- as.",indicator.type2,"(",indicator.frame,"$",indicator.fullname,")"), file = "code/temp.R" , sep = "\n", append = TRUE)
-          cat(paste0("str(",indicator.frame,"$",indicator.fullname,")"), file = "code/temp.R" , sep = "\n", append = TRUE)
-          cat(paste0("summary(",indicator.frame,"$",indicator.fullname,")"), file = "code/temp.R" , sep = "\n", append = TRUE)
+          cat(paste0(indicator.frame,"$",indicator.fullname," <- as.",indicator.type2,"(",indicator.frame,"$",indicator.fullname,")"), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+          cat(paste0("str(",indicator.frame,"$",indicator.fullname,")"), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+          cat(paste0("summary(",indicator.frame,"$",indicator.fullname,")"), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           
           if(indicator.frame == "household"){
-            cat('write.csv(household, paste(mainDir,"/data/household.csv",sep = ""), row.names = FALSE, na = "")', file = "code/temp.R" , sep = "\n", append = TRUE)
+            cat('write.csv(household, paste(mainDir,"/data/household.csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           }else{
             cat(paste('dbr<-"',indicator.frame,'"',sep = ""))
-            cat('write.csv(eval(as.name(dbr)),paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""), row.names = FALSE, na = "")', file = "code/temp.R" , sep = "\n", append = TRUE)
+            cat('write.csv(eval(as.name(dbr)),paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           }
           
-          source("code/temp.R")
+          source(paste0(mainDir,"/code/temp.R"))
           cat(paste0(i, "- Executed  indicator: ", indicator.label,"\n"))
-          if (file.exists("code/temp.R")) file.remove("code/temp.R")
+          if (file.exists(paste0(mainDir,"/code/temp.R"))) file.remove(paste0(mainDir,"/code/temp.R"))
           
           ## Insert the indicator in a temp dico frame to be appended to the full dico  ######################
           

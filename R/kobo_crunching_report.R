@@ -145,7 +145,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
       ## TO DO : put in configuration wethere report should be portrait or landscape
       cat("---", file = chapter.name , sep = "\n", append = TRUE)
       cat(paste("title: \"Data Crunching Report: ",chaptersname , "- Draft not for distribution. \"", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
-      cat("author: \"Generated with [Koboloader](https://github.com/unhcr/koboloadeR) \"", file = chapter.name , sep = "\n", append = TRUE)
+      cat("author: \"Generated with [Koboloader](https://unhcr.github.io/koboloadeR/docs) \"", file = chapter.name , sep = "\n", append = TRUE)
       cat("date: \" `r format(Sys.Date(),  '%d %B %Y')`\"", file = chapter.name , sep = "\n", append = TRUE)
       cat("always_allow_html: yes", file = chapter.name , sep = "\n", append = TRUE)
       cat("output:",file = chapter.name , sep = "\n", append = TRUE)
@@ -320,7 +320,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
 
 
 
-        ###selectone###################################################################################################
+        ###select one###################################################################################################
         if (questions.type == "select_one" ) {
 
           cat(paste("Single choice question ","\n\n",sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
@@ -332,6 +332,18 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
           figheight <- as.integer(nrow(frequ))
           if (figheight == 0) { figheight <- 1} else {figheight <- figheight/1.2}
 
+          ## Check that there are responses to be displayed ####
+          if (nrow(frequ) %in% c("0","1") ) {
+            cat(paste0("cat(\"No responses or only one modality recorded for this question...\")"),file = chapter.name , sep = "\n", append = TRUE)
+            cat("No responses recorded for this question...\n")
+
+            #  names(frequ)[2] <- "ccheck"
+            #  try <- frequ$ccheck
+            #  } else if (sum(try) == 0) {
+            #   cat(paste0("cat(\"No responses recorded for this question...\")"),file = chapter.name , sep = "\n", append = TRUE)
+            #    cat("No responses recorded for this question...\n")
+          }      else {
+
           cat(paste("### Tabulation" ,sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
           ## Open chunk
           cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight,", size=\"small\"}\n"), file = chapter.name, append = TRUE)
@@ -340,17 +352,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
           cat(paste0("frequ <- as.data.frame(table(",questions.variable,"))"),file = chapter.name ,sep = "\n", append = TRUE)
           #cat(paste0("if (nrow(frequ)==0){ cat(\"No response for this question\") } else{"),file = chapter.name ,sep = "\n", append = TRUE)
 
-          ## Check that there are responses to be displayed ####
-          if (nrow(frequ) %in% c("0","1") ) {
-            cat(paste0("cat(\"No responses recorded for this question...\")"),file = chapter.name , sep = "\n", append = TRUE)
-            cat("No responses recorded for this question...\n")
 
-            #  names(frequ)[2] <- "ccheck"
-            #  try <- frequ$ccheck
-            #  } else if (sum(try) == 0) {
-            #   cat(paste0("cat(\"No responses recorded for this question...\")"),file = chapter.name , sep = "\n", append = TRUE)
-            #    cat("No responses recorded for this question...\n")
-          }      else{
          #   cat(paste0("## display table"),file = chapter.name ,sep = "\n", append = TRUE)
          #   cat(paste0("## Reorder factor"),file = chapter.name ,sep = "\n", append = TRUE)
 
@@ -372,7 +374,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
             cat(paste0("## Frequency table with NA in order to get non response rate"),file = chapter.name ,sep = "\n", append = TRUE)
             cat(paste0("frequ1 <- as.data.frame(prop.table(table(", questions.variable,", useNA = \"ifany\")))"),file = chapter.name ,sep = "\n", append = TRUE)
             cat(paste0("frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]"),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("frequ1 <- frequ1[!(frequ1$Var1== \"NA\"), ]"),file = chapter.name ,sep = "\n", append = TRUE)
+            cat(paste0("frequ1 <- frequ1[!(frequ1$Var1 == \"NA\"), ]"),file = chapter.name ,sep = "\n", append = TRUE)
             cat(paste0("percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
             cat(paste0("## Frequency table without NA"),file = chapter.name ,sep = "\n", append = TRUE)
             cat(paste0("frequ2 <- as.data.frame(prop.table(table(", questions.variable,",useNA = \"no\")))"),file = chapter.name ,sep = "\n", append = TRUE)
@@ -428,7 +430,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
             cat("\n", file = chapter.name, append = TRUE)
           } else if (nrow(frequ) %in% c("0","1")) {
             # cat("No responses recorded for this question. No disaggregation...\n",file = chapter.name , sep = "\n", append = TRUE)
-            cat("No responses recorded for this question. No disaggregation...\n")
+            cat("No responses or only one modality recorded for this question. No disaggregation...\n")
             cat("\n", file = chapter.name, append = TRUE)
           } else {
 
@@ -508,7 +510,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
                   cat(paste0("xlab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("ylab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("coord_flip() +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("scale_y_continuous(breaks= pretty_breaks()) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                  cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("subtitle = \"Before data capping treatement. By question: ",disag.label,".\") +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("kobo_unhcr_style_histo()"),file = chapter.name ,sep = "\n", append = TRUE)
@@ -523,7 +525,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
                   cat(paste0("xlab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("ylab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("coord_flip() +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("scale_y_continuous(breaks= pretty_breaks()) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                  cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,".\") +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("kobo_unhcr_style_histo()"),file = chapter.name ,sep = "\n", append = TRUE)
@@ -765,7 +767,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
             cat(paste0("cat(\"No responses recorded for this question...\")"),file = chapter.name , sep = "\n", append = TRUE)
             cat("No responses recorded for this question...\n")
           } else if (nrow(frequ) > 10) {
-            cat(paste0("cat(\"There's too many potential values to display. We will only show the histogram. \n \")"),file = chapter.name ,sep = "\n", append = TRUE)
+          #   cat(paste0("cat(\"There's too many potential values to display. We will only show the histogram. \n \")"),file = chapter.name ,sep = "\n", append = TRUE)
           } else{
          #   cat(paste0("## display table"),file = chapter.name ,sep = "\n", append = TRUE)
          #   cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = chapter.name ,sep = "\n", append = TRUE)
@@ -936,8 +938,10 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
                   cat(paste0("geom_count(aes(size = ..prop.., group = 1)) +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("scale_size_area(max_size = 10) +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("guides(fill = FALSE) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                  cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                  cat(paste0("scale_x_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("# xlab(correllabel) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("#ylab(variablelabel) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                  cat(paste0("# ylab(variablelabel) +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("geom_smooth(method=lm) +  # Add a loess smoothed fit curve with confidence region"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("ggtitle(\"Scatterplot before data capping treatment\") +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("kobo_unhcr_style_scatter()"),file = chapter.name ,sep = "\n", append = TRUE)
@@ -950,6 +954,8 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
                   cat(paste0("geom_count(aes(size = ..prop.., group = 1)) +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("scale_size_area(max_size = 10) +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("guides(fill = FALSE) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                  cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                  cat(paste0("scale_x_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("# xlab(correllabel) +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("#ylab(variablelabel) +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("geom_smooth(method=lm) +  # Add a loess smoothed fit curve with confidence region"),file = chapter.name ,sep = "\n", append = TRUE)

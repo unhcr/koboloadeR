@@ -497,6 +497,7 @@ server <- shinyServer(function(input, output, session) {
       updateProgress()
       settingsDF <- data.frame(name = character(),
                                label = character(),
+                               options = character(),
                                value = character(),
                                path = character(),
                                stringsAsFactors = FALSE
@@ -508,7 +509,8 @@ server <- shinyServer(function(input, output, session) {
           dataFile <- read.csv(inFile$datapath, header=TRUE, sep=input[[paste("separator",projectConfigurationInfo$data[["beginRepeatList"]][i],sep = "")]], stringsAsFactors = FALSE)
           fileName <- paste("/",projectConfigurationInfo$data[["beginRepeatList"]][i], ".csv", sep="")
           settingsDF <- rbind(settingsDF,  data.frame(name = projectConfigurationInfo$data[["beginRepeatList"]][i],
-                                                      label = NA,
+                                                      label = paste("Name and the path of", projectConfigurationInfo$data[["beginRepeatList"]][i]),
+                                                      options = "",
                                                       value = paste(projectConfigurationInfo$data[["beginRepeatList"]][i], ".csv", sep=""),
                                                       path = paste0(mainDir(), "/data", fileName),
                                                       stringsAsFactors = FALSE
@@ -527,7 +529,21 @@ server <- shinyServer(function(input, output, session) {
       configInfo <- configInfo[!configInfo$name %in% settingsDF$name, ]
       settingsDF <- rbind(configInfo, settingsDF)
       settingsDF <- settingsDF[!is.na(settingsDF$name),]
-      kobo_edit_form(settings = settingsDF )
+
+      result <- kobo_edit_form(analysisSettings = settingsDF )
+      
+      if(class(result) == "try-error"){
+        shinyalert("Error",
+                   result,
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
       
       updateProgress()
       projectConfigurationInfo$log[["subAndMainfiles"]] <- TRUE
@@ -712,6 +728,7 @@ server <- shinyServer(function(input, output, session) {
                               c(
                                 paste0("instanceID_", child, "_", parent),
                                 paste0("The instanceID between the child (",child,")", " and the parent (",parent,")"),
+                                options = "",
                                 input[[paste("instanceIDInput", child, "child", parent, "parent", sep = "")]],
                                 path = ""
                               )
@@ -721,6 +738,7 @@ server <- shinyServer(function(input, output, session) {
                               c(
                                 paste0("instanceID_", parent, "_", child),
                                 paste0("The instanceID between the parent (",parent,")", " and the child (",child,")"),
+                                options = "",
                                 input[[paste("instanceIDInput", parent, "parent", child, "child", sep = "")]],
                                 path = ""
                               )
@@ -773,7 +791,22 @@ server <- shinyServer(function(input, output, session) {
       }
 
       updateProgress()
-      kobo_edit_form(survey = survey, settings = configInfo)
+      
+      result <- kobo_edit_form(survey = survey, analysisSettings = configInfo)
+      
+      if(class(result) == "try-error"){
+        shinyalert("Error",
+                   result,
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
+      
       removeModal()
     }, error = function(err) {
       print("jkfhg8fsdjksdjioerf")
@@ -1223,6 +1256,7 @@ server <- shinyServer(function(input, output, session) {
     tryCatch({
       settingsDF <- data.frame(name = character(),
                                label = character(),
+                               options = character(),
                                value = character(),
                                path = character(),
                                stringsAsFactors = FALSE
@@ -1257,11 +1291,13 @@ server <- shinyServer(function(input, output, session) {
       if(sum(input$samplingSelectInput == "No sampling(type 1)")){
         settingsDF[lastRow,"name"] <- "sample_type"
         settingsDF[lastRow,"label"] <- "Sample type of the project"
+        settingsDF[lastRow,"options"] <- "1. No sampling(type 1) 2. Cluster sample (type 2) 3. Stratified sample (type 3)"
         settingsDF[lastRow,"value"] <- "No sampling(type 1)"
       }
       else if(sum(input$samplingSelectInput == "Cluster sample (type 2)")){
         settingsDF[lastRow,"name"] <- "sample_type"
         settingsDF[lastRow,"label"] <- "Sample type of the project"
+        settingsDF[lastRow,"options"] <- "1. No sampling(type 1) 2. Cluster sample (type 2) 3. Stratified sample (type 3)"
         settingsDF[lastRow,"value"] <- input$samplingSelectInput
         
         if(sum(input$variableNameCluster == "")){
@@ -1279,7 +1315,8 @@ server <- shinyServer(function(input, output, session) {
         updateProgress()
         lastRow <- lastRow+1
         settingsDF[lastRow,"name"] <- "variable_name"
-        settingsDF[lastRow,"label"] <- "The name of cluster variable"
+        settingsDF[lastRow,"label"] <- "The name of cluster variable that will be used to join the weight file with the main file, please make sure the name of this variable exists in both files"
+        
         settingsDF[lastRow,"value"] <- input$variableNameCluster
         
         
@@ -1310,6 +1347,7 @@ server <- shinyServer(function(input, output, session) {
       else if(sum(input$samplingSelectInput == "Stratified sample (type 3)")){
         settingsDF[lastRow,"name"] <- "sample_type"
         settingsDF[lastRow,"label"] <- "Sample type of the project"
+        settingsDF[lastRow,"options"] <- "1. No sampling(type 1) 2. Cluster sample (type 2) 3. Stratified sample (type 3)"
         settingsDF[lastRow,"value"] <- input$samplingSelectInput
         updateProgress()
         if(sum(input$variableNameStratified == "")){
@@ -1349,7 +1387,7 @@ server <- shinyServer(function(input, output, session) {
           write.csv(dataFile,  paste(mainDir(), "data", "/weightsStratified.csv", sep = "/", collapse = "/"), row.names = FALSE)
           lastRow <- lastRow+1
           settingsDF[lastRow,"name"] <- "weights_info"
-          settingsDF[lastRow,"label"] <- "Weights that will be used in Stratified sample"
+          settingsDF[lastRow,"label"] <- "Weights file that will be used in Stratified sample"
           settingsDF[lastRow,"value"] <- "weightsStratified.csv"
           settingsDF[lastRow,"path"] <-  paste(mainDir(), "data", "weightsStratified.csv", sep = "/", collapse = "/")
         }
@@ -1373,6 +1411,7 @@ server <- shinyServer(function(input, output, session) {
         lastRow <- lastRow+1
         settingsDF[lastRow,"name"] <- "cleaning_log"
         settingsDF[lastRow,"label"] <- "cleaning log plan for the project"
+        settingsDF[lastRow,"options"] <- "1. Yes 2. No, 3. csv filename"
         settingsDF[lastRow,"value"] <- "No"
       }else{
         inFilecleaningLog <- input$cleaningLogFileInput
@@ -1393,6 +1432,7 @@ server <- shinyServer(function(input, output, session) {
           lastRow <- lastRow+1
           settingsDF[lastRow,"name"] <- "cleaning_log"
           settingsDF[lastRow,"label"] <- "cleaning log plan for the project"
+          settingsDF[lastRow,"options"] <- "1. Yes 2. No, 3. csv filename"
           settingsDF[lastRow,"value"] <- "cleaningLog.csv"
           settingsDF[lastRow,"path"] <-  paste(mainDir(), "data", "/cleaningLog.csv", sep = "/", collapse = "/")
         }
@@ -1405,7 +1445,21 @@ server <- shinyServer(function(input, output, session) {
       
       settingsDF <- settingsDF[!is.na(settingsDF$name),]
       
-      kobo_edit_form(settings = settingsDF )
+      result <- kobo_edit_form(analysisSettings = settingsDF )
+      
+      if(class(result) == "try-error"){
+        shinyalert("Error",
+                   result,
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
+      
       projectConfigurationInfo$log[["isRecordSettingsSaved"]] <- TRUE
       updateProgress()
       if(sum(input$samplingSelectInput != "No sampling(type 1)")){
@@ -1544,10 +1598,10 @@ server <- shinyServer(function(input, output, session) {
           return(FALSE)
         }
         if(length(configInfo[configInfo$name=="weightsVariable","value"]) == 0){
-          configInfo <- rbind(configInfo, c("weightsVariable", "The variable that contains the weights",input$weightsClusterVariableInput,NA ))
+          configInfo <- rbind(configInfo, c("weightsVariable", "The variable that contains the weights",NA,input$weightsClusterVariableInput,NA ))
         }else{
           if(is.na(configInfo[configInfo$name=="weightsVariable","value"])){
-            configInfo <- rbind(configInfo, c("weightsVariable", "The variable that contains the weights",input$weightsClusterVariableInput,NA ))
+            configInfo <- rbind(configInfo, c("weightsVariable", "The variable that contains the weights",NA,input$weightsClusterVariableInput,NA ))
           }else{
             configInfo[configInfo$name=="weightsVariable","value"] <- input$weightsClusterVariableInput
           }
@@ -1555,10 +1609,10 @@ server <- shinyServer(function(input, output, session) {
         }
         updateProgress()
         if(length(configInfo[configInfo$name=="numberOfClusters","value"]) == 0){
-          configInfo <- rbind(configInfo, c("numberOfClusters", "Number of clusters",input$numberOfClustersInput,NA ))
+          configInfo <- rbind(configInfo, c("numberOfClusters", "Number of clusters",NA,input$numberOfClustersInput,NA ))
         }else{
           if(is.na(configInfo[configInfo$name=="numberOfClusters","value"])){
-            configInfo <- rbind(configInfo, c("numberOfClusters", "Number of clusters",input$numberOfClustersInput,NA ))
+            configInfo <- rbind(configInfo, c("numberOfClusters", "Number of clusters",NA,input$numberOfClustersInput,NA ))
           }else{
             configInfo[configInfo$name=="numberOfClusters","value"] <- input$numberOfClustersInput
           }
@@ -1583,10 +1637,10 @@ server <- shinyServer(function(input, output, session) {
           return(FALSE)
         }
         if(length(configInfo[configInfo$name=="weightsVariable","value"]) == 0){
-          configInfo <- rbind(configInfo, c("weightsVariable", "The variable that contains the weights",input$weightsStratifiedVariableInput,NA ))
+          configInfo <- rbind(configInfo, c("weightsVariable", "The variable that contains the weights",NA,input$weightsStratifiedVariableInput,NA ))
         }else{
           if(is.na(configInfo[configInfo$name=="weightsVariable","value"])){
-            configInfo <- rbind(configInfo, c("weightsVariable", "The variable that contains the weights",input$weightsStratifiedVariableInput,NA ))
+            configInfo <- rbind(configInfo, c("weightsVariable", "The variable that contains the weights",NA,input$weightsStratifiedVariableInput,NA ))
           }else{
             configInfo[configInfo$name=="weightsVariable","value"] <- input$weightsStratifiedVariableInput
           }
@@ -1595,7 +1649,22 @@ server <- shinyServer(function(input, output, session) {
         updateProgress()
       }
       updateProgress()
-      kobo_edit_form(settings = configInfo)
+      
+      result <- kobo_edit_form(analysisSettings = configInfo)
+      
+      if(class(result) == "try-error"){
+        shinyalert("Error",
+                   result,
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
+      
       removeModal()
       shinyalert("Done, Record Settings Configuration has been successfully saved",
                  "You can find the Settings in 'settings' sheet in xlsform file",
@@ -2480,8 +2549,20 @@ server <- shinyServer(function(input, output, session) {
             #indicator[!is.na(indicator$fullname) & indicator$fullname==indicators[j],] <- NA 
             indicator <-indicator[!is.na(indicator$fullname) & indicator$fullname!=indicators[j],]
             updateProgress()
-            kobo_edit_form(indicator = indicator)
             
+            result <- kobo_edit_form(indicator = indicator)
+            
+            if(class(result) == "try-error"){
+              shinyalert("Error",
+                         result,
+                         type = "error",
+                         closeOnClickOutside = FALSE,
+                         confirmButtonCol = "#ff4d4d",
+                         animation = FALSE,
+                         showConfirmButton = TRUE
+              )
+              return(FALSE)
+            }
             
             indicatorsIF <- indicatorsInfo[["data"]]
             indicatorsIF <- indicatorsIF[indicatorsIF$fullname != indicators[j],]
@@ -3534,7 +3615,21 @@ server <- shinyServer(function(input, output, session) {
       updateProgress()
       indicator <- rbind(indicator, newRow)
       
-      kobo_edit_form(indicator = indicator)
+
+      result <- kobo_edit_form(indicator = indicator)
+      
+      if(class(result) == "try-error"){
+        shinyalert("Error",
+                   result,
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
       updateProgress()
       
       indicator <- indicator %>% arrange(fullname)
@@ -3710,7 +3805,22 @@ server <- shinyServer(function(input, output, session) {
       indicatorsIF[!is.na(indicatorsIF$fullname) & indicatorsIF$fullname == selInd, "variable"] = input$subIndicatorVariableInput
       indicatorsIF[!is.na(indicatorsIF$fullname) & indicatorsIF$fullname == selInd, "listname"] = input$subIndicatorListnameInput
       updateProgress()
-      kobo_edit_form(indicator = indicatorsIF)
+      
+      
+      result <- kobo_edit_form(indicator = indicatorsIF)
+      
+      if(class(result) == "try-error"){
+        shinyalert("Error",
+                   result,
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
       updateProgress()
       indicatorsIF <- indicatorsIF %>% arrange(fullname)
       indicatorsInfo[["data"]] <- indicatorsIF
@@ -5382,7 +5492,22 @@ server <- shinyServer(function(input, output, session) {
             survey[!is.na(survey$chapter) & survey$chapter==cahpters[j],"chapter"] <- NA
             indicator[!is.na(indicator$chapter) & indicator$chapter==cahpters[j],"chapter"] <- NA 
             updateProgress()
-            kobo_edit_form(survey = survey, indicator = indicator)
+            
+            
+            result <- kobo_edit_form(survey = survey, indicator = indicator)
+            
+            if(class(result) == "try-error"){
+              shinyalert("Error",
+                         result,
+                         type = "error",
+                         closeOnClickOutside = FALSE,
+                         confirmButtonCol = "#ff4d4d",
+                         animation = FALSE,
+                         showConfirmButton = TRUE
+              )
+              return(FALSE)
+            }
+            
             chaptersDF <- chaptersDataFrame[["data"]]
             chaptersDF <- chaptersDF[chaptersDF$chapter != cahpters[j],]
             updateProgress()
@@ -5681,7 +5806,22 @@ server <- shinyServer(function(input, output, session) {
         indicator[!is.na(indicator$fullname) & indicator$fullname %in% selectedInd,"chapter"] <- input$chapterNameInput
       }
       updateProgress()
-      kobo_edit_form(survey = survey, indicator = indicator)
+      
+      
+      result <- kobo_edit_form(survey = survey, indicator = indicator)
+      
+      if(class(result) == "try-error"){
+        shinyalert("Error",
+                   result,
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
       updateProgress()
       chaptersDF <- chaptersDF[chaptersDF$chapter != selChap,]
       
@@ -5793,7 +5933,22 @@ server <- shinyServer(function(input, output, session) {
         }
         
         updateProgress()
-        kobo_edit_form(survey = newSurvey)
+        
+        
+        result <- kobo_edit_form(survey = newSurvey)
+        
+        if(class(result) == "try-error"){
+          shinyalert("Error",
+                     result,
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          return(FALSE)
+        }
+        
         updateProgress()
       }
       else if(las == "relabelingChoices"){
@@ -5821,7 +5976,22 @@ server <- shinyServer(function(input, output, session) {
         
         mainChoices["labelReport"] <- userRelabelingChoices["labelReport"]
         
-        kobo_edit_form(choices = mainChoices)
+        
+        
+        result <- kobo_edit_form(choices = mainChoices)
+        
+        if(class(result) == "try-error"){
+          shinyalert("Error",
+                     result,
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          return(FALSE)
+        }
+        
         updateProgress()
       }
       else if(las == "selectOneType"){
@@ -5872,7 +6042,22 @@ server <- shinyServer(function(input, output, session) {
         }
         
         updateProgress()
-        kobo_edit_form(survey = newSurvey)
+       
+        
+        result <-  kobo_edit_form(survey = newSurvey)
+        
+        if(class(result) == "try-error"){
+          shinyalert("Error",
+                     result,
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          return(FALSE)
+        }
+        
       }
       else if(las == "orderOrdinalVariables"){
         userChoices <- c()
@@ -5926,7 +6111,21 @@ server <- shinyServer(function(input, output, session) {
         }
         
         updateProgress()
-        kobo_edit_form(choices = newChoices)
+        
+        
+        result <-  kobo_edit_form(choices = newChoices)
+        
+        if(class(result) == "try-error"){
+          shinyalert("Error",
+                     result,
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          return(FALSE)
+        }
       }
       else if(las == "selectMultipleType"){
         userSurvey <- sheets[["selectMultipleType"]]
@@ -5976,7 +6175,21 @@ server <- shinyServer(function(input, output, session) {
         }
         
         updateProgress()
-        kobo_edit_form(survey = newSurvey)
+        
+        
+        result <- kobo_edit_form(survey = newSurvey)
+        
+        if(class(result) == "try-error"){
+          shinyalert("Error",
+                     result,
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          return(FALSE)
+        }
       }
       else if(las == "numericType"){
         userSurvey <- sheets[["numericType"]]
@@ -6026,7 +6239,22 @@ server <- shinyServer(function(input, output, session) {
         }
         
         updateProgress()
-        kobo_edit_form(survey = newSurvey)
+        
+        result <- kobo_edit_form(survey = newSurvey)
+        
+        if(class(result) == "try-error"){
+          shinyalert("Error",
+                     result,
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          return(FALSE)
+        }
+        
+        
       }
       else if(las == "dateType"){
         userSurvey <- sheets[["dateType"]]
@@ -6076,7 +6304,21 @@ server <- shinyServer(function(input, output, session) {
         }
         
         updateProgress()
-        kobo_edit_form(survey = newSurvey)
+        
+        
+        result <- kobo_edit_form(survey = newSurvey)
+        
+        if(class(result) == "try-error"){
+          shinyalert("Error",
+                     result,
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          return(FALSE)
+        }
       }
       
     }, error = function(err) {

@@ -59,7 +59,7 @@ kobo_load_data <- function(form = "form.xls", app="console") {
       progress$set(message = "Splitting Main Data File in progress...")
       updateProgress()
     }
-    household <- kobo_split_multiple(originalData, dico)
+    MainDataFrame_edited <- kobo_split_multiple(originalData, dico)
     
     ## Clean variable if any ##########################################################
     cat("\n\n\n Clean variable if any \n\n\n\n")
@@ -67,7 +67,7 @@ kobo_load_data <- function(form = "form.xls", app="console") {
       progress$set(message = "Cleaning Main Data File in progress...")
       updateProgress()
     }
-    household <- kobo_clean(household, dico)
+    MainDataFrame_edited <- kobo_clean(MainDataFrame_edited, dico)
 
     ## Join with Weight file #########################################
     cat("\n\n\n Adding weight and removing some forms \n\n\n\n")
@@ -84,21 +84,21 @@ kobo_load_data <- function(form = "form.xls", app="console") {
         path <- configInfoOrigin[configInfoOrigin$name=="weights_info", "path"]
         weight <- read.csv(path,stringsAsFactors = F)
         variableName <- configInfoOrigin[configInfoOrigin$name=="variable_name", "value"]
-        household <- left_join(x = household, y = weight, by = variableName)
+        MainDataFrame_edited <- left_join(x = MainDataFrame_edited, y = weight, by = variableName)
       }
     }
     ## Cheking the labels matching... #################################################
-    ## household is the default root data componnents to be used -- in order to deal with nested dataset
+    ## MainDataFrame_edited is the default root data componnents to be used -- in order to deal with nested dataset
     if(app=="shiny"){
       progress$set(message = "labeling variables for Main Data File in progress...")
       updateProgress()
     }
     cat("\n\n\n Now  labeling variables \n\n\n\n")
-    household <- kobo_label(household, dico)
+    MainDataFrame_edited <- kobo_label(MainDataFrame_edited, dico)
 
     ## Save preliminary version before encoding or adding indicators ##################
     cat("\n\nWrite backup before encoding or indicators calculation..\n")
-    write.csv(household,paste(mainDir,"/data/household.csv",sep = ""), row.names = FALSE, na = "")
+    write.csv(MainDataFrame_edited,paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), row.names = FALSE, na = "")
     
     ## load all required data files #########################################
     cat("\n\nload all required data files..\n")
@@ -111,7 +111,7 @@ kobo_load_data <- function(form = "form.xls", app="console") {
     levelsOfDF <- kobo_get_dataframes_levels(form)
     levelsOfDF <- levelsOfDF[levelsOfDF$name!="MainDataFrame",]
     if(nrow(levelsOfDF)!=0){
-      levelsOfDF[levelsOfDF$parent=="MainDataFrame","parent"] <- "household"
+      levelsOfDF[levelsOfDF$parent=="MainDataFrame","parent"] <- "MainDataFrame_edited"
     }
     #ataBeginRepeat <- kobo_get_begin_repeat("form2.xls")
     #dataBeginRepeat <- dataBeginRepeat$names
@@ -143,7 +143,7 @@ kobo_load_data <- function(form = "form.xls", app="console") {
         }
         dataFrame <- kobo_label(dataFrame, dico)
         
-        write.csv(dataFrame,paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""), row.names = FALSE, na = "")
+        write.csv(dataFrame,paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""), row.names = FALSE, na = "")
         cat("\n\nload",dbr,"and create all needed files for it..\n")
         
       }
@@ -152,16 +152,16 @@ kobo_load_data <- function(form = "form.xls", app="console") {
           progress$set(message = paste("loading",dbr,"file in progress..."))
           updateProgress()
         }
-        dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""),stringsAsFactors = F) 
+        dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F) 
         child <- levelsOfDF[levelsOfDF$name==dbr, "name"]
         parent <- levelsOfDF[levelsOfDF$name==dbr, "parent"]
         while (T) {
-          instanceIDChild  <- configInfo[tolower(configInfo$name)==tolower(paste0("instanceid_",child,"_",ifelse(parent=="household","MainDataFrame",parent))), "value"]
-          instanceIDParent <- configInfo[tolower(configInfo$name)==tolower(paste0("instanceid_",ifelse(parent=="household","MainDataFrame",parent),"_",child)), "value"]
-          if(parent=="household"){
+          instanceIDChild  <- configInfo[tolower(configInfo$name)==tolower(paste0("instanceid_",child,"_",ifelse(parent=="MainDataFrame_edited","MainDataFrame",parent))), "value"]
+          instanceIDParent <- configInfo[tolower(configInfo$name)==tolower(paste0("instanceid_",ifelse(parent=="MainDataFrame_edited","MainDataFrame",parent),"_",child)), "value"]
+          if(parent=="MainDataFrame_edited"){
             parentDf <- read.csv(paste(mainDir,"/data/",parent,".csv",sep = ""),stringsAsFactors = F)
           }else{
-            parentDf <- read.csv(paste(mainDir,"/data/",parent,"-edited.csv",sep = ""),stringsAsFactors = F)
+            parentDf <- read.csv(paste(mainDir,"/data/",parent,"_edited.csv",sep = ""),stringsAsFactors = F)
           }
           unColChild <- dataFrame[,instanceIDChild]
           dataFrame <- dataFrame[,colnames(dataFrame)!=instanceIDChild]
@@ -183,7 +183,7 @@ kobo_load_data <- function(form = "form.xls", app="console") {
           dataFrame <- left_join(dataFrame, parentDf, by="jointemp")
           dataFrame["jointemp"] <- NULL
           
-          if(parent=="household"){
+          if(parent=="MainDataFrame_edited"){
             break
           }else{
             child <- levelsOfDF[levelsOfDF$name==parent, "name"]
@@ -191,7 +191,7 @@ kobo_load_data <- function(form = "form.xls", app="console") {
           }
         }
         
-        write.csv(dataFrame,paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""), row.names = FALSE, na = "")
+        write.csv(dataFrame,paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""), row.names = FALSE, na = "")
       }
     
     }
@@ -210,7 +210,7 @@ kobo_load_data <- function(form = "form.xls", app="console") {
     
     
     dico <- read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
-    household <- read.csv(paste(mainDir,"/data/household.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")
+    MainDataFrame_edited <- read.csv(paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")
 
     ## Re-encoding data now based on the dictionnary -- ##############################
     ## the xlsform dictionnary can be adjusted this script re-runned till satisfaction
@@ -221,17 +221,17 @@ kobo_load_data <- function(form = "form.xls", app="console") {
       updateProgress()
     }
     
-    household <- kobo_encode(household, dico)
+    MainDataFrame_edited <- kobo_encode(MainDataFrame_edited, dico)
     for (dbr in levelsOfDF$name) {
-      dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""),stringsAsFactors = F) 
+      dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F) 
       dataFrame <- kobo_encode(dataFrame, dico)
-      write.csv(dataFrame,paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""), row.names = FALSE, na = "")
+      write.csv(dataFrame,paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""), row.names = FALSE, na = "")
       cat("\n\nRe-encode",dbr,"..\n")
     }
     if(app=="shiny"){
       updateProgress()
     }
-    write.csv(household,paste(mainDir,"/data/household.csv",sep = ""), row.names = FALSE, na = "")
+    write.csv(MainDataFrame_edited,paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), row.names = FALSE, na = "")
     return(TRUE)
   }, error = function(err) {
     print("kobo_load_data_ERROR")

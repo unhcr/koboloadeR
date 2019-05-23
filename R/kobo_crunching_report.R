@@ -47,7 +47,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
 
     ### Load the data
     cat("\n\n Loading data. It is assumed that the cleaning, weighting & re-encoding has been done previously \n")
-    household <- read.csv(paste(mainDir,"/data/MainDataFrame.csv",sep = ""), encoding = "UTF-8", na.strings = "")
+    MainDataFrame_edited <- read.csv(paste(mainDir,"/data/MainDataFrame.csv",sep = ""), encoding = "UTF-8", na.strings = "")
 
     ###Form##########################################
     ## Load form
@@ -66,13 +66,13 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
       progress$set(message = "Labelling variables in the Main Data File in progress...")
       updateProgress()
     }
-    household <- kobo_label(household , dico)
+    MainDataFrame_edited <- kobo_label(MainDataFrame_edited , dico)
 
     cat("\n\nload all required data files..\n")
     dataBeginRepeat <- kobo_get_begin_repeat()
     dataBeginRepeat <- dataBeginRepeat$names
     for (dbr in dataBeginRepeat) {
-      dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""),stringsAsFactors = F)
+      dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
       assign(dbr, kobo_label(dataFrame, dico))
       if (app == "shiny") {
         progress$set(message = paste("Labelling variables in",dbr,"File in progress..."))
@@ -191,16 +191,16 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
 
 
       ## TO DO: Use config file to load the different frame
-      cat("household <- read.csv(paste0(mainDirroot,\"/data/household.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = chapter.name , sep = "\n", append = TRUE)
+      cat("MainDataFrame_edited <- read.csv(paste0(mainDirroot,\"/data/MainDataFrame_edited.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = chapter.name , sep = "\n", append = TRUE)
 
       for (dbr in dataBeginRepeat) {
-        cat(paste(dbr, "<- read.csv(paste0(mainDirroot,\"/data/",dbr,"-edited.csv\"), encoding = \"UTF-8\", na.strings = \"\")", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
+        cat(paste(dbr, "<- read.csv(paste0(mainDirroot,\"/data/",dbr,"_edited.csv\"), encoding = \"UTF-8\", na.strings = \"\")", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
       }
 
 
       cat("\n", file = chapter.name , sep = "\n", append = TRUE)
       cat("## label Variables", file = chapter.name , sep = "\n", append = TRUE)
-      cat("household <- kobo_label(household , dico)", file = chapter.name , sep = "\n", append = TRUE)
+      cat("MainDataFrame_edited <- kobo_label(MainDataFrame_edited , dico)", file = chapter.name , sep = "\n", append = TRUE)
       for (dbr in dataBeginRepeat) {
         cat(paste(dbr, " <- kobo_label(",dbr ," , dico)", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
       }
@@ -230,19 +230,19 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
 
       if(configInfo[configInfo$name == "sample_type","value"] == "No sampling(type 1)"){
         ## If no weight, the weighted object is unweigthted
-        cat("household.survey <- svydesign(ids = ~ 1 ,  data = household )", file = chapter.name , sep = "\n", append = TRUE)
+        cat("MainDataFrame_edited.survey <- svydesign(ids = ~ 1 ,  data = MainDataFrame_edited )", file = chapter.name , sep = "\n", append = TRUE)
         for (dbr in dataBeginRepeat) {
           cat(paste(dbr,".survey <- svydesign(ids = ~ 1 ,  data = ",dbr," )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
         }
       }else if(configInfo[configInfo$name == "sample_type","value"] == "Cluster sample (type 2)"){
         ## with clusters
-        cat(paste("household.survey <- svydesign(ids = ~ ", configInfo[configInfo$name == "variable_name","value"],",  data = household,  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"]," ,  fpc = ~ fpc )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
+        cat(paste("MainDataFrame_edited.survey <- svydesign(ids = ~ ", configInfo[configInfo$name == "variable_name","value"],",  data = MainDataFrame_edited,  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"]," ,  fpc = ~ fpc )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
         for (dbr in dataBeginRepeat) {
           cat(paste(dbr,".survey <- svydesign(ids = ~ ", configInfo[configInfo$name == "variable_name","value"],",  data = ",dbr,",  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"]," ,  fpc = ~ fpc )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
         }
       }else if(configInfo[configInfo$name == "sample_type","value"] == "Stratified sample (type 3)"){
         ## with strata
-        cat(paste("household.survey <- svydesign(id=~1, strata= ~ ", configInfo[configInfo$name == "variable_name","value"]," ,check.strata = TRUE,  data = household,  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"],"  )", sep=""), file = chapter.name , sep = "\n", append = TRUE)
+        cat(paste("MainDataFrame_edited.survey <- svydesign(id=~1, strata= ~ ", configInfo[configInfo$name == "variable_name","value"]," ,check.strata = TRUE,  data = MainDataFrame_edited,  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"],"  )", sep=""), file = chapter.name , sep = "\n", append = TRUE)
         for (dbr in dataBeginRepeat) {
           cat(paste(dbr,".survey <- svydesign(id=~1, strata= ~ ", configInfo[configInfo$name == "variable_name","value"]," ,check.strata = TRUE,  data = ",dbr,",  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"],"  )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
         }
@@ -250,15 +250,15 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
 
 
       ## with strata
-      #cat("household.survey <- svydesign(id=~1, strata= ~ RecordCategory ,check.strata = TRUE,  data = household,  weights = ~ WeightingCoefficient  )", file = chapter.name , sep = "\n", append = TRUE)
+      #cat("MainDataFrame_edited.survey <- svydesign(id=~1, strata= ~ RecordCategory ,check.strata = TRUE,  data = MainDataFrame_edited,  weights = ~ WeightingCoefficient  )", file = chapter.name , sep = "\n", append = TRUE)
 
       ## with clusters
-      #cat("household.survey <- svydesign(ids = ~ Camp.Province ,  data = household,  weights = ~ weight ,  fpc = ~ fpc )", file = chapter.name , sep = "\n", append = TRUE)
+      #cat("MainDataFrame_edited.survey <- svydesign(ids = ~ Camp.Province ,  data = MainDataFrame_edited,  weights = ~ weight ,  fpc = ~ fpc )", file = chapter.name , sep = "\n", append = TRUE)
       #cat("br1.survey <- svydesign(ids = ~ Camp.Province ,  data = br1,  weights = ~ weight ,  fpc = ~ fpc )", file = chapter.name , sep = "\n", append = TRUE)
       #cat("br2.survey <- svydesign(ids = ~ Camp.Province ,  data = br2,  weights = ~ weight ,  fpc = ~ fpc )", file = chapter.name , sep = "\n", append = TRUE)
 
       # ## If no weight, the weighted object is unweigthted
-      # cat("household.survey <- svydesign(ids = ~ 1 ,  data = household )", file = chapter.name , sep = "\n", append = TRUE)
+      # cat("MainDataFrame_edited.survey <- svydesign(ids = ~ 1 ,  data = MainDataFrame_edited )", file = chapter.name , sep = "\n", append = TRUE)
       # cat("br1.survey <- svydesign(ids = ~ 1 ,  data = br1 )", file = chapter.name , sep = "\n", append = TRUE)
       # cat("br2.survey <- svydesign(ids = ~ 1 ,  data = br2 )", file = chapter.name , sep = "\n", append = TRUE)
 

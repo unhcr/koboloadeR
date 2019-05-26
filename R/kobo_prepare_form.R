@@ -126,7 +126,7 @@ kobo_prepare_form <- function(form = "form.xls") {
     if ("labelReport" %in% colnames(survey)) {
       cat(" Good: You have a column `labelReport` in your survey worksheet.\n");
     } else {
-      cat(" No column `labelReport` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
+      cat(" No column `labelReport` in your survey worksheet. Creating a dummy one for the moment based on the initial one - trimmed to 80 characters (see readme file). ...\n");
       survey["labelReport"] <- substr(survey[,"label"],1,80)
     }
     namesOfSur <- c(namesOfSur,"labelReport")
@@ -378,8 +378,8 @@ kobo_prepare_form <- function(form = "form.xls") {
     if ("labelReport" %in% colnames(choices)) {
       cat("2- Good: You have a column `labelReport` in your choices worksheet.\n");
     } else {
-      cat("2- No column `labelReport` in your choices worksheet. Creating a dummy one for the moment...\n");
-      choices["labelReport"] <- substr(choices[,"label"],1,80)
+      cat("2- No column `labelReport` in your choices worksheet. Creating a dummy one for the moment based on the initial one - trimmed to 50 characters...\n");
+      choices["labelReport"] <- substr(choices[,"label"],1,50)
     }
 
     namesOfCho <- c("list_name", "name", "label", "labelReport", "order")

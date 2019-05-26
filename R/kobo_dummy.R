@@ -33,9 +33,9 @@
 
 kobo_dummy <- function(form = "form.xls") {
 
+  samplesize <- 381
+
   ### Write dummy dataset
-
-
   #kobodevtools::install_github("ropensci/charlatan")
   #devtools::install_github("ThinkR-open/fakir")
   # install.packages("truncnorm")
@@ -181,7 +181,7 @@ kobo_dummy <- function(form = "form.xls") {
 
   ## Create corresponding dummy data ########
 
-  samplesize <- 500
+
 
   ## generate the unique ID for each observation
   dummydata <- data.frame(stri_rand_strings(samplesize, 8))

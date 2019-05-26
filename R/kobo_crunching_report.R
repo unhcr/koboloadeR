@@ -47,7 +47,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
 
     ### Load the data
     cat("\n\n Loading data. It is assumed that the cleaning, weighting & re-encoding has been done previously \n")
-    household <- read.csv(paste(mainDir,"/data/MainDataFrame-edited.csv",sep = ""), encoding = "UTF-8", na.strings = "")
+    household <- read.csv(paste(mainDir,"/data/MainDataFrame-encoded.csv",sep = ""), encoding = "UTF-8", na.strings = "")
 
     ###Form##########################################
     ## Load form
@@ -72,7 +72,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
     dataBeginRepeat <- kobo_get_begin_repeat()
     dataBeginRepeat <- dataBeginRepeat$names
     for (dbr in dataBeginRepeat) {
-      dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""),stringsAsFactors = F)
+      dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"-encoded.csv",sep = ""),stringsAsFactors = F)
       assign(dbr, kobo_label(dataFrame, dico))
       if (app == "shiny") {
         progress$set(message = paste("Labelling variables in",dbr,"File in progress..."))
@@ -192,11 +192,11 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
 
       ## TO DO: Use config file to load the different frame
 
-      cat("household <- read.csv(paste0(mainDirroot,\"/data/MainDataFrame-edited.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = chapter.name , sep = "\n", append = TRUE)
+      cat("household <- read.csv(paste0(mainDirroot,\"/data/MainDataFrame-encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = chapter.name , sep = "\n", append = TRUE)
 
 
       for (dbr in dataBeginRepeat) {
-        cat(paste(dbr, " <- read.csv(paste0(mainDirroot,\"/data/",dbr,"-edited.csv\"), encoding = \"UTF-8\", na.strings = \"\")", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
+        cat(paste(dbr, " <- read.csv(paste0(mainDirroot,\"/data/",dbr,"-encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
       }
 
 

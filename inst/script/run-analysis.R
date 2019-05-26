@@ -12,8 +12,7 @@ form <- "form.xls"
 kobo_prepare_form(form)
 
 ### Eventually Generate dummy data (uncomment below if required)
-# kobo_dico(form)
-# kobo_dummy(form)
+  # kobo_dummy(form)
 
 ######################################################################################
 ### At this stage you can start working on your xlsform and fill it accordingly!!! ###

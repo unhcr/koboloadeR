@@ -599,12 +599,12 @@ kobo_prepare_form <- function(form = "form.xls") {
     xlsx::autoSizeColumn(settingsSheet, 1:length(survey))
     cat("\n********************Settings sheet, ready to be used*********************\n \n")
 
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
     #################################### analysis settings sheet ######################################
     cat("\n \n Checking now analysis settings sheet \n \n")
     analysisSettings <- tryCatch({
@@ -620,131 +620,131 @@ kobo_prepare_form <- function(form = "form.xls") {
         stringsAsFactors = FALSE
       )
     })
-    
-    if(!"sample_type" %in% analysisSettings$name){
+
+    if (!"sample_type" %in% analysisSettings$name) {
       analysisSettings <- rbind(analysisSettings,
                                 data.frame(name = "sample_type",
                                            label = "Sample type of the project",
                                            options = "1. No sampling(type 1) 2. Cluster sample (type 2) 3. Stratified sample (type 3)",
-                                           value = NA,
-                                           path =NA,
+                                           value = "1. No sampling(type 1)",
+                                           path = NA,
                                            stringsAsFactors = FALSE)
                                 )
     }
-    
-    if(!"variable_name" %in% analysisSettings$name){
+
+    if (!"variable_name" %in% analysisSettings$name) {
       analysisSettings <- rbind(analysisSettings,
                                 data.frame(name = "variable_name",
                                            label = "If there is sampling, select the name of cluster variable that will be used to join the weight file with the main file, please make sure the name of this variable exists in both files",
                                            options = NA,
                                            value = NA,
-                                           path =NA,
+                                           path = NA,
                                            stringsAsFactors = FALSE)
       )
     }
-    
-    if(!"weights_info" %in% analysisSettings$name){
+
+    if (!"weights_info" %in% analysisSettings$name) {
       analysisSettings <- rbind(analysisSettings,
                                 data.frame(name = "weights_info",
                                            label = "If there is sampling,  weights file that will be used in Stratified or cluster sample",
                                            options = NA,
                                            value = NA,
-                                           path =NA,
+                                           path = NA,
                                            stringsAsFactors = FALSE)
       )
     }
-    
-    if(!"weightsVariable" %in% analysisSettings$name){
+
+    if (!"weightsVariable" %in% analysisSettings$name) {
       analysisSettings <- rbind(analysisSettings,
                                 data.frame(name = "weightsVariable",
                                            label = "If there is sampling, the variable that contains the weights in weights file",
                                            options = NA,
                                            value = NA,
-                                           path =NA,
+                                           path = NA,
                                            stringsAsFactors = FALSE)
       )
     }
-    
-    if(!"numberOfClusters" %in% analysisSettings$name){
+
+    if (!"numberOfClusters" %in% analysisSettings$name) {
       analysisSettings <- rbind(analysisSettings,
                                 data.frame(name = "numberOfClusters",
                                            label = "If the sample type is cluster sample, enter number of clusters",
                                            options = NA,
                                            value = NA,
-                                           path =NA,
+                                           path = NA,
                                            stringsAsFactors = FALSE)
       )
     }
-    
-    if(!"cleaning_log" %in% analysisSettings$name){
+
+    if (!"cleaning_log" %in% analysisSettings$name) {
       analysisSettings <- rbind(analysisSettings,
                                 data.frame(name = "cleaning_log",
                                            label = "cleaning log plan for the project",
                                            options = "1. Yes 2. No, 3. csv filename",
-                                           value = NA,
-                                           path =NA,
+                                           value = "2. No",
+                                           path = NA,
                                            stringsAsFactors = FALSE)
       )
     }
-    
-    if(!"MainDataFrame" %in% analysisSettings$name){
+
+    if (!"MainDataFrame" %in% analysisSettings$name) {
       analysisSettings <- rbind(analysisSettings,
                                 data.frame(name = "MainDataFrame",
                                            label = "Name and the path of MainDataFrame",
                                            options = NA,
-                                           value = NA,
-                                           path =NA,
+                                           value = "MainDataFrame",
+                                           path = paste0(mainDir,"/data/MainDataFrame.csv"),
                                            stringsAsFactors = FALSE)
       )
     }
-    
+
     levelsOfDF <- kobo_get_dataframes_levels(form)
-    levelsOfDF <- levelsOfDF[levelsOfDF$name!="MainDataFrame",]
-    
-    if(nrow(levelsOfDF)!=0){
+    levelsOfDF <- levelsOfDF[levelsOfDF$name != "MainDataFrame",]
+
+    if (nrow(levelsOfDF) != 0) {
       for (dbr in levelsOfDF$name) {
-        child <- levelsOfDF[levelsOfDF$name==dbr, "name"]
-        parent <- levelsOfDF[levelsOfDF$name==dbr, "parent"]
-        
-        if(!dbr %in% analysisSettings$name){
+        child <- levelsOfDF[levelsOfDF$name == dbr, "name"]
+        parent <- levelsOfDF[levelsOfDF$name == dbr, "parent"]
+
+        if (!dbr %in% analysisSettings$name) {
           analysisSettings <- rbind(analysisSettings,
                                     data.frame(name = dbr,
                                                label = paste("Name and the path of", dbr),
                                                options = NA,
-                                               value = NA,
-                                               path =NA,
+                                               value = paste0( dbr,".csv"),
+                                               path = paste0(mainDir,"/data/", dbr,".csv"),
                                                stringsAsFactors = FALSE)
           )
         }
-        
-        if(!paste0("instanceID_", child, "_", parent) %in% analysisSettings$name){
+
+        if (!paste0("instanceID_", child, "_", parent) %in% analysisSettings$name) {
           analysisSettings <- rbind(analysisSettings,
                                     data.frame(name = paste0("instanceID_", child, "_", parent),
                                                label = paste0("The instanceID between the child (", child, ") and the parent (", parent, ")" ),
                                                options = NA,
-                                               value = NA,
-                                               path =NA,
+                                               value =  "instanceID",
+                                               path = NA,
                                                stringsAsFactors = FALSE)
           )
         }
-        
-        if(!paste0("instanceID_", parent, "_", child) %in% analysisSettings$name){
+
+        if (!paste0("instanceID_", parent, "_", child) %in% analysisSettings$name) {
           analysisSettings <- rbind(analysisSettings,
                                     data.frame(name = paste0("instanceID_", parent, "_", child),
                                                label = paste0("The instanceID between the parent (", parent, ") and the child (", child, ")" ),
                                                options = NA,
-                                               value = NA,
-                                               path =NA,
+                                               value = "instanceID",
+                                               path = NA,
                                                stringsAsFactors = FALSE)
           )
         }
-        
-        
+
+
       }
     }
-    
-    
-    
+
+
+
     sheetname <- "analysisSettings"
     if (!is.null(xlsx::getSheets(wb)[[sheetname]]))
       xlsx::removeSheet(wb, sheetname)
@@ -764,9 +764,9 @@ kobo_prepare_form <- function(form = "form.xls") {
     lapply(names(cells[highlight]),
            function(ii) xlsx::setCellStyle(cells[[ii]], headerSt))
     xlsx::autoSizeColumn(settingsSheet, 1:length(survey))
-    cat("\n********************analysis Settings sheet, ready to be used*********************\n \n") 
-    
-    
+    cat("\n********************Project Analysis Settings sheet, ready to be used*********************\n \n")
+
+
     if (file.exists(form_tmp)) file.remove(form_tmp)
     xlsx::saveWorkbook(wb, form_tmp)
   }, error = function(err) {

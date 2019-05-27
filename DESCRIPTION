@@ -46,7 +46,10 @@ Depends:
     OpenRepGrid
 Suggests:
     shiny,
-    testthat (>= 2.1.0)
+    testthat (>= 2.1.0),
+    utils
 URL: https://github.com/unhcr/koboloadeR
 BugReports: https://github.com/unhcr/koboloadeR/issues
 RoxygenNote: 6.1.1
+VignetteBuilder: utils
+

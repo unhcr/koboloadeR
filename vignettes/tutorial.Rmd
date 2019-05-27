@@ -7,14 +7,14 @@ output:
     toc: yes
     toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{KoboloadeR Examples}
+  %\VignetteIndexEntry{KoboloadeR Introduction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 
 ```{r set-options, echo=FALSE, cache=FALSE}
-options(width=120)
+options(width = 120)
 #opts_chunk$set(comment = "", warning = FALSE, message = FALSE, echo = TRUE, tidy = FALSE, size="small")
 #read_chunk("some/script/I/want/to/load.R")
 ```
@@ -109,4 +109,4 @@ You have now set up all your project and you got your initial reports.
 
 Analysis is an **iterative** process. you will need to 
 
- `run-analysis.R`
+> `run-analysis.R`

@@ -6,3 +6,4 @@
 library("pkgdown")
 pkgdown::build_site()
 
+build_vignettes()

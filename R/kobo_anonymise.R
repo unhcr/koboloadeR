@@ -35,8 +35,6 @@
 #'
 #' @author Edouard Legoupil
 #'
-#' @examples
-#' kobo_anonymise()
 #'
 #' @export kobo_anonymise
 #'

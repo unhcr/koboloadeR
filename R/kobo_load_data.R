@@ -164,7 +164,7 @@ kobo_load_data <- function(form = "form.xls", app="console") {
             parentDf <- read.csv(paste(mainDir,"/data/",parent,"_edited.csv",sep = ""),stringsAsFactors = F)
           }
           unColChild <- dataFrame[,instanceIDChild]
-          dataFrame <- dataFrame[,colnames(dataFrame)!=instanceIDChild]
+          dataFrame <- dataFrame[colnames(dataFrame)!=instanceIDChild]
           unCN <- colnames(dataFrame)[!colnames(dataFrame) %in% colnames(parentDf)]
           
           if(instanceIDChild != instanceIDParent){

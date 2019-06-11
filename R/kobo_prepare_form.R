@@ -678,7 +678,6 @@ kobo_prepare_form <- function(form = "form.xls") {
         variable = character(),
         disaggregation = character(),
         correlate = character(),
-        sensitive = character(),
         anonymise = character(),
         cluster = character(),
         predict = character(),
@@ -758,12 +757,6 @@ kobo_prepare_form <- function(form = "form.xls") {
       cat(" No column `correlate` in your indicator worksheet. Creating a dummy one for the moment...\n");
       indicator$correlate <- ""
     }
-    if ("sensitive" %in% colnames(indicator)) {
-      cat(" Good: You have a column `sensitive` in your indicator worksheet.\n");
-    } else {
-      cat(" No column `sensitive` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$sensitive <- ""
-    }
     if ("anonymise" %in% colnames(indicator)) {
       cat(" Good: You have a column `anonymise` in your indicator worksheet.\n");
     } else {
@@ -821,7 +814,7 @@ kobo_prepare_form <- function(form = "form.xls") {
 
     indicator <- indicator[ ,c("type","fullname","labelReport", "hintReport",
                                "frame", "listname","calculation",
-                               "chapter", "variable", "disaggregation", "correlate", "sensitive",
+                               "chapter", "variable", "disaggregation", "correlate",
                                "anonymise", "cluster", "predict", "variable", "mappoint", "mappoly",
                                "structuralequation.risk","structuralequation.coping","structuralequation.resilience")]
 

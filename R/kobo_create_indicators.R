@@ -24,9 +24,11 @@
 #'
 
 kobo_create_indicators <- function(form = "form.xls") {
+
+  mainDir <- kobo_getMainDirectory()
+  form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
+
   tryCatch({
-    mainDir <- kobo_getMainDirectory()
-    form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
 
     #### Load and test i indicators #############################################################################
     #library(readxl)
@@ -69,7 +71,7 @@ kobo_create_indicators <- function(form = "form.xls") {
         #dicotemp$type <- "trigger"
         dicotemp$name <- "trigger"
         dicotemp$fullname <- "trigger"
-        dicotemp$label <- "trigger"
+     #   dicotemp$label <- "trigger"
         dicotemp$labelReport <- "trigger"
         dicotemp$hintReport <- "trigger"
         dicotemp$chapter <- "trigger"
@@ -103,9 +105,6 @@ kobo_create_indicators <- function(form = "form.xls") {
         dicotemp$formpart <- "trigger"
         dicotemp$indic <- "feature"
 
-        ####Load data analysis plan#############################################################################
-        #library(readxl)
-        indicator <- read_excel(form_tmp, sheet = "indicator")
 
         ## Need to check that all column are presents...
 
@@ -115,15 +114,15 @@ kobo_create_indicators <- function(form = "form.xls") {
         for (i in 1:nrow(indicator))
 
         {
+          # i <- 1
           indicator.type	<- as.character(indicator[ i, c("type")])
           indicator.fullname	<- as.character(indicator[ i, c("fullname")])
-          indicator.label	<- as.character(indicator[ i, c("label")])
+       #   indicator.label	<- as.character(indicator[ i, c("label")])
           indicator.labelReport	<- as.character(indicator[ i, c("labelReport")])
           indicator.hintReport	<- as.character(indicator[ i, c("hintReport")])
           indicator.chapter	<- as.character(indicator[ i, c("chapter")])
           indicator.disaggregation	<- as.character(indicator[ i, c("disaggregation")])
           indicator.correlate	<- as.character(indicator[ i, c("correlate")])
-          indicator.sensitive	<- as.character(indicator[ i, c("sensitive")])
           indicator.anonymise	<- as.character(indicator[ i, c("anonymise")])
           indicator.frame	<- as.character(indicator[ i, c("frame")])
           indicator.listname <- as.character(indicator[ i, c("listname")])
@@ -140,24 +139,25 @@ kobo_create_indicators <- function(form = "form.xls") {
           indicator.mappoly	<- as.character(indicator[ i, c("mappoly")])
 
 
-          cat(paste0(i, "- Load  indicator: ", indicator.label," of type: ",indicator.type,"\n"))
+          cat(paste0(i, "- Load  indicator: ", indicator.labelReport," of type: ",indicator.type,"\n"))
 
           ## Build and run the formula to insert the indicator in the right frame  ###########################
           indic.formula <- paste0(indicator.frame,"$",indicator.fullname," <- ",indicator.calculation )
           if (file.exists(paste0(mainDir,"/code/temp.R") )) file.remove(paste0(mainDir,"/code/temp.R"))
+
+
+          cat(paste('### Script to generate indicator: ',indicator.labelReport,sep = ""), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           cat(paste('form <- "',form,'"',sep = ""), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           cat("mainDir <- kobo_getMainDirectory()", file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           cat('form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           cat('dataBeginRepeat <- kobo_get_begin_repeat()', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           cat('dataBeginRepeat <- dataBeginRepeat$names', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-          cat('household <- read.csv(paste(mainDir,"/data/household.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+          cat('MainDataFrame <- read.csv(paste(mainDir,"/data/MainDataFrame-edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
 
-          cat('
-          for (dbr in dataBeginRepeat) {
+          cat('for (dbr in dataBeginRepeat) {
             dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""),stringsAsFactors = F)
             assign(dbr, dataFrame)
-          }
-          ', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+          }', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
 
           cat(indic.formula, file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           cat("####", file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
@@ -171,15 +171,15 @@ kobo_create_indicators <- function(form = "form.xls") {
           cat(paste0("str(",indicator.frame,"$",indicator.fullname,")"), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           cat(paste0("summary(",indicator.frame,"$",indicator.fullname,")"), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
 
-          if(indicator.frame == "household"){
-            cat('write.csv(household, paste(mainDir,"/data/household.csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-          }else{
-            cat(paste('dbr<-"',indicator.frame,'"',sep = ""))
-            cat('write.csv(eval(as.name(dbr)),paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-          }
+           if(indicator.frame == "MainDataFrame"){
+             cat('write.csv(MainDataFrame, paste(mainDir,"/data/MainDataFrame-edited.csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+           }else{
+             cat(paste('dbr<-"',indicator.frame,'"',sep = ""))
+             cat('write.csv(eval(as.name(dbr)),paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+           }
 
           source(paste0(mainDir,"/code/temp.R"))
-          cat(paste0(i, "- Executed  indicator: ", indicator.label,"\n"))
+          cat(paste0(i, "- Executed  indicator: ", indicator.labelReport,"\n"))
           if (file.exists(paste0(mainDir,"/code/temp.R"))) file.remove(paste0(mainDir,"/code/temp.R"))
 
           ## Insert the indicator in a temp dico frame to be appended to the full dico  ######################
@@ -189,7 +189,7 @@ kobo_create_indicators <- function(form = "form.xls") {
           dicotemp1$type <- indicator.type
           dicotemp1$name <- indicator.fullname
           dicotemp1$fullname <- indicator.fullname
-          dicotemp1$label <- indicator.label
+          #dicotemp1$label <- indicator.label
           dicotemp1$labelReport <- indicator.labelReport
           dicotemp1$hintReport <- indicator.hintReport
           dicotemp1$chapter <- indicator.chapter
@@ -342,36 +342,47 @@ kobo_create_indicators <- function(form = "form.xls") {
         dicotemp$indic <- "feature"
         dico$indic <- "data"
 
-        dico$structuralequation <- NA
+
+        dicotemp$relevant <- ""
+        dicotemp$required <- ""
+        dicotemp$constraint <- ""
+        dicotemp$repeat_count <- ""
+
 
         #names(dico)
         #names(dicotemp)
         dico <- dico[ , c( "type", "name", "fullname", "label", "labelReport","hintReport",
                            "chapter",  "disaggregation","correlate", "anonymise",
                            "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
-                           "clean", "cluster", "predict",
-                           "variable", "mappoint", "mappoly",  "listname",
-                           "qrepeat",  "qrepeatlabel","qlevel","qgroup",
+                           "anonymise", "clean", "cluster", "predict", "variable", "mappoint", "mappoly",
+
+                           "relevant",  "required", "constraint", "repeat_count",
+
+                           "listname","qrepeat",  "qrepeatlabel","qlevel","qgroup",
                            "labelchoice", "order", "weight","score",
                            "recategorise", "formpart", "indic" )]
-        dicotemp <- dicotemp[ , c( "type", "name", "fullname", "label", "labelReport","hintReport",
-                                   "chapter",  "disaggregation","correlate", "anonymise",
-                                   "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
-                                   "clean", "cluster", "predict",
-                                   "variable", "mappoint", "mappoly",  "listname",
-                                   "qrepeat",  "qrepeatlabel","qlevel","qgroup",
-                                   "labelchoice", "order", "weight","score",
-                                   "recategorise", "formpart", "indic" )]
+
+
+        dicotemp <- dicotemp[ , c("type", "name", "fullname", "label", "labelReport","hintReport",
+                                  "chapter",  "disaggregation","correlate", "anonymise",
+                                  "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
+                                  "anonymise", "clean", "cluster", "predict", "variable", "mappoint", "mappoly",
+
+                                  "relevant",  "required", "constraint", "repeat_count",
+
+                                  "listname","qrepeat",  "qrepeatlabel","qlevel","qgroup",
+                                  "labelchoice", "order", "weight","score",
+                                  "recategorise", "formpart", "indic" )]
 
 
         dico <- rbind(dico,dicotemp)
 
         rm(dicotemp,dicotemp1, choices, choices2, choices3, dicotemp.choice)
 
-        household <- read.csv(paste(mainDir,"/data/household.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")
+        MainDataFrame <- read.csv(paste(mainDir,"/data/MainDataFrame-edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")
         ## label Variables
         cat("\n\n quick check on labeling\n")
-        household <- kobo_label(household , dico)
+        MainDataFrame <- kobo_label(MainDataFrame , dico)
         for (dbr in dataBeginRepeat) {
           dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""),stringsAsFactors = F)
           dataFrame <- kobo_label(dataFrame, dico)
@@ -379,7 +390,7 @@ kobo_create_indicators <- function(form = "form.xls") {
         }
         cat("\n\nWrite dico\n")
         write.csv(dico, paste0(mainDir,"/data/dico_",form,".csv"), row.names = FALSE, na = "")
-        write.csv(household, paste(mainDir,"/data/household.csv",sep = ""), row.names = FALSE, na = "")
+        write.csv(MainDataFrame, paste(mainDir,"/data/MainDataFrame-edited.csv",sep = ""), row.names = FALSE, na = "")
 
       }
     }

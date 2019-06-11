@@ -41,8 +41,8 @@ kobo_dico <- function(form = "form.xls") {
   names(survey)[names(survey) == "label::english"] <- "label"
 
 
-  names(survey)[names(survey) == "label::English"] <- "label"
-  names(survey)[names(survey) == "label::english"] <- "label"
+  names(survey)[names(survey) == "hint::English"] <- "hint"
+  names(survey)[names(survey) == "hint::english"] <- "hint"
 
 
   cat("Checking now for additional information within your xlsform. Note that you can insert them in the xls and re-run the function! \n \n ")
@@ -58,7 +58,7 @@ kobo_dico <- function(form = "form.xls") {
     survey[,"labelReport"] <- substr(survey[,"label"],1,80)}
 
 
-  if ("hintReport" %in% colnames(hint))
+  if ("hintReport" %in% colnames(survey))
   {
     cat(" Good: You have a column `hintReport` in your survey worksheet.\n");
   } else

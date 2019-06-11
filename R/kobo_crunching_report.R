@@ -22,7 +22,7 @@
 #' @export kobo_crunching_report
 #'
 
-kobo_crunching_report <- function(form = "form.xls", app="console") {
+kobo_crunching_report <- function(form = "form.xls", app = "console") {
   tryCatch({
     if (app == "shiny") {
       progress <- shiny::Progress$new()
@@ -43,11 +43,11 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
     configInfo <- configInfo[!is.na(configInfo$name),]
     mainDir <- kobo_getMainDirectory()
     form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
-    library(koboloadeR)
+    #library(koboloadeR)
 
     ### Load the data
     cat("\n\n Loading data. It is assumed that the cleaning, weighting & re-encoding has been done previously \n")
-    household <- read.csv(paste(mainDir,"/data/MainDataFrame-encoded.csv",sep = ""), encoding = "UTF-8", na.strings = "")
+    MainDataFrame <- read.csv(paste(mainDir,"/data/MainDataFrame-encoded.csv",sep = ""), encoding = "UTF-8", na.strings = "")
 
     ###Form##########################################
     ## Load form
@@ -66,7 +66,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
       progress$set(message = "Labelling variables in the Main Data File in progress...")
       updateProgress()
     }
-    household <- kobo_label(household , dico)
+    MainDataFrame <- kobo_label(MainDataFrame , dico)
 
     cat("\n\nload all required data files..\n")
     dataBeginRepeat <- kobo_get_begin_repeat()
@@ -130,6 +130,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
 
     for (i in 1:nrow(chapters) )
     {
+      # i <-1
       chaptersname <- as.character(chapters[ i , 1])
       if (app == "shiny") {
         progress$set(message = paste(i, " - Render chapter for ",as.character(chapters[ i , 1])))
@@ -192,7 +193,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
 
       ## TO DO: Use config file to load the different frame
 
-      cat("household <- read.csv(paste0(mainDirroot,\"/data/MainDataFrame-encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = chapter.name , sep = "\n", append = TRUE)
+      cat("MainDataFrame <- read.csv(paste0(mainDirroot,\"/data/MainDataFrame-encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = chapter.name , sep = "\n", append = TRUE)
 
 
       for (dbr in dataBeginRepeat) {
@@ -202,7 +203,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
 
       cat("\n", file = chapter.name , sep = "\n", append = TRUE)
       cat("## label Variables", file = chapter.name , sep = "\n", append = TRUE)
-      cat("household <- kobo_label(household , dico)", file = chapter.name , sep = "\n", append = TRUE)
+      cat("MainDataFrame <- kobo_label(MainDataFrame , dico)", file = chapter.name , sep = "\n", append = TRUE)
       for (dbr in dataBeginRepeat) {
         cat(paste(dbr, " <- kobo_label(",dbr ," , dico)", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
       }
@@ -230,23 +231,23 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
       cat("## Create weighted survey object", file = chapter.name , sep = "\n", append = TRUE)
 
         ## If no weight, the weighted object is unweigthted
-      if (configInfo[configInfo$name == "sample_type","value"] == "No sampling(type 1)") {
+      if (configInfo[configInfo$name == "sample_type","value"] == "No sampling (type 1)") {
         ## If no weight, the weighted object is unweigthted
-        cat("household.survey <- svydesign(ids = ~ 1 ,  data = household )", file = chapter.name , sep = "\n", append = TRUE)
+        cat("MainDataFrame.survey <- svydesign(ids = ~ 1 ,  data = MainDataFrame )", file = chapter.name , sep = "\n", append = TRUE)
         for (dbr in dataBeginRepeat) {
           cat(paste(dbr,".survey <- svydesign(ids = ~ 1 ,  data = ",dbr," )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
         }
         ## with clusters
       }else if (configInfo[configInfo$name == "sample_type","value"] == "Cluster sample (type 2)") {
         ## with clusters
-        cat(paste("household.survey <- svydesign(ids = ~ ", configInfo[configInfo$name == "variable_name","value"],",  data = household,  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"]," ,  fpc = ~ fpc )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
+        cat(paste("MainDataFrame.survey <- svydesign(ids = ~ ", configInfo[configInfo$name == "variable_name","value"],",  data = MainDataFrame,  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"]," ,  fpc = ~ fpc )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
         for (dbr in dataBeginRepeat) {
           cat(paste(dbr,".survey <- svydesign(ids = ~ ", configInfo[configInfo$name == "variable_name","value"],",  data = ",dbr,",  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"]," ,  fpc = ~ fpc )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
         }
         ## with strata
       }else if (configInfo[configInfo$name == "sample_type","value"] == "Stratified sample (type 3)") {
         ## with strata
-        cat(paste("household.survey <- svydesign(id=~1, strata= ~ ", configInfo[configInfo$name == "variable_name","value"]," ,check.strata = TRUE,  data = household,  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"],"  )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
+        cat(paste("MainDataFrame.survey <- svydesign(id=~1, strata= ~ ", configInfo[configInfo$name == "variable_name","value"]," ,check.strata = TRUE,  data = MainDataFrame,  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"],"  )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
         for (dbr in dataBeginRepeat) {
           cat(paste(dbr,".survey <- svydesign(id=~1, strata= ~ ", configInfo[configInfo$name == "variable_name","value"]," ,check.strata = TRUE,  data = ",dbr,",  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"],"  )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
         }
@@ -287,7 +288,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
       ## Getting chapter questions #######
       #chapterquestions <- dico[which(dico$chapter== chaptersname ), c("chapter", "name", "label", "type", "qrepeatlabel", "fullname","listname") ]
       chapterquestions <- dico[which(dico$chapter == chaptersname & dico$type %in% c("select_one","integer","select_multiple_d", "text","date", "numeric")),
-                               c("chapter", "name", "label", "labelReport", "type", "qrepeatlabel", "fullname","listname","variable") ]
+                               c("chapter", "name", "label", "labelReport","hintReport", "type", "qrepeatlabel", "fullname","listname","variable") ]
       #levels(as.factor(as.character(dico[which(!(is.na(dico$chapter)) & dico$formpart=="questions"), c("type") ])))
       ##Loop.questions####################################################################################################
       if (app == "shiny") {
@@ -307,6 +308,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
         questions.type <- as.character(chapterquestions[ j , c("type")])
         questions.frame <- as.character(chapterquestions[ j , c("qrepeatlabel")])
         questions.label <- as.character(chapterquestions[ j , c("labelReport")])
+        questions.hint <- as.character(chapterquestions[ j , c("hintReport")])
         questions.listname <- as.character(chapterquestions[ j , c("listname")])
         questions.ordinal <- as.character(chapterquestions[ j , c("variable")])
         if (is.na(questions.ordinal) ) {questions.ordinal <- "not.defined"} else {questions.ordinal <- questions.ordinal }
@@ -320,6 +322,7 @@ kobo_crunching_report <- function(form = "form.xls", app="console") {
         ## Now create para based on question type-------
 
 
+        cat(paste(questions.hint,"\n\n",sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
 
 
         ###select one###################################################################################################

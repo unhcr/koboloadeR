@@ -89,7 +89,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
 
     if (length(configInfoOrigin[configInfoOrigin$name == "sample_type", "value"]) != 0) {
 
-      if (configInfoOrigin[configInfoOrigin$name == "sample_type", "value"] != "1. No sampling(type 1)") {
+      if (configInfoOrigin[configInfoOrigin$name == "sample_type", "value"] != "No sampling (type 1)") {
 
         if (app == "shiny") {
           progress$set(message = "Adding weights with Main Data File in progress...")

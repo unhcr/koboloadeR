@@ -512,7 +512,7 @@ kobo_prepare_form <- function(form = "form.xls") {
                                 data.frame(name = "sample_type",
                                            label = "Sample type of the project",
                                            options = "1. No sampling(type 1) 2. Cluster sample (type 2) 3. Stratified sample (type 3)",
-                                           value = "1. No sampling(type 1)",
+                                           value = "No sampling (type 1)",
                                            path = NA,
                                            stringsAsFactors = FALSE)
                                 )
@@ -670,6 +670,7 @@ kobo_prepare_form <- function(form = "form.xls") {
         type = character(),
         fullname = character(),
         labelReport = character(),
+        hintReport = character(),
         frame = character(),
         listname = character(),
         calculation = character(),
@@ -714,6 +715,12 @@ kobo_prepare_form <- function(form = "form.xls") {
     } else {
       cat(" No column `labelReport` in your indicator worksheet. Creating a dummy one for the moment...\n");
       indicator$labelReport <- ""
+    }
+    if ("hintReport" %in% colnames(indicator)) {
+      cat(" Good: You have a column `hintReport` in your indicator worksheet.\n");
+    } else {
+      cat(" No column `hintReport` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$hintReport <- ""
     }
     if ("listname" %in% colnames(indicator)) {
       cat(" Good: You have a column `listname` in your indicator worksheet.\n");
@@ -812,7 +819,7 @@ kobo_prepare_form <- function(form = "form.xls") {
       indicator$structuralequation.resilience <- ""
     }
 
-    indicator <- indicator[ ,c("type","fullname","labelReport",
+    indicator <- indicator[ ,c("type","fullname","labelReport", "hintReport",
                                "frame", "listname","calculation",
                                "chapter", "variable", "disaggregation", "correlate", "sensitive",
                                "anonymise", "cluster", "predict", "variable", "mappoint", "mappoly",

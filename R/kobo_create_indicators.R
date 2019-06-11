@@ -46,14 +46,14 @@ kobo_create_indicators <- function(form = "form.xls") {
     tried <- try(read_excel(form_tmp, sheet = "indicator"),
                  silent = TRUE)
     if (inherits(tried, "try-error")) {
-      writeLines("There was an error: You have not defined indicators within your xlsform file. \n")
+      writeLines("Note that you have not defined (or defined correctly) indicators within your xlsform file. \n")
 
     } else {
 
       rm(tried)
       indicator <- read_excel(form_tmp, sheet = "indicator")
       if(nrow(indicator)==0){
-        writeLines("There was an error: You have not defined indicators within your xlsform file. \n")
+        writeLines("Note that you have not defined (or defined correctly) indicators within your xlsform file.  \n")
 
       } else {
         ## Load data & dico #############################################################################
@@ -380,7 +380,7 @@ kobo_create_indicators <- function(form = "form.xls") {
       }
     }
   }, error = function(err) {
-    print("kobo_create_indicators_ERROR")
+    print("There as an error in the indicator creation step!!! \n\n")
     return(structure(err, class = "try-error"))
   })
 }

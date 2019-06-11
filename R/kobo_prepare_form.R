@@ -435,226 +435,50 @@ kobo_prepare_form <- function(form = "form.xls") {
     xlsx::setColumnWidth(choicesSheet, 2:3, 30)
     cat("\n********************Choices sheet, ready to be used*********************\n \n")
 
-    ## Indicator sheet ######################################
 
-
-    cat("################################### \n")
-    cat("### Checking now indicator sheet ## \n")
-    cat("################################### \n")
-
-
-    indicator <- tryCatch({
-      as.data.frame(read_excel(form_tmp, sheet = "indicator"),stringsAsFactors = FALSE)
-    }, error = function(err) {
-      data.frame(
-        type = character(),
-        fullname = character(),
-        label = character(),
-        chapter = character(),
-        disaggregation = character(),
-        correlate = character(),
-        sensitive = character(),
-        anonymise = character(),
-        cluster = character(),
-        predict = character(),
-        variable = character(),
-        mappoint = character(),
-        mappoly = character(),
-        structuralequation.risk = character(),
-        structuralequation.coping = character(),
-        structuralequation.resilience = character(),
-        frame = character(),
-        listname = character(),
-        calculation = character(),
-        stringsAsFactors = FALSE
-      )
-    })
-
-    if ("type" %in% colnames(indicator)) {
-      cat(" Good: You have a column `type` in your indicator worksheet.\n");
-    } else {
-      cat(" No column `type` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$type <- ""
-    }
-    if ("fullname" %in% colnames(indicator)) {
-      cat(" Good: You have a column `fullname` in your indicator worksheet.\n");
-    } else {
-      cat(" No column `fullname` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$fullname <- ""
-    }
-    if ("labelReport" %in% colnames(indicator)) {
-      cat(" Good: You have a column `labelReport` in your indicator worksheet.\n");
-    } else {
-      cat(" No column `labelReport` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$labelReport <- ""
-    }
-
-    if ("chapter" %in% colnames(indicator)) {
-      cat(" Good: You have a column `chapter` in your indicator worksheet.\n");
-    } else {
-      cat(" No column `chapter` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$chapter <- ""
-    }
-    if ("disaggregation" %in% colnames(indicator)) {
-      cat(" Good: You have a column `disaggregation` in your indicator worksheet.\n");
-    } else {
-      cat(" No column `disaggregation` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$disaggregation <- ""
-    }
-    if ("correlate" %in% colnames(indicator)) {
-      cat(" Good: You have a column `correlate` in your indicator worksheet.\n");
-    } else {
-      cat(" No column `correlate` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$correlate <- ""
-    }
-
-    if ("sensitive" %in% colnames(indicator)) {
-      cat(" Good: You have a column `sensitive` in your indicator worksheet.\n");
-    } else {
-      cat(" No column `sensitive` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$sensitive <- ""
-    }
-    if ("anonymise" %in% colnames(indicator)) {
-      cat(" Good: You have a column `anonymise` in your indicator worksheet.\n");
-    } else {
-      cat(" No column `anonymise` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$anonymise <- ""
-    }
-    if ("cluster" %in% colnames(indicator)) {
-      cat(" Good: You have a column `cluster` in your indicator worksheet.\n");
-    } else {
-      cat(" No column `cluster` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$cluster <- ""
-    }
-    if ("predict" %in% colnames(indicator)) {
-      cat(" Good: You have a column `predict` in your indicator worksheet.\n");
-    } else {
-      cat(" No column `predict` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$predict <- ""
-    }
-    if ("variable" %in% colnames(indicator)) {
-      cat(" Good: You have a column `variable` in your indicator worksheet.\n");
-    } else {
-      cat(" No column `variable` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$variable <- ""
-    }
-    if ("mappoint" %in% colnames(indicator)) {
-      cat(" Good: You have a column `mappoint` in your indicator worksheet.\n");
-    } else {
-      cat(" No column `mappoint` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$mappoint <- ""
-    }
-    if ("mappoly" %in% colnames(indicator)) {
-      cat(" Good: You have a column `mappoly` in your indicator worksheet.\n");
-    } else {
-      cat(" No column `mappoly` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$mappoly <- ""
-    }
-
-
-    if ("structuralequation.risk" %in% colnames(indicator)) {
-      cat(" Good: You have a column `structuralequation.risk` in your indicator worksheet. This will be used to configure the vulnerability structural equation model\n");
-    } else {
-      cat(" No column `structuralequation.risk` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$structuralequation.risk <- ""
-    }
-    if ("structuralequation.coping" %in% colnames(indicator)) {
-      cat(" Good: You have a column `structuralequation.coping` in your indicator worksheet. This will be used to configure the vulnerability structural equation model\n");
-    } else {
-      cat(" No column `structuralequation.coping` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$structuralequation.coping <- ""
-    }
-    if ("structuralequation.resilience" %in% colnames(indicator)) {
-      cat(" Good: You have a column `structuralequation.resilience` in your indicator worksheet. This will be used to configure the vulnerability structural equation model\n");
-    } else {
-      cat(" No column `structuralequation.resilience` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$structuralequation.resilience <- ""
-    }
-
-    if ("frame" %in% colnames(indicator)) {
-      cat("Good: You have a column `frame` in your indicator worksheet.\n");
-    } else {
-      cat(" No column `frame` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$frame <- ""
-    }
-    if ("listname" %in% colnames(indicator)) {
-      cat("Good: You have a column `listname` in your indicator worksheet.\n");
-    } else {
-      cat(" No column `listname` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$listname <- ""
-    }
-    if ("calculation" %in% colnames(indicator)) {
-      cat(" Good: You have a column `calculation` in your indicator worksheet.\n");
-    } else {
-      cat(" No column `calculation` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$calculation <- ""
-    }
-    indicator <- indicator[ ,c("type","fullname","label", "chapter", "disaggregation", "correlate", "sensitive",
-      "anonymise", "cluster", "predict", "variable", "mappoint", "mappoly",
-      "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
-      "frame", "listname","calculation")]
-
-    sheetname <- "indicator"
-    if (!is.null(xlsx::getSheets(wb)[[sheetname]]))
-      xlsx::removeSheet(wb, sheetname)
-    indicatorSheet <- xlsx::createSheet(wb, sheetName = sheetname)
-    xlsx::addDataFrame(indicator, indicatorSheet, col.names = TRUE, row.names = FALSE)
-    from <- "A1"
-    to <- dfref[dfref$key == length(indicator),"val"]
-    xlsx::addAutoFilter(indicatorSheet, paste(from,":",to,sep = ""))
-    rows <- xlsx::getRows(indicatorSheet)     # get rows
-    cells <- xlsx::getCells(rows)
-    headerSt <- xlsx::CellStyle(wb) +
-      xlsx::Font(wb, isBold = TRUE, isItalic = FALSE, color = "white", heightInPoints = 13) +
-      xlsx::Fill(backgroundColor = "GREY_50_PERCENT",foregroundColor = "GREY_50_PERCENT",
-           pattern = "SOLID_FOREGROUND")  +
-      xlsx::Border(color = "GREY_80_PERCENT", position = c("TOP", "BOTTOM"), "BORDER_THIN")
-    highlight <- paste("1",c(1:length(indicator)),sep = ".")
-    lapply(names(cells[highlight]),
-           function(ii) xlsx::setCellStyle(cells[[ii]], headerSt))
-    xlsx::autoSizeColumn(indicatorSheet, 1:length(survey))
-    cat("\n********************Indicator sheet, ready to be used*********************\n \n")
 
     ### Settings sheet ######################################
 
 
-    cat("\n\n################################### \n")
-    cat("### Checking now settings sheet ## \n")
-    cat("################################### \n\n")
+      cat("\n\n################################### \n")
+      cat("### Checking now settings sheet ## \n")
+      cat("################################### \n\n")
 
 
-    settings <- tryCatch({
-      as.data.frame(read_excel(form_tmp, sheet = "settings"),
-                    stringsAsFactors = FALSE)
-    }, error = function(err) {
-      data.frame(
-        form_title = character(),
-        form_id = character(),
-        default_language = character(),
-        stringsAsFactors = FALSE
-      )
-    })
+      settings <- tryCatch({
+        as.data.frame(read_excel(form_tmp, sheet = "settings"),
+                      stringsAsFactors = FALSE)
+      }, error = function(err) {
+        data.frame(
+          form_title = character(),
+          form_id = character(),
+          default_language = character(),
+          stringsAsFactors = FALSE
+        )
+      })
 
-    sheetname <- "settings"
-    if (!is.null(xlsx::getSheets(wb)[[sheetname]]))
-      xlsx::removeSheet(wb, sheetname)
-    settingsSheet <- xlsx::createSheet(wb, sheetName = sheetname) #create sheet with settings name
-    xlsx::addDataFrame(settings, settingsSheet, col.names = TRUE, row.names = FALSE) #add settings data frame to this sheet
-    from <- "A1"
-    to <- dfref[dfref$key == length(settings),"val"]
-    xlsx::addAutoFilter(settingsSheet, paste(from,":",to,sep = ""))
-    rows <- xlsx::getRows(settingsSheet)     # get rows
-    cells <- xlsx::getCells(rows)
-    headerSt <- xlsx::CellStyle(wb) +
-      xlsx::Font(wb, isBold = TRUE, isItalic = FALSE, color = "white", heightInPoints = 13) +
-      xlsx::Fill(backgroundColor = "GREY_50_PERCENT",foregroundColor = "GREY_50_PERCENT",
-           pattern = "SOLID_FOREGROUND")  +
-      xlsx::Border(color = "GREY_80_PERCENT", position = c("TOP", "BOTTOM"), "BORDER_THIN")
-    highlight <- paste("1",c(1:length(settings)),sep = ".")
-    lapply(names(cells[highlight]),
-           function(ii) xlsx::setCellStyle(cells[[ii]], headerSt))
-    xlsx::autoSizeColumn(settingsSheet, 1:length(survey))
-    cat("\n********************Settings sheet, ready to be used*********************\n \n")
+      sheetname <- "settings"
+      if (!is.null(xlsx::getSheets(wb)[[sheetname]]))
+        xlsx::removeSheet(wb, sheetname)
+      settingsSheet <- xlsx::createSheet(wb, sheetName = sheetname) #create sheet with settings name
+      xlsx::addDataFrame(settings, settingsSheet, col.names = TRUE, row.names = FALSE) #add settings data frame to this sheet
+
+      from <- "A1"
+      to <- dfref[dfref$key == length(settings),"val"]
+
+      xlsx::addAutoFilter(settingsSheet, paste(from,":",to,sep = ""))
+      rows <- xlsx::getRows(settingsSheet)     # get rows
+      cells <- xlsx::getCells(rows)
+      headerSt <- xlsx::CellStyle(wb) +
+        xlsx::Font(wb, isBold = TRUE, isItalic = FALSE, color = "white", heightInPoints = 13) +
+        xlsx::Fill(backgroundColor = "GREY_50_PERCENT",foregroundColor = "GREY_50_PERCENT",
+             pattern = "SOLID_FOREGROUND")  +
+        xlsx::Border(color = "GREY_80_PERCENT", position = c("TOP", "BOTTOM"), "BORDER_THIN")
+      highlight <- paste("1",c(1:length(settings)),sep = ".")
+      lapply(names(cells[highlight]),
+             function(ii) xlsx::setCellStyle(cells[[ii]], headerSt))
+      xlsx::autoSizeColumn(settingsSheet, 1:length(survey))
+      cat("\n******************** Settings sheet, ready to be used*********************\n \n")
 
 
 
@@ -826,13 +650,207 @@ kobo_prepare_form <- function(form = "form.xls") {
     lapply(names(cells[highlight]),
            function(ii) xlsx::setCellStyle(cells[[ii]], headerSt))
     xlsx::autoSizeColumn(settingsSheet, 1:length(survey))
-    cat("\n********************Project Analysis Settings sheet, ready to be used*********************\n \n")
+    cat("\n******************** Project Analysis Settings sheet, ready to be used*********************\n \n")
+
+
+
+
+    ## Indicator sheet ######################################
+
+
+    cat("################################### \n")
+    cat("### Checking now indicator sheet ## \n")
+    cat("################################### \n")
+
+
+    indicator <- tryCatch({
+      as.data.frame(read_excel(form_tmp, sheet = "indicator"),stringsAsFactors = FALSE)
+    }, error = function(err) {
+      data.frame(
+        type = character(),
+        fullname = character(),
+        labelReport = character(),
+        frame = character(),
+        listname = character(),
+        calculation = character(),
+        chapter = character(),
+        variable = character(),
+        disaggregation = character(),
+        correlate = character(),
+        sensitive = character(),
+        anonymise = character(),
+        cluster = character(),
+        predict = character(),
+        variable = character(),
+        mappoint = character(),
+        mappoly = character(),
+        structuralequation.risk = character(),
+        structuralequation.coping = character(),
+        structuralequation.resilience = character(),
+        stringsAsFactors = FALSE
+      )
+     }
+    )
+    if ("type" %in% colnames(indicator)) {
+      cat(" Good: You have a column `type` in your indicator worksheet.\n");
+    } else {
+      cat(" No column `type` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$type <- ""
+    }
+    if ("fullname" %in% colnames(indicator)) {
+      cat(" Good: You have a column `fullname` in your indicator worksheet.\n");
+    } else {
+      cat(" No column `fullname` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$fullname <- ""
+    }
+    if ("frame" %in% colnames(indicator)) {
+      cat(" Good: You have a column `frame` in your indicator worksheet.\n");
+    } else {
+      cat(" No column `frame` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$frame <- ""
+    }
+    if ("labelReport" %in% colnames(indicator)) {
+      cat(" Good: You have a column `labelReport` in your indicator worksheet.\n");
+    } else {
+      cat(" No column `labelReport` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$labelReport <- ""
+    }
+    if ("listname" %in% colnames(indicator)) {
+      cat(" Good: You have a column `listname` in your indicator worksheet.\n");
+    } else {
+      cat(" No column `listname` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$listname <- ""
+    }
+    if ("calculation" %in% colnames(indicator)) {
+      cat(" Good: You have a column `calculation` in your indicator worksheet.\n");
+    } else {
+      cat(" No column `calculation` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$calculation <- ""
+    }
+    if ("chapter" %in% colnames(indicator)) {
+      cat(" Good: You have a column `chapter` in your indicator worksheet.\n");
+    } else {
+      cat(" No column `chapter` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$chapter <- ""
+    }
+    if ("variable" %in% colnames(indicator)) {
+      cat(" Good: You have a column `variable` in your indicator worksheet.\n");
+    } else {
+      cat(" No column `variable` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$variable <- ""
+    }
+    if ("disaggregation" %in% colnames(indicator)) {
+      cat(" Good: You have a column `disaggregation` in your indicator worksheet.\n");
+    } else {
+      cat(" No column `disaggregation` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$disaggregation <- ""
+    }
+    if ("correlate" %in% colnames(indicator)) {
+      cat(" Good: You have a column `correlate` in your indicator worksheet.\n");
+    } else {
+      cat(" No column `correlate` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$correlate <- ""
+    }
+    if ("sensitive" %in% colnames(indicator)) {
+      cat(" Good: You have a column `sensitive` in your indicator worksheet.\n");
+    } else {
+      cat(" No column `sensitive` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$sensitive <- ""
+    }
+    if ("anonymise" %in% colnames(indicator)) {
+      cat(" Good: You have a column `anonymise` in your indicator worksheet.\n");
+    } else {
+      cat(" No column `anonymise` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$anonymise <- ""
+    }
+    if ("cluster" %in% colnames(indicator)) {
+      cat(" Good: You have a column `cluster` in your indicator worksheet.\n");
+    } else {
+      cat(" No column `cluster` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$cluster <- ""
+    }
+    if ("predict" %in% colnames(indicator)) {
+      cat(" Good: You have a column `predict` in your indicator worksheet.\n");
+    } else {
+      cat(" No column `predict` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$predict <- ""
+    }
+    if ("variable" %in% colnames(indicator)) {
+      cat(" Good: You have a column `variable` in your indicator worksheet.\n");
+    } else {
+      cat(" No column `variable` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$variable <- ""
+    }
+    if ("mappoint" %in% colnames(indicator)) {
+      cat(" Good: You have a column `mappoint` in your indicator worksheet.\n");
+    } else {
+      cat(" No column `mappoint` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$mappoint <- ""
+    }
+    if ("mappoly" %in% colnames(indicator)) {
+      cat(" Good: You have a column `mappoly` in your indicator worksheet.\n");
+    } else {
+      cat(" No column `mappoly` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$mappoly <- ""
+    }
+    if ("structuralequation.risk" %in% colnames(indicator)) {
+      cat(" Good: You have a column `structuralequation.risk` in your indicator worksheet. This will be used to configure the vulnerability structural equation model\n");
+    } else {
+      cat(" No column `structuralequation.risk` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$structuralequation.risk <- ""
+    }
+    if ("structuralequation.coping" %in% colnames(indicator)) {
+      cat(" Good: You have a column `structuralequation.coping` in your indicator worksheet. This will be used to configure the vulnerability structural equation model\n");
+    } else {
+      cat(" No column `structuralequation.coping` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$structuralequation.coping <- ""
+    }
+    if ("structuralequation.resilience" %in% colnames(indicator)) {
+      cat(" Good: You have a column `structuralequation.resilience` in your indicator worksheet. This will be used to configure the vulnerability structural equation model\n");
+    } else {
+      cat(" No column `structuralequation.resilience` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$structuralequation.resilience <- ""
+    }
+
+    indicator <- indicator[ ,c("type","fullname","labelReport",
+                               "frame", "listname","calculation",
+                               "chapter", "variable", "disaggregation", "correlate", "sensitive",
+                               "anonymise", "cluster", "predict", "variable", "mappoint", "mappoly",
+                               "structuralequation.risk","structuralequation.coping","structuralequation.resilience")]
+
+    sheetname <- "indicator"
+    if (!is.null(xlsx::getSheets(wb)[[sheetname]]))
+      xlsx::removeSheet(wb, sheetname)
+    indicatorSheet <- xlsx::createSheet(wb, sheetName = sheetname)
+    xlsx::addDataFrame(indicator, indicatorSheet, col.names = TRUE, row.names = FALSE)
+    from <- "A1"
+    to <- dfref[dfref$key == length(indicator),"val"]
+    xlsx::addAutoFilter(indicatorSheet, paste(from,":",to,sep = ""))
+
+    # get rows
+    rows <- xlsx::getRows(indicatorSheet)
+    cells <- xlsx::getCells(rows)
+    headerSt <- xlsx::CellStyle(wb) +
+      xlsx::Font(wb, isBold = TRUE, isItalic = FALSE, color = "white", heightInPoints = 13) +
+      xlsx::Fill(backgroundColor = "GREY_50_PERCENT",foregroundColor = "GREY_50_PERCENT",
+                 pattern = "SOLID_FOREGROUND")  +
+      xlsx::Border(color = "GREY_80_PERCENT", position = c("TOP", "BOTTOM"), "BORDER_THIN")
+    highlight <- paste("1",c(1:length(indicator)),sep = ".")
+    lapply(names(cells[highlight]),
+           function(ii) xlsx::setCellStyle(cells[[ii]], headerSt))
+    xlsx::autoSizeColumn(indicatorSheet, 1:length(survey))
+    cat("\n******************** Indicator sheet, ready to be used *********************\n \n")
 
 
     if (file.exists(form_tmp)) file.remove(form_tmp)
     xlsx::saveWorkbook(wb, form_tmp)
+
+
+    cat("\n******************** The XLSFORM has now been extended to include your analysis plan *********************\n \n")
+
+
   }, error = function(err) {
-    print("kobo_prepare_form_ERROR")
+    print("There was an error in the xlsform preparation step!!! \n\n")
     return(structure(err, class = "try-error"))
   })
 

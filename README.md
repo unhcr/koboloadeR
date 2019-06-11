@@ -54,21 +54,30 @@ The `koboloadeR` package allows to:
 To be able to use koboloadeR you will need:
 
 
- * Java JRE  (https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html): JAVA is required to manipulate excel files.
-
- * R (https://cran.rstudio.com/). For Windows, choose "install R for the first time".
- 
- * **Only for windows user** RTools (https://cran.r-project.org/bin/windows/Rtools/)  - This executable is needed to install the package from github.
-
- * R Studio  (https://www.rstudio.com/products/rstudio/download/#download)
-
  
 ## Software installation  
- * Install Java JRE: please make sure that JAVA_HOME is actually recorded as an [Environment Variable](https://java.com/en/download/help/path.xml). Note in some case, you may need to reboot your computer to ensure that this environement variable is properly accounted for.
- * Install R: follow instruction from the installer.
- * Install RTools: follow instruction from the installer.
- * Install R Studio: follow instruction from the installer
- * Launch R Studio
+
+ 1. Install either [Java JRE](https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html):  JAVA is required to manipulate excel files. 
+ 
+If you install, the `JDK` (Java Development kit), Please make sure that `JAVA_HOME` is actually recorded as an [Environment Variable](https://java.com/en/download/help/path.xml). 
+
+If you install, the `JRE` (Java Runtime Environment), Please make sure that `JRE_HOME` is actually recorded as an [Environment Variable](https://confluence.atlassian.com/doc/setting-the-java_home-variable-in-windows-8895.html). 
+
+Once in R, you may double-check that Environement variable are correctly, i.e. JAVA_HOME or JRE_HOME, set by
+
+> Sys.getenv()
+
+If JAVA is not correctly set, you will see an installatin error at a latter stage when loading the package `RJava`.
+
+Note in some case, you may need to reboot your computer to ensure that this environement variable is properly accounted for.
+
+ 2. [Install R](https://cran.rstudio.com/): follow instruction from the installer.
+
+ 3. **Only for windows user** [Install RTools](https://cran.r-project.org/bin/windows/Rtools/): This executable is needed to install the package from github. Follow instruction from the installer.
+
+ 4. [Install R Studio](https://www.rstudio.com/products/rstudio/download/#download) : follow instruction from the installer
+
+You can now Launch __R Studio__
 
 ### Package installation: koboloadeR from Github (up to date version):
 
@@ -77,7 +86,7 @@ Note that the package is still in beta-version. We hope to have soon a release a
 * Open R studio interface and within the R console, install `devtools` package: 
 
 ```
-devtools::install.packages("devtools")
+install.packages("devtools")
 ```
 
 * Install koboloadeR: 

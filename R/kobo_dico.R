@@ -150,28 +150,28 @@ kobo_dico <- function(form = "form.xls") {
   } else
   {cat("1- No column `relevant` in your survey worksheet. Creating a dummy one for the moment...\n");
     survey[,"relevant"] <- ""}
-  
+
   if ("required" %in% colnames(survey))
   {
     cat("1- Good: You have a column `required` in your survey worksheet.\n");
   } else
   {cat("1- No column `required` in your survey worksheet. Creating a dummy one for the moment...\n");
     survey[,"required"] <- ""}
-  
+
   if ("constraint" %in% colnames(survey))
   {
     cat("1- Good: You have a column `constraint` in your survey worksheet.\n");
   } else
   {cat("1- No column `constraint` in your survey worksheet. Creating a dummy one for the moment...\n");
     survey[,"constraint"] <- ""}
-  
+
   if ("repeat_count" %in% colnames(survey))
   {
     cat("1- Good: You have a column `repeat_count` in your survey worksheet.\n");
   } else
   {cat("1- No column `repeat_count` in your survey worksheet. Creating a dummy one for the moment...\n");
     survey[,"repeat_count"] <- ""}
-  
+
   ## Avoid columns without names
   survey <- survey[ ,c("type",   "name" ,  "label", "labelReport",
                        #"repeatsummarize",
@@ -400,41 +400,45 @@ kobo_dico <- function(form = "form.xls") {
 
   if ("labelReport" %in% colnames(choices))
   {
-    cat("12 -  Good: You have a column `labelReport` in your `choices` worksheet.\n");
+    cat(" Good: You have a column `labelReport` in your `choices` worksheet.\n");
   } else
-  {cat("12 -  No column `labelReport` in your `choices` worksheet. Creating a dummy one for the moment...\n");
+  {cat(" No column `labelReport` in your `choices` worksheet. Creating a dummy one for the moment...\n");
     choices[,"labelReport"] <- substr(choices[,"label"],1,80)}
 
 
   if ("order" %in% colnames(choices))
   {
-    cat("12 -  Good: You have a column `order` in your `choices` worksheet.\n");
+    cat(" Good: You have a column `order` in your `choices` worksheet.\n");
   } else
-  {cat("12 -  No column `order` in your `choices` worksheet. Creating a dummy one for the moment...\n");
+  {cat(" No column `order` in your `choices` worksheet. Creating a dummy one for the moment...\n");
     choices$order <- ""}
 
   if ("weight" %in% colnames(choices))
   {
-    cat("13 -  Good: You have a column `weight` in your `choices` worksheet.\n");
+    cat("  Good: You have a column `weight` in your `choices` worksheet.\n");
   } else
-  {cat("13 -  No column `weight` in your `choices` worksheet. Creating a dummy one for the moment...\n");
+  {cat("  No column `weight` in your `choices` worksheet. Creating a dummy one for the moment...\n");
     choices$weight <- ""}
 
   if ("recategorise" %in% colnames(choices))
   {
-    cat("14 -  Good: You have a column `recategorise` in your `choices` worksheet.\n");
+    cat(" Good: You have a column `recategorise` in your `choices` worksheet.\n");
   } else
-  {cat("14 -  No column `recategorise` in your `choices` worksheet. Creating a dummy one for the moment...\n");
+  {cat("  No column `recategorise` in your `choices` worksheet. Creating a dummy one for the moment...\n");
     choices$recategorise <- ""}
 
   if ("score" %in% colnames(choices))
   {
-    cat("13 -  Good: You have a column `score` in your `choices` worksheet.\n");
+    cat("  Good: You have a column `score` in your `choices` worksheet.\n");
   } else
-  {cat("13 -  No column `score` in your `choices` worksheet. Creating a dummy one for the moment...\n");
+  {cat(" No column `score` in your `choices` worksheet. Creating a dummy one for the moment...\n");
     choices$score <- ""}
 
   choices <- choices[,c("listname",  "name",  "labelReport", "order", "weight","score","recategorise")]
+
+
+
+
   names(choices)[names(choices) == "labelReport"] <- "labelchoice"
   #rm(choices)
   choices <- join(x = choices, y = survey, by = "listname", type = "left")

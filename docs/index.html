@@ -125,23 +125,27 @@
 <h2 class="hasAnchor">
 <a href="#prerequisite" class="anchor"></a>Prerequisite</h2>
 <p>To be able to use koboloadeR you will need:</p>
-<ul>
-<li><p>Java JRE (<a href="https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html" class="uri">https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html</a>): JAVA is required to manipulate excel files.</p></li>
-<li><p>R (<a href="https://cran.rstudio.com/" class="uri">https://cran.rstudio.com/</a>). For Windows, choose “install R for the first time”.</p></li>
-<li><p><strong>Only for windows user</strong> RTools (<a href="https://cran.r-project.org/bin/windows/Rtools/" class="uri">https://cran.r-project.org/bin/windows/Rtools/</a>) - This executable is needed to install the package from github.</p></li>
-<li><p>R Studio (<a href="https://www.rstudio.com/products/rstudio/download/#download" class="uri">https://www.rstudio.com/products/rstudio/download/#download</a>)</p></li>
-</ul>
 </div>
 <div id="software-installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#software-installation" class="anchor"></a>Software installation</h2>
-<ul>
-<li>Install Java JRE: please make sure that JAVA_HOME is actually recorded as an <a href="https://java.com/en/download/help/path.xml">Environment Variable</a>. Note in some case, you may need to reboot your computer to ensure that this environement variable is properly accounted for.</li>
-<li>Install R: follow instruction from the installer.</li>
-<li>Install RTools: follow instruction from the installer.</li>
-<li>Install R Studio: follow instruction from the installer</li>
-<li>Launch R Studio</li>
-</ul>
+<ol>
+<li>Install either <a href="https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html">Java JRE</a>: JAVA is required to manipulate excel files.</li>
+</ol>
+<p>If you install, the <code>JDK</code> (Java Development kit), Please make sure that <code>JAVA_HOME</code> is actually recorded as an <a href="https://java.com/en/download/help/path.xml">Environment Variable</a>.</p>
+<p>If you install, the <code>JRE</code> (Java Runtime Environment), Please make sure that <code>JRE_HOME</code> is actually recorded as an <a href="https://confluence.atlassian.com/doc/setting-the-java_home-variable-in-windows-8895.html">Environment Variable</a>.</p>
+<p>Once in R, you may double-check that Environement variable are correctly, i.e. JAVA_HOME or JRE_HOME, set by</p>
+<blockquote>
+<p>Sys.getenv()</p>
+</blockquote>
+<p>If JAVA is not correctly set, you will see an installatin error at a latter stage when loading the package <code>RJava</code>.</p>
+<p>Note in some case, you may need to reboot your computer to ensure that this environement variable is properly accounted for.</p>
+<ol>
+<li><p><a href="https://cran.rstudio.com/">Install R</a>: follow instruction from the installer.</p></li>
+<li><p><strong>Only for windows user</strong> <a href="https://cran.r-project.org/bin/windows/Rtools/">Install RTools</a>: This executable is needed to install the package from github. Follow instruction from the installer.</p></li>
+<li><p><a href="https://www.rstudio.com/products/rstudio/download/#download">Install R Studio</a> : follow instruction from the installer</p></li>
+</ol>
+<p>You can now Launch <strong>R Studio</strong></p>
 <div id="package-installation-koboloader-from-github-up-to-date-version" class="section level3">
 <h3 class="hasAnchor">
 <a href="#package-installation-koboloader-from-github-up-to-date-version" class="anchor"></a>Package installation: koboloadeR from Github (up to date version):</h3>
@@ -149,7 +153,7 @@
 <ul>
 <li>Open R studio interface and within the R console, install <code>devtools</code> package:</li>
 </ul>
-<pre><code>devtools::install.packages("devtools")</code></pre>
+<pre><code><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages("devtools")</a></code></pre>
 <ul>
 <li>Install koboloadeR:</li>
 </ul>

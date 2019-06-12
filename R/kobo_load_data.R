@@ -25,7 +25,7 @@
 #'
 
 kobo_load_data <- function(form = "form.xls", app = "console") {
-  tryCatch({
+  tryCatch ( {
     ## Load all required packages#############################################
 
     if (app == "shiny") {
@@ -62,22 +62,32 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
 
     originalData <- read.csv(configInfoOrigin[configInfoOrigin$name == "MainDataFrame", "path"], sep = ",", encoding = "UTF-8", na.strings = "")
 
+    if (ncol(originalData) == 1) {
+      cat("seems like you file use  ; rather , variable separator.... \n")
+      originalData <- read.csv(configInfoOrigin[configInfoOrigin$name == "MainDataFrame", "path"], sep = ";", encoding = "UTF-8", na.strings = "")
+    }
 
     ## Check to split select_multiple if data is extracted from ODK ###################
     if (app == "shiny") {
       progress$set(message = "Splitting Main Data File in progress...")
       updateProgress()
     }
+
     cat("\n\n\n Now split select_multiple  variables \n\n\n\n")
-    household <- kobo_split_multiple(originalData, dico)
+    MainDataFrame <- kobo_split_multiple(originalData, dico)
+
 
     ## Clean variable if any ##########################################################
     if (app == "shiny") {
       progress$set(message = "Cleaning Main Data File in progress...")
       updateProgress()
     }
+
+
     cat("\n\n\n Clean variable if any \n\n\n\n")
-    household <- kobo_clean(household, dico)
+    MainDataFrame <- kobo_clean(MainDataFrame, dico)
+
+
 
     ## Join with Weight file #########################################
     cat("\n\n\n Set up sampling \n\n\n\n")
@@ -98,24 +108,36 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
 
         path <- configInfoOrigin[configInfoOrigin$name == "weights_info", "path"]
         weight <- read.csv(path,stringsAsFactors = F)
+
+
         variableName <- configInfoOrigin[configInfoOrigin$name == "variable_name", "value"]
-        household <- left_join(x = household, y = weight, by = variableName)
+        MainDataFrame <- left_join(x = MainDataFrame, y = weight, by = variableName)
+
+
       }
     }
 
 
     ## Cheking the labels matching... #################################################
-    ## household is the default root data componnents to be used -- in order to deal with nested dataset
+
+
+    ## MainDataFrame is the default root data componnents to be used -- in order to deal with nested dataset
     if (app == "shiny") {
+
+
       progress$set(message = "labeling variables for Main Data File in progress...")
       updateProgress()
     }
     cat("\n\n\n Now  labeling variables \n\n\n\n")
-    household <- kobo_label(household, dico)
+    MainDataFrame_edited <- kobo_label(MainDataFrame_edited, dico)
 
     ## Save preliminary version before encoding or adding indicators ##################
+
+
     cat("\n\n Write backup before encoding or indicators calculation..\n")
-    write.csv(household,paste(mainDir,"/data/MainDataFrame-edited.csv",sep = ""), row.names = FALSE, na = "")
+    write.csv(MainDataFrame,paste(mainDir,"/data/MainDataFrame-edited.csv",sep = ""), row.names = FALSE, na = "")
+
+
 
     ## load all required data files #########################################
     cat("\n\nload all required nested data files..\n")
@@ -128,11 +150,15 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
     configInfo <- configInfoOrigin[startsWith(tolower(configInfoOrigin$name), "instanceid"),]
 
     levelsOfDF <- kobo_get_dataframes_levels(form)
+
+
     levelsOfDF <- levelsOfDF[levelsOfDF$name != "MainDataFrame",]
     if (nrow(levelsOfDF) != 0) {
-    #  levelsOfDF[levelsOfDF$parent == "MainDataFrame","parent"] <- "household"
+    #  levelsOfDF[levelsOfDF$parent == "MainDataFrame","parent"] <- "MainDataFrame"
     #}
     #dataBeginRepeat <- kobo_get_begin_repeat("form2.xls")
+
+
     #dataBeginRepeat <- dataBeginRepeat$names
 
 
@@ -169,6 +195,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
         cat(paste("Labeling",dbr,"file in progress...\n"))
         dataFrame <- kobo_label(dataFrame, dico)
 
+
         cat("\n\n Saving ",dbr,"file as -edited..\n")
         write.csv(dataFrame,paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""), row.names = FALSE, na = "")
 
@@ -196,17 +223,20 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
           ## Case MainDataFrame called household
           if (parent %in% c("household", "MainDataFrame")) {
             parentDf <- read.csv(paste(mainDir,"/data/",parent,"-edited.csv",sep = ""),stringsAsFactors = F)
+
           }else{
-            parentDf <- read.csv(paste(mainDir,"/data/",parent,"-edited.csv",sep = ""),stringsAsFactors = F)
+            parentDf <- read.csv(paste(mainDir,"/data/",parent,"_edited.csv",sep = ""),stringsAsFactors = F)
           }
 
 
           ## Preparing the 2 data frame for a left join - create a common key betwee 2 frames for the left_join
           unColChild <- dataFrame[,instanceIDChild]
+
           ## Removing this from child
           dataFrame <- dataFrame[  colnames(dataFrame) != instanceIDChild]
 
           ## get all variables from child that are not in parent
+
           unCN <- colnames(dataFrame)[!colnames(dataFrame) %in% colnames(parentDf)]
 
           if (instanceIDChild != instanceIDParent) {
@@ -226,15 +256,19 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
           dataFrame <- plyr::join(dataFrame, parentDf, by = "jointemp", type = "left")
           dataFrame["jointemp"] <- NULL
 
+
           if (parent == "MainDataFrame") {
+
             break
           } else {
             child <- levelsOfDF[levelsOfDF$name == parent, "name"]
             parent <- levelsOfDF[levelsOfDF$name == parent, "parent"]
           }
         }
+
         cat("\n\n Saving edited version of  ", dbr, " ...\n")
         write.csv(dataFrame,paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""), row.names = FALSE, na = "")
+
       }
 
     }
@@ -257,7 +291,9 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
 
 
     dico <- read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
-    household <- read.csv(paste(mainDir,"/data/MainDataFrame-edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")
+
+    MainDataFrame <- read.csv(paste(mainDir,"/data/MainDataFrame-edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")
+
 
     ## Re-encoding data now based on the dictionnary -- ##############################
     ## the xlsform dictionnary can be adjusted this script re-runned till satisfaction
@@ -268,19 +304,23 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
       updateProgress()
     }
 
-    household <- kobo_encode(household, dico)
+
+    MainDataFrame <- kobo_encode(MainDataFrame, dico)
 
     ## loading nested frame
     for (dbr in levelsOfDF$name) {
       dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""),stringsAsFactors = F)
       dataFrame <- kobo_encode(dataFrame, dico)
       write.csv(dataFrame,paste(mainDir,"/data/",dbr,"-encoded.csv",sep = ""), row.names = FALSE, na = "")
+
       cat("\n\nRe-encode",dbr,"..\n")
     }
     if (app == "shiny") {
       updateProgress()
     }
-    write.csv(household,paste(mainDir,"/data/MainDataFrame-encoded.csv",sep = ""), row.names = FALSE, na = "")
+
+    write.csv(MainDataFrame,paste(mainDir,"/data/MainDataFrame-encoded.csv",sep = ""), row.names = FALSE, na = "")
+
     return(TRUE)
   }, error = function(err) {
     print("There was an error in the data processing step!!! \n\n")

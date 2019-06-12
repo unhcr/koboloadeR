@@ -263,7 +263,9 @@ kobo_dico <- function(form = "form.xls") {
   }
 
   ### identify Repeat questions
+
   survey$qrepeatlabel <- "MainDataFrame"
+
   nestable <- survey[survey$type %in% c("begin_repeat","begin repeat") , c("name","qrepeat","type")]
   nestable$name <- as.character(nestable$name)
   for (i in 2:nrow(survey))
@@ -273,7 +275,9 @@ kobo_dico <- function(form = "form.xls") {
          if ( survey[ i, c("type")] == "begin repeat" )                                                {survey[ i, c("qrepeatlabel")]  <- survey[ i, c("name")]}
     else if ( survey[ i, c("type")] != "end repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest1" )   {survey[ i, c("qrepeatlabel")]  <- survey[ i - 1, c("qrepeatlabel")] }
     else if ( survey[ i, c("type")] != "end repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest2" )   {survey[ i, c("qrepeatlabel")]  <- survey[ i - 1, c("qrepeatlabel")] }
+
     else if ( survey[ i, c("type")] == "end repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest1")    {survey[ i, c("qrepeatlabel")]  <-  "MainDataFrame"}
+
     else if ( survey[ i, c("type")] == "end repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest2")    { nestabove <- as.character(survey[ i - 1, c("qrepeatlabel")])
                                                                                                        nestabovenum <- as.integer(which(nestable$name == nestabove ) - 1)
                                                                                                       survey[ i, c("qrepeatlabel")]  <-  as.character( nestable[ nestabovenum , 1] ) }
@@ -282,12 +286,16 @@ kobo_dico <- function(form = "form.xls") {
     else if ( survey[ i, c("type")] == "begin_repeat" )                                                {survey[ i, c("qrepeatlabel")]  <- survey[ i, c("name")]}
     else if ( survey[ i, c("type")] != "end_repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest1" )   {survey[ i, c("qrepeatlabel")]  <- survey[ i - 1, c("qrepeatlabel")] }
     else if ( survey[ i, c("type")] != "end_repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest2" )   {survey[ i, c("qrepeatlabel")]  <- survey[ i - 1, c("qrepeatlabel")] }
+
     else if ( survey[ i, c("type")] == "end_repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest1")    {survey[ i, c("qrepeatlabel")]  <-  "MainDataFrame"}
+
     else if ( survey[ i, c("type")] == "end_repeat"   && survey[ i - 1, c("qrepeat")] == "repeatnest2")    { nestabove <- as.character(survey[ i - 1, c("qrepeatlabel")])
                                                                                                         nestabovenum <- as.integer(which(nestable$name == nestabove ) - 1)
                                                                                                         survey[ i, c("qrepeatlabel")]  <-  as.character( nestable[ nestabovenum , 1] ) }
 
+
     else   {survey[ i, c("qrepeatlabel")]  <-  "MainDataFrame"}
+
   }
 
   ### Get question levels in order to match the variable name

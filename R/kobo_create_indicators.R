@@ -29,7 +29,26 @@ kobo_create_indicators <- function(form = "form.xls") {
   form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
 
   tryCatch({
+<<<<<<< HEAD
 
+=======
+    mainDir <- kobo_getMainDirectory()
+    form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
+
+    ## Load all required packages
+    kobo_load_packages()
+    library(koboloadeR)
+
+    ## load all required data files #########################################
+    cat("\n\nload all required data files..\n")
+    dataBeginRepeat <- kobo_get_begin_repeat()
+    dataBeginRepeat <- dataBeginRepeat$names
+    for (dbr in dataBeginRepeat) {
+      dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
+      assign(dbr, dataFrame)
+    }
+
+>>>>>>> fffa73afd5387d145dea1058ded0957512987da9
     #### Load and test i indicators #############################################################################
     #library(readxl)
     tried <- try(read_excel(form_tmp, sheet = "indicator"),
@@ -152,10 +171,12 @@ kobo_create_indicators <- function(form = "form.xls") {
           cat('form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           cat('dataBeginRepeat <- kobo_get_begin_repeat()', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           cat('dataBeginRepeat <- dataBeginRepeat$names', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+
           cat('MainDataFrame <- read.csv(paste(mainDir,"/data/MainDataFrame-edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
 
           cat('for (dbr in dataBeginRepeat) {
             dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""),stringsAsFactors = F)
+
             assign(dbr, dataFrame)
           }', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
 
@@ -171,12 +192,13 @@ kobo_create_indicators <- function(form = "form.xls") {
           cat(paste0("str(",indicator.frame,"$",indicator.fullname,")"), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           cat(paste0("summary(",indicator.frame,"$",indicator.fullname,")"), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
 
-           if(indicator.frame == "MainDataFrame"){
+           if (indicator.frame == "MainDataFrame") {
              cat('write.csv(MainDataFrame, paste(mainDir,"/data/MainDataFrame-edited.csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
            }else{
              cat(paste('dbr<-"',indicator.frame,'"',sep = ""))
              cat('write.csv(eval(as.name(dbr)),paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
            }
+
 
           source(paste0(mainDir,"/code/temp.R"))
           cat(paste0(i, "- Executed  indicator: ", indicator.labelReport,"\n"))
@@ -379,18 +401,22 @@ kobo_create_indicators <- function(form = "form.xls") {
 
         rm(dicotemp,dicotemp1, choices, choices2, choices3, dicotemp.choice)
 
+
         MainDataFrame <- read.csv(paste(mainDir,"/data/MainDataFrame-edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")
         ## label Variables
         cat("\n\n quick check on labeling\n")
         MainDataFrame <- kobo_label(MainDataFrame , dico)
         for (dbr in dataBeginRepeat) {
           dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""),stringsAsFactors = F)
+
           dataFrame <- kobo_label(dataFrame, dico)
-          write.csv(dataFrame,paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""), row.names = FALSE, na = "")
+          write.csv(dataFrame,paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""), row.names = FALSE, na = "")
         }
         cat("\n\nWrite dico\n")
         write.csv(dico, paste0(mainDir,"/data/dico_",form,".csv"), row.names = FALSE, na = "")
+
         write.csv(MainDataFrame, paste(mainDir,"/data/MainDataFrame-edited.csv",sep = ""), row.names = FALSE, na = "")
+
 
       }
     }

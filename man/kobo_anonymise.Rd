@@ -40,8 +40,6 @@ The methods above can be reference in the column
 }
 }
 \examples{
-kobo_anonymise()
-
 \dontrun{
 kobo_anonymise(frame, dico)
 }

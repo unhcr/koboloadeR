@@ -33,9 +33,9 @@
 
 kobo_dummy <- function(form = "form.xls") {
 
+  samplesize <- 381
+
   ### Write dummy dataset
-
-
   #kobodevtools::install_github("ropensci/charlatan")
   #devtools::install_github("ThinkR-open/fakir")
   # install.packages("truncnorm")
@@ -181,7 +181,7 @@ kobo_dummy <- function(form = "form.xls") {
 
   ## Create corresponding dummy data ########
 
-  samplesize <- 500
+
 
   ## generate the unique ID for each observation
   dummydata <- data.frame(stri_rand_strings(samplesize, 8))
@@ -321,12 +321,12 @@ kobo_dummy <- function(form = "form.xls") {
   #levels(as.factor(as.character(dico.repeat$type)))
 
   for (h in  1:length(repeat_name)) {
-    # h <-2
+    # h <- 2
     repeat_table <- as.character(repeat_name[h])
     ## Build corresponding repeat frame
     dico.repeat1 <- dico.repeat[dico.repeat$qrepeatlabel == repeat_table, ]
 
-    ## Getting records to be generated for each ID
+    cat("Getting records to be generated for each ID \n\n\n")
     maxvariable <- as.character(dico[dico$qrepeatlabel == repeat_table &
                                        dico$type %in% c("begin_repeat", "begin repeat")
                                      , c("repeat_count") ])
@@ -335,140 +335,152 @@ kobo_dummy <- function(form = "form.xls") {
     maxvariablefullname <- maxvariablefullname[!(is.na(maxvariablefullname$fullname)), c("fullname")]
     maxvariablefullname <- as.character(maxvariablefullname)
     #str(maxvariablefullname)
-
+    rm(dummydatamaxvariable)
     dummydatamaxvariable <- dummydata[ ,c("instanceID",maxvariablefullname )]
 
     #str(dummydatamaxvariable)
     ## Account for NA - relevant nested table
     dummydatamaxvariable <- dummydatamaxvariable[ !(is.na(dummydatamaxvariable[ ,2])), ]
 
-
-
-    # names(dummydata)
-
+   # names(dummydata)
     #dummydatarepeat <- data.frame("instanceID" )
     #names(dummydatarepeat)[1] <- "instanceID"
 
     dummydatarepeatall <- as.data.frame(matrix(0, ncol = 1 + nrow(dico.repeat1), nrow = 0))
     names(dummydatarepeatall)[1] <- "instanceID"
     names(dummydatarepeatall)[2:(nrow(dico.repeat1) + 1)] <- as.character(dico.repeat1[ ,c("fullname")])
-    ## Loop around IDs
-    for (j in 1:nrow(dummydatamaxvariable) ) {
-      # j <- 1
-      samplesize <- as.numeric(dummydatamaxvariable[ j, 2])
-      this.id <- as.character(dummydatamaxvariable[ j, 1])
 
-      dummydatarepeat <- as.data.frame(matrix(0, ncol = 1, nrow = samplesize))
-      dummydatarepeat[1] <-  this.id
-      names(dummydatarepeat)[1] <- "instanceID"
-
-      ## Loop around variables
-      for (i in 1:nrow(dico.repeat1) ) {
-        # i <- 46
-        fullname <- as.character(dico.repeat1[i, c("fullname")])
-        typedata <- as.character(dico.repeat1[dico.repeat1$fullname == fullname, c("type")])
+    # if ( nrow(dico.repeat1) == 1) {
+    #   ## only one variable linked on the second table
+    #
+    #
+    #  } else {
 
 
-        relevantifvar <- as.character(dico.repeat1[dico.repeat1$fullname == fullname, c("relevantifvar")])
-        relevantifvar2 <- as.character(dico.repeat1[dico.repeat1$name == relevantifvar, c("fullname")])
-        relevantifvalue <- as.character(dico.repeat1[dico.repeat1$fullname == fullname, c("relevantifvalue")])
+      ## Loop around IDs for each case
+      for (j in 1:nrow(dummydatamaxvariable) ) {
+        # j <- 1
+        samplesize <- as.numeric(dummydatamaxvariable[ j, 2])
 
-        cat(paste0("Entering dummy data for nested table ", h, " - ", repeat_table,
-                   "for case ", j,
-                   " for variable ", i, "- ", fullname, " / ", typedata,"\n"))
-        if (typedata %in% c("date") ) {
-          dummydatarepeat[ , i + 1] <- sample(seq(as.Date('2017/01/01'), as.Date('2019/01/01'), by = "day"),
-                                              replace = TRUE,
-                                              size = samplesize)
-        }
+        if (samplesize !=0 ) {
+          this.id <- as.character(dummydatamaxvariable[ j, 1])
 
-        if (typedata == "select_one") {
-          listname <- as.character(dico[dico$fullname == fullname &
-                                          dico$type == "select_one", c("listname")])
-          categ_level <- as.character( unique(dico[dico$listname == listname &
-                                                     dico$type == "select_one_d", c("name")]))
-          dummydatarepeat[ , i + 1] <- factor(sample(categ_level,
-                                                     size = samplesize,
-                                                     replace = TRUE))
-        }
-        if (typedata == "select_multiple_d") {
-          listname <- as.character(dico[dico$fullname == fullname &
-                                          dico$type == "select_multiple_d", c("listname")])
-          categ_level <- as.character( unique(dico[dico$listname == listname &
-                                                     dico$type == "select_multiple", c("name")]))
-          dummydatarepeat[ , i + 1] <- factor(sample(categ_level,
-                                                     size = samplesize,
-                                                     replace = TRUE))
-        }
-        if (typedata == "integer") {
-          lowerbound <- ifelse( is.na(as.numeric(dico.repeat1[ i, c("lowerbound")])), 0,  as.numeric(dico.repeat1[ i, c("lowerbound")]))
-          upperbound <- ifelse(is.na(as.numeric(dico.repeat1[ i, c("upperbound")])), 100, as.numeric(dico.repeat1[ i, c("upperbound")]))
-          dummydatarepeat[ , i + 1] <- round(rtruncnorm(n = samplesize,
-                                                        a = lowerbound, #lowerbound, # vector of lower bounds. These may be -Inf
-                                                        b = upperbound, # vector of upper bounds. These may be Inf
-                                                        mean = ((upperbound - lowerbound ) / 2), # vector of means.
-                                                        sd = ((upperbound - lowerbound ) / 4) # vector of standard deviations.
-          ))
-        }
-        if (typedata == "calculate") {
-          lowerbound <- ifelse( is.na(as.numeric(dico.repeat1[ i, c("lowerbound")])), 0,  as.numeric(dico.repeat1[ i, c("lowerbound")]))
-          upperbound <- ifelse(is.na(as.numeric(dico.repeat1[ i, c("upperbound")])), 100, as.numeric(dico.repeat1[ i, c("upperbound")]))
-          dummydatarepeat[ , i + 1] <- round(rtruncnorm(n = samplesize,
-                                                        a = lowerbound, #lowerbound, # vector of lower bounds. These may be -Inf
-                                                        b = upperbound, # vector of upper bounds. These may be Inf
-                                                        mean = ((upperbound - lowerbound ) / 2), # vector of means.
-                                                        sd = ((upperbound - lowerbound ) / 4) # vector of standard deviations.
-          ))
-        }
-        if (typedata == "decimal") {
-          lowerbound <- ifelse( is.na(as.numeric(dico.repeat1[ i, c("lowerbound")])), 0,  as.numeric(dico.repeat1[ i, c("lowerbound")]))
-          upperbound <- ifelse(is.na(as.numeric(dico.repeat1[ i, c("upperbound")])), 100, as.numeric(dico.repeat1[ i, c("upperbound")]))
-          dummydatarepeat[ , i + 1] <- rtruncnorm(n = samplesize,
-                                                  a = lowerbound, #lowerbound, # vector of lower bounds. These may be -Inf
-                                                  b = upperbound, # vector of upper bounds. These may be Inf
-                                                  mean = ((upperbound - lowerbound ) / 2), # vector of means.
-                                                  sd = ((upperbound - lowerbound ) / 4) # vector of standard deviations.
-          )
-        }
-
-        if (typedata == "text") {
-          #dummydatarepeat[ , i + 1] <- "this is a dummy text"
-          dummydatarepeat[ , i + 1] <- randomSentences(n = samplesize, 3:10)
-        }
-
-        ## Then rename correctly
-        names(dummydatarepeat)[i + 1 ] <- fullname
-        #cat(summary(dummydatarepeat[i]))
+          dummydatarepeat <- as.data.frame(matrix(0, ncol = 1, nrow = samplesize))
+          dummydatarepeat[1] <-  this.id
+          names(dummydatarepeat)[1] <- "instanceID"
 
 
-        ## Put to NA if relevance condition is set and not respected
-        if ( !(is.na(relevantifvar)) & relevantifvar != "" ) {
-          datacheck <- as.data.frame(dummydatarepeat[ , c(relevantifvar2) ])
-          cat(paste0(" Apply relevance on ",relevantifvar2," \n"))
-          for (l in 1:nrow(dummydatarepeat)) {
-            # l <- 3
 
-            value <-  ifelse(is.na(datacheck[l,]),"",
-                             ifelse(datacheck[l,] == relevantifvalue , paste(dummydatarepeat[l ,i + 1 ]), ""))
-            if (value == "") {
-              dummydatarepeat[l ,i + 1 ] <- NA } else {
-                dummydatarepeat[l ,i + 1 ] <- value
+          ## Loop around variables
+          for (i in 1:nrow(dico.repeat1) ) {
+            # i <- 1
+            fullname <- as.character(dico.repeat1[i, c("fullname")])
+            typedata <- as.character(dico.repeat1[dico.repeat1$fullname == fullname, c("type")])
+
+
+            relevantifvar <- as.character(dico.repeat1[dico.repeat1$fullname == fullname, c("relevantifvar")])
+            relevantifvar2 <- as.character(dico.repeat1[dico.repeat1$name == relevantifvar, c("fullname")])
+            relevantifvalue <- as.character(dico.repeat1[dico.repeat1$fullname == fullname, c("relevantifvalue")])
+
+            cat(paste0("Entering dummy data for nested table ", h, " - ", repeat_table,
+                       "for case ", j,
+                       " for variable ", i, "- ", fullname, " / ", typedata,"\n"))
+            if (typedata %in% c("date") ) {
+              dummydatarepeat[ , i + 1] <- sample(seq(as.Date('2017/01/01'), as.Date('2019/01/01'), by = "day"),
+                                                  replace = TRUE,
+                                                  size = samplesize)
+            }
+
+            if (typedata == "select_one") {
+              listname <- as.character(dico[dico$fullname == fullname &
+                                              dico$type == "select_one", c("listname")])
+              categ_level <- as.character( unique(dico[dico$listname == listname &
+                                                         dico$type == "select_one_d", c("name")]))
+              dummydatarepeat[ , i + 1] <- factor(sample(categ_level,
+                                                         size = samplesize,
+                                                         replace = TRUE))
+            }
+            if (typedata == "select_multiple_d") {
+              listname <- as.character(dico[dico$fullname == fullname &
+                                              dico$type == "select_multiple_d", c("listname")])
+              categ_level <- as.character( unique(dico[dico$listname == listname &
+                                                         dico$type == "select_multiple", c("name")]))
+              dummydatarepeat[ , i + 1] <- factor(sample(categ_level,
+                                                         size = samplesize,
+                                                         replace = TRUE))
+            }
+            if (typedata == "integer") {
+              lowerbound <- ifelse( is.na(as.numeric(dico.repeat1[ i, c("lowerbound")])), 0,  as.numeric(dico.repeat1[ i, c("lowerbound")]))
+              upperbound <- ifelse(is.na(as.numeric(dico.repeat1[ i, c("upperbound")])), 100, as.numeric(dico.repeat1[ i, c("upperbound")]))
+              dummydatarepeat[ , i + 1] <- round(rtruncnorm(n = samplesize,
+                                                            a = lowerbound, #lowerbound, # vector of lower bounds. These may be -Inf
+                                                            b = upperbound, # vector of upper bounds. These may be Inf
+                                                            mean = ((upperbound - lowerbound ) / 2), # vector of means.
+                                                            sd = ((upperbound - lowerbound ) / 4) # vector of standard deviations.
+              ))
+            }
+            if (typedata == "calculate") {
+              lowerbound <- ifelse( is.na(as.numeric(dico.repeat1[ i, c("lowerbound")])), 0,  as.numeric(dico.repeat1[ i, c("lowerbound")]))
+              upperbound <- ifelse(is.na(as.numeric(dico.repeat1[ i, c("upperbound")])), 100, as.numeric(dico.repeat1[ i, c("upperbound")]))
+              dummydatarepeat[ , i + 1] <- round(rtruncnorm(n = samplesize,
+                                                            a = lowerbound, #lowerbound, # vector of lower bounds. These may be -Inf
+                                                            b = upperbound, # vector of upper bounds. These may be Inf
+                                                            mean = ((upperbound - lowerbound ) / 2), # vector of means.
+                                                            sd = ((upperbound - lowerbound ) / 4) # vector of standard deviations.
+              ))
+            }
+            if (typedata == "decimal") {
+              lowerbound <- ifelse( is.na(as.numeric(dico.repeat1[ i, c("lowerbound")])), 0,  as.numeric(dico.repeat1[ i, c("lowerbound")]))
+              upperbound <- ifelse(is.na(as.numeric(dico.repeat1[ i, c("upperbound")])), 100, as.numeric(dico.repeat1[ i, c("upperbound")]))
+              dummydatarepeat[ , i + 1] <- rtruncnorm(n = samplesize,
+                                                      a = lowerbound, #lowerbound, # vector of lower bounds. These may be -Inf
+                                                      b = upperbound, # vector of upper bounds. These may be Inf
+                                                      mean = ((upperbound - lowerbound ) / 2), # vector of means.
+                                                      sd = ((upperbound - lowerbound ) / 4) # vector of standard deviations.
+              )
+            }
+
+            if (typedata == "text") {
+              #dummydatarepeat[ , i + 1] <- "this is a dummy text"
+              dummydatarepeat[ , i + 1] <- randomSentences(n = samplesize, 3:10)
+            }
+
+            ## Then rename correctly
+            names(dummydatarepeat)[i + 1 ] <- fullname
+            #cat(summary(dummydatarepeat[i]))
+
+
+            ## Put to NA if relevance condition is set and not respected
+            if ( !(is.na(relevantifvar)) & relevantifvar != "" ) {
+              datacheck <- as.data.frame(dummydatarepeat[ , c(relevantifvar2) ])
+              cat(paste0(" Apply relevance on ",relevantifvar2," \n"))
+              for (l in 1:nrow(dummydatarepeat)) {
+                # l <- 3
+
+                value <-  ifelse(is.na(datacheck[l,]),"",
+                                 ifelse(datacheck[l,] == relevantifvalue , paste(dummydatarepeat[l ,i + 1 ]), ""))
+                if (value == "") {
+                  dummydatarepeat[l ,i + 1 ] <- NA } else {
+                    dummydatarepeat[l ,i + 1 ] <- value
+                  }
+                #dummydatarepeat[l ,i + 1 ] <- ifelse(datacheck[l,] == relevantifvalue , paste(dummydatarepeat[l ,i + 1 ]), "")
               }
-            #dummydatarepeat[l ,i + 1 ] <- ifelse(datacheck[l,] == relevantifvalue , paste(dummydatarepeat[l ,i + 1 ]), "")
+            }
+
+
+          }
+          cat("Appending this record \n\n")
+          dummydatarepeatall <- rbind(dummydatarepeatall, dummydatarepeat)
+          rm(dummydatarepeat)
           }
         }
-
-
-      }
-      dummydatarepeatall <- rbind(dummydatarepeatall, dummydatarepeat)
-      rm(dummydatarepeat)
-
-    }
+   # }
     write.csv(dummydatarepeatall, paste0("data/",repeat_table,".csv"), row.names = FALSE)
     cat(paste0("\n\n\n Finished generation of nested table ", h, " - ", repeat_table, "\n"))
     rm(dummydatarepeatall)
 
+
   }
 
-}
+  }
 NULL

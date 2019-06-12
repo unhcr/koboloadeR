@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Data dictionnary — kobo_dico • koboloadeR</title>
+<title>Create Data dictionnary an the xlsform — kobo_dico • koboloadeR</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="Data dictionnary — kobo_dico" />
+<meta property="og:title" content="Create Data dictionnary an the xlsform — kobo_dico" />
 
 <meta property="og:description" content="Produce a data dictionnary based on the xlsform for the project" />
 <meta name="twitter:card" content="summary" />
@@ -88,6 +88,9 @@
     <li>
       <a href="../articles/tutorial.html">KoboloadeR  Introduction</a>
     </li>
+    <li>
+      <a href="../articles/tutorial2.html">Vignette Title</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -114,7 +117,7 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Data dictionnary</h1>
+    <h1>Create Data dictionnary an the xlsform</h1>
     <small class="dont-index">Source: <a href='https://github.com/unhcr/koboloadeR/blob/master/R/kobo_dico.R'><code>R/kobo_dico.R</code></a></small>
     <div class="hidden name"><code>kobo_dico.Rd</code></div>
     </div>
@@ -161,7 +164,29 @@ It is assumed that the form is stored in the data folder.</p></td>
 #&gt; 8- No column `cluster` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
 #&gt; 9- No column `predict` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
 #&gt; 10- No column `mappoint` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
-#&gt; 11- No column `mappoly` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...</div><div class='output co'>#&gt; <span class='error'>Error: Can't find columns `relevant`, `required`, `constraint`, `repeat_count` in `.data`.</span></div><div class='input'>
+#&gt; 11- No column `mappoly` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
+#&gt; 1- No column `relevant` in your survey worksheet. Creating a dummy one for the moment...
+#&gt; 1- No column `required` in your survey worksheet. Creating a dummy one for the moment...
+#&gt; 1- No column `constraint` in your survey worksheet. Creating a dummy one for the moment...
+#&gt; 1- No column `repeat_count` in your survey worksheet. Creating a dummy one for the moment...
+#&gt;  
+#&gt;  Now extracting list name from questions type.
+#&gt;  
+#&gt; 
+#&gt;  Be careful! The current function only support 2 levels of nested repeat - for instance household / Case / Individual. 
+#&gt;  
+#&gt;  
+#&gt;  Now rebuilding the variable full path in order to match with variable name from the exported dataset. 
+#&gt; 
+#&gt;       Note that there should not be any dots in the orginal variables. 
+#&gt; 
+#&gt;       Double Check as well there's no duplicate for the name column in the survey worksheet
+#&gt;  
+#&gt;  No column `labelReport` in your `choices` worksheet. Creating a dummy one for the moment...
+#&gt;  Good: You have a column `order` in your `choices` worksheet.
+#&gt;   No column `weight` in your `choices` worksheet. Creating a dummy one for the moment...
+#&gt;   No column `recategorise` in your `choices` worksheet. Creating a dummy one for the moment...
+#&gt;  No column `score` in your `choices` worksheet. Creating a dummy one for the moment...</div><div class='input'>
 </div><span class='co'># NOT RUN {</span>
 <span class='fu'>kobo_dico</span>(<span class='st'>"myform.xls"</span>)
 <span class='co'># }</span><div class='input'>

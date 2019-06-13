@@ -507,6 +507,163 @@ kobo_prepare_form <- function(form = "form.xls") {
       )
     })
 
+    ## DDI info
+
+
+    if (!"titl" %in% analysisSettings$name) {
+      analysisSettings <- rbind(analysisSettings,
+                                data.frame(name = "titl",
+                                           label = "Title of the study",
+                                           options = "Free Text",
+                                           value = "Refugee Survey in Country x",
+                                           path = NA,
+                                           stringsAsFactors = FALSE)
+      )
+    }
+
+
+    if (!"abstract" %in% analysisSettings$name) {
+      analysisSettings <- rbind(analysisSettings,
+                                data.frame(name = "abstract",
+                                           label = "Abstract",
+                                           options = "Free Text",
+                                           value = "Blablablablablabla",
+                                           path = NA,
+                                           stringsAsFactors = FALSE)
+      )
+    }
+
+
+    if (!"disclaimer" %in% analysisSettings$name) {
+      analysisSettings <- rbind(analysisSettings,
+                                data.frame(name = "disclaimer",
+                                           label = "Rights & Disclaimer",
+                                           options = "Free Text - adjust if necessary",
+                                           value = "UNHCR does not warrant in any way the accuracy of the information and data contained in the datasets and shall not be held liable for any loss caused by reliance on the accuracy or reliability thereof.",
+                                           path = NA,
+                                           stringsAsFactors = FALSE)
+      )
+    }
+
+
+    if (!"Country" %in% analysisSettings$name) {
+      analysisSettings <- rbind(analysisSettings,
+                                data.frame(name = "Country",
+                                           label = "Country where the study took place",
+                                           options = "Please use Country ISO code Alpha 3",
+                                           value = "JOR",
+                                           path = NA,
+                                           stringsAsFactors = FALSE)
+      )
+    }
+
+    if (!"geogCover" %in% analysisSettings$name) {
+      analysisSettings <- rbind(analysisSettings,
+                                data.frame(name = "geogCover",
+                                           label = "Geographic Coverage for the study within the country",
+                                           options = "Free Text",
+                                           value = "Blablablablablabla",
+                                           path = NA,
+                                           stringsAsFactors = FALSE)
+      )
+    }
+
+    ##    Kind of Data
+    if (!"dataKind" %in% analysisSettings$name) {
+      analysisSettings <- rbind(analysisSettings,
+                                data.frame(name = "dataKind",
+                                           label = "Kind of Data",
+                                           options = "Sample survey data [ssd] or Census/enumeration data [cen]",
+                                           value = "ssd",
+                                           path = NA,
+                                           stringsAsFactors = FALSE)
+      )
+    }
+
+
+    # Unit of Analysis
+    if (!"AnalysisUnit" %in% analysisSettings$name) {
+      analysisSettings <- rbind(analysisSettings,
+                                data.frame(name = "AnalysisUnit",
+                                           label = "Describes the entity being analyzed in the study or in the variable.",
+                                           options = "HousingUnit (household Survey) or GeographicUnit (Key informant Interview or Observation)",
+                                           value = "HousingUnit",
+                                           path = NA,
+                                           stringsAsFactors = FALSE)
+      )
+    }
+
+
+    if (!"ModeOfCollection" %in% analysisSettings$name) {
+      analysisSettings <- rbind(analysisSettings,
+                                data.frame(name = "ModeOfCollection",
+                                           label = "The procedure, technique, or mode of inquiry used to attain the data.",
+                                           options = "Interview.FaceToFace.CAPI or Interview.Telephone.CATI or SelfAdministeredQuestionnaire.FixedForm.WebBased or FocusGroup.FaceToFace or Observation",
+                                           value = "Interview.FaceToFace.CAPI",
+                                           path = NA,
+                                           stringsAsFactors = FALSE)
+      )
+    }
+
+   ## Universe
+
+    if (!"universe" %in% analysisSettings$name) {
+      analysisSettings <- rbind(analysisSettings,
+                                data.frame(name = "universe",
+                                           label = "Description of the study Universe: The group of persons or other elements that are the object of research and to which any analytic results refer.",
+                                           options = "Free Text",
+                                           value = "Refugee Survey in Country x",
+                                           path = NA,
+                                           stringsAsFactors = FALSE)
+      )
+    }
+
+    if (!"universeyes" %in% analysisSettings$name) {
+      analysisSettings <- rbind(analysisSettings,
+                                data.frame(name = "universeyes",
+                                           label = "Do you have a file describing the universe that can be joined to the survey (for instance registration data)?",
+                                           options = "yes or no",
+                                           value = "no",
+                                           path = NA,
+                                           stringsAsFactors = FALSE)
+      )
+    }
+
+    if (!"universefile" %in% analysisSettings$name) {
+      analysisSettings <- rbind(analysisSettings,
+                                data.frame(name = "universefile",
+                                           label = "Name of the csv file with universe data",
+                                           options = "",
+                                           value = "universe.csv",
+                                           path = NA,
+                                           stringsAsFactors = FALSE)
+      )
+    }
+
+    if (!"universeid" %in% analysisSettings$name) {
+      analysisSettings <- rbind(analysisSettings,
+                                data.frame(name = "universeid",
+                                           label = "Name of the variable within universe to do the join with the survey",
+                                           options = "",
+                                           value = "progres.id",
+                                           path = NA,
+                                           stringsAsFactors = FALSE)
+      )
+    }
+
+    if (!"universesurveyid" %in% analysisSettings$name) {
+      analysisSettings <- rbind(analysisSettings,
+                                data.frame(name = "universesurveyid",
+                                           label = "Name of the variable within survey to do the join with the universe",
+                                           options = "",
+                                           value = "progres.id",
+                                           path = NA,
+                                           stringsAsFactors = FALSE)
+      )
+    }
+
+    ### Sampling
+
     if (!"sample_type" %in% analysisSettings$name) {
       analysisSettings <- rbind(analysisSettings,
                                 data.frame(name = "sample_type",
@@ -516,6 +673,29 @@ kobo_prepare_form <- function(form = "form.xls") {
                                            path = NA,
                                            stringsAsFactors = FALSE)
                                 )
+    }
+
+    if (!"sampProc" %in% analysisSettings$name) {
+      analysisSettings <- rbind(analysisSettings,
+                                data.frame(name = "sampProc",
+                                           label = "Description of the Sampling Procedure in the context of the study",
+                                           options = "Free Text",
+                                           value = "Blablablablablabla",
+                                           path = NA,
+                                           stringsAsFactors = FALSE)
+      )
+    }
+
+
+    if (!"weight" %in% analysisSettings$name) {
+      analysisSettings <- rbind(analysisSettings,
+                                data.frame(name = "weight",
+                                           label = "Description of the generation of the final weight - for instance usage of post-stratification and other calibration",
+                                           options = "Free Text",
+                                           value = "Blablablablablabla",
+                                           path = NA,
+                                           stringsAsFactors = FALSE)
+      )
     }
 
     if (!"variable_name" %in% analysisSettings$name) {
@@ -562,6 +742,17 @@ kobo_prepare_form <- function(form = "form.xls") {
       )
     }
 
+    ### Cleaning
+    if (!"cleanOps" %in% analysisSettings$name) {
+      analysisSettings <- rbind(analysisSettings,
+                                data.frame(name = "cleanOps",
+                                           label = "Data Editing and Cleaning Operation: Description of the cleaning procedure",
+                                           options = "Free Text",
+                                           value = "Blablablablablabla",
+                                           path = NA,
+                                           stringsAsFactors = FALSE)
+      )
+    }
     if (!"cleaning_log" %in% analysisSettings$name) {
       analysisSettings <- rbind(analysisSettings,
                                 data.frame(name = "cleaning_log",
@@ -572,6 +763,9 @@ kobo_prepare_form <- function(form = "form.xls") {
                                            stringsAsFactors = FALSE)
       )
     }
+
+
+    ## Reference to data file
 
     if (!"MainDataFrame" %in% analysisSettings$name) {
       analysisSettings <- rbind(analysisSettings,

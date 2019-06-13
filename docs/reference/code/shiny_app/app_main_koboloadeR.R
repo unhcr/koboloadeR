@@ -519,7 +519,7 @@ server <- shinyServer(function(input, output, session) {
           if(projectConfigurationInfo$data[["beginRepeatList"]][i]=="MainDataFrame"){
             projectConfigurationInfo$log[["data"]] <- TRUE
             projectConfigurationInfo$data[["data"]] <- dataFile
-            write.csv(dataFile,  paste(mainDir(), "data", "/MainDataFrame-edited.csv", sep = "/", collapse = "/"), row.names = FALSE)
+            write.csv(dataFile,  paste(mainDir(), "data", "/MainDataFrame_edited.csv", sep = "/", collapse = "/"), row.names = FALSE)
           }
           write.csv(dataFile,  paste(mainDir(), "data", fileName, sep = "/", collapse = "/"), row.names = FALSE)
         }
@@ -827,7 +827,7 @@ server <- shinyServer(function(input, output, session) {
       if (!is.null(inFile)){
         dataFile <- read.csv(inFile$datapath, header=TRUE, sep=input$dataUploadedFileSep, stringsAsFactors = FALSE)
         write.csv(dataFile,  paste(mainDir(), "data", "/MainDataFrame.csv", sep = "/", collapse = "/"), row.names = FALSE)
-        write.csv(dataFile,  paste(mainDir(), "data", "/MainDataFrame-edited.csv", sep = "/", collapse = "/"), row.names = FALSE)
+        write.csv(dataFile,  paste(mainDir(), "data", "/MainDataFrame_edited.csv", sep = "/", collapse = "/"), row.names = FALSE)
         projectConfigurationInfo$log[["data"]] <- TRUE
         projectConfigurationInfo$data[["data"]] <- dataFile
         projectConfigurationInfo$log[["isGenerated"]] <- FALSE
@@ -3589,7 +3589,7 @@ server <- shinyServer(function(input, output, session) {
       indicator <- indicator[!is.na(indicator$fullname) & indicator$fullname!=selInd,]
       frame <- input$indicatorFrameInput
       if(input$indicatorFrameInput=="MainDataFrame"){
-        frame <- "MainDataFrame-edited"
+        frame <- "MainDataFrame_edited"
       }
 
 
@@ -3610,7 +3610,7 @@ server <- shinyServer(function(input, output, session) {
         structuralequation = ifelse(sum(input$indicatorStructuralequationInput=="Yes"),"TRUE",ifelse(sum(input$indicatorStructuralequationInput=="No"),"False",NA)),
         frame = ifelse(sum(input$indicatorFrameInput=="-- select --"),NA,frame) ,
         listname = ifelse(sum(input$indicatorListnameInput=="-- select --"),NA,input$indicatorListnameInput),
-        calculation =  ifelse(sum(input$useCalculation=="No"),gsub("MainDataFrame", "MainDataFrame-edited", calculationResult),preCal),
+        calculation =  ifelse(sum(input$useCalculation=="No"),gsub("MainDataFrame", "MainDataFrame_edited", calculationResult),preCal),
         stringsAsFactors = FALSE
       )
       updateProgress()
@@ -7059,8 +7059,8 @@ server <- shinyServer(function(input, output, session) {
   ##################cluster Report################
   observeEvent(input$clusterReportButton,{
     tryCatch({
-      MainDataFrame-edited <- read.csv(paste(mainDir(), "data", "/MainDataFrame-edited.csv", sep = "/", collapse = "/"), stringsAsFactors = F)
-      result <- kobo_cluster_report(MainDataFrame-edited, app = "shiny")
+      MainDataFrame_edited <- read.csv(paste(mainDir(), "data", "/MainDataFrame_edited.csv", sep = "/", collapse = "/"), stringsAsFactors = F)
+      result <- kobo_cluster_report(MainDataFrame_edited, app = "shiny")
       if(class(result) == "try-error"){
         shinyalert("Error",
                    result,
@@ -7160,8 +7160,8 @@ server <- shinyServer(function(input, output, session) {
   ##################anonymisation Report################
   observeEvent(input$anonymisationReportButton,{
     tryCatch({
-      MainDataFrame-edited <- read.csv(paste(mainDir(), "data", "/MainDataFrame-edited.csv", sep = "/", collapse = "/"), stringsAsFactors = F)
-      result <- kobo_anonymisation_report(MainDataFrame-edited, app = "shiny")
+      MainDataFrame_edited <- read.csv(paste(mainDir(), "data", "/MainDataFrame_edited.csv", sep = "/", collapse = "/"), stringsAsFactors = F)
+      result <- kobo_anonymisation_report(MainDataFrame_edited, app = "shiny")
       if(class(result) == "try-error"){
         shinyalert("Error",
                    result,

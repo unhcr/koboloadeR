@@ -206,7 +206,7 @@ kobo_dummy <- function(form = "form.xls") {
     #  "date"  "today"   "start"
     if (typedata %in% c("date", "today", "start") ) {
       # dummydata[ , i + 1] <- as.Date( dummydata[ , i + 1])
-      dummydata[ , i + 1] <- sample(seq(as.Date('2017/01/01'), as.Date('2019/01/01'), by = "day"),
+      dummydata[ , i + 1] <- sample(seq(as.Date('1919/01/01'), as.Date('2019/01/01'), by = "day"),
                                     replace = TRUE,
                                     size = samplesize)
     }

@@ -129,7 +129,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
       updateProgress()
     }
     cat("\n\n\n Now  labeling variables \n\n\n\n")
-    MainDataFrame_edited <- kobo_label(MainDataFrame_edited, dico)
+    MainDataFrame <- kobo_label(MainDataFrame, dico)
 
     ## Save preliminary version before encoding or adding indicators ##################
 
@@ -225,7 +225,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
             parentDf <- read.csv(paste(mainDir,"/data/",parent,"-edited.csv",sep = ""),stringsAsFactors = F)
 
           }else{
-            parentDf <- read.csv(paste(mainDir,"/data/",parent,"_edited.csv",sep = ""),stringsAsFactors = F)
+            parentDf <- read.csv(paste(mainDir,"/data/",parent,"-edited.csv",sep = ""),stringsAsFactors = F)
           }
 
 

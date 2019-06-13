@@ -57,7 +57,9 @@ To be able to use koboloadeR you will need:
  
 ## Software installation  
 
- 1. Install either [Java JRE](https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html):  JAVA is required to manipulate excel files. 
+ 1. Install either [Java JRE](https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) or [Java JDK](http://jdk.java.net/12/):  JAVA is required to manipulate excel files. 
+ 
+Under Windows, You will need to have JRE or JDK register under the `Path` system variable (Right click on “This PC/Computer”, Go to `->Properties->Advanced system settings->Advanced->Environment Variables`, then under System variables select `Path` => Click `Edit`.
  
 If you install, the `JDK` (Java Development kit), Please make sure that `JAVA_HOME` is actually recorded as an [Environment Variable](https://java.com/en/download/help/path.xml). 
 

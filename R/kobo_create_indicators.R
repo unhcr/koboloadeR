@@ -29,26 +29,7 @@ kobo_create_indicators <- function(form = "form.xls") {
   form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
 
   tryCatch({
-<<<<<<< HEAD
 
-=======
-    mainDir <- kobo_getMainDirectory()
-    form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
-
-    ## Load all required packages
-    kobo_load_packages()
-    library(koboloadeR)
-
-    ## load all required data files #########################################
-    cat("\n\nload all required data files..\n")
-    dataBeginRepeat <- kobo_get_begin_repeat()
-    dataBeginRepeat <- dataBeginRepeat$names
-    for (dbr in dataBeginRepeat) {
-      dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
-      assign(dbr, dataFrame)
-    }
-
->>>>>>> fffa73afd5387d145dea1058ded0957512987da9
     #### Load and test i indicators #############################################################################
     #library(readxl)
     tried <- try(read_excel(form_tmp, sheet = "indicator"),

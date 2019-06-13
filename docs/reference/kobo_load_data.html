@@ -521,59 +521,67 @@ It is assumed that the form is stored in the data folder.</p></td>
 #&gt;  
 #&gt; Checking now for additional information within your xlsform. Note that you can insert them in the xls and re-run the function! 
 #&gt;  
-#&gt;  1- No column `labelReport` in your survey worksheet. Creating a dummy one for the moment...
-#&gt; 1- Good: You have a column `disaggregation` in your survey worksheet.
-#&gt; 2- Good: You have a column `correlate` in your survey worksheet. This will be used to define the variables that should be checked for correlation between each others.
-#&gt; 3- Good: You have a column `chapter` in your survey worksheet. This will be used to breakdown the generated report
-#&gt; 4- No column `structuralequation.risk` in your survey worksheet. Creating a dummy one for the moment...
-#&gt; 4- No column `structuralequation.coping` in your survey worksheet. Creating a dummy one for the moment...
-#&gt; 4- No column `structuralequation.resilience` in your survey worksheet. Creating a dummy one for the moment...
-#&gt; 5- Good: You have a column `anonymise` in your survey worksheet. This will be used to anonymise the dataset.
-#&gt; 6- Good: You have a column `variable` in your survey worksheet. This will be used to flag ordinal variable.
-#&gt; 7- No column `clean` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
-#&gt; 8- No column `cluster` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
-#&gt; 9- No column `predict` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
-#&gt; 10- No column `mappoint` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
-#&gt; 11- No column `mappoly` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
-#&gt; 1- No column `relevant` in your survey worksheet. Creating a dummy one for the moment...
-#&gt; 1- No column `required` in your survey worksheet. Creating a dummy one for the moment...
-#&gt; 1- No column `constraint` in your survey worksheet. Creating a dummy one for the moment...
-#&gt; 1- No column `repeat_count` in your survey worksheet. Creating a dummy one for the moment...
-#&gt;  
-#&gt;  Now extracting list name from questions type.
-#&gt;  
+#&gt;   No column `labelReport` in your survey worksheet. Creating a dummy one for the moment...
+#&gt;  No column `hintReport` in your survey worksheet. Creating a dummy one for the moment...
+#&gt; [1] "There was an error in the data processing step!!! \n\n"</div><div class='output co'>#&gt; $message
+#&gt; [1] "Can't find column `hint` in `.data`."
 #&gt; 
-#&gt;  Be careful! The current function only support 2 levels of nested repeat - for instance household / Case / Individual. 
-#&gt;  
-#&gt;  
-#&gt;  Now rebuilding the variable full path in order to match with variable name from the exported dataset. 
+#&gt; $trace
+#&gt; <span style='color: #555555;'>     </span><span>█
+#&gt; </span><span style='color: #555555;'>  1. </span><span>├─base::tryCatch(...)
+#&gt; </span><span style='color: #555555;'>  2. </span><span>│ └─base:::tryCatchList(expr, classes, parentenv, handlers)
+#&gt; </span><span style='color: #555555;'>  3. </span><span>│   ├─base:::tryCatchOne(...)
+#&gt; </span><span style='color: #555555;'>  4. </span><span>│   │ └─base:::doTryCatch(return(expr), name, parentenv, handler)
+#&gt; </span><span style='color: #555555;'>  5. </span><span>│   └─base:::tryCatchList(expr, names[-nh], parentenv, handlers[-nh])
+#&gt; </span><span style='color: #555555;'>  6. </span><span>│     └─base:::tryCatchOne(expr, names, parentenv, handlers[[1L]])
+#&gt; </span><span style='color: #555555;'>  7. </span><span>│       └─base:::doTryCatch(return(expr), name, parentenv, handler)
+#&gt; </span><span style='color: #555555;'>  8. </span><span>├─base::withCallingHandlers(...)
+#&gt; </span><span style='color: #555555;'>  9. </span><span>├─base::saveRDS(...)
+#&gt; </span><span style='color: #555555;'> 10. </span><span>├─base::do.call(...)
+#&gt; </span><span style='color: #555555;'> 11. </span><span>├─(function (what, args, quote = FALSE, envir = parent.frame()) ...
+#&gt; </span><span style='color: #555555;'> 12. </span><span>└─(function (..., crayon_enabled, crayon_colors, pkgdown_internet) ...
+#&gt; </span><span style='color: #555555;'> 13. </span><span>  └─pkgdown::build_site(...)
+#&gt; </span><span style='color: #555555;'> 14. </span><span>    └─pkgdown:::build_site_local(...)
+#&gt; </span><span style='color: #555555;'> 15. </span><span>      └─pkgdown::build_reference(...)
+#&gt; </span><span style='color: #555555;'> 16. </span><span>        └─purrr::map(...)
+#&gt; </span><span style='color: #555555;'> 17. </span><span>          └─pkgdown:::.f(.x[[i]], ...)
+#&gt; </span><span style='color: #555555;'> 18. </span><span>            └─pkgdown:::data_reference_topic(...)
+#&gt; </span><span style='color: #555555;'> 19. </span><span>              ├─pkgdown:::as_data(...)
+#&gt; </span><span style='color: #555555;'> 20. </span><span>              └─pkgdown:::as_data.tag_examples(...)
+#&gt; </span><span style='color: #555555;'> 21. </span><span>                └─purrr::pmap_chr(...)
+#&gt; </span><span style='color: #555555;'> 22. </span><span>                  └─pkgdown:::.f(...)
+#&gt; </span><span style='color: #555555;'> 23. </span><span>                    ├─withr::with_options(...)
+#&gt; </span><span style='color: #555555;'> 24. </span><span>                    │ └─base::force(code)
+#&gt; </span><span style='color: #555555;'> 25. </span><span>                    └─evaluate::evaluate(code, env, new_device = TRUE)
+#&gt; </span><span style='color: #555555;'> 26. </span><span>                      └─evaluate:::evaluate_call(...)
+#&gt; </span><span style='color: #555555;'> 27. </span><span>                        ├─evaluate:::timing_fn(...)
+#&gt; </span><span style='color: #555555;'> 28. </span><span>                        ├─evaluate:::handle(...)
+#&gt; </span><span style='color: #555555;'> 29. </span><span>                        │ └─base::try(f, silent = TRUE)
+#&gt; </span><span style='color: #555555;'> 30. </span><span>                        │   └─base::tryCatch(...)
+#&gt; </span><span style='color: #555555;'> 31. </span><span>                        │     └─base:::tryCatchList(expr, classes, parentenv, handlers)
+#&gt; </span><span style='color: #555555;'> 32. </span><span>                        │       └─base:::tryCatchOne(expr, names, parentenv, handlers[[1L]])
+#&gt; </span><span style='color: #555555;'> 33. </span><span>                        │         └─base:::doTryCatch(return(expr), name, parentenv, handler)
+#&gt; </span><span style='color: #555555;'> 34. </span><span>                        ├─base::withCallingHandlers(...)
+#&gt; </span><span style='color: #555555;'> 35. </span><span>                        ├─base::withVisible(eval(expr, envir, enclos))
+#&gt; </span><span style='color: #555555;'> 36. </span><span>                        └─base::eval(expr, envir, enclos)
+#&gt; </span><span style='color: #555555;'> 37. </span><span>                          └─base::eval(expr, envir, enclos)
+#&gt; </span><span style='color: #555555;'> 38. </span><span>                            └─koboloadeR::kobo_load_data()
+#&gt; </span><span style='color: #555555;'> 39. </span><span>                              ├─base::tryCatch(...) </span><span style='color: #555555;'>/home/edouard/R-project/koboloadeR-ghpages/R/kobo_load_data.R:28:2</span><span>
+#&gt; </span><span style='color: #555555;'> 40. </span><span>                              │ └─base:::tryCatchList(expr, classes, parentenv, handlers)
+#&gt; </span><span style='color: #555555;'> 41. </span><span>                              │   └─base:::tryCatchOne(expr, names, parentenv, handlers[[1L]])
+#&gt; </span><span style='color: #555555;'> 42. </span><span>                              │     └─base:::doTryCatch(return(expr), name, parentenv, handler)
+#&gt; </span><span style='color: #555555;'> 43. </span><span>                              └─koboloadeR::kobo_dico(form) </span><span style='color: #555555;'>/home/edouard/R-project/koboloadeR-ghpages/R/kobo_load_data.R:57:4</span><span>
+#&gt; </span><span style='color: #555555;'> 44. </span><span>                                ├─survey[, "hint"] </span><span style='color: #555555;'>/home/edouard/R-project/koboloadeR-ghpages/R/kobo_dico.R:66:4</span><span>
+#&gt; </span><span style='color: #555555;'> 45. </span><span>                                └─tibble:::`[.tbl_df`(survey, , "hint") </span><span style='color: #555555;'>/home/edouard/R-project/koboloadeR-ghpages/R/kobo_dico.R:66:4</span><span>
+#&gt; </span><span style='color: #555555;'> 46. </span><span>                                  └─tibble:::check_names_df(j, x)
+#&gt; </span><span style='color: #555555;'> 47. </span><span>                                    └─tibble:::check_names_before_after_character(j, names(unclass(x)))
 #&gt; 
-#&gt;       Note that there should not be any dots in the orginal variables. 
-#&gt; 
-#&gt;       Double Check as well there's no duplicate for the name column in the survey worksheet
-#&gt;  
-#&gt;  No column `labelReport` in your `choices` worksheet. Creating a dummy one for the moment...
-#&gt;  Good: You have a column `order` in your `choices` worksheet.
-#&gt;   No column `weight` in your `choices` worksheet. Creating a dummy one for the moment...
-#&gt;   No column `recategorise` in your `choices` worksheet. Creating a dummy one for the moment...
-#&gt;  No column `score` in your `choices` worksheet. Creating a dummy one for the moment...
-#&gt; 
-#&gt; 
-#&gt; 
-#&gt;  Load original dataset 
-#&gt; 
-#&gt; 
-#&gt; 
-#&gt; [1] "kobo_load_data_ERROR"</div><div class='output co'>#&gt; $message
-#&gt; [1] "'file' must be a character string or connection"
-#&gt; 
-#&gt; $call
-#&gt; read.table(file = file, header = header, sep = sep, quote = quote, 
-#&gt;     dec = dec, fill = fill, comment.char = comment.char, ...)
+#&gt; $parent
+#&gt; NULL
 #&gt; 
 #&gt; attr(,"class")
 #&gt; [1] "try-error"</div><div class='input'>
-</div><span class='co'># NOT RUN {</span>
+</div></span><span class='co'># NOT RUN {</span>
 <span class='fu'>kobo_load_data</span>(<span class='st'>"myform.xls"</span>)
 <span class='co'># }</span><div class='input'>
 </div></pre>

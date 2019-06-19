@@ -1,0 +1,24 @@
+---
+title: "Sampling"
+author: "Edouard Legoupil"
+date: '`r Sys.Date()`'
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{KoboloadeR Introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+## Build a sample
+
+You may also use a dedicated shinyapp for this
+
+```
+kobo_shiny("app_sampling.R")
+```
+

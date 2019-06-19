@@ -1,6 +1,6 @@
 # koboloadeR 0.1.5
 
- * Added a shinapp to provide a gui fo rthe package
+ * Added a shinapp to provide a gui for the package
  
  * Turned previous scripts into functions
 

@@ -238,9 +238,24 @@
     <loc>https://unhcr.github.io/koboloadeR/docs//reference/round2.html</loc>
   </url>
   <url>
-    <loc>https://unhcr.github.io/koboloadeR/docs//articles/tutorial.html</loc>
+    <loc>https://unhcr.github.io/koboloadeR/docs//articles/Anonymisation.html</loc>
   </url>
   <url>
-    <loc>https://unhcr.github.io/koboloadeR/docs//articles/tutorial2.html</loc>
+    <loc>https://unhcr.github.io/koboloadeR/docs//articles/Crunching.html</loc>
+  </url>
+  <url>
+    <loc>https://unhcr.github.io/koboloadeR/docs//articles/Extend_xlsfrom.html</loc>
+  </url>
+  <url>
+    <loc>https://unhcr.github.io/koboloadeR/docs//articles/Getting_data.html</loc>
+  </url>
+  <url>
+    <loc>https://unhcr.github.io/koboloadeR/docs//articles/Sampling.html</loc>
+  </url>
+  <url>
+    <loc>https://unhcr.github.io/koboloadeR/docs//articles/Troubleshooting.html</loc>
+  </url>
+  <url>
+    <loc>https://unhcr.github.io/koboloadeR/docs//articles/Tutorial.html</loc>
   </url>
 </urlset>

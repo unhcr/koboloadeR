@@ -48,8 +48,10 @@ Suggests:
     shiny,
     testthat (>= 2.1.0),
     utils
-URL: https://github.com/unhcr/koboloadeR
+URL: https://github.com/unhcr/koboloadeR/docs
 BugReports: https://github.com/unhcr/koboloadeR/issues
 RoxygenNote: 6.1.1
 VignetteBuilder: utils
-
+Encoding: UTF-8
+SystemRequirements: Java (>= 8)
+Depends: R (>= 3.5)

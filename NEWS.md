@@ -1,13 +1,11 @@
-# NEWS
-
-## koboloadeR 0.1.5
+# koboloadeR 0.1.5
 
  * Added a shinapp to provide a gui fo rthe package
  
  * Turned previous scripts into functions
 
 
-## koboloadeR 0.1.4
+# koboloadeR 0.1.4
 
  * Added a template for report generation in word as well as specific version of chart loop to be inserted in the report
  
@@ -15,7 +13,7 @@
  
  * Fixed `kobo_projectinit` path to copy files
 
-## koboloadeR 0.1.3
+# koboloadeR 0.1.3
 
 Forked from [https://github.com/mrdwab/koboloadeR](https://github.com/mrdwab/koboloadeR)
 
@@ -48,11 +46,11 @@ Forked from [https://github.com/mrdwab/koboloadeR](https://github.com/mrdwab/kob
 
 Testing `read_csv` wrapped in `setDT` to see whether it resolves issue #4.
 
-## koboloadeR 0.1.1
+# koboloadeR 0.1.1
 
 The "data_viewer" Shiny app was added. 
 
-## koboloadeR 0.1.0
+# koboloadeR 0.1.0
 
 KoBo Toolbox offers a convenient way to collect data using web and mobile forms. This package facilitates the retrieval of data entered using these tools using the KoBo Toolbox API (v1).
 

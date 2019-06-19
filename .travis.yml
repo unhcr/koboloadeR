@@ -4,15 +4,12 @@ language: r
 
 sudo: required
 
-apt_packages:
- - r-cran-rjava
-
 #warnings_are_errors: true
 #sudo: false
 #cache: packages
 
-r_github_packages:
-  - r-lib/covr
+r_packages:
+  - koboloadeR
 
 after_success:
   - Rscript -e 'covr::codecov()'

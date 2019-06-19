@@ -13,13 +13,6 @@ vignette: >
 ---
 
 
-```{r set-options, echo=FALSE, cache=FALSE}
-options(width = 120)
-#opts_chunk$set(comment = "", warning = FALSE, message = FALSE, echo = TRUE, tidy = FALSE, size="small")
-#read_chunk("some/script/I/want/to/load.R")
-```
-
-
 ## Introduction
 
 KoboloadeR is designed to facilitate the analysis workflow of a survey collected through any xlsform compatible platform.

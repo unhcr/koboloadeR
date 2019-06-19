@@ -2,5 +2,5 @@ title: koboloadeR
 url: https://unhcr.github.io/koboloadeR/docs/
 template:
   params:
-    bootswatch: sandstone
+    bootswatch: yeti
     ganalytics: UA-142392388-1

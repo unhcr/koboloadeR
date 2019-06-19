@@ -11,7 +11,6 @@ Description: This package facilitates the data crunching & exploration for datas
 License: GPL-3
 LazyData: TRUE
 Depends:
-    R (>= 3.5)
     utils,
     data.table (>= 1.9.4),
     curl,
@@ -48,7 +47,8 @@ Depends:
 Suggests:
     shiny,
     testthat (>= 2.1.0),
-    utils
+    utils,
+    knitr
 URL: https://github.com/unhcr/koboloadeR/docs
 BugReports: https://github.com/unhcr/koboloadeR/issues
 RoxygenNote: 6.1.1

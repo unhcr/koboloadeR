@@ -1,4 +1,4 @@
-# koboloadeR: data crunching & exploration for dataset collected using xlsform 
+# koboloadeR: Crunching dataset collected using xlsform 
 
 
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
@@ -13,8 +13,6 @@
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/Edouard-Legoupil/koboloader?branch=gh-pages&svg=true)](https://ci.appveyor.com/project/Edouard-Legoupil/koboloader)
 [![codecov](https://codecov.io/gh/unhcr/koboloadeR/branch/master/graph/badge.svg)](https://codecov.io/gh/unhcr/koboloadeR)
 
-
-## Introduction
 
 koboloadeR is a R package to conduct data discovery and analysis for data collected through  [KoboToolbox](https://www.kobotoolbox.org/), [ODK](https://opendatakit.org/), [ONA](https://ona.io/home/) or any __[xlsform](http://xlsform.org)__ compliant data collection platform.
 This package first builds on the capacity of UNHCR Kobo server @ http://kobo.unhcr.org but it can also be used from any structured dataset. It also comes as a companion tool to the [Integrated Framework for Household Survey](https://unhcr.github.io/Integrated-framework-household-survey)
@@ -47,7 +45,7 @@ To go in more details, the suggested workflow is presented below (note that all 
 
 
 
-# koboloadeR quick setup and Walk Through
+# Environment setup 
 
 
 ## Software installation  
@@ -76,7 +74,7 @@ Note in some case, you may need to reboot your computer to ensure that this envi
 
 You can now Launch __R Studio__
 
-## Package installation: koboloadeR from Github (up to date version):
+## Package installation from Github
 
 Note that the package is still in beta-version. We hope to have soon a release available on CRAN.
 
@@ -98,17 +96,17 @@ install_github("unhcr/koboloadeR", ref = "gh-pages")
 * You are all set! You can know use koboloadeR. If you have a problem consult the common troubleshooting part at the end of this page.
 
 
-# Quick start
 
-## Create a project 
-First, in R Studio:
+## Project Walk Through 
 
-* In R Studio, select File, click New project. A box opens
-* Choose New Directory
-* Choose Empty project
-* Type the name of the folder where you want to put your data
-* Select where you want to put this folder
-* Click Create project
+
+
+ * In R Studio, select File, click New project. A box opens
+ * Choose New Directory
+ * Choose Empty project
+ * Type the name of the folder where you want to put your data
+ * Select where you want to put this folder
+ * Click Create project
 
 Then setup a few things: run those two lines:
 
@@ -118,21 +116,44 @@ library (koboloadeR) # This loads koboloadeR package
 kobo_projectinit() # Creates folders necessary and transfer files needed
 ```  
 
-It might take a while as a few other packages have to be installed or loaded. Once the see the " >" again at the beginning of the line, you can run:
+It might take a while as a few other packages have to be installed or loaded. Once the see the " >" again at the beginning of the line, you are ready to start
+
+### Graphical user interface (GUI) 
+
+All instructions and options for the project configuration and analysis plan settings can be done through a dedicated GUI.
 
 
 ```
 kobo_shiny("app_main_koboloadeR.R")
 ```  
 
-This will launch a graphic interface with other instructions and options.
-
 For better performances, select "Open in Browser" on the top of the window.
 
-Alternatively, you can use the __console mode__ by running the file `run-analysis.R`. Note however that this implies that you configure correctly on your own the full configuration within the xlform file. 
+### Console mode
+
+Alternatively, you can use the __console mode__ by running the file `run-analysis.R`. 
+
+This will be likely the quickest options, once your are used to the package.
+
+Note however that this implies that you configure correctly on your own the full configuration within the xlform file. 
 
 
+### Additional tutorial
 
+
+  * [1. Data Crunching](https://unhcr.github.io/koboloadeR/docs/articles/Crunching.html) - basic introduction to the concept of crunching
+
+  * [2. Getting data from server](https://unhcr.github.io/koboloadeR/docs/articles/Getting_data.html) - how to retrieve data from the server within R
+    
+  * [3. Data Analysis Plan within your `xlsfrom`](https://unhcr.github.io/koboloadeR/docs/articles/xlsform.html) - extend the form to include your analysis plan
+    
+  * [4. Using console script](https://unhcr.github.io/koboloadeR/docs/articles/Console.html) - skip the graphical user interface
+    
+  * [5. Sampling](https://unhcr.github.io/koboloadeR/docs/articles/Sampling.html) 
+  
+  * [6. Data Anonymisation and disclosure risk measurement](https://unhcr.github.io/koboloadeR/docs/articles/Anonymisation.html)
+    
+  * [7. Common Troubleshooting](https://unhcr.github.io/koboloadeR/docs/articles/Troubleshooting.html)
 
 
 

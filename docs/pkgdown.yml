@@ -3,12 +3,12 @@ pkgdown: 1.3.0
 pkgdown_sha: ~
 articles:
   Anonymisation: Anonymisation.html
+  Console: Console.html
   Crunching: Crunching.html
-  Extend_xlsfrom: Extend_xlsfrom.html
   Getting_data: Getting_data.html
   Sampling: Sampling.html
   Troubleshooting: Troubleshooting.html
-  Tutorial: Tutorial.html
+  xlsform: xlsform.html
 urls:
   reference: https://unhcr.github.io/koboloadeR/docs//reference
   article: https://unhcr.github.io/koboloadeR/docs//articles

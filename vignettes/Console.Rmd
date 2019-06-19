@@ -1,5 +1,5 @@
 ---
-title: "KoboloadeR  Introduction"
+title: "4. Using console script"
 author: "Edouard Legoupil"
 date: '`r Sys.Date()`'
 output: 

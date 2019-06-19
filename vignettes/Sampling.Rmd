@@ -1,5 +1,5 @@
 ---
-title: "Sampling"
+title: "5. Sampling"
 author: "Edouard Legoupil"
 date: '`r Sys.Date()`'
 output: 

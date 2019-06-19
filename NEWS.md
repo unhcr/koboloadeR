@@ -42,15 +42,17 @@ Forked from [https://github.com/mrdwab/koboloadeR](https://github.com/mrdwab/kob
 * Added UNHCR Kobotoolbox server API and put it per default
 
 
+# Before Fork
+
 ## koboloadeR 0.1.2
 
 Testing `read_csv` wrapped in `setDT` to see whether it resolves issue #4.
 
-# koboloadeR 0.1.1
+## koboloadeR 0.1.1
 
 The "data_viewer" Shiny app was added. 
 
-# koboloadeR 0.1.0
+## koboloadeR 0.1.0
 
 KoBo Toolbox offers a convenient way to collect data using web and mobile forms. This package facilitates the retrieval of data entered using these tools using the KoBo Toolbox API (v1).
 

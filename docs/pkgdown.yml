@@ -4,4 +4,7 @@ pkgdown_sha: ~
 articles:
   tutorial: tutorial.html
   tutorial2: tutorial2.html
+urls:
+  reference: https://unhcr.github.io/koboloadeR/docs//reference
+  article: https://unhcr.github.io/koboloadeR/docs//articles
 

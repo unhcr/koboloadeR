@@ -3,6 +3,9 @@
 \name{kobo_prediction_report}
 \alias{kobo_prediction_report}
 \title{Generate prediction}
+\usage{
+kobo_prediction_report(dico, frame, registry)
+}
 \arguments{
 \item{kobo}{or odk dataset to use}
 }

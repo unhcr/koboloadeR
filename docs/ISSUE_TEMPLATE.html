@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Parses Dates from KoBo Into a More Usable Format — kobo_time_parser_UTC • koboloadeR</title>
+<title>NA • koboloadeR</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -25,17 +25,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script>
+<link href="pkgdown.css" rel="stylesheet">
+<script src="pkgdown.js"></script>
 
 
 
-<meta property="og:title" content="Parses Dates from KoBo Into a More Usable Format — kobo_time_parser_UTC" />
-
-<meta property="og:description" content="The date/time values in KoBo usually get stored in a format
-like the following: &quot;2015-08-27T13:28:29.000+06:30&quot;. These functions
-process these date/times into more usable formats." />
-<meta name="twitter:card" content="summary" />
+<meta property="og:title" content="NA" />
 
 
 
@@ -62,7 +57,7 @@ process these date/times into more usable formats." />
   </head>
 
   <body>
-    <div class="container template-reference-topic">
+    <div class="container template-title-body">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -74,7 +69,7 @@ process these date/times into more usable formats." />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">koboloadeR</a>
+        <a class="navbar-link" href="index.html">koboloadeR</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
       </span>
     </div>
@@ -82,13 +77,13 @@ process these date/times into more usable formats." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
+  <a href="index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -98,15 +93,15 @@ process these date/times into more usable formats." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/tutorial.html">KoboloadeR  Introduction</a>
+      <a href="articles/tutorial.html">KoboloadeR  Introduction</a>
     </li>
     <li>
-      <a href="../articles/tutorial2.html">Vignette Title</a>
+      <a href="articles/tutorial2.html">Vignette Title</a>
     </li>
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">Changelog</a>
+  <a href="news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -127,63 +122,49 @@ process these date/times into more usable formats." />
       </header>
 
 <div class="row">
-  <div class="col-md-9 contents">
+  <div class="contents col-md-9">
     <div class="page-header">
-    <h1>Parses Dates from KoBo Into a More Usable Format</h1>
-    <small class="dont-index">Source: <a href='https://github.com/unhcr/koboloadeR/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
-    <div class="hidden name"><code>kobo_time_parser_UTC.Rd</code></div>
+      <h1>NA</h1>
     </div>
 
-    <div class="ref-description">
-    
-    <p>The date/time values in KoBo usually get stored in a format
-like the following: "2015-08-27T13:28:29.000+06:30". These functions
-process these date/times into more usable formats.</p>
-    
-    </div>
 
-    <pre class="usage"><span class='fu'>kobo_time_parser_UTC</span>(<span class='no'>instring</span>)</pre>
-    
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>instring</th>
-      <td><p>A date/time format coming from KoBo.</p></td>
-    </tr>
-    <tr>
-      <th>timezone</th>
-      <td><p>A valid timezone, available in the list available
-from <code><a href='https://www.rdocumentation.org/packages/base/topics/timezones'>OlsonNames</a></code>.</p></td>
-    </tr>
-    </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>The <code>kobo_time_parser_UTC</code> function returns a POSIXct object,
-while the <code>kobo_time_parser</code> function returns a formatted character
-string that can be easily parsed as a date/time object.</p>
-    
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>TIME</span> <span class='kw'>&lt;-</span> <span class='st'>"2015-08-27T13:28:29.000+06:30"</span>
-<span class='fu'>kobo_time_parser_UTC</span>(<span class='no'>TIME</span>)</div><div class='output co'>#&gt; [1] "2015-08-27 06:58:29 UTC"</div><div class='input'>
-</div></pre>
-  </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
-    <h2>Author</h2>
-    <p>Ananda Mahto</p>
-  </div>
+<p>[provide general introduction to the issue logging and why it is relevant to this repository]</p>
+<div id="context" class="section level2">
+<h2 class="hasAnchor">
+<a href="#context" class="anchor"></a>Context</h2>
+<p>[provide more detailed introduction to the issue itself and why it is relevant]</p>
 </div>
+<div id="process" class="section level2">
+<h2 class="hasAnchor">
+<a href="#process" class="anchor"></a>Process</h2>
+<p>[ordered list the process to finding and recreating the issue, example below]</p>
+</div>
+<div id="expected-result" class="section level2">
+<h2 class="hasAnchor">
+<a href="#expected-result" class="anchor"></a>Expected result</h2>
+<p>[describe what you would expect to have resulted from this process]</p>
+</div>
+<div id="current-result" class="section level2">
+<h2 class="hasAnchor">
+<a href="#current-result" class="anchor"></a>Current result</h2>
+<p>[describe what you you currently experience from this process, and thereby explain the bug]</p>
+</div>
+<div id="possible-fix" class="section level2">
+<h2 class="hasAnchor">
+<a href="#possible-fix" class="anchor"></a>Possible Fix</h2>
+<p>[not obligatory, but suggest fixes or reasons for the bug]</p>
+</div>
+<div id="name-of-issue-screenshot" class="section level2">
+<h2 class="hasAnchor">
+<a href="#name-of-issue-screenshot" class="anchor"></a><code>name of issue</code> screenshot</h2>
+<p>[if relevant, include a screenshot]</p>
+</div>
+
+
+  </div>
+
+</div>
+
 
       <footer>
       <div class="copyright">

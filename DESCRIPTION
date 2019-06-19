@@ -11,6 +11,7 @@ Description: This package facilitates the data crunching & exploration for datas
 License: GPL-3
 LazyData: TRUE
 Depends:
+    R (>= 3.5)
     utils,
     data.table (>= 1.9.4),
     curl,
@@ -54,4 +55,3 @@ RoxygenNote: 6.1.1
 VignetteBuilder: utils
 Encoding: UTF-8
 SystemRequirements: Java (>= 8)
-Depends: R (>= 3.5)

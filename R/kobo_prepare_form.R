@@ -675,7 +675,6 @@ kobo_prepare_form <- function(form = "form.xls") {
         listname = character(),
         calculation = character(),
         chapter = character(),
-        variable = character(),
         disaggregation = character(),
         correlate = character(),
         anonymise = character(),
@@ -738,12 +737,6 @@ kobo_prepare_form <- function(form = "form.xls") {
     } else {
       cat(" No column `chapter` in your indicator worksheet. Creating a dummy one for the moment...\n");
       indicator$chapter <- ""
-    }
-    if ("variable" %in% colnames(indicator)) {
-      cat(" Good: You have a column `variable` in your indicator worksheet.\n");
-    } else {
-      cat(" No column `variable` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$variable <- ""
     }
     if ("disaggregation" %in% colnames(indicator)) {
       cat(" Good: You have a column `disaggregation` in your indicator worksheet.\n");
@@ -814,7 +807,7 @@ kobo_prepare_form <- function(form = "form.xls") {
 
     indicator <- indicator[ ,c("type","fullname","labelReport", "hintReport",
                                "frame", "listname","calculation",
-                               "chapter", "variable", "disaggregation", "correlate",
+                               "chapter", "disaggregation", "correlate",
                                "anonymise", "cluster", "predict", "variable", "mappoint", "mappoly",
                                "structuralequation.risk","structuralequation.coping","structuralequation.resilience")]
 

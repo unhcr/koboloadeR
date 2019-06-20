@@ -129,13 +129,13 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
       updateProgress()
     }
     cat("\n\n\n Now  labeling variables \n\n\n\n")
-    MainDataFrame_edited <- kobo_label(MainDataFrame_edited, dico)
+    MainDataFrame <- kobo_label(MainDataFrame, dico)
 
     ## Save preliminary version before encoding or adding indicators ##################
 
 
     cat("\n\n Write backup before encoding or indicators calculation..\n")
-    write.csv(MainDataFrame,paste(mainDir,"/data/MainDataFrame-edited.csv",sep = ""), row.names = FALSE, na = "")
+    write.csv(MainDataFrame,paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), row.names = FALSE, na = "")
 
 
 
@@ -196,8 +196,8 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
         dataFrame <- kobo_label(dataFrame, dico)
 
 
-        cat("\n\n Saving ",dbr,"file as -edited..\n")
-        write.csv(dataFrame,paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""), row.names = FALSE, na = "")
+        cat("\n\n Saving ",dbr,"file as _edited..\n")
+        write.csv(dataFrame,paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""), row.names = FALSE, na = "")
 
       # }
       #
@@ -210,7 +210,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
         #   updateProgress()
         # }
         #
-        # dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""),stringsAsFactors = F)
+        # dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
         child <- levelsOfDF[levelsOfDF$name == dbr, "name"]
         parent <- levelsOfDF[levelsOfDF$name == dbr, "parent"]
 
@@ -222,7 +222,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
 
           ## Case MainDataFrame called household
           if (parent %in% c("household", "MainDataFrame")) {
-            parentDf <- read.csv(paste(mainDir,"/data/",parent,"-edited.csv",sep = ""),stringsAsFactors = F)
+            parentDf <- read.csv(paste(mainDir,"/data/",parent,"_edited.csv",sep = ""),stringsAsFactors = F)
 
           }else{
             parentDf <- read.csv(paste(mainDir,"/data/",parent,"_edited.csv",sep = ""),stringsAsFactors = F)
@@ -267,7 +267,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
         }
 
         cat("\n\n Saving edited version of  ", dbr, " ...\n")
-        write.csv(dataFrame,paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""), row.names = FALSE, na = "")
+        write.csv(dataFrame,paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""), row.names = FALSE, na = "")
 
       }
 
@@ -292,7 +292,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
 
     dico <- read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
 
-    MainDataFrame <- read.csv(paste(mainDir,"/data/MainDataFrame-edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")
+    MainDataFrame <- read.csv(paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")
 
 
     ## Re-encoding data now based on the dictionnary -- ##############################
@@ -309,7 +309,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
 
     ## loading nested frame
     for (dbr in levelsOfDF$name) {
-      dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""),stringsAsFactors = F)
+      dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
       dataFrame <- kobo_encode(dataFrame, dico)
       write.csv(dataFrame,paste(mainDir,"/data/",dbr,"-encoded.csv",sep = ""), row.names = FALSE, na = "")
 

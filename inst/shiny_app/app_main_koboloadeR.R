@@ -1466,7 +1466,7 @@ server <- shinyServer(function(input, output, session) {
         showModal(showSamplingMoreParm())
       }else{
         shinyalert("Done, Record Settings Configuration has been successfully saved",
-                   "You can find the Settings in 'settings' sheet in xlsform file",
+                   "You can find the Settings in 'analysisSettings' sheet in xlsform file",
                    type = "success",
                    closeOnClickOutside = FALSE,
                    confirmButtonCol = "#28A8E2",
@@ -1667,7 +1667,7 @@ server <- shinyServer(function(input, output, session) {
       
       removeModal()
       shinyalert("Done, Record Settings Configuration has been successfully saved",
-                 "You can find the Settings in 'settings' sheet in xlsform file",
+                 "You can find the Settings in 'analysisSettings' sheet in xlsform file",
                  type = "success",
                  closeOnClickOutside = FALSE,
                  confirmButtonCol = "#28A8E2",
@@ -2678,7 +2678,7 @@ server <- shinyServer(function(input, output, session) {
                               h4("Enter indicator's label:")
                        ),
                        column(width = 5, offset = 0,
-                              textInput("indicatorLabelInput", label = NULL, value = rowInd[1,"label"], width = "100%")
+                              textInput("indicatorLabelInput", label = NULL, value = rowInd[1,"labelReport"], width = "100%")
                        ),
                        column(width = 1, offset = 0, align="center",
                               uiOutput("indicatorLabelInputLengthUI")
@@ -2747,17 +2747,6 @@ server <- shinyServer(function(input, output, session) {
                      column(
                        width=12,
                        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                              h4("Apply sensitive?")
-                       ),
-                       column(width = 6, offset = 0,
-                              selectInput("indicatorSensitiveInput", label = NULL, selected = ifelse(rowInd[1,"sensitive"]=="TRUE","Yes",ifelse(rowInd[1,"sensitive"]=="FALSE","No","-- select --")),
-                                          choices = c("-- select --","Yes","No"), 
-                                          width = "100%")
-                       )
-                     ),
-                     column(
-                       width=12,
-                       column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
                               h4("Select the anonymise way:")
                        ),
                        column(width = 6, offset = 0,
@@ -2815,12 +2804,43 @@ server <- shinyServer(function(input, output, session) {
                      column(
                        width=12,
                        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                              h4("Apply structuralequation?")
+                              h4("Apply structuralequation risk?")
                        ),
                        column(width = 6, offset = 0,
-                              selectInput("indicatorStructuralequationInput", label = NULL, selected = ifelse(rowInd[1,"structuralequation"]=="TRUE","Yes",ifelse(rowInd[1,"structuralequation"]=="FALSE","No","-- select --")),
+                              selectInput("indicatorstructuralequationRiskInput", label = NULL, selected = ifelse(rowInd[1,"structuralequation.risk"]=="TRUE","Yes",ifelse(rowInd[1,"structuralequation.risk"]=="FALSE","No","-- select --")),
                                           choices = c("-- select --","Yes","No"), 
                                           width = "100%")
+                       )
+                     ),
+                     column(
+                       width=12,
+                       column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                              h4("Apply structuralequation coping?")
+                       ),
+                       column(width = 6, offset = 0,
+                              selectInput("indicatorstructuralequationCopingInput", label = NULL, selected = ifelse(rowInd[1,"structuralequation.coping"]=="TRUE","Yes",ifelse(rowInd[1,"structuralequation.coping"]=="FALSE","No","-- select --")),
+                                          choices = c("-- select --","Yes","No"), 
+                                          width = "100%")
+                       )
+                     ),
+                     column(
+                       width=12,
+                       column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                              h4("Apply structuralequation resilience?")
+                       ),
+                       column(width = 6, offset = 0,
+                              selectInput("indicatorstructuralequationResilienceInput", label = NULL, selected = ifelse(rowInd[1,"structuralequation.resilience"]=="TRUE","Yes",ifelse(rowInd[1,"structuralequation.resilience"]=="FALSE","No","-- select --")),
+                                          choices = c("-- select --","Yes","No"), 
+                                          width = "100%")
+                       )
+                     ),
+                     column(
+                       width=12,
+                       column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                              h4("Enter indicator's hint:")
+                       ),
+                       column(width = 6, offset = 0,
+                              textInput("indicatorHintInput", label = NULL, value = rowInd[1,"hintReport"], width = "100%")
                        )
                      )
                      
@@ -3009,7 +3029,7 @@ server <- shinyServer(function(input, output, session) {
             return(FALSE)
           }
           calculationResult <- "cut("
-          calculationResult <- paste(calculationResult,input$frameDVSelectInput,"$",input$variableDVSelectInput, " ", sep="")
+          calculationResult <- paste(calculationResult,paste0(input$frameDVSelectInput,"_edited"),"$",input$variableDVSelectInput, " ", sep="")
           calculationResult <- paste(calculationResult, ",c(", pre,"))" , sep = ""  )
         }, error = function(err) {
           calculationResult <- structure(c, class = "try-error")
@@ -3038,7 +3058,7 @@ server <- shinyServer(function(input, output, session) {
           ############################        END        ############################
           
           calculationResult <- "fct_recode("
-          calculationResult <- paste(calculationResult,input$frameFRSelectInput,"$",input$variableFRSelectInput, ", ", sep="")
+          calculationResult <- paste(calculationResult,paste0(input$frameFRSelectInput,"_edited"),"$",input$variableFRSelectInput, ", ", sep="")
           factorValues <- choicesSheetFR()[choicesSheetFR()$list_name==input$listnameFRSelectInput,c("list_name", "name", "label")]
           for(i in 1:nrow(factorValues)){
             
@@ -3077,11 +3097,11 @@ server <- shinyServer(function(input, output, session) {
           
           calculationResult <- "psum("
           calculationResult <- paste(calculationResult,
-                                     input$frameSUSelectInput,
+                                     paste0(input$frameSUSelectInput,"_edited"),
                                      "$",
                                      input$varSU1,
                                      ", ",
-                                     input$frameSUSelectInput,
+                                     paste0(input$frameSUSelectInput,"_edited"),
                                      "$",
                                      input$varSU2,
                                      ifelse(length(variablesToUseSU$idOfVar)>0,
@@ -3093,7 +3113,7 @@ server <- shinyServer(function(input, output, session) {
           for(i in variablesToUseSU$idOfVar){
             val <- input[[paste("varSU", i, sep = "")]]
             calculationResult <- paste(calculationResult,
-                                       input$frameSUSelectInput,
+                                       paste0(input$frameSUSelectInput,"_edited"),
                                        "$",
                                        val
                                        , sep="")
@@ -3133,7 +3153,7 @@ server <- shinyServer(function(input, output, session) {
           ############################        END        ############################
           
           
-          varFrame <- paste(input$frameMMASelectInput,"$",input$variableMMASelectInput, sep="")
+          varFrame <- paste(paste0(input$frameMMASelectInput,"_edited"),"$",input$variableMMASelectInput, sep="")
           if(sum(input$statisticalFunctionsMMASelectInput=="Minimum")){
             calculationResult <- paste("min(",varFrame," ,na.rm = TRUE)",sep = "")
           }else if(sum(input$statisticalFunctionsMMASelectInput=="Maximum")){
@@ -3175,17 +3195,17 @@ server <- shinyServer(function(input, output, session) {
           }
           ############################        END        ############################
           
-          form_tmp <- paste(mainDir(), "data", paste(input$frameD2SelectInput, ".csv", sep = ""), sep = "/", collapse = "/")
+          form_tmp <- paste(mainDir(), "data", paste(paste(input$frameD2SelectInput,"_edited"), ".csv", sep = ""), sep = "/", collapse = "/")
           temp <- read.csv(form_tmp, stringsAsFactors = TRUE)
           
           if(input$variableD2SelectInput1 %in% colnames(temp)){
-            calculationResult <- paste(input$frameD2SelectInput,"$",input$variableD2SelectInput1, " / ", sep="")
+            calculationResult <- paste(paste0(input$frameD2SelectInput,"_edited"),"$",input$variableD2SelectInput1, " / ", sep="")
           }else{
             calculationResult <- paste(input$variableD2SelectInput1, " / ", sep="")
           }
           
           if(input$variableD2SelectInput2 %in% colnames(temp)){
-            calculationResult <- paste(calculationResult, input$frameD2SelectInput,"$",input$variableD2SelectInput2, sep="")
+            calculationResult <- paste(calculationResult, paste0(input$frameD2SelectInput,"_edited"),"$",input$variableD2SelectInput2, sep="")
           }else{
             calculationResult <- paste(calculationResult, input$variableD2SelectInput2, sep="")
           }
@@ -3209,7 +3229,6 @@ server <- shinyServer(function(input, output, session) {
             leftSide <- input[[paste("leftSideCond", conditionsId[j], "Block", blocksId[i], sep = "")]]
             rightSide <- input[[paste("rightSideCond", conditionsId[j], "Block", blocksId[i], sep = "")]]
             logicalOperators <- input[[paste("logicalOperatorsCond", conditionsId[j], "Block", blocksId[i], sep = "")]]
-            x<<-rightSide
             ##############################       validation        ##############################
             if(conditionsId[j]!=1){
               if((linkBy=="-- select --" | trimws(linkBy)=="" )){
@@ -3277,7 +3296,7 @@ server <- shinyServer(function(input, output, session) {
             
             conditionString <- "("
             if(leftSide %in% colnames(mainDf)){
-              leftSide <- paste(input$frameIFSelectInput ,"['",leftSide,"']", sep = "")
+              leftSide <- paste(paste0(input$frameIFSelectInput,"_edited") ,"['",leftSide,"']", sep = "")
             }
             else{
               checker <- as.numeric(leftSide)
@@ -3288,7 +3307,7 @@ server <- shinyServer(function(input, output, session) {
               }
             }
             if(rightSide %in% colnames(mainDf)){
-              rightSide <- paste(input$frameIFSelectInput ,"['",rightSide,"']", sep = "")
+              rightSide <- paste(paste0(input$frameIFSelectInput,"_edited") ,"['",rightSide,"']", sep = "")
             }
             else{
               if(logicalOperators == "in" | logicalOperators == "not in"){
@@ -3347,7 +3366,7 @@ server <- shinyServer(function(input, output, session) {
             return(FALSE)
           }
           if(resultOfBlock %in% colnames(mainDf)){
-            resultOfBlock <- paste(input$frameIFSelectInput ,"['",resultOfBlock,"']", sep = "")
+            resultOfBlock <- paste(paste0(input$frameIFSelectInput,"_edited") ,"['",resultOfBlock,"']", sep = "")
           }
           else{
             checker <- as.numeric(resultOfBlock)
@@ -3375,7 +3394,7 @@ server <- shinyServer(function(input, output, session) {
           return(FALSE)
         }
         if(resultOfElse %in% colnames(mainDf)){
-          resultOfElse <- paste(input$frameIFSelectInput ,"['",resultOfElse,"']", sep = "")
+          resultOfElse <- paste(paste0(input$frameIFSelectInput,"_edited") ,"['",resultOfElse,"']", sep = "")
         }
         else{
           checker <- as.numeric(resultOfElse)
@@ -3414,8 +3433,8 @@ server <- shinyServer(function(input, output, session) {
       
       if(sum(input$indicatorCaseSelectInput=="Discretize a value")){
         tryCatch({ 
-          form_tmp <- paste(mainDir(), "data", paste(input$frameDVSelectInput, ".csv", sep = ""), sep = "/", collapse = "/")
-          assign(input$frameDVSelectInput,read.csv(form_tmp, stringsAsFactors = TRUE))
+          form_tmp <- paste(mainDir(), "data", paste(paste0(input$frameDVSelectInput,"_edited"), ".csv", sep = ""), sep = "/", collapse = "/")
+          assign(paste0(input$frameDVSelectInput,"_edited"),read.csv(form_tmp, stringsAsFactors = TRUE))
           typeOfInd <- eval(parse(text=calculationResult))
           if(is.character(typeOfInd)){
             typeOfInd <- "factor"
@@ -3426,7 +3445,7 @@ server <- shinyServer(function(input, output, session) {
           }else{
             typeOfInd <- "factor"
           }
-          rm(input$frameDVSelectInput)
+          rm(paste0(input$frameDVSelectInput,"_edited"))
         }, error = function(err) {
           typeOfInd <- structure(c, class = "try-error")
         })
@@ -3434,8 +3453,8 @@ server <- shinyServer(function(input, output, session) {
       else if(sum(input$indicatorCaseSelectInput=="Re categorize a categorical variable by re coding modalities")){
         tryCatch({ 
           
-          form_tmp <- paste(mainDir(), "data", paste(input$frameFRSelectInput, ".csv", sep = ""), sep = "/", collapse = "/")
-          assign(input$frameFRSelectInput,read.csv(form_tmp, stringsAsFactors = TRUE))
+          form_tmp <- paste(mainDir(), "data", paste(paste0(input$frameFRSelectInput,"_edited"), ".csv", sep = ""), sep = "/", collapse = "/")
+          assign(paste0(input$frameFRSelectInput,"_edited"),read.csv(form_tmp, stringsAsFactors = TRUE))
           typeOfInd <- eval(parse(text=calculationResult))
           if(is.character(typeOfInd)){
             typeOfInd <- "factor"
@@ -3446,7 +3465,7 @@ server <- shinyServer(function(input, output, session) {
           }else{
             typeOfInd <- "factor"
           }
-          rm(input$frameFRSelectInput)
+          rm(paste0(input$frameFRSelectInput,"_edited"))
           
         }, error = function(err) {
           typeOfInd <- structure(c, class = "try-error")
@@ -3455,8 +3474,8 @@ server <- shinyServer(function(input, output, session) {
       else if(sum(input$indicatorCaseSelectInput=="Sum up different numeric or integer variables") ){
         tryCatch({ 
           
-          form_tmp <- paste(mainDir(), "data", paste(input$frameSUSelectInput, ".csv", sep = ""), sep = "/", collapse = "/")
-          assign(input$frameSUSelectInput,read.csv(form_tmp, stringsAsFactors = TRUE))
+          form_tmp <- paste(mainDir(), "data", paste(paste0(input$frameSUSelectInput,"_edited"), ".csv", sep = ""), sep = "/", collapse = "/")
+          assign(paste0(input$frameSUSelectInput,"_edited"),read.csv(form_tmp, stringsAsFactors = TRUE))
           typeOfInd <- eval(parse(text=calculationResult))
           if(is.character(typeOfInd)){
             typeOfInd <- "factor"
@@ -3467,7 +3486,7 @@ server <- shinyServer(function(input, output, session) {
           }else{
             typeOfInd <- "factor"
           }
-          rm(input$frameSUSelectInput)
+          rm(paste0(input$frameSUSelectInput,"_edited"))
           
         }, error = function(err) {
           typeOfInd <- structure(c, class = "try-error")
@@ -3476,8 +3495,8 @@ server <- shinyServer(function(input, output, session) {
       else if(sum(input$indicatorCaseSelectInput=="Calculate min, max or avg value for multiple integer or numeric variables")){
         tryCatch({ 
           
-          form_tmp <- paste(mainDir(), "data", paste(input$frameMMASelectInput, ".csv", sep = ""), sep = "/", collapse = "/")
-          assign(input$frameMMASelectInput,read.csv(form_tmp, stringsAsFactors = TRUE))
+          form_tmp <- paste(mainDir(), "data", paste(paste0(input$frameMMASelectInput,"_edited"), ".csv", sep = ""), sep = "/", collapse = "/")
+          assign(paste0(input$frameMMASelectInput,"_edited"),read.csv(form_tmp, stringsAsFactors = TRUE))
           typeOfInd <- eval(parse(text=calculationResult))
           if(is.character(typeOfInd)){
             typeOfInd <- "factor"
@@ -3488,7 +3507,7 @@ server <- shinyServer(function(input, output, session) {
           }else{
             typeOfInd <- "factor"
           }
-          rm(input$frameMMASelectInput)
+          rm(paste0(input$frameMMASelectInput,"_edited"))
           
         }, error = function(err) {
           typeOfInd <- structure(c, class = "try-error")
@@ -3497,8 +3516,8 @@ server <- shinyServer(function(input, output, session) {
       else if(sum(input$indicatorCaseSelectInput=="Calculate ratio by dividing 2 numeric or integer variables")){
         tryCatch({ 
           
-          form_tmp <- paste(mainDir(), "data", paste(input$frameD2SelectInput, ".csv", sep = ""), sep = "/", collapse = "/")
-          assign(input$frameD2SelectInput,read.csv(form_tmp, stringsAsFactors = TRUE))
+          form_tmp <- paste(mainDir(), "data", paste(paste0(input$frameD2SelectInput,"_edited"), ".csv", sep = ""), sep = "/", collapse = "/")
+          assign(paste0(input$frameD2SelectInput,"_edited"),read.csv(form_tmp, stringsAsFactors = TRUE))
           typeOfInd <- eval(parse(text=calculationResult))
           if(is.character(typeOfInd)){
             typeOfInd <- "factor"
@@ -3509,7 +3528,7 @@ server <- shinyServer(function(input, output, session) {
           }else{
             typeOfInd <- "factor"
           }
-          rm(input$frameD2SelectInput)
+          rm(paste0(input$frameD2SelectInput,"_edited"))
           
         }, error = function(err) {
           typeOfInd <- structure(c, class = "try-error")
@@ -3518,8 +3537,8 @@ server <- shinyServer(function(input, output, session) {
       else if(sum(input$indicatorCaseSelectInput=="Set condition on specific variables")){
         tryCatch({ 
           
-          form_tmp <- paste(mainDir(), "data", paste(input$frameIFSelectInput, ".csv", sep = ""), sep = "/", collapse = "/")
-          assign(input$frameIFSelectInput,read.csv(form_tmp, stringsAsFactors = TRUE))
+          form_tmp <- paste(mainDir(), "data", paste(paste0(input$frameIFSelectInput,"_edited"), ".csv", sep = ""), sep = "/", collapse = "/")
+          assign(paste0(input$frameIFSelectInput,"_edited"),read.csv(form_tmp, stringsAsFactors = TRUE))
           typeOfInd <- eval(parse(text=calculationResult))
           if(is.character(typeOfInd)){
             typeOfInd <- "factor"
@@ -3530,7 +3549,7 @@ server <- shinyServer(function(input, output, session) {
           }else{
             typeOfInd <- "factor"
           }
-          rm(input$frameIFSelectInput)
+          rm(paste0(input$frameIFSelectInput,"_edited"))
           
         }, error = function(err) {
           typeOfInd <- structure(c, class = "try-error")
@@ -3586,27 +3605,25 @@ server <- shinyServer(function(input, output, session) {
         preCal <- NA
       }
       indicator <- indicator[!is.na(indicator$fullname) & indicator$fullname!=selInd,]
-      frame <- input$indicatorFrameInput
-      if(input$indicatorFrameInput=="MainDataFrame"){
-        frame <- "MainDataFrame_edited"
-      }
-      
-      
+      frame <- paste0(input$indicatorFrameInput, "_edited")
+
       newRow <- data.frame(
         type = ifelse(sum(input$useCalculation=="No"),ifelse(is.null(typeOfInd),NA,ifelse(typeOfInd=="factor", "select_one",typeOfInd)),preTyp),
         fullname = input$indicatorFullnameInput,
-        label = input$indicatorLabelInput,
+        labelReport = input$indicatorLabelInput,
+        hintReport = input$indicatorHintInput,
         chapter = preChp,
         disaggregation = ifelse(sum(input$indicatorDisaggregationInput=="Yes"),"TRUE",ifelse(sum(input$indicatorDisaggregationInput=="No"),"False",NA)),
         correlate = ifelse(sum(input$indicatorCorrelateInput=="Yes"),"TRUE",ifelse(sum(input$indicatorCorrelateInput=="No"),"False",NA)),
-        sensitive = ifelse(sum(input$indicatorSensitiveInput=="Yes"),"TRUE",ifelse(sum(input$indicatorSensitiveInput=="No"),"False",NA)),
         anonymise = ifelse(sum(input$indicatorAnonymiseInput=="-- select --"),NA,input$indicatorAnonymiseInput),
         cluster = ifelse(sum(input$indicatorClusterInput=="Yes"),"TRUE",ifelse(sum(input$indicatorClusterInput=="No"),"False",NA)),
         predict = ifelse(sum(input$indicatorPredictInput=="Yes"),"TRUE",ifelse(sum(input$indicatorPredictInput=="No"),"False",NA)),
         variable = ifelse(typeOfInd=="factor",preVar,NA),
         mappoint = ifelse(sum(input$indicatorMappointInput=="Yes"),"TRUE",ifelse(sum(input$indicatorMappointInput=="No"),"False",NA)),
         mappoly = ifelse(sum(input$indicatorMappolyInput=="Yes"),"TRUE",ifelse(sum(input$indicatorMappolyInput=="No"),"False",NA)),
-        structuralequation = ifelse(sum(input$indicatorStructuralequationInput=="Yes"),"TRUE",ifelse(sum(input$indicatorStructuralequationInput=="No"),"False",NA)),
+        structuralequation.risk = ifelse(sum(input$indicatorstructuralequationRiskInput=="Yes"),"TRUE",ifelse(sum(input$indicatorstructuralequationRiskInput=="No"),"False",NA)),
+        structuralequation.coping = ifelse(sum(input$indicatorstructuralequationCopingInput=="Yes"),"TRUE",ifelse(sum(input$indicatorstructuralequationCopingInput=="No"),"False",NA)),
+        structuralequation.resilience = ifelse(sum(input$indicatorstructuralequationResilienceInput=="Yes"),"TRUE",ifelse(sum(input$indicatorstructuralequationResilienceInput=="No"),"False",NA)),
         frame = ifelse(sum(input$indicatorFrameInput=="-- select --"),NA,frame) ,
         listname = ifelse(sum(input$indicatorListnameInput=="-- select --"),NA,input$indicatorListnameInput),
         calculation =  ifelse(sum(input$useCalculation=="No"),gsub("MainDataFrame", "MainDataFrame_edited", calculationResult),preCal),

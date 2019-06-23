@@ -311,7 +311,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
     for (dbr in levelsOfDF$name) {
       dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
       dataFrame <- kobo_encode(dataFrame, dico)
-      write.csv(dataFrame,paste(mainDir,"/data/",dbr,"-encoded.csv",sep = ""), row.names = FALSE, na = "")
+      write.csv(dataFrame,paste(mainDir,"/data/",dbr,"_encoded.csv",sep = ""), row.names = FALSE, na = "")
 
       cat("\n\nRe-encode",dbr,"..\n")
     }
@@ -319,7 +319,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
       updateProgress()
     }
 
-    write.csv(MainDataFrame,paste(mainDir,"/data/MainDataFrame-encoded.csv",sep = ""), row.names = FALSE, na = "")
+    write.csv(MainDataFrame,paste(mainDir,"/data/MainDataFrame_encoded.csv",sep = ""), row.names = FALSE, na = "")
 
     return(TRUE)
   }, error = function(err) {

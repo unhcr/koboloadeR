@@ -2,6 +2,14 @@ pandoc: 2.3.1
 pkgdown: 1.3.0
 pkgdown_sha: ~
 articles:
-  tutorial: tutorial.html
-  tutorial2: tutorial2.html
+  Anonymisation: Anonymisation.html
+  Console: Console.html
+  Crunching: Crunching.html
+  Getting_data: Getting_data.html
+  Sampling: Sampling.html
+  Troubleshooting: Troubleshooting.html
+  xlsform: xlsform.html
+urls:
+  reference: https://unhcr.github.io/koboloadeR/docs//reference
+  article: https://unhcr.github.io/koboloadeR/docs//articles
 

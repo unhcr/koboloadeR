@@ -1,13 +1,11 @@
-# NEWS
+# koboloadeR 0.1.5
 
-## koboloadeR 0.1.5
-
- * Added a shinapp to provide a gui fo rthe package
+ * Added a shinapp to provide a gui for the package
  
  * Turned previous scripts into functions
 
 
-## koboloadeR 0.1.4
+# koboloadeR 0.1.4
 
  * Added a template for report generation in word as well as specific version of chart loop to be inserted in the report
  
@@ -15,7 +13,7 @@
  
  * Fixed `kobo_projectinit` path to copy files
 
-## koboloadeR 0.1.3
+# koboloadeR 0.1.3
 
 Forked from [https://github.com/mrdwab/koboloadeR](https://github.com/mrdwab/koboloadeR)
 
@@ -43,6 +41,8 @@ Forked from [https://github.com/mrdwab/koboloadeR](https://github.com/mrdwab/kob
 
 * Added UNHCR Kobotoolbox server API and put it per default
 
+
+# Before Fork
 
 ## koboloadeR 0.1.2
 

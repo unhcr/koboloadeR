@@ -11,8 +11,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -46,6 +46,16 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-142392388-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-142392388-1');
+</script>
 
   </head>
 
@@ -86,10 +96,25 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/tutorial.html">KoboloadeR  Introduction</a>
+      <a href="../articles/Anonymisation.html">6. Data Anonymisation and disclosure risk measurement</a>
     </li>
     <li>
-      <a href="../articles/tutorial2.html">Vignette Title</a>
+      <a href="../articles/Console.html">4. Using console script</a>
+    </li>
+    <li>
+      <a href="../articles/Crunching.html">1. Data Crunching</a>
+    </li>
+    <li>
+      <a href="../articles/Getting_data.html">2. Getting data from server</a>
+    </li>
+    <li>
+      <a href="../articles/Sampling.html">5. Sampling</a>
+    </li>
+    <li>
+      <a href="../articles/Troubleshooting.html">7. Common Troubleshooting</a>
+    </li>
+    <li>
+      <a href="../articles/xlsform.html">3. Data Analysis Plan within your `xlsfrom`</a>
     </li>
   </ul>
 </li>
@@ -151,42 +176,8 @@ It is assumed that the form is stored in the data folder.</p></td>
 #&gt;  
 #&gt; Checking now for additional information within your xlsform. Note that you can insert them in the xls and re-run the function! 
 #&gt;  
-#&gt;  1- No column `labelReport` in your survey worksheet. Creating a dummy one for the moment...
-#&gt; 1- Good: You have a column `disaggregation` in your survey worksheet.
-#&gt; 2- Good: You have a column `correlate` in your survey worksheet. This will be used to define the variables that should be checked for correlation between each others.
-#&gt; 3- Good: You have a column `chapter` in your survey worksheet. This will be used to breakdown the generated report
-#&gt; 4- No column `structuralequation.risk` in your survey worksheet. Creating a dummy one for the moment...
-#&gt; 4- No column `structuralequation.coping` in your survey worksheet. Creating a dummy one for the moment...
-#&gt; 4- No column `structuralequation.resilience` in your survey worksheet. Creating a dummy one for the moment...
-#&gt; 5- Good: You have a column `anonymise` in your survey worksheet. This will be used to anonymise the dataset.
-#&gt; 6- Good: You have a column `variable` in your survey worksheet. This will be used to flag ordinal variable.
-#&gt; 7- No column `clean` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
-#&gt; 8- No column `cluster` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
-#&gt; 9- No column `predict` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
-#&gt; 10- No column `mappoint` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
-#&gt; 11- No column `mappoly` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...
-#&gt; 1- No column `relevant` in your survey worksheet. Creating a dummy one for the moment...
-#&gt; 1- No column `required` in your survey worksheet. Creating a dummy one for the moment...
-#&gt; 1- No column `constraint` in your survey worksheet. Creating a dummy one for the moment...
-#&gt; 1- No column `repeat_count` in your survey worksheet. Creating a dummy one for the moment...
-#&gt;  
-#&gt;  Now extracting list name from questions type.
-#&gt;  
-#&gt; 
-#&gt;  Be careful! The current function only support 2 levels of nested repeat - for instance household / Case / Individual. 
-#&gt;  
-#&gt;  
-#&gt;  Now rebuilding the variable full path in order to match with variable name from the exported dataset. 
-#&gt; 
-#&gt;       Note that there should not be any dots in the orginal variables. 
-#&gt; 
-#&gt;       Double Check as well there's no duplicate for the name column in the survey worksheet
-#&gt;  
-#&gt;  No column `labelReport` in your `choices` worksheet. Creating a dummy one for the moment...
-#&gt;  Good: You have a column `order` in your `choices` worksheet.
-#&gt;   No column `weight` in your `choices` worksheet. Creating a dummy one for the moment...
-#&gt;   No column `recategorise` in your `choices` worksheet. Creating a dummy one for the moment...
-#&gt;  No column `score` in your `choices` worksheet. Creating a dummy one for the moment...</div><div class='input'>
+#&gt;   No column `labelReport` in your survey worksheet. Creating a dummy one for the moment...
+#&gt;  No column `hintReport` in your survey worksheet. Creating a dummy one for the moment...</div><div class='output co'>#&gt; <span class='error'>Error: Can't find column `hint` in `.data`.</span></div><div class='input'>
 </div><span class='co'># NOT RUN {</span>
 <span class='fu'>kobo_dico</span>(<span class='st'>"myform.xls"</span>)
 <span class='co'># }</span><div class='input'>

@@ -48,7 +48,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
     ### Load the data
     cat("\n\n Loading data. It is assumed that the cleaning, weighting & re-encoding has been done previously \n")
 
-    MainDataFrame <- read.csv(paste(mainDir,"/data/MainDataFrame-encoded.csv",sep = ""), encoding = "UTF-8", na.strings = "")
+    MainDataFrame <- read.csv(paste(mainDir,"/data/MainDataFrame_encoded.csv",sep = ""), encoding = "UTF-8", na.strings = "")
 
 
     ###Form##########################################
@@ -77,7 +77,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
     dataBeginRepeat <- dataBeginRepeat$names
     for (dbr in dataBeginRepeat) {
 
-      dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"-encoded.csv",sep = ""),stringsAsFactors = F)
+      dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"_encoded.csv",sep = ""),stringsAsFactors = F)
 
       assign(dbr, kobo_label(dataFrame, dico))
       if (app == "shiny") {
@@ -89,11 +89,11 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
 
     ## Get a list of variables to be used for disaggregation #######
     disaggregation <- dico[ which(dico$disaggregation %in% c("facet","correlate") & dico$formpart == "questions"),
-                            c("chapter", "name", "label", "type", "qrepeatlabel", "fullname", "disaggregation", "correlate", "listname", "variable") ]
+                            c("chapter", "name", "label","labelReport", "type", "qrepeatlabel", "fullname", "disaggregation", "correlate", "listname", "variable") ]
 
     ## Get a list of variables to be used for analyisis of association - chisquarred #######
     correlation <- dico[which(dico$type %in% c("select_multiple_d","select_one") & !(is.na(dico$correlate)) & dico$formpart == "questions"),
-                        c("chapter", "name", "label", "type", "qrepeatlabel", "fullname", "disaggregation", "correlate", "listname", "variable") ]
+                        c("chapter", "name", "label","labelReport", "type", "qrepeatlabel", "fullname", "disaggregation", "correlate", "listname", "variable") ]
 
     ## Get a list of variables to be used for analyisis of association - chisquarred #######
     ordinal <- dico[which(dico$type %in% c("select_multiple_d","select_one") & dico$variable == "ordinal"),
@@ -200,11 +200,11 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
       ## TO DO: Use config file to load the different frame
 
 
-      cat("MainDataFrame <- read.csv(paste0(mainDirroot,\"/data/MainDataFrame-encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = chapter.name , sep = "\n", append = TRUE)
+      cat("MainDataFrame <- read.csv(paste0(mainDirroot,\"/data/MainDataFrame_encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = chapter.name , sep = "\n", append = TRUE)
 
 
       for (dbr in dataBeginRepeat) {
-        cat(paste(dbr, " <- read.csv(paste0(mainDirroot,\"/data/",dbr,"-encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
+        cat(paste(dbr, " <- read.csv(paste0(mainDirroot,\"/data/",dbr,"_encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
 
       }
 
@@ -480,7 +480,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
               disag.shortname <- as.character(disaggregation[ h , c("name")])
               disag.type <- as.character(disaggregation[ h , c("type")])
               disag.frame <- as.character(disaggregation[ h , c("qrepeatlabel")])
-              disag.label <- as.character(disaggregation[ h , c("label")])
+              disag.label <- as.character(disaggregation[ h , c("labelReport")])
               disag.listname <- as.character(disaggregation[ h , c("listname")])
               disag.ordinal <- as.character(disaggregation[ h  , c("variable")])
               if (is.na(disag.ordinal) ) {disag.ordinal <- "not.defined"} else {disag.ordinal <- disag.ordinal }

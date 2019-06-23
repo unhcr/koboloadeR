@@ -1,5 +1,5 @@
 ---
-title: "3. Data Analysis Plan within your `xlsfrom`"
+title: "Data Analysis Plan within your `xlsfrom`"
 author: "Edouard Legoupil"
 date: '`r Sys.Date()`'
 output: 

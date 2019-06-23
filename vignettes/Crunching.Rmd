@@ -1,5 +1,5 @@
 ---
-title: "1. Data Crunching"
+title: "Data Crunching"
 author: "Edouard Legoupil"
 date: '`r Sys.Date()`'
 output: rmarkdown::html_vignette

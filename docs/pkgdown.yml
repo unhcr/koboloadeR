@@ -3,9 +3,11 @@ pkgdown: 1.3.0
 pkgdown_sha: ~
 articles:
   Anonymisation: Anonymisation.html
+  Cleaning: Cleaning.html
   Console: Console.html
   Crunching: Crunching.html
   Getting_data: Getting_data.html
+  Predicting_Scoring: Predicting_Scoring.html
   Sampling: Sampling.html
   Troubleshooting: Troubleshooting.html
   xlsform: xlsform.html

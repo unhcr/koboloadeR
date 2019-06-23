@@ -1,6 +1,6 @@
 #' @name kobo_dummy
 #' @rdname kobo_dummy
-#' @title  Remove direct identifier
+#' @title  Create a dummy dataset
 #'
 #' @description  Automatically produce an dummy dataset in line with the structure of an xlsform.
 #'

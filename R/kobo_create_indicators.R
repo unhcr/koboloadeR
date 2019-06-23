@@ -86,7 +86,7 @@ kobo_create_indicators <- function(form = "form.xls") {
         #dicotemp$type <- "trigger"
         dicotemp$name <- "trigger"
         dicotemp$fullname <- "trigger"
-     #   dicotemp$label <- "trigger"
+        dicotemp$label <- "trigger"
         dicotemp$labelReport <- "trigger"
         dicotemp$hintReport <- "trigger"
         dicotemp$chapter <- "trigger"
@@ -132,7 +132,7 @@ kobo_create_indicators <- function(form = "form.xls") {
           # i <- 1
           indicator.type	<- as.character(indicator[ i, c("type")])
           indicator.fullname	<- as.character(indicator[ i, c("fullname")])
-       #   indicator.label	<- as.character(indicator[ i, c("label")])
+          indicator.label	<- as.character(indicator[ i, c("label")])
           indicator.labelReport	<- as.character(indicator[ i, c("labelReport")])
           indicator.hintReport	<- as.character(indicator[ i, c("hintReport")])
           indicator.chapter	<- as.character(indicator[ i, c("chapter")])
@@ -207,7 +207,7 @@ kobo_create_indicators <- function(form = "form.xls") {
           dicotemp1$type <- indicator.type
           dicotemp1$name <- indicator.fullname
           dicotemp1$fullname <- indicator.fullname
-          #dicotemp1$label <- indicator.label
+          dicotemp1$label <- indicator.label
           dicotemp1$labelReport <- indicator.labelReport
           dicotemp1$hintReport <- indicator.hintReport
           dicotemp1$chapter <- indicator.chapter

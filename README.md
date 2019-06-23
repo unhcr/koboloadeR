@@ -19,7 +19,7 @@ This package first builds on the capacity of UNHCR Kobo server @ http://kobo.unh
 
 The package comes as a companion tool to the [Integrated Framework for Household Survey](https://unhcr.github.io/Integrated-framework-household-survey).
 
-koboloadeR aims at helping [humanitarian data analysts](https://humanitarian-user-group.github.io/) to save time by quickly generating graphs and charts needed to discover insights from a dataset and ensure analysis __reproducibility__ through a separation of the analysis configuration and the analysis process. The package allows to account for sample weights and hierachical dataset structure (both capacities that are not available through the defaults reporting engine or the [excel-analyzer](http://support.kobotoolbox.org/articles/592387-using-the-excel-analyzer)).
+koboloadeR aims at helping [humanitarian data analysts](https://humanitarian-user-group.github.io/) to save time by quickly generating graphs and charts needed to discover insights from a dataset and ensure analysis __reproducibility__ through a separation of the analysis configuration and the analysis process. The package allows to account for sample weights and hierachical dataset structure (both capacities that are not available through the default [reporting engine](http://support.kobotoolbox.org/articles/2847676-viewing-and-creating-custom-reports) or the [excel-analyzer](http://support.kobotoolbox.org/articles/592387-using-the-excel-analyzer)). This metapackage brings together a series of specialised packages in an organised data analysis workflow.
 
 ## Approach
  

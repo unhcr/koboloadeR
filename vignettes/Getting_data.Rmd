@@ -18,7 +18,7 @@ The package is using only `csv` files. this is to avoid the limitations linked t
 
 
 
-## Case 1: You have only the data but not the orginal xslform
+## Case 1: You have only the data but not the original xslform
 
 In case, you have simple dataframe, you may load your data in R and then use the function `kobo_to_xlsform()`
 
@@ -30,7 +30,7 @@ kobo_to_xlsform(MainDataFrame)
 
 Note that this function will expect the dataframe headers contains variable names (not labels).
 
-The function will build an xslform file and save it under the data folder. You can then manually edit this file ofr instance to add the label for your questions.
+The function will build an xslform file and save it under the data folder. You can then _manually_ edit this file for instance to add the label for your questions.
 
 
 

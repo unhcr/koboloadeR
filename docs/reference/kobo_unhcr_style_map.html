@@ -161,8 +161,8 @@
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>kobo_unhcr_style_map</span>()</div><div class='output co'>#&gt; List of 60
-#&gt;  $ line                 :List of 6
+    <pre class="examples"><div class='input'><span class='fu'>kobo_unhcr_style_map</span>()</div><div class='output co'>#&gt; List of 66
+#&gt;  $ line                      :List of 6
 #&gt;   ..$ colour       : chr "black"
 #&gt;   ..$ size         : num 0.5
 #&gt;   ..$ linetype     : num 1
@@ -170,14 +170,14 @@
 #&gt;   ..$ arrow        : logi FALSE
 #&gt;   ..$ inherit.blank: logi TRUE
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_line" "element"
-#&gt;  $ rect                 :List of 5
+#&gt;  $ rect                      :List of 5
 #&gt;   ..$ fill         : chr "white"
 #&gt;   ..$ colour       : chr "black"
 #&gt;   ..$ size         : num 0.5
 #&gt;   ..$ linetype     : num 1
 #&gt;   ..$ inherit.blank: logi TRUE
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_rect" "element"
-#&gt;  $ text                 :List of 11
+#&gt;  $ text                      :List of 11
 #&gt;   ..$ family       : chr ""
 #&gt;   ..$ face         : chr "plain"
 #&gt;   ..$ colour       : chr "black"
@@ -192,9 +192,9 @@
 #&gt;   ..$ debug        : logi FALSE
 #&gt;   ..$ inherit.blank: logi TRUE
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_text" "element"
-#&gt;  $ axis.title.x         : list()
+#&gt;  $ axis.title.x              : list()
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_blank" "element"
-#&gt;  $ axis.title.x.top     :List of 11
+#&gt;  $ axis.title.x.top          :List of 11
 #&gt;   ..$ family       : NULL
 #&gt;   ..$ face         : NULL
 #&gt;   ..$ colour       : NULL
@@ -209,9 +209,9 @@
 #&gt;   ..$ debug        : NULL
 #&gt;   ..$ inherit.blank: logi TRUE
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_text" "element"
-#&gt;  $ axis.title.y         : list()
+#&gt;  $ axis.title.y              : list()
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_blank" "element"
-#&gt;  $ axis.title.y.right   :List of 11
+#&gt;  $ axis.title.y.right        :List of 11
 #&gt;   ..$ family       : NULL
 #&gt;   ..$ face         : NULL
 #&gt;   ..$ colour       : NULL
@@ -226,7 +226,7 @@
 #&gt;   ..$ debug        : NULL
 #&gt;   ..$ inherit.blank: logi TRUE
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_text" "element"
-#&gt;  $ axis.text            :List of 11
+#&gt;  $ axis.text                 :List of 11
 #&gt;   ..$ family       : NULL
 #&gt;   ..$ face         : NULL
 #&gt;   ..$ colour       : chr "grey30"
@@ -239,9 +239,9 @@
 #&gt;   ..$ debug        : NULL
 #&gt;   ..$ inherit.blank: logi TRUE
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_text" "element"
-#&gt;  $ axis.text.x          : list()
+#&gt;  $ axis.text.x               : list()
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_blank" "element"
-#&gt;  $ axis.text.x.top      :List of 11
+#&gt;  $ axis.text.x.top           :List of 11
 #&gt;   ..$ family       : NULL
 #&gt;   ..$ face         : NULL
 #&gt;   ..$ colour       : NULL
@@ -256,9 +256,9 @@
 #&gt;   ..$ debug        : NULL
 #&gt;   ..$ inherit.blank: logi TRUE
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_text" "element"
-#&gt;  $ axis.text.y          : list()
+#&gt;  $ axis.text.y               : list()
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_blank" "element"
-#&gt;  $ axis.text.y.right    :List of 11
+#&gt;  $ axis.text.y.right         :List of 11
 #&gt;   ..$ family       : NULL
 #&gt;   ..$ face         : NULL
 #&gt;   ..$ colour       : NULL
@@ -273,38 +273,44 @@
 #&gt;   ..$ debug        : NULL
 #&gt;   ..$ inherit.blank: logi TRUE
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_text" "element"
-#&gt;  $ axis.ticks           : list()
+#&gt;  $ axis.ticks                : list()
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_blank" "element"
-#&gt;  $ axis.ticks.length    : 'unit' num 2.75pt
+#&gt;  $ axis.ticks.length         : 'unit' num 2.75pt
 #&gt;   ..- attr(*, "valid.unit")= int 8
 #&gt;   ..- attr(*, "unit")= chr "pt"
-#&gt;  $ axis.line            : list()
+#&gt;  $ axis.ticks.length.x       : NULL
+#&gt;  $ axis.ticks.length.x.top   : NULL
+#&gt;  $ axis.ticks.length.x.bottom: NULL
+#&gt;  $ axis.ticks.length.y       : NULL
+#&gt;  $ axis.ticks.length.y.left  : NULL
+#&gt;  $ axis.ticks.length.y.right : NULL
+#&gt;  $ axis.line                 : list()
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_blank" "element"
-#&gt;  $ axis.line.x          : NULL
-#&gt;  $ axis.line.y          : NULL
-#&gt;  $ legend.background    :List of 5
+#&gt;  $ axis.line.x               : NULL
+#&gt;  $ axis.line.y               : NULL
+#&gt;  $ legend.background         :List of 5
 #&gt;   ..$ fill         : chr "#FFFFFF00"
 #&gt;   ..$ colour       : logi NA
 #&gt;   ..$ size         : NULL
 #&gt;   ..$ linetype     : NULL
 #&gt;   ..$ inherit.blank: logi FALSE
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_rect" "element"
-#&gt;  $ legend.margin        : 'margin' num [1:4] 5.5pt 5.5pt 5.5pt 5.5pt
+#&gt;  $ legend.margin             : 'margin' num [1:4] 5.5pt 5.5pt 5.5pt 5.5pt
 #&gt;   ..- attr(*, "valid.unit")= int 8
 #&gt;   ..- attr(*, "unit")= chr "pt"
-#&gt;  $ legend.spacing       : 'unit' num 11pt
+#&gt;  $ legend.spacing            : 'unit' num 11pt
 #&gt;   ..- attr(*, "valid.unit")= int 8
 #&gt;   ..- attr(*, "unit")= chr "pt"
-#&gt;  $ legend.spacing.x     : NULL
-#&gt;  $ legend.spacing.y     : NULL
-#&gt;  $ legend.key           : list()
+#&gt;  $ legend.spacing.x          : NULL
+#&gt;  $ legend.spacing.y          : NULL
+#&gt;  $ legend.key                : list()
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_blank" "element"
-#&gt;  $ legend.key.size      : 'unit' num 1.2lines
+#&gt;  $ legend.key.size           : 'unit' num 1.2lines
 #&gt;   ..- attr(*, "valid.unit")= int 3
 #&gt;   ..- attr(*, "unit")= chr "lines"
-#&gt;  $ legend.key.height    : NULL
-#&gt;  $ legend.key.width     : NULL
-#&gt;  $ legend.text          :List of 11
+#&gt;  $ legend.key.height         : NULL
+#&gt;  $ legend.key.width          : NULL
+#&gt;  $ legend.text               :List of 11
 #&gt;   ..$ family       : NULL
 #&gt;   ..$ face         : NULL
 #&gt;   ..$ colour       : chr "#4e4d47"
@@ -317,8 +323,8 @@
 #&gt;   ..$ debug        : NULL
 #&gt;   ..$ inherit.blank: logi FALSE
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_text" "element"
-#&gt;  $ legend.text.align    : num 0
-#&gt;  $ legend.title         :List of 11
+#&gt;  $ legend.text.align         : num 0
+#&gt;  $ legend.title              :List of 11
 #&gt;   ..$ family       : NULL
 #&gt;   ..$ face         : NULL
 #&gt;   ..$ colour       : NULL
@@ -331,29 +337,29 @@
 #&gt;   ..$ debug        : NULL
 #&gt;   ..$ inherit.blank: logi FALSE
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_text" "element"
-#&gt;  $ legend.title.align   : NULL
-#&gt;  $ legend.position      : chr "bottom"
-#&gt;  $ legend.direction     : NULL
-#&gt;  $ legend.justification : chr "center"
-#&gt;  $ legend.box           : chr "horizontal"
-#&gt;  $ legend.box.margin    : 'margin' num [1:4] 0cm 0cm 0cm 0cm
+#&gt;  $ legend.title.align        : NULL
+#&gt;  $ legend.position           : chr "bottom"
+#&gt;  $ legend.direction          : NULL
+#&gt;  $ legend.justification      : chr "center"
+#&gt;  $ legend.box                : chr "horizontal"
+#&gt;  $ legend.box.margin         : 'margin' num [1:4] 0cm 0cm 0cm 0cm
 #&gt;   ..- attr(*, "valid.unit")= int 1
 #&gt;   ..- attr(*, "unit")= chr "cm"
-#&gt;  $ legend.box.background: list()
+#&gt;  $ legend.box.background     : list()
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_blank" "element"
-#&gt;  $ legend.box.spacing   : 'unit' num 11pt
+#&gt;  $ legend.box.spacing        : 'unit' num 11pt
 #&gt;   ..- attr(*, "valid.unit")= int 8
 #&gt;   ..- attr(*, "unit")= chr "pt"
-#&gt;  $ panel.background     : list()
+#&gt;  $ panel.background          : list()
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_blank" "element"
-#&gt;  $ panel.border         : list()
+#&gt;  $ panel.border              : list()
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_blank" "element"
-#&gt;  $ panel.spacing        : 'unit' num [1:4] -0.1cm 0.7cm 0.2cm 1.7cm
+#&gt;  $ panel.spacing             : 'unit' num [1:4] -0.1cm 0.7cm 0.2cm 1.7cm
 #&gt;   ..- attr(*, "valid.unit")= int 1
 #&gt;   ..- attr(*, "unit")= chr "cm"
-#&gt;  $ panel.spacing.x      : NULL
-#&gt;  $ panel.spacing.y      : NULL
-#&gt;  $ panel.grid           :List of 6
+#&gt;  $ panel.spacing.x           : NULL
+#&gt;  $ panel.spacing.y           : NULL
+#&gt;  $ panel.grid                :List of 6
 #&gt;   ..$ colour       : chr "grey92"
 #&gt;   ..$ size         : NULL
 #&gt;   ..$ linetype     : NULL
@@ -361,12 +367,12 @@
 #&gt;   ..$ arrow        : logi FALSE
 #&gt;   ..$ inherit.blank: logi TRUE
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_line" "element"
-#&gt;  $ panel.grid.minor     : list()
+#&gt;  $ panel.grid.minor          : list()
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_blank" "element"
-#&gt;  $ panel.ontop          : logi FALSE
-#&gt;  $ plot.background      : list()
+#&gt;  $ panel.ontop               : logi FALSE
+#&gt;  $ plot.background           : list()
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_blank" "element"
-#&gt;  $ plot.title           :List of 11
+#&gt;  $ plot.title                :List of 11
 #&gt;   ..$ family       : NULL
 #&gt;   ..$ face         : chr "bold"
 #&gt;   ..$ colour       : chr "#4e4d47"
@@ -381,7 +387,7 @@
 #&gt;   ..$ debug        : NULL
 #&gt;   ..$ inherit.blank: logi FALSE
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_text" "element"
-#&gt;  $ plot.subtitle        :List of 11
+#&gt;  $ plot.subtitle             :List of 11
 #&gt;   ..$ family       : NULL
 #&gt;   ..$ face         : NULL
 #&gt;   ..$ colour       : chr "#4e4d47"
@@ -396,7 +402,7 @@
 #&gt;   ..$ debug        : logi FALSE
 #&gt;   ..$ inherit.blank: logi FALSE
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_text" "element"
-#&gt;  $ plot.caption         :List of 11
+#&gt;  $ plot.caption              :List of 11
 #&gt;   ..$ family       : NULL
 #&gt;   ..$ face         : NULL
 #&gt;   ..$ colour       : chr "#939184"
@@ -411,7 +417,7 @@
 #&gt;   ..$ debug        : NULL
 #&gt;   ..$ inherit.blank: logi FALSE
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_text" "element"
-#&gt;  $ plot.tag             :List of 11
+#&gt;  $ plot.tag                  :List of 11
 #&gt;   ..$ family       : NULL
 #&gt;   ..$ face         : NULL
 #&gt;   ..$ colour       : NULL
@@ -424,14 +430,14 @@
 #&gt;   ..$ debug        : NULL
 #&gt;   ..$ inherit.blank: logi TRUE
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_text" "element"
-#&gt;  $ plot.tag.position    : chr "topleft"
-#&gt;  $ plot.margin          : 'unit' num [1:4] 0.5cm 0.5cm 0.2cm 0.5cm
+#&gt;  $ plot.tag.position         : chr "topleft"
+#&gt;  $ plot.margin               : 'unit' num [1:4] 0.5cm 0.5cm 0.2cm 0.5cm
 #&gt;   ..- attr(*, "valid.unit")= int 1
 #&gt;   ..- attr(*, "unit")= chr "cm"
-#&gt;  $ strip.background     : list()
+#&gt;  $ strip.background          : list()
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_blank" "element"
-#&gt;  $ strip.placement      : chr "inside"
-#&gt;  $ strip.text           :List of 11
+#&gt;  $ strip.placement           : chr "inside"
+#&gt;  $ strip.text                :List of 11
 #&gt;   ..$ family       : NULL
 #&gt;   ..$ face         : NULL
 #&gt;   ..$ colour       : chr "grey10"
@@ -446,8 +452,8 @@
 #&gt;   ..$ debug        : NULL
 #&gt;   ..$ inherit.blank: logi TRUE
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_text" "element"
-#&gt;  $ strip.text.x         : NULL
-#&gt;  $ strip.text.y         :List of 11
+#&gt;  $ strip.text.x              : NULL
+#&gt;  $ strip.text.y              :List of 11
 #&gt;   ..$ family       : NULL
 #&gt;   ..$ face         : NULL
 #&gt;   ..$ colour       : NULL
@@ -460,13 +466,13 @@
 #&gt;   ..$ debug        : NULL
 #&gt;   ..$ inherit.blank: logi TRUE
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_text" "element"
-#&gt;  $ strip.switch.pad.grid: 'unit' num 2.75pt
+#&gt;  $ strip.switch.pad.grid     : 'unit' num 2.75pt
 #&gt;   ..- attr(*, "valid.unit")= int 8
 #&gt;   ..- attr(*, "unit")= chr "pt"
-#&gt;  $ strip.switch.pad.wrap: 'unit' num 2.75pt
+#&gt;  $ strip.switch.pad.wrap     : 'unit' num 2.75pt
 #&gt;   ..- attr(*, "valid.unit")= int 8
 #&gt;   ..- attr(*, "unit")= chr "pt"
-#&gt;  $ panel.grid.major     :List of 6
+#&gt;  $ panel.grid.major          :List of 6
 #&gt;   ..$ colour       : chr "#ebebe5"
 #&gt;   ..$ size         : num 0.2
 #&gt;   ..$ linetype     : NULL

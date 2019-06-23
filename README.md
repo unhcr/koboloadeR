@@ -1,4 +1,4 @@
-# koboloadeR: Crunching dataset collected using xlsform 
+# koboloadeR: Survey Data Crunching <img src="man/figures/koboloadeR.png" width="200" align="right" /> 
 
 
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
@@ -19,7 +19,7 @@ This package first builds on the capacity of UNHCR Kobo server @ http://kobo.unh
 
 The package comes as a companion tool to the [Integrated Framework for Household Survey](https://unhcr.github.io/Integrated-framework-household-survey).
 
-koboloadeR aims at helping [humanitarian data analysts](https://humanitarian-user-group.github.io/) to save time by quickly generating graphs and charts needed to discover insights from a dataset and ensure analysis __reproducibilty__ through a separation of the analysis configuration and the analysis process.
+koboloadeR aims at helping [humanitarian data analysts](https://humanitarian-user-group.github.io/) to save time by quickly generating graphs and charts needed to discover insights from a dataset and ensure analysis __reproducibility__ through a separation of the analysis configuration and the analysis process. The package allows to account for sample weights and hierachical dataset structure (both capacities that are not available through the defaults reporting engine or the [excel-analyzer](http://support.kobotoolbox.org/articles/592387-using-the-excel-analyzer)).
 
 ## Approach
  
@@ -163,7 +163,9 @@ Note however that this implies that you configure correctly on your own the full
   
   * [Data Cleaning](articles/Cleaning.html): how to use the package for reproducible and documented data cleaning? 
     
-  * [Predicting and scoring](articles/Predicting_Scoring.html): how to use survey in conjunction wiht registration data to build risk prediction and vulnerability scoring? 
+  * [Predicting and scoring](articles/Predicting_Scoring.html): how to use survey in conjunction wiht registration data to build risk prediction and vulnerability scoring?
+    
+  * [Dissiminating](articles/Dissiminating.html): how to dissiminate both survey microdata using DDI and variable crosstabulation on CKAN? 
     
 
 

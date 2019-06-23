@@ -1,4 +1,4 @@
-D#
+#
 # This is a Shiny web application. You can run the application by clicking
 # the 'Run App' button above.
 #
@@ -21,34 +21,34 @@ body <- dashboardBody(useShinyalert(),
 
                                  # Project Configuration --------------------------------------------
 
-                                 tabPanel(value = "pc", title = div(span("1"),span("Project Configuration"), class="arrow_box"),
+                                 tabPanel(value = "pc", title = div(span("1"),span("Project Configuration"), class = "arrow_box"),
                                           uiOutput("projectConfiguration")
                                  ),
 
                                  # Analysis Plan Configuration --------------------------------------------
 
-                                 tabPanel(value = "apc", title = div(span("2"),span("Analysis Plan Configuration"), class="arrow_box"),
+                                 tabPanel(value = "apc", title = div(span("2"),span("Analysis Plan Configuration"), class = "arrow_box"),
                                           uiOutput("analysisPlanConfiguration")
 
                                  ),
 
                                  # Data Processing ----------------------------------------
 
-                                 tabPanel(value = "dp", title = div(span("3"),span("Data Processing"), class="arrow_box"),
+                                 tabPanel(value = "dp", title = div(span("3"),span("Data Processing"), class = "arrow_box"),
                                           uiOutput("dataProcessing")
 
                                  ),
 
                                  # Reports Generation ----------------------------------------
 
-                                 tabPanel(value = "rg", title = div(span("4"),span("Reports Generation"), class="arrow_box"),
+                                 tabPanel(value = "rg", title = div(span("4"),span("Reports Generation"), class = "arrow_box"),
                                           uiOutput("reportsGeneration")
 
                                  ),
 
                                  # Reports Generation ----------------------------------------
 
-                                 tabPanel(value = "dd", title = div(span("5"),span("Data Dissemination"), class="arrow_box"),
+                                 tabPanel(value = "dd", title = div(span("5"),span("Data Dissemination"), class = "arrow_box"),
                                           uiOutput("dataDissemination")
 
                                  )
@@ -167,9 +167,9 @@ server <- shinyServer(function(input, output, session) {
           ),
           column(width = projectConfigurationTheme$warningBlockWidth, offset = 0,
                  if(file.exists(paste(mainDir(), "data", "/form.xls", sep = "/", collapse = "/"))){
-                   div(class="warningBlock",
-                       span(class="warningTitle","WARNING!"),
-                       span(class="warningBody","Be careful, there is already xlsform file (form.xls) in the data directory, once you upload the new file, it will be overridden.")
+                   div(class = "warningBlock",
+                       span(class = "warningTitle","WARNING!"),
+                       span(class = "warningBody","Be careful, there is already xlsform file (form.xls) in the data directory, once you upload the new file, it will be overridden.")
                    )
                  }
 
@@ -185,7 +185,7 @@ server <- shinyServer(function(input, output, session) {
                  conditionalPanel(
                    condition = "input.doYouHaveFormSelectInput == 'Yes'",
                    actionButton("uploadxlsButton", "Upload xlsform", icon("upload"),
-                                style="width:100%; margin-top: 25px;", class="uploadButton" )
+                                style="width:100%; margin-top: 25px;", class = "uploadButton" )
                  )
           )
       ),
@@ -216,9 +216,9 @@ server <- shinyServer(function(input, output, session) {
             ),
             column(width = projectConfigurationTheme$warningBlockWidth, offset = 0,
                    if(file.exists(paste(mainDir(), "data", "/MainDataFrame.csv", sep = "/", collapse = "/"))){
-                     div(class="warningBlock",
-                         span(class="warningTitle","WARNING!"),
-                         span(class="warningBody","Be careful, there is already MainDataFrame.csv file in the data directory, once you upload the new file, it will be overridden.")
+                     div(class = "warningBlock",
+                         span(class = "warningTitle","WARNING!"),
+                         span(class = "warningBody","Be careful, there is already MainDataFrame.csv file in the data directory, once you upload the new file, it will be overridden.")
                      )
                    }
 
@@ -238,7 +238,7 @@ server <- shinyServer(function(input, output, session) {
                                            Tab='\t'),
                                          ',', inline =TRUE)),
                      column(width = 12,
-                            actionButton("dataUploadFileButton", "Upload file", icon("upload"), class="uploadButton",
+                            actionButton("dataUploadFileButton", "Upload file", icon("upload"), class = "uploadButton",
                                          style="width:100%; margin-bottom: 20px; height:45px;")
                      )
                    )
@@ -264,7 +264,7 @@ server <- shinyServer(function(input, output, session) {
                                 uiOutput("dataInputsUI")
                          ),
                          column(width = 12,
-                                actionButton("saveDataFilesButton", "Upload and Save files", icon("upload"), class="uploadButton", style="margin: 15px 0px; width:100%;")
+                                actionButton("saveDataFilesButton", "Upload and Save files", icon("upload"), class = "uploadButton", style="margin: 15px 0px; width:100%;")
                          )
 
                        )
@@ -586,7 +586,7 @@ server <- shinyServer(function(input, output, session) {
                          size = "l",
                          footer = tagList(
                            modalButton("Exit", icon("sign-out-alt")),
-                           actionButton("saveInstanceIDButton", "Save", class="toolButton", style="height: 35px;")
+                           actionButton("saveInstanceIDButton", "Save", class = "toolButton", style="height: 35px;")
                          )
       ))
     }, error = function(err) {
@@ -646,7 +646,7 @@ server <- shinyServer(function(input, output, session) {
           box(width = 12, title = "Cluster ID", status = "primary", solidHeader = T, collapsible = T,
                 column(width = 8, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
                        h4("Select the ID variable for cluster report?"),
-                       div(class="help-tip-small",style="top: 0px; right: 25px;",
+                       div(class = "help-tip-small",style="top: 0px; right: 25px;",
                            p(
                              span("This is the ID that will be used for kobo_cluster_report function.",style="display: block;")
                            )
@@ -1040,7 +1040,7 @@ server <- shinyServer(function(input, output, session) {
     }else{
       s <- ""
       for(i in 1:(length(projectConfigurationInfo$data[["beginRepeatList"]]))){
-        s <- paste(s , box(class="uploadFilesBox",title = projectConfigurationInfo$data[["beginRepeatList"]][i],  status = "primary",
+        s <- paste(s , box(class = "uploadFilesBox",title = projectConfigurationInfo$data[["beginRepeatList"]][i],  status = "primary",
                            fluidRow(
                              column(10, offset = 1,
                                     fileInput(inputId=paste("fileInput",projectConfigurationInfo$data[["beginRepeatList"]][i],sep = ""), NULL,
@@ -1162,9 +1162,9 @@ server <- shinyServer(function(input, output, session) {
                                                    ',', inline =TRUE)),
                                column(width = 3, offset = 9,
                                       if(file.exists(paste(mainDir(), "data", "/weightsCluster.csv", sep = "/", collapse = "/"))){
-                                        div(class="warningBlock",
-                                            span(class="warningTitle","WARNING!"),
-                                            span(class="warningBody","Be careful, there is already weightsCluster.csv file in the data directory, once you upload the new file, it will be overridden.")
+                                        div(class = "warningBlock",
+                                            span(class = "warningTitle","WARNING!"),
+                                            span(class = "warningBody","Be careful, there is already weightsCluster.csv file in the data directory, once you upload the new file, it will be overridden.")
                                         )
                                       }
 
@@ -1195,9 +1195,9 @@ server <- shinyServer(function(input, output, session) {
                                                    ',', inline =TRUE)),
                                column(width = 3, offset = 9,
                                       if(file.exists(paste(mainDir(), "data", "/weightsStratified.csv", sep = "/", collapse = "/"))){
-                                        div(class="warningBlock",
-                                            span(class="warningTitle","WARNING!"),
-                                            span(class="warningBody","Be careful, there is already weightsStratified.csv file in the data directory, once you upload the new file, it will be overridden.")
+                                        div(class = "warningBlock",
+                                            span(class = "warningTitle","WARNING!"),
+                                            span(class = "warningBody","Be careful, there is already weightsStratified.csv file in the data directory, once you upload the new file, it will be overridden.")
                                         )
                                       }
 
@@ -1217,9 +1217,9 @@ server <- shinyServer(function(input, output, session) {
                ),
                column(width = projectConfigurationTheme$warningBlockWidth, offset = 0,
                       if(file.exists(paste(mainDir(), "data", "/cleaningLog.csv", sep = "/", collapse = "/"))){
-                        div(class="warningBlock",
-                            span(class="warningTitle","WARNING!"),
-                            span(class="warningBody","Be careful, there is already cleaningLog.csv file in the data directory, once you upload the new file, it will be overridden.")
+                        div(class = "warningBlock",
+                            span(class = "warningTitle","WARNING!"),
+                            span(class = "warningBody","Be careful, there is already cleaningLog.csv file in the data directory, once you upload the new file, it will be overridden.")
                         )
                       }
 
@@ -1243,7 +1243,7 @@ server <- shinyServer(function(input, output, session) {
 
         ),
         column(12, style = "border: 1px solid lightgray; border-bottom-right-radius: 7px; margin-bottom: 20px; background-color: ghostwhite; padding-top: 0px;",
-               actionButton("saveRecordSettingsConfigurationButton", "Save Settings", icon("upload"), class="uploadButton", style="margin: 15px 0px; height:45px; width:100%;")
+               actionButton("saveRecordSettingsConfigurationButton", "Save Settings", icon("upload"), class = "uploadButton", style="margin: 15px 0px; height:45px; width:100%;")
         )
 
 
@@ -1505,7 +1505,7 @@ server <- shinyServer(function(input, output, session) {
                          uiOutput("showSamplingMoreParmBody"),
                          size = "l",
                          footer = tagList(
-                           actionButton("saveSamplingMoreParmButton", "Save", class="toolButton", style="height: 35px;")
+                           actionButton("saveSamplingMoreParmButton", "Save", class = "toolButton", style="height: 35px;")
                          )
       ))
     }, error = function(err) {
@@ -1726,22 +1726,22 @@ server <- shinyServer(function(input, output, session) {
                    sidebarLayout(
                      sidebarPanel(width = 2,
                                   sidebarMenu(id="sidebarMenuForAP",
-                                              menuItem(div(span("1",class="numberStep"),span("Re-Labeling Survey Sheet")), tabName = "relabelingSurvey"),
-                                              menuItem(div(span("2",class="numberStep"),span("Re-Labeling Choices Sheet")), tabName = "relabelingChoices"),
-                                              #menuItem(div(span("3",class="numberStep"),span("Text type")), tabName = "textType"),
-                                              menuItem(div(span("3",class="numberStep"),span("Select_one type")), tabName = "selectOneType"),
-                                              menuItem(div(span("4",class="numberStep"),span("Order Ordinal Variables")), tabName = "orderOrdinalVariables"),
-                                              menuItem(div(span("5",class="numberStep"),span("Select_multiple type")), tabName = "selectMultipleType"),
-                                              menuItem(div(span("6",class="numberStep"),span("Numeric type")), tabName = "numericType"),
-                                              #menuItem(div(span("8",class="numberStep"),span("Integer type")), tabName = "integerType"),
-                                              menuItem(div(span("7",class="numberStep"),span("Date type")), tabName = "dateType"),
-                                              #menuItem(div(span("10",class="numberStep"),span("Decimal type")), tabName = "decimalType"),
-                                              menuItem(div(span("8",class="numberStep"),span("Indicators Sheet")), tabName = "indicatorsSheet"),
-                                              menuItem(div(span("9",class="numberStep"),span("Chapter")), tabName = "chapter"),
+                                              menuItem(div(span("1",class = "numberStep"),span("Re-Labeling Survey Sheet")), tabName = "relabelingSurvey"),
+                                              menuItem(div(span("2",class = "numberStep"),span("Re-Labeling Choices Sheet")), tabName = "relabelingChoices"),
+                                              #menuItem(div(span("3",class = "numberStep"),span("Text type")), tabName = "textType"),
+                                              menuItem(div(span("3",class = "numberStep"),span("Select_one type")), tabName = "selectOneType"),
+                                              menuItem(div(span("4",class = "numberStep"),span("Order Ordinal Variables")), tabName = "orderOrdinalVariables"),
+                                              menuItem(div(span("5",class = "numberStep"),span("Select_multiple type")), tabName = "selectMultipleType"),
+                                              menuItem(div(span("6",class = "numberStep"),span("Numeric type")), tabName = "numericType"),
+                                              #menuItem(div(span("8",class = "numberStep"),span("Integer type")), tabName = "integerType"),
+                                              menuItem(div(span("7",class = "numberStep"),span("Date type")), tabName = "dateType"),
+                                              #menuItem(div(span("10",class = "numberStep"),span("Decimal type")), tabName = "decimalType"),
+                                              menuItem(div(span("8",class = "numberStep"),span("Indicators Sheet")), tabName = "indicatorsSheet"),
+                                              menuItem(div(span("9",class = "numberStep"),span("Chapter")), tabName = "chapter"),
                                               menuItem(NULL, icon = icon("info-circle"), tabName = "infoAPC")
                                   ),
                                   div(id="styleFormDiv", style="background-color: #ecf0f5;",
-                                      actionButton("styleFormButton", "Add style to xlsform", style="width: 100%; margin: 10px 0% 0px; line-height: 35px;", class="uploadButton"))
+                                      actionButton("styleFormButton", "Add style to xlsform", style="width: 100%; margin: 10px 0% 0px; line-height: 35px;", class = "uploadButton"))
                      ),
                      mainPanel(width = 10,
                                div(id = "analysisPlanTab",
@@ -2455,7 +2455,7 @@ server <- shinyServer(function(input, output, session) {
     box(id="indicatorsSheetBox",
         width=12, solidHeader = FALSE, collapsible = FALSE,height = 650,
         column(width = 12,style="border-bottom: 1px solid lightgray; margin: 10px 0px 35px;",
-               actionButton("addIndicatorButton", "Add Indicator", icon = icon("plus"), class="uploadButton",
+               actionButton("addIndicatorButton", "Add Indicator", icon = icon("plus"), class = "uploadButton",
                             style="height: 50px; margin-bottom:20px; font-size: large; margin-left: 1%; margin-right: 1%;", width="98%")
         ),
         column(width = 12,style="overflow: auto; height: 500px;",
@@ -2489,13 +2489,13 @@ server <- shinyServer(function(input, output, session) {
                    box(id=paste("box",ind,sep = ""), title = ind, status="primary",
                        width=12, solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
                        div(
-                         textInfoOfRow , class="divOFIndRow"
+                         textInfoOfRow , class = "divOFIndRow"
                        ),
                        column(width = 7,
-                              actionButton(paste("editIndicatorButton", ind, sep = ""), "Edit Indicator", icon = icon("edit"), class="toolButton", style="height: 50px; margin-bottom:20px;", width="100%")
+                              actionButton(paste("editIndicatorButton", ind, sep = ""), "Edit Indicator", icon = icon("edit"), class = "toolButton", style="height: 50px; margin-bottom:20px;", width="100%")
                        ),
                        column(width = 5,
-                              actionButton(paste("deleteIndicatorButton", ind, sep = ""), "Delete Indicator", icon = icon("trash-alt"), class="deleteButton", style="height: 50px; margin-bottom:20px;", width="100%")
+                              actionButton(paste("deleteIndicatorButton", ind, sep = ""), "Delete Indicator", icon = icon("trash-alt"), class = "deleteButton", style="height: 50px; margin-bottom:20px;", width="100%")
                        )
                    )
                    ,sep="")
@@ -2626,7 +2626,7 @@ server <- shinyServer(function(input, output, session) {
                            #modalButton("Cancel", icon("sign-out-alt")),
                            actionButton("cancelIndicatorButton", "Cancel", icon = icon("sign-out-alt")),
 
-                           actionButton("saveIndicatorButton", ifelse(type=="Add","Add the Indicator", "Edit the Indicator"), class="toolButton", style="height: 35px;")
+                           actionButton("saveIndicatorButton", ifelse(type=="Add","Add the Indicator", "Edit the Indicator"), class = "toolButton", style="height: 35px;")
                          )
       ))
     }, error = function(err) {
@@ -3682,7 +3682,7 @@ server <- shinyServer(function(input, output, session) {
                          uiOutput("subIndicatorToolBody"),
                          size = "l",
                          footer = tagList(
-                           actionButton("completeSaveIndicatorButton", "Continue...", class="toolButton", style="height: 35px;")
+                           actionButton("completeSaveIndicatorButton", "Continue...", class = "toolButton", style="height: 35px;")
                          )
       ))
     }, error = function(err) {
@@ -4050,7 +4050,7 @@ server <- shinyServer(function(input, output, session) {
                    h4("Enter the Breaks argument")
             ),
             column(width = 1,
-                   div(class="help-tip",style="top: 0px;left: 25px;",
+                   div(class = "help-tip",style="top: 0px;left: 25px;",
                        p(
                          span("Enter either a numeric vector of two or more unique cut points EX: 0,25,50,75,100",style="display: block;"),
                          span("OR\n",style="display: block;text-align: center;margin: 20px 0px;font-weight: 900;border-top: 1px solid white;line-height: 0px;
@@ -4201,7 +4201,7 @@ server <- shinyServer(function(input, output, session) {
           factorValues <- choicesSheetFR()[choicesSheetFR()$list_name==input$listnameFRSelectInput,c("list_name", "name", "label")]
 
           s <- column(width = 2,offset=10,style="margin-bottom:50px;",
-                      div(class="help-tip",style="top: 0px;left: 25px;",
+                      div(class = "help-tip",style="top: 0px;left: 25px;",
                           p(
                             span("Enter the new name of level",style="display: block;"),
                             span("OR\n",style="display: block;text-align: center;margin: 20px 0px;font-weight: 900;border-top: 1px solid white;line-height: 0px;
@@ -4314,7 +4314,7 @@ server <- shinyServer(function(input, output, session) {
              selectInput("varSU2", label = NULL,choices = variablesToUseSU$col,width = "100%", selected = 15)
       ),
       column(width = 3, offset = 0, align = "center",
-             actionButton("addVariablesSU", "Add Variable", class="toolButton", style="height: 35px;", icon = icon("plus-circle","fa-1x"))
+             actionButton("addVariablesSU", "Add Variable", class = "toolButton", style="height: 35px;", icon = icon("plus-circle","fa-1x"))
       )
     )
   })
@@ -4365,7 +4365,7 @@ server <- shinyServer(function(input, output, session) {
                             selectInput(paste("varSU", i, sep = ""), label = NULL,choices = variablesToUseSU$col,width = "100%", selected = tempVal)
                      ),
                      column(width = 2, offset = 0, align = "center",
-                            actionButton(paste("deleteVariableSU", i ,sep = ""), NULL, class="toolButtonDelete", style="height: 35px;", icon = icon("times","fa-2x"))
+                            actionButton(paste("deleteVariableSU", i ,sep = ""), NULL, class = "toolButtonDelete", style="height: 35px;", icon = icon("times","fa-2x"))
                      )
                    ),sep="")
       }
@@ -4400,7 +4400,7 @@ server <- shinyServer(function(input, output, session) {
                                 selectInput(paste("varSU", i, sep = ""), label = NULL,choices = variablesToUseSU$col,width = "100%", selected = tempVal)
                          ),
                          column(width = 2, offset = 0, align = "center",
-                                actionButton(paste("deleteVariableSU", i ,sep = ""), NULL, class="toolButtonDelete", style="height: 35px;", icon = icon("times","fa-2x"))
+                                actionButton(paste("deleteVariableSU", i ,sep = ""), NULL, class = "toolButtonDelete", style="height: 35px;", icon = icon("times","fa-2x"))
                          )
                        ),sep="")
           }
@@ -4646,14 +4646,14 @@ server <- shinyServer(function(input, output, session) {
   output$conditionsBlockIFUI <- renderUI({
     column(width = 12,
            column(width = 4, offset = 8,
-                  actionButton("AddIfBlock" ,"Add if block", icon = icon("plus"), class="toolButton", style="height: 40px; margin-bottom:20px;", width="100%")
+                  actionButton("AddIfBlock" ,"Add if block", icon = icon("plus"), class = "toolButton", style="height: 40px; margin-bottom:20px;", width="100%")
            ),
            box(title = "Block 1", id="Block1",status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
                column(width = 2,
                       h3("if(")
                ),
                column(width = 4,offset = 6,
-                      actionButton("addConditionBlock1", "Add condition for Block1", icon = icon("plus") ,class="toolButton", style="height: 35px; margin-top: 20px;", width = "100%")
+                      actionButton("addConditionBlock1", "Add condition for Block1", icon = icon("plus") ,class = "toolButton", style="height: 35px; margin-top: 20px;", width = "100%")
                ),
                column(width = 12,offset = 0, style="margin-top: 20px;" , align = "left",
                       box(title = "Condition 1", id="cond1Block1",status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
@@ -4813,7 +4813,7 @@ server <- shinyServer(function(input, output, session) {
                                        ,width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
                                 ),
                                 column(width = 12, align = "center",
-                                       actionButton(paste("deleteCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep=""), "Delete Condition", icon = icon("trash-alt"), class="deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")
+                                       actionButton(paste("deleteCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep=""), "Delete Condition", icon = icon("trash-alt"), class = "deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")
                                 )
                          )
 
@@ -4889,7 +4889,7 @@ server <- shinyServer(function(input, output, session) {
                                              ,width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
                                       ),
                                       column(width = 12, align = "center",
-                                             actionButton(paste("deleteCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep=""), "Delete Condition", icon = icon("trash-alt"), class="deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")
+                                             actionButton(paste("deleteCond",ifVariables$conditionsIdOfBlock1[i],"Block1",sep=""), "Delete Condition", icon = icon("trash-alt"), class = "deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")
                                       )
                                )
 
@@ -5026,7 +5026,7 @@ server <- shinyServer(function(input, output, session) {
                                 h3("if(")
                          ),
                          column(width = 4,offset = 6,
-                                actionButton(paste("addConditionBlock",ifVariables$blocksId[i], sep = ""), paste("Add condition for Block", i+1, sep = ""), icon = icon("plus") ,class="toolButton", style="height: 35px; margin-top: 20px;", width = "100%")
+                                actionButton(paste("addConditionBlock",ifVariables$blocksId[i], sep = ""), paste("Add condition for Block", i+1, sep = ""), icon = icon("plus") ,class = "toolButton", style="height: 35px; margin-top: 20px;", width = "100%")
                          ),
                          column(width = 12,offset = 0, style="margin-top: 20px;" , align = "left",
                                 box(title = "Condition 1", id=paste("cond1Block",ifVariables$blocksId[i], sep = ""),status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
@@ -5066,7 +5066,7 @@ server <- shinyServer(function(input, output, session) {
                                 h3("}")
                          ),
                          column(width = 4,offset = 8,
-                                actionButton(paste("deleteBlock",ifVariables$blocksId[i] ,sep=""), "Delete Block", icon = icon("trash-alt"), class="deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")
+                                actionButton(paste("deleteBlock",ifVariables$blocksId[i] ,sep=""), "Delete Block", icon = icon("trash-alt"), class = "deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")
                          )
                      )
                      ,sep = "")
@@ -5165,7 +5165,7 @@ server <- shinyServer(function(input, output, session) {
                                                ,width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
                                         ),
                                         column(width = 12, align = "center",
-                                               actionButton(paste("deleteCond", ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i] , paste("Block", ifVariables$blocksId[w], sep=""),sep=""), "Delete Condition", icon = icon("trash-alt"), class="deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")                                      )
+                                               actionButton(paste("deleteCond", ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i] , paste("Block", ifVariables$blocksId[w], sep=""),sep=""), "Delete Condition", icon = icon("trash-alt"), class = "deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")                                      )
                                  )
 
                                }
@@ -5243,7 +5243,7 @@ server <- shinyServer(function(input, output, session) {
                                                      ,width = "100%",options = list(create = TRUE, placeholder = "-- select or enter --"))
                                               ),
                                               column(width = 12, align = "center",
-                                                     actionButton(paste("deleteCond", ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i] , paste("Block", ifVariables$blocksId[w], sep=""),sep=""), "Delete Condition", icon = icon("trash-alt"), class="deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")                                      )
+                                                     actionButton(paste("deleteCond", ifVariables[[paste("conditionsIdOfBlock", ifVariables$blocksId[w], sep="")]][i] , paste("Block", ifVariables$blocksId[w], sep=""),sep=""), "Delete Condition", icon = icon("trash-alt"), class = "deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")                                      )
                                        )
 
                                      }
@@ -5285,7 +5285,7 @@ server <- shinyServer(function(input, output, session) {
                                       h3("if(")
                                ),
                                column(width = 4,offset = 6,
-                                      actionButton(paste("addConditionBlock",ifVariables$blocksId[i], sep = ""), paste("Add condition for Block", i+1, sep = ""), icon = icon("plus") ,class="toolButton", style="height: 35px; margin-top: 20px;", width = "100%")
+                                      actionButton(paste("addConditionBlock",ifVariables$blocksId[i], sep = ""), paste("Add condition for Block", i+1, sep = ""), icon = icon("plus") ,class = "toolButton", style="height: 35px; margin-top: 20px;", width = "100%")
                                ),
                                column(width = 12,offset = 0, style="margin-top: 20px;" , align = "left",
                                       box(title = "Condition 1", id=paste("cond1Block",ifVariables$blocksId[i], sep = ""),status = "primary", solidHeader = TRUE, collapsible = TRUE,width = 12,
@@ -5325,7 +5325,7 @@ server <- shinyServer(function(input, output, session) {
                                       h3("}")
                                ),
                                column(width = 4,offset = 8,
-                                      actionButton(paste("deleteBlock",ifVariables$blocksId[i] ,sep=""), "Delete Block", icon = icon("trash-alt"), class="deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")
+                                      actionButton(paste("deleteBlock",ifVariables$blocksId[i] ,sep=""), "Delete Block", icon = icon("trash-alt"), class = "deleteButton", style="height: 35px; margin-bottom:20px;", width="100%")
                                )
                            )
                            ,sep = "")
@@ -5379,7 +5379,7 @@ server <- shinyServer(function(input, output, session) {
     box(id="chapterBox",
         width=12, solidHeader = FALSE, collapsible = FALSE,height = 650,
         column(width = 12,style="border-bottom: 1px solid lightgray; margin: 10px 0px 35px;",
-               actionButton("addChapterButton", "Add Chapter", icon = icon("plus"), class="uploadButton",
+               actionButton("addChapterButton", "Add Chapter", icon = icon("plus"), class = "uploadButton",
                             style="height: 50px; margin-bottom:20px; font-size: large; margin-left: 1%; margin-right: 1%;", width="98%")
         ),
         column(width = 12,style="overflow: auto; height: 500px;",
@@ -5427,17 +5427,17 @@ server <- shinyServer(function(input, output, session) {
         s <- paste(s,
                    box(id=paste("box",chp,sep = ""), title = chp, status="primary",
                        width=12, solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
-                       span("Variables: ", class="titleTagVar"),div(
-                         textSur , class="divVar"
+                       span("Variables: ", class = "titleTagVar"),div(
+                         textSur , class = "divVar"
                        ),
-                       span("Indicators: ", class="titleTagInd"),div(
-                         textInd , class="divInd"
+                       span("Indicators: ", class = "titleTagInd"),div(
+                         textInd , class = "divInd"
                        ),
                        column(width = 7,
-                              actionButton(paste("editChapterButton", chp, sep = ""), "Edit Chapter", icon = icon("edit"), class="toolButton", style="height: 50px; margin-bottom:20px;", width="100%")
+                              actionButton(paste("editChapterButton", chp, sep = ""), "Edit Chapter", icon = icon("edit"), class = "toolButton", style="height: 50px; margin-bottom:20px;", width="100%")
                        ),
                        column(width = 5,
-                              actionButton(paste("deleteChapterButton", chp, sep = ""), "Delete Chapter", icon = icon("trash-alt"), class="deleteButton", style="height: 50px; margin-bottom:20px;", width="100%")
+                              actionButton(paste("deleteChapterButton", chp, sep = ""), "Delete Chapter", icon = icon("trash-alt"), class = "deleteButton", style="height: 50px; margin-bottom:20px;", width="100%")
                        )
                    )
                    ,sep="")
@@ -5610,7 +5610,7 @@ server <- shinyServer(function(input, output, session) {
                            size = "l",
                            footer = tagList(
                              modalButton("Cancel", icon("sign-out-alt")),
-                             actionButton("saveChapterButton", ifelse(type=="Add","Add the Chapter", "Edit the Chapter"), class="toolButton", style="height: 35px;")
+                             actionButton("saveChapterButton", ifelse(type=="Add","Add the Chapter", "Edit the Chapter"), class = "toolButton", style="height: 35px;")
                            )
         ))
       }
@@ -6931,26 +6931,26 @@ server <- shinyServer(function(input, output, session) {
       column(width = 12, align="center",
              column(width = 12, align="center",style="margin-bottom:15px;",
                     column(width = 8, align="center",
-                           actionButton("crunchingReportButton", "Crunching Report", class="toolButton006495", style="height: 250px; font-size: xx-large; width: 100%;")
+                           actionButton("crunchingReportButton", "Crunching Report", class = "toolButton006495", style="height: 250px; font-size: xx-large; width: 100%;")
                     ),
                     column(width = 4, align="center",
-                           actionButton("anonymisationReportButton", "Anonymisation Report", class="toolButtonE0A025", style="height: 250px; font-size: xx-large; width: 100%;")
+                           actionButton("anonymisationReportButton", "Anonymisation Report", class = "toolButtonE0A025", style="height: 250px; font-size: xx-large; width: 100%;")
                     )
              ),
              column(width = 12, align="center",style="margin-bottom:15px;",
                     column(width = 6, align="center",
-                           actionButton("monitoringReportButton", "Monitoring Report", class="toolButtonF4D00C", style="height: 250px; font-size: xx-large; width: 100%;")
+                           actionButton("monitoringReportButton", "Monitoring Report", class = "toolButtonF4D00C", style="height: 250px; font-size: xx-large; width: 100%;")
                     ),
                     column(width = 6, align="center",
-                           actionButton("clusterReportButton", "Cluster Report", class="toolButton004C70", style="height: 250px; font-size: xx-large; width: 100%;")
+                           actionButton("clusterReportButton", "Cluster Report", class = "toolButton004C70", style="height: 250px; font-size: xx-large; width: 100%;")
                     )
              ),
              column(width = 12, align="center",style="margin-bottom:15px;",
                     column(width = 5, align="center",
-                           actionButton("predictionReportButton", "Prediction Report", class="toolButton0093D1", style="height: 250px; font-size: xx-large; width: 100%;")
+                           actionButton("predictionReportButton", "Prediction Report", class = "toolButton0093D1", style="height: 250px; font-size: xx-large; width: 100%;")
                     ),
                     column(width = 7, align="center",
-                           actionButton("scoreReportButton", "Scoring Report", class="toolButtonF2635F", style="height: 250px; font-size: xx-large; width: 100%;")
+                           actionButton("scoreReportButton", "Scoring Report", class = "toolButtonF2635F", style="height: 250px; font-size: xx-large; width: 100%;")
                     )
              )
       )
@@ -7274,10 +7274,10 @@ server <- shinyServer(function(input, output, session) {
       column(width = 12, align="center",
              column(width = 12, align="center",style="margin-bottom:15px;",
                     column(width = 6, align="center",
-                           actionButton("ddiButton", "Generate a DDI file", class="toolButton006495", style="height: 700px; font-size: xx-large; width: 100%;")
+                           actionButton("ddiButton", "Generate a DDI file", class = "toolButton006495", style="height: 700px; font-size: xx-large; width: 100%;")
                     ),
                     column(width = 6, align="center",
-                           actionButton("hdxButton", "Export to HDX", class="toolButtonE0A025", style="height: 700px; font-size: xx-large; width: 100%;")
+                           actionButton("hdxButton", "Export to HDX", class = "toolButtonE0A025", style="height: 700px; font-size: xx-large; width: 100%;")
                     )
              )
       )

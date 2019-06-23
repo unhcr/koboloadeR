@@ -10,12 +10,16 @@
 [![CRAN](http://cranlogs.r-pkg.org/badges/grand-total/koboloadeR)](https://CRAN.R-project.org/package=koboloadeR)
 
 [![Travis build status](https://travis-ci.org/unhcr/koboloadeR.svg?branch=gh-pages)](https://travis-ci.org/unhcr/koboloadeR)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/Edouard-Legoupil/koboloader?branch=gh-pages&svg=true)](https://ci.appveyor.com/project/Edouard-Legoupil/koboloader)
-[![codecov](https://codecov.io/gh/unhcr/koboloadeR/branch/master/graph/badge.svg)](https://codecov.io/gh/unhcr/koboloadeR)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/unhcr/koboloadeR?branch=gh-pages&svg=true)](https://ci.appveyor.com/project/unhcr/koboloadeR)
+[![codecov](https://codecov.io/gh/unhcr/koboloadeR/branch/gh-pages/graph/badge.svg)](https://codecov.io/gh/unhcr/koboloadeR)
 
 
 koboloadeR is a R package to conduct data discovery and analysis for data collected through  [KoboToolbox](https://www.kobotoolbox.org/), [ODK](https://opendatakit.org/), [ONA](https://ona.io/home/) or any __[xlsform](http://xlsform.org)__ compliant data collection platform.
-This package first builds on the capacity of UNHCR Kobo server @ http://kobo.unhcr.org but it can also be used from any structured dataset. It also comes as a companion tool to the [Integrated Framework for Household Survey](https://unhcr.github.io/Integrated-framework-household-survey)
+This package first builds on the capacity of UNHCR Kobo server @ http://kobo.unhcr.org but it can also be used from any structured dataset. 
+
+The package comes as a companion tool to the [Integrated Framework for Household Survey](https://unhcr.github.io/Integrated-framework-household-survey).
+
+koboloadeR aims at helping [humanitarian data analysts](https://humanitarian-user-group.github.io/) to save time by quickly generating graphs and charts needed to discover insights from a dataset and ensure analysis __reproducibilty__ through a separation of the analysis configuration and the analysis process.
 
 ## Approach
  
@@ -25,7 +29,10 @@ The main concept behind the package is to implement a survey data analysis plan 
 ![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow.png)
 
 
-This approach has the following advantages: 
+
+You can have a look at [some examples of output reports here](https://github.com/unhcr/koboloadeR/out).
+
+The approach offered through the package has the following advantages: 
 
  * End users __do not need to code__ in R and to master the language in order to use the package;  
  
@@ -43,6 +50,7 @@ To go in more details, the suggested workflow is presented below (note that all 
 
 ![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow2.png)
 
+A more detailed introduction to the concepts used in the package is presented in the [Data Crunching article](articles/Crunching.html). 
 
 
 # Environment setup 
@@ -72,7 +80,7 @@ Note in some case, you may need to reboot your computer to ensure that this envi
 
  4. [Install R Studio](https://www.rstudio.com/products/rstudio/download/#download) : follow instruction from the installer
 
-You can now Launch __R Studio__
+You can now Launch __R Studio__ . You may check the list of common issues in the [Common Troubleshooting](articles/Troubleshooting.html) article.
 
 ## Package installation from Github
 
@@ -131,32 +139,39 @@ For better performances, select "Open in Browser" on the top of the window.
 
 ### Console mode
 
-Alternatively, you can use the __console mode__ by running the file `run-analysis.R`. 
+Alternatively, you can use the __console mode__ by running the file `run-analysis.R` that is automatically copied in the `code` folder after you run the `kobo_projectinit()` function . 
 
 This will be likely the quickest options, once your are used to the package.
 
 Note however that this implies that you configure correctly on your own the full configuration within the xlform file. 
 
 
-### Additional tutorial
+### Presentation of features 
 
 
-  * [1. Data Crunching](https://unhcr.github.io/koboloadeR/docs/articles/Crunching.html) - basic introduction to the concept of crunching
 
-  * [2. Getting data from server](https://unhcr.github.io/koboloadeR/docs/articles/Getting_data.html) - how to retrieve data from the server within R
+
+  * [Getting data from server](articles/Getting_data.html) - How to retrieve data from the server within R?
     
-  * [3. Data Analysis Plan within your `xlsfrom`](https://unhcr.github.io/koboloadeR/docs/articles/xlsform.html) - extend the form to include your analysis plan
+  * [Data Analysis Plan within your `xlsfrom`](articles/xlsform.html) - How to extend the xlsform to include your analysis plan?
     
-  * [4. Using console script](https://unhcr.github.io/koboloadeR/docs/articles/Console.html) - skip the graphical user interface
+  * [Using console script](articles/Console.html) - How to use the package without using the GUI in Shiny?
     
-  * [5. Sampling](https://unhcr.github.io/koboloadeR/docs/articles/Sampling.html) 
+  * [Sampling](articles/Sampling.html): how to generate a sample from a registry or to post-stratify data when having a low response rate? 
   
-  * [6. Data Anonymisation and disclosure risk measurement](https://unhcr.github.io/koboloadeR/docs/articles/Anonymisation.html)
+  * [Data Anonymisation and disclosure risk measurement](articles/Anonymisation.html): how to create anonymised data?
+  
+  * [Data Cleaning](articles/Cleaning.html): how to use the package for reproducible and documented data cleaning? 
     
-  * [7. Common Troubleshooting](https://unhcr.github.io/koboloadeR/docs/articles/Troubleshooting.html)
+  * [Predicting and scoring](articles/Predicting_Scoring.html): how to use survey in conjunction wiht registration data to build risk prediction and vulnerability scoring? 
+    
 
 
 
+
+# Contributing
+
+Contributions to the packages are welcome. Please read first the [contribution guidelines](articles/Sampling.html), follow the [code of conduct](articles/CODE_OF_CONDUCT.html) and use the [issue template](articles/ISSUE_TEMPLATE.html) 
 
 
 

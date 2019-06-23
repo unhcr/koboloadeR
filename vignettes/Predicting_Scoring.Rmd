@@ -1,5 +1,5 @@
 ---
-title: "Sampling"
+title: "Predicting and Scoring"
 author: "Edouard Legoupil"
 date: '`r Sys.Date()`'
 output: 
@@ -13,12 +13,4 @@ vignette: >
 ---
 
 
-
-## Build a sample
-
-You may also use a dedicated shinyapp for this
-
-```
-kobo_shiny("app_sampling.R")
-```
-
+## Introduction

@@ -1,3 +1,10 @@
+# koboloadeR 0.1.6
+
+ * Added functions to generate dummy dataset
+ * Added example project
+ * Created and reviewed project documentation
+
+
 # koboloadeR 0.1.5
 
  * Added a shinapp to provide a gui for the package

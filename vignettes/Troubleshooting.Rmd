@@ -1,5 +1,5 @@
 ---
-title: "7. Common Troubleshooting"
+title: "Common Troubleshooting"
 author: "Edouard Legoupil"
 date: '`r Sys.Date()`'
 output: 

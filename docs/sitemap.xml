@@ -241,6 +241,9 @@
     <loc>https://unhcr.github.io/koboloadeR/docs//articles/Anonymisation.html</loc>
   </url>
   <url>
+    <loc>https://unhcr.github.io/koboloadeR/docs//articles/Cleaning.html</loc>
+  </url>
+  <url>
     <loc>https://unhcr.github.io/koboloadeR/docs//articles/Console.html</loc>
   </url>
   <url>
@@ -248,6 +251,9 @@
   </url>
   <url>
     <loc>https://unhcr.github.io/koboloadeR/docs//articles/Getting_data.html</loc>
+  </url>
+  <url>
+    <loc>https://unhcr.github.io/koboloadeR/docs//articles/Predicting_Scoring.html</loc>
   </url>
   <url>
     <loc>https://unhcr.github.io/koboloadeR/docs//articles/Sampling.html</loc>

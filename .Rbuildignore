@@ -17,3 +17,6 @@
 ^_pkgdown\.yml$
 ^revdep$
 ^buildsite\.R$
+^data$
+^code$
+^out$

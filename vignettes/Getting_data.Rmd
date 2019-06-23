@@ -1,5 +1,5 @@
 ---
-title: "2. Getting data from server"
+title: "Getting data from server"
 author: "Edouard Legoupil"
 date: '`r Sys.Date()`'
 output: 

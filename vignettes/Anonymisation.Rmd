@@ -1,5 +1,5 @@
 ---
-title: "6. Data Anonymisation and disclosure risk measurement"
+title: "Data Anonymisation and disclosure risk measurement"
 author: "Edouard Legoupil"
 date: '`r Sys.Date()`'
 output: 

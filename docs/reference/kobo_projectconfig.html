@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Project configuration file — kobo_projectconfig • koboloadeR</title>
+<title>Data download configuration file — kobo_projectconfig • koboloadeR</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="Project configuration file — kobo_projectconfig" />
+<meta property="og:title" content="Data download configuration file — kobo_projectconfig" />
 
 <meta property="og:description" content="Write all necessary configuration files for your project" />
 <meta name="twitter:card" content="summary" />
@@ -73,22 +73,13 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">koboloadeR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li>
-  <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
-  <a href="../reference/index.html">Reference</a>
-</li>
-<li class="dropdown">
+        <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
      
@@ -96,30 +87,39 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/Anonymisation.html">6. Data Anonymisation and disclosure risk measurement</a>
+      <a href="../articles/Crunching.html">Data Crunching</a>
     </li>
     <li>
-      <a href="../articles/Console.html">4. Using console script</a>
+      <a href="../articles/Getting_data.html">Getting data from server</a>
     </li>
     <li>
-      <a href="../articles/Crunching.html">1. Data Crunching</a>
+      <a href="../articles/xlsform.html">Data Analysis Plan within your `xlsfrom`</a>
     </li>
     <li>
-      <a href="../articles/Getting_data.html">2. Getting data from server</a>
+      <a href="../articles/Console.html">Using console script</a>
     </li>
     <li>
-      <a href="../articles/Sampling.html">5. Sampling</a>
+      <a href="../articles/Sampling.html">Sampling</a>
     </li>
     <li>
-      <a href="../articles/Troubleshooting.html">7. Common Troubleshooting</a>
+      <a href="../articles/Anonymisation.html">Data Anonymisation and disclosure risk measurement</a>
     </li>
     <li>
-      <a href="../articles/xlsform.html">3. Data Analysis Plan within your `xlsfrom`</a>
+      <a href="../articles/Cleaning.html">Data Cleaning</a>
+    </li>
+    <li>
+      <a href="../articles/Predicting_Scoring.html">Predicting and scoring</a>
+    </li>
+    <li>
+      <a href="../articles/Troubleshooting.html">Common Troubleshooting</a>
     </li>
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">Changelog</a>
+  <a href="../news/index.html">News</a>
+</li>
+<li>
+  <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
       
@@ -142,7 +142,7 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Project configuration file</h1>
+    <h1>Data download configuration file</h1>
     <small class="dont-index">Source: <a href='https://github.com/unhcr/koboloadeR/blob/master/R/kobo_projectconfig.R'><code>R/kobo_projectconfig.R</code></a></small>
     <div class="hidden name"><code>kobo_projectconfig.Rd</code></div>
     </div>
@@ -161,62 +161,11 @@
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>kobo_projectconfig</span>()</div><div class='output co'>#&gt;  ##################################################################
-#&gt;  # Welcome to KoboloadeR !                                        #
-#&gt;  #an R package to facilitate data crunching of survey  microdata. #
-#&gt;  ##################################################################
-#&gt;  
-#&gt;  The 2 main advantages of KoboloadeR are to: 
-#&gt;  1. Save time to quicly generate the graphs and analysis you need to discover insights from your dataset.
-#&gt;  2. Ensure analysis reproducibilty through a separation of the analysis configuration and the analysis process.
-#&gt;  
-#&gt;  For more information: consult https://github.com/Edouard-Legoupil/koboloadeR/blob/master/README.md 
-#&gt;  or send a message to legoupil@unhcr.org
-#&gt;  
-#&gt;                      :+o. oo:. 
-#&gt;                    /ooo+  /ooo+.
-#&gt;                  /oooo/    -oooo+.
-#&gt;               .+oooo/        :osoo+- 
-#&gt;             :osoo+-             ./oooo/ 
-#&gt;           /oooo:..    -ooso+    . -+ooo+.
-#&gt;        ./ooo+. .oo/   oooooo.  -so:  /ooo+-
-#&gt;       /oooo/  .ooo:   :oooo/   .oos:  -oooo+.
-#&gt;     -ooooo/   +ooo     :oo+     +ooo   -soooo/
-#&gt;     ooooos-  :soo-   :+oooo+-    ooo+   soooos-
-#&gt;    .oooooo/.:ooo/  -oooooooooo-  .soo+.-sooooo:
-#&gt;    .oooooooooooo   /oooooooooo/   /oooosoooooo:
-#&gt;    .oooooooooos:   /oooooooooo+   .oooooooooos-
-#&gt;     ooooooooooo    /oooooooooo+    +ooooooooos-
-#&gt;     oooooooooo:    /oooooooooo+    .ooooooooos.
-#&gt;     ooooooooo+     /oooooooooo+     :oooooooos.
-#&gt;     +ooooooo+      /oooooooooo+      /oooooooo 
-#&gt;     /ooooooo.      /oooooooooo+       oooooooo 
-#&gt;     :soooooo       /oooooooooo+       /oooooo+ 
-#&gt;     .soooooo       :soooooooos/       /oooooo: 
-#&gt;      ooooooo          /oooos.         /ooooos- 
-#&gt;      +oooooo          /oooos          /ooooos  
-#&gt;      +oooooo          /oooos          /oooooo  
-#&gt;       .----.          -:::::           -----.  
-#&gt; 
-#&gt;  
-#&gt;  This script will allow you to write the configuration files for your project.
-#&gt;  
-#&gt;  
-#&gt;  First creating the necessary forlders
-#&gt;  
-#&gt;  
-#&gt;  Now configuring a few elements to write the config file: 
-#&gt;  
-#&gt;   1.- confirm the name of the main dataframe for the data. this should be a *.csv file with ; as separator 
-#&gt; insert the name of the data file: if empty - we use data.csv 
-#&gt; 
-#&gt;  
-#&gt;   2.- Confirm the name of the xlsform file for the form. this should be a *.xls file - NOT a *.xlsx file! 
-#&gt; insert the name of the form file: if empty - we use form.xls 
-#&gt; 
-#&gt;  
-#&gt;   3.- What sampling do you have? 
-#&gt; No sampling(type 1) , Cluster sample (type 2), Stratified sample (type 3), Respondent Driven Sample sample (type 4)? </div><div class='output co'>#&gt; <span class='error'>Error in kobo_projectconfig(): object 'runproject' not found</span></div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>kobo_projectconfig</span>()</div><div class='output co'>#&gt; Now we can create the configuration file for the project.
+#&gt; Select the server you want to use - Enter 1 for UNHCR server, 2 for OCHA server, 3 for HHI server and 4 for ONA server: 
+#&gt; Provide your username for the server you selected: 
+#&gt; Provide your password for the server you selected: 
+#&gt; Wrong number</div><div class='output co'>#&gt; <span class='error'>Error in instring %in% c("kobo", "kobohr", "ona", "unhcr"): object 'api' not found</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

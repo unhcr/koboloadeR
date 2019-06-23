@@ -36,21 +36,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">koboloadeR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fa fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
-  <a href="reference/index.html">Reference</a>
-</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
@@ -59,30 +50,39 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/Anonymisation.html">6. Data Anonymisation and disclosure risk measurement</a>
+      <a href="articles/Crunching.html">Data Crunching</a>
     </li>
     <li>
-      <a href="articles/Console.html">4. Using console script</a>
+      <a href="articles/Getting_data.html">Getting data from server</a>
     </li>
     <li>
-      <a href="articles/Crunching.html">1. Data Crunching</a>
+      <a href="articles/xlsform.html">Data Analysis Plan within your `xlsfrom`</a>
     </li>
     <li>
-      <a href="articles/Getting_data.html">2. Getting data from server</a>
+      <a href="articles/Console.html">Using console script</a>
     </li>
     <li>
-      <a href="articles/Sampling.html">5. Sampling</a>
+      <a href="articles/Sampling.html">Sampling</a>
     </li>
     <li>
-      <a href="articles/Troubleshooting.html">7. Common Troubleshooting</a>
+      <a href="articles/Anonymisation.html">Data Anonymisation and disclosure risk measurement</a>
     </li>
     <li>
-      <a href="articles/xlsform.html">3. Data Analysis Plan within your `xlsfrom`</a>
+      <a href="articles/Cleaning.html">Data Cleaning</a>
+    </li>
+    <li>
+      <a href="articles/Predicting_Scoring.html">Predicting and scoring</a>
+    </li>
+    <li>
+      <a href="articles/Troubleshooting.html">Common Troubleshooting</a>
     </li>
   </ul>
 </li>
 <li>
-  <a href="news/index.html">Changelog</a>
+  <a href="news/index.html">News</a>
+</li>
+<li>
+  <a href="reference/index.html">Reference</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -109,14 +109,17 @@
 <a href="#koboloader-crunching-dataset-collected-using-xlsform" class="anchor"></a>koboloadeR: Crunching dataset collected using xlsform</h1></div>
 
 <p><a href="https://CRAN.R-project.org/package=koboloadeR"><img src="http://cranlogs.r-pkg.org/badges/koboloadeR" alt="CRAN"></a> <a href="https://CRAN.R-project.org/package=koboloadeR"><img src="http://cranlogs.r-pkg.org/badges/grand-total/koboloadeR" alt="CRAN"></a></p>
-<p><a href="https://travis-ci.org/unhcr/koboloadeR"><img src="https://travis-ci.org/unhcr/koboloadeR.svg?branch=gh-pages" alt="Travis build status"></a> <a href="https://ci.appveyor.com/project/Edouard-Legoupil/koboloader"><img src="https://ci.appveyor.com/api/projects/status/github/Edouard-Legoupil/koboloader?branch=gh-pages&amp;svg=true" alt="AppVeyor Build Status"></a> <a href="https://codecov.io/gh/unhcr/koboloadeR"><img src="https://codecov.io/gh/unhcr/koboloadeR/branch/master/graph/badge.svg" alt="codecov"></a></p>
-<p>koboloadeR is a R package to conduct data discovery and analysis for data collected through <a href="https://www.kobotoolbox.org/">KoboToolbox</a>, <a href="https://opendatakit.org/">ODK</a>, <a href="https://ona.io/home/">ONA</a> or any <strong><a href="http://xlsform.org">xlsform</a></strong> compliant data collection platform. This package first builds on the capacity of UNHCR Kobo server @ <a href="http://kobo.unhcr.org" class="uri">http://kobo.unhcr.org</a> but it can also be used from any structured dataset. It also comes as a companion tool to the <a href="https://unhcr.github.io/Integrated-framework-household-survey">Integrated Framework for Household Survey</a></p>
+<p><a href="https://travis-ci.org/unhcr/koboloadeR"><img src="https://travis-ci.org/unhcr/koboloadeR.svg?branch=gh-pages" alt="Travis build status"></a> <a href="https://ci.appveyor.com/project/unhcr/koboloadeR"><img src="https://ci.appveyor.com/api/projects/status/github/unhcr/koboloadeR?branch=gh-pages&amp;svg=true" alt="AppVeyor Build Status"></a> <a href="https://codecov.io/gh/unhcr/koboloadeR"><img src="https://codecov.io/gh/unhcr/koboloadeR/branch/gh-pages/graph/badge.svg" alt="codecov"></a></p>
+<p>koboloadeR is a R package to conduct data discovery and analysis for data collected through <a href="https://www.kobotoolbox.org/">KoboToolbox</a>, <a href="https://opendatakit.org/">ODK</a>, <a href="https://ona.io/home/">ONA</a> or any <strong><a href="http://xlsform.org">xlsform</a></strong> compliant data collection platform. This package first builds on the capacity of UNHCR Kobo server @ <a href="http://kobo.unhcr.org" class="uri">http://kobo.unhcr.org</a> but it can also be used from any structured dataset.</p>
+<p>The package comes as a companion tool to the <a href="https://unhcr.github.io/Integrated-framework-household-survey">Integrated Framework for Household Survey</a>.</p>
+<p>koboloadeR aims at helping <a href="https://humanitarian-user-group.github.io/">humanitarian data analysts</a> to save time by quickly generating graphs and charts needed to discover insights from a dataset and ensure analysis <strong>reproducibilty</strong> through a separation of the analysis configuration and the analysis process.</p>
 <div id="approach" class="section level2">
 <h2 class="hasAnchor">
 <a href="#approach" class="anchor"></a>Approach</h2>
 <p>The main concept behind the package is to implement a survey data analysis plan and configuration directly within the <a href="http://xlsform.org">xlsform</a> excel file that has been used to develop the questionnaire. A few additional column are created in this excel document, the package read those column to generate a series of predefined report.</p>
 <p><img src="https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow.png" alt="alt text"></p>
-<p>This approach has the following advantages:</p>
+<p>You can have a look at <a href="https://github.com/unhcr/koboloadeR/out">some examples of output reports here</a>.</p>
+<p>The approach offered through the package has the following advantages:</p>
 <ul>
 <li><p>End users <strong>do not need to code</strong> in R and to master the language in order to use the package;</p></li>
 <li><p>The data <strong>analysis plan</strong> is de facto fully documented and described;</p></li>
@@ -126,6 +129,7 @@
 </ul>
 <p>To go in more details, the suggested workflow is presented below (note that all of it is not yet fully implented - see <a href="https://github.com/unhcr/koboloadeR/issues">issue tracking for more details</a>)</p>
 <p><img src="https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow2.png" alt="alt text"></p>
+<p>A more detailed introduction to the concepts used in the package is presented in the <a href="articles/Crunching.html">Data Crunching article</a>.</p>
 </div>
 </div>
 <div id="environment-setup" class="section level1">
@@ -151,7 +155,7 @@
 <li><p><strong>Only for windows user</strong> <a href="https://cran.r-project.org/bin/windows/Rtools/">Install RTools</a>: This executable is needed to install the package from github. Follow instruction from the installer.</p></li>
 <li><p><a href="https://www.rstudio.com/products/rstudio/download/#download">Install R Studio</a> : follow instruction from the installer</p></li>
 </ol>
-<p>You can now Launch <strong>R Studio</strong></p>
+<p>You can now Launch <strong>R Studio</strong> . You may check the list of common issues in the <a href="articles/Troubleshooting.html">Common Troubleshooting</a> article.</p>
 </div>
 <div id="package-installation-from-github" class="section level2">
 <h2 class="hasAnchor">
@@ -197,24 +201,29 @@ kobo_projectinit() # Creates folders necessary and transfer files needed</a></co
 <div id="console-mode" class="section level3">
 <h3 class="hasAnchor">
 <a href="#console-mode" class="anchor"></a>Console mode</h3>
-<p>Alternatively, you can use the <strong>console mode</strong> by running the file <code>run-analysis.R</code>.</p>
+<p>Alternatively, you can use the <strong>console mode</strong> by running the file <code>run-analysis.R</code> that is automatically copied in the <code>code</code> folder after you run the <code><a href="reference/kobo_projectinit.html">kobo_projectinit()</a></code> function .</p>
 <p>This will be likely the quickest options, once your are used to the package.</p>
 <p>Note however that this implies that you configure correctly on your own the full configuration within the xlform file.</p>
 </div>
-<div id="additional-tutorial" class="section level3">
+<div id="presentation-of-features" class="section level3">
 <h3 class="hasAnchor">
-<a href="#additional-tutorial" class="anchor"></a>Additional tutorial</h3>
+<a href="#presentation-of-features" class="anchor"></a>Presentation of features</h3>
 <ul>
-<li><p><a href="https://unhcr.github.io/koboloadeR/docs/articles/Crunching.html">1. Data Crunching</a> - basic introduction to the concept of crunching</p></li>
-<li><p><a href="https://unhcr.github.io/koboloadeR/docs/articles/Getting_data.html">2. Getting data from server</a> - how to retrieve data from the server within R</p></li>
-<li><p><a href="https://unhcr.github.io/koboloadeR/docs/articles/xlsform.html">3. Data Analysis Plan within your <code>xlsfrom</code></a> - extend the form to include your analysis plan</p></li>
-<li><p><a href="https://unhcr.github.io/koboloadeR/docs/articles/Console.html">4. Using console script</a> - skip the graphical user interface</p></li>
-<li><p><a href="https://unhcr.github.io/koboloadeR/docs/articles/Sampling.html">5. Sampling</a></p></li>
-<li><p><a href="https://unhcr.github.io/koboloadeR/docs/articles/Anonymisation.html">6. Data Anonymisation and disclosure risk measurement</a></p></li>
-<li><p><a href="https://unhcr.github.io/koboloadeR/docs/articles/Troubleshooting.html">7. Common Troubleshooting</a></p></li>
+<li><p><a href="articles/Getting_data.html">Getting data from server</a> - How to retrieve data from the server within R?</p></li>
+<li><p><a href="articles/xlsform.html">Data Analysis Plan within your <code>xlsfrom</code></a> - How to extend the xlsform to include your analysis plan?</p></li>
+<li><p><a href="articles/Console.html">Using console script</a> - How to use the package without using the GUI in Shiny?</p></li>
+<li><p><a href="articles/Sampling.html">Sampling</a>: how to generate a sample from a registry or to post-stratify data when having a low response rate?</p></li>
+<li><p><a href="articles/Anonymisation.html">Data Anonymisation and disclosure risk measurement</a>: how to create anonymised data?</p></li>
+<li><p><a href="articles/Cleaning.html">Data Cleaning</a>: how to use the package for reproducible and documented data cleaning?</p></li>
+<li><p><a href="articles/Predicting_Scoring.html">Predicting and scoring</a>: how to use survey in conjunction wiht registration data to build risk prediction and vulnerability scoring?</p></li>
 </ul>
 </div>
 </div>
+</div>
+<div id="contributing" class="section level1">
+<h1 class="hasAnchor">
+<a href="#contributing" class="anchor"></a>Contributing</h1>
+<p>Contributions to the packages are welcome. Please read first the <a href="articles/Sampling.html">contribution guidelines</a>, follow the <a href="articles/CODE_OF_CONDUCT.html">code of conduct</a> and use the <a href="articles/ISSUE_TEMPLATE.html">issue template</a></p>
 </div>
 
   </div>

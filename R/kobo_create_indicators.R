@@ -237,8 +237,9 @@ kobo_create_indicators <- function(form = "form.xls") {
         choices <- read_excel(form_tmp, sheet = "choices")
 
         #rm(choices)
-        names(choices)[names(choices) == "labelReport"] <- "label"
-        #names(choices)[names(choices) == "label::english"] <- "label"
+        #names(choices)[names(choices) == "labelReport"] <- "label"
+        names(choices)[names(choices) == "label::english"] <- "label"
+        names(choices)[names(choices) == "label::English"] <- "label"
         names(choices)[names(choices) == "list name"] <- "listname"
         names(choices)[names(choices) == "list_name"] <- "listname"
 
@@ -281,7 +282,7 @@ kobo_create_indicators <- function(form = "form.xls") {
         {cat("  No column `score` in your `choices` worksheet. Creating a dummy one for the moment...\n");
           choices$score <- ""}
 
-        choices <- choices[,c("listname",  "name",  "label", "order", "weight","score","recategorise")]
+        choices <- choices[,c("listname",  "name",  "labelReport", "order", "weight","score","recategorise")]
         names(choices)[names(choices) == "label"] <- "labelchoice"
         #rm(choices)
 

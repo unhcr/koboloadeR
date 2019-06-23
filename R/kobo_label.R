@@ -33,7 +33,7 @@ kobo_label <- function(datalabel, dico) {
   names(data.label)[1] <- "fullname"
   data.label <- join (x=data.label, y=dico, by="fullname", type="left" )
   # write.csv(data.label, "out/datalabel.csv")
-  for (i in 1:nrow(data.label)) { attributes(datalabel)$variable.labels[ i] <- as.character(data.label[ i, c("label")]) }
+  for (i in 1:nrow(data.label)) { attributes(datalabel)$variable.labels[ i] <- as.character(data.label[ i, c("labelReport")]) }
   test <- data.label[ !(is.na(data.label$name)), ]
   if (nrow(data.label) > nrow(test)) {
     cat (paste0("you have ",nrow(data.label), " variables in you frame but only ",nrow(test) ," were relabeled.\n"))

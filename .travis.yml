@@ -1,0 +1,15 @@
+# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
+
+language: r
+
+sudo: required
+
+#warnings_are_errors: true
+#sudo: false
+#cache: packages
+
+r_packages:
+  - koboloadeR
+
+after_success:
+  - Rscript -e 'covr::codecov()'

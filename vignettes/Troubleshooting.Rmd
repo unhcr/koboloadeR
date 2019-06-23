@@ -1,0 +1,107 @@
+---
+title: "Common Troubleshooting"
+author: "Edouard Legoupil"
+date: '`r Sys.Date()`'
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{KoboloadeR Introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+Before anything else, try to restart the R session:
+* In R studio, on top go to "Session"
+* "Restart R"
+
+## Can not install the package
+
+Note that in case you get the following error:
+
+```
+InternetOpenUrl failed: 'An error occurred in the secure channel support'
+``` 
+
+Enter the command:
+
+```
+setInternet2(TRUE)
+```
+
+Alternatively, you may add to .Rprofile or Rprofile.site the following line:
+
+```
+options(download.file.method = "wininet")
+```
+
+## Unable to move temporary installation
+
+One common errors during the package installation is linked to the antivirus _"real time file system protection"_. The following will fix the problem:
+
+```
+trace(utils:::unpackPkgZip, edit=TRUE)
+
+```
+Edit line 140:
+
+```
+Sys.sleep(0.5)
+
+```
+to:
+
+```
+Sys.sleep(2)
+
+```
+
+## Error in strptime(xx, f, tz = tz) :  unable to identify current timezone 'C':    please set environment variable 'TZ'
+
+```
+
+## enter this commaned to set up the time zone - you may change it to another anotherone.
+Sys.setenv(TZ='GMT')
+
+## Now you can check...
+Sys.timezone()
+Sys.getenv("TZ")
+
+```
+
+### The application crashed
+If the application (graphic interface) crashes, make sure that all packages necessary are loaded with:
+
+```
+source("code/0-packages.R")
+``` 
+
+Also make sure that you downloaded your data in the right format:
+* Export as XLS
+* XML values and headers
+* Include groups in headers
+* 'Group separator' as dot ('.')
+
+
+### Error when building the dictionnary or configuration file
+
+If you see this message (or similar error):
+```
+Error in file(file, ifelse(append, "a", "w")) : 
+  cannot open the connection
+```
+It is most likely because you have the form, dictionary or data set open on your computer. If you close it and start over, the problem should be fixed.
+
+  
+### Error when loading packages
+ If you get this error: 
+ 
+```
+Error: package or namespace load failed for 'rJava'
+```
+
+It could be because you have a 64bit version of R, but have a 32bit version of Java. Check this thread for guidance: https://stackoverflow.com/questions/37735108/r-error-onload-failed-in-loadnamespace-for-rjava
+

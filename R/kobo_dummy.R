@@ -1,6 +1,6 @@
 #' @name kobo_dummy
 #' @rdname kobo_dummy
-#' @title  Remove direct identifier
+#' @title  Create a dummy dataset
 #'
 #' @description  Automatically produce an dummy dataset in line with the structure of an xlsform.
 #'
@@ -156,7 +156,7 @@ kobo_dummy <- function(form = "form.xls") {
 
   ## First get all variables at household level #######
 
-  dico.household <- dico[(dico$qrepeatlabel == "household" &
+  dico.household <- dico[(dico$qrepeatlabel == "MainDataFrame" &
                             dico$formpart == "questions" &
                             !(dico$type %in% c("note","end",
                                                "begin_group", "end_group",
@@ -206,7 +206,7 @@ kobo_dummy <- function(form = "form.xls") {
     #  "date"  "today"   "start"
     if (typedata %in% c("date", "today", "start") ) {
       # dummydata[ , i + 1] <- as.Date( dummydata[ , i + 1])
-      dummydata[ , i + 1] <- sample(seq(as.Date('2017/01/01'), as.Date('2019/01/01'), by = "day"),
+      dummydata[ , i + 1] <- sample(seq(as.Date('1919/01/01'), as.Date('2019/01/01'), by = "day"),
                                     replace = TRUE,
                                     size = samplesize)
     }
@@ -386,7 +386,7 @@ kobo_dummy <- function(form = "form.xls") {
                        "for case ", j,
                        " for variable ", i, "- ", fullname, " / ", typedata,"\n"))
             if (typedata %in% c("date") ) {
-              dummydatarepeat[ , i + 1] <- sample(seq(as.Date('2017/01/01'), as.Date('2019/01/01'), by = "day"),
+              dummydatarepeat[ , i + 1] <- sample(seq(as.Date('1919/01/01'), as.Date('2019/01/01'), by = "day"),
                                                   replace = TRUE,
                                                   size = samplesize)
             }

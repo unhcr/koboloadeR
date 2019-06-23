@@ -1,7 +1,7 @@
 Package: koboloadeR
 Type: Package
 Title: Retrieve Data Using the KoBo Toolbox API & Automatise data exploration
-Version: 0.1.5
+Version: 0.1.6
 Authors@R: c(person("Edouard", "Legoupil", role = c("aut", "cre"),  email = "legoupil@unhcr.org"),
               person("Maher", "Daoud", role = "aut", email = "daoudma@unhcr.org"),
               person("Elliott", "Messeiller", role = "ctb", email = "elliott.messeiller@acted.org"),
@@ -47,9 +47,11 @@ Depends:
 Suggests:
     shiny,
     testthat (>= 2.1.0),
-    utils
-URL: https://github.com/unhcr/koboloadeR
+    utils,
+    knitr
+URL: https://github.com/unhcr/koboloadeR/docs
 BugReports: https://github.com/unhcr/koboloadeR/issues
 RoxygenNote: 6.1.1
 VignetteBuilder: utils
-
+Encoding: UTF-8
+SystemRequirements: Java (>= 8)

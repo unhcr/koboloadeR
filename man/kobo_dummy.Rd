@@ -2,7 +2,7 @@
 % Please edit documentation in R/kobo_dummy.R
 \name{kobo_dummy}
 \alias{kobo_dummy}
-\title{Remove direct identifier}
+\title{Create a dummy dataset}
 \usage{
 kobo_dummy(form = "form.xls")
 }

@@ -1,0 +1,68 @@
+---
+title: "Data Analysis Plan within your `xlsfrom`"
+author: "Edouard Legoupil"
+date: '`r Sys.Date()`'
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{KoboloadeR Introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+
+`Xlsform` is a convenient format to build advance form using any spreadsheet software such as [Libreoffice](https://www.libreoffice.org/download/libreoffice-fresh/) or MsExcel. 
+
+In order to build an an analysis plan within the form, the columns described in the tables below needs to be added. Note that if the column are not present, the script will create dummy ones. It's always possible to add your analysis plan to an existing form and relaunch `kobo_dico` in order to regenerate the correct analysis plan.
+
+Note that for charting purpose, it's recommanded that labels for questions & choices should not exceed 70 characters. It's possible again to re-edit directly your xlsform and regenerate a new `dico`.
+
+### In the `survey` worksheet:
+
+Column              | Description
+--------------------|--------------
+`chapter`           | used to breakfdown the final report
+`disaggregation`    | used to flag variables used to  `facet` dataset 
+`correlate`         | used to flag variables used for  statistical test of independence (for categorical variable) or correlation for numeric variable
+`variable`          | used to flag `ordinal` variables so that graphs are not ordered per frequency.
+`anonymise`         | used to generate an anonymised datset in line the anonymisation plan within the xlsform
+`structuralequation`| used to tag variables to the standard structural equation model: `risk`, `coping`, `vulnerability`
+`clean`             | used to flag external csv file to be used for the cleaning of a specific variable
+`cluster`           | used to flag variables used for statistical clustering
+`predict`           | used to flag variables to be predicted based on a joined registration dataset
+`mappoint`          | used to flag variables to be mapped as point
+`mappoly`           | used to flag variables to be mapped as polygon
+ 
+
+### In the `choices` worksheet:
+
+Column | Description
+------|--------------
+`order`| used to define order for ordinal variables
+`weight`| used to define weight for each answers in case it's used for some specific indicator calculation
+`recategorise`| used to recategorise quickly choices for a question
+
+### In a separate `indicator` worksheet:
+
+The idea is to map calculation necessary to create complex indicators from the variables defined in the `survey` worksheet. This will document and automate the generation of indicators (i.e. feature enginerring).
+This worksheet will allow to generate an additional elements to the data dictionnnary -- i.e. `dico` dataframe.
+
+Below are the minimum elements/column to document:
+
+Column | Description
+------|--------------
+`type`| type of indicator select_one  or integer or numeric
+`name`| short name for the indicator
+`label`| label for the indicator
+`chapter`| chapter to include the indicator in
+`frame`| frame to use to append the idnicator to
+`calculation`| used to reference the calculation. This will be a precise R formula
+
+
+define wether the indicator is  `Measurement`: variable used to quantify other indicators, `Disaggregation`: variable that describes certain groups, `Predictor`: Indicator that describes the cause of a situation, `Outcome`: Indicator that describes the consequence of a situation or `Judgment`: indicator that translates a subjective assessment
+method to be used for the indicator: `Percentage`, `Sum`, `Max/Min`, `Average`, `Score`, `Denominator`, `Numerator`, `Numerator.external` (i.e. linked to an external value)
+

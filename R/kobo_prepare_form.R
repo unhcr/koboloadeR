@@ -152,7 +152,7 @@ kobo_prepare_form <- function(form = "form.xls") {
       cat(" Good: You have a column `chapter` in your survey worksheet. This will be used to breakdown the generated report\n");
     } else {
       cat(" No column `chapter` in your survey worksheet. Creating a dummy one for the moment ...\n");
-      survey$chapter <- ""
+      survey$chapter <- character()
     }
     namesOfSur <- c(namesOfSur,"chapter")
 
@@ -168,7 +168,7 @@ kobo_prepare_form <- function(form = "form.xls") {
       cat(" Good: You have a column `correlate` in your survey worksheet. This will be used to define the variables that should be checked for correlation between each others.\n");
     } else {
       cat(" No column `correlate` in your survey worksheet. Creating a dummy one for the moment...\n");
-      survey$correlate <- ""
+      survey$correlate <- character()
     }
     namesOfSur <- c(namesOfSur,"correlate")
 
@@ -176,7 +176,7 @@ kobo_prepare_form <- function(form = "form.xls") {
       cat(" Good: You have a column `variable` in your survey worksheet. This will be used to flag ordinal variable.\n");
     } else {
       cat(" No column `variable` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
-      survey$variable <- ""
+      survey$variable <- character()
     }
     namesOfSur <- c(namesOfSur,"variable")
 
@@ -184,7 +184,7 @@ kobo_prepare_form <- function(form = "form.xls") {
       cat(" Good: You have a column `disaggregation` in your survey worksheet.\n");
     } else {
       cat(" No column `disaggregation` in your survey worksheet. Creating a dummy one for the moment...\n");
-      survey$disaggregation <- ""
+      survey$disaggregation <- character()
     }
     namesOfSur <- c(namesOfSur,"disaggregation")
 
@@ -201,7 +201,7 @@ kobo_prepare_form <- function(form = "form.xls") {
       cat(" Good: You have a column `cluster` in your survey worksheet. This will be used to flag variables to be used for clustering exploration.\n");
     } else {
       cat(" No column `cluster` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
-      survey$cluster <- ""
+      survey$cluster <- character()
     }
     namesOfSur <- c(namesOfSur,"cluster")
 
@@ -209,7 +209,7 @@ kobo_prepare_form <- function(form = "form.xls") {
       cat(" Good: You have a column `predict` in your survey worksheet. This will be used to flag variables to be used for clustering exploration.\n");
     } else {
       cat(" No column `predict` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
-      survey$predict <- ""
+      survey$predict <- character()
     }
     namesOfSur <- c(namesOfSur,"predict")
 
@@ -217,7 +217,7 @@ kobo_prepare_form <- function(form = "form.xls") {
       cat(" Good: You have a column `mappoint` in your survey worksheet. This will be used to flag variables to be used for clustering exploration.\n");
     } else {
       cat(" No column `mappoint` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
-      survey$mappoint <- ""
+      survey$mappoint <- character()
     }
     namesOfSur <- c(namesOfSur,"mappoint")
 
@@ -225,7 +225,7 @@ kobo_prepare_form <- function(form = "form.xls") {
       cat(" Good: You have a column `mappoly` in your survey worksheet. This will be used to flag variables to be used for clustering exploration.\n");
     } else {
       cat(" No column `mappoly` in your survey worksheet. Creating a dummy one for the moment (see readme file). ...\n");
-      survey$mappoly <- ""
+      survey$mappoly <- character()
     }
     namesOfSur <- c(namesOfSur,"mappoly")
 
@@ -233,19 +233,19 @@ kobo_prepare_form <- function(form = "form.xls") {
       cat(" Good: You have a column `structuralequation.risk` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
     } else {
       cat(" No column `structuralequation.risk` in your survey worksheet. Creating a dummy one for the moment...\n");
-      survey$structuralequation.risk <- ""
+      survey$structuralequation.risk <- character()
     }
     if ("structuralequation.coping" %in% colnames(survey)) {
       cat(" Good: You have a column `structuralequation.coping` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
     } else {
       cat(" No column `structuralequation.coping` in your survey worksheet. Creating a dummy one for the moment...\n");
-      survey$structuralequation.coping <- ""
+      survey$structuralequation.coping <- character()
     }
     if ("structuralequation.resilience" %in% colnames(survey)) {
       cat(" Good: You have a column `structuralequation.resilience` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
     } else {
       cat(" No column `structuralequation.resilience` in your survey worksheet. Creating a dummy one for the moment...\n");
-      survey$structuralequation.resilience <- ""
+      survey$structuralequation.resilience <- character()
     }
     namesOfSur <- c(namesOfSur,"structuralequation.risk","structuralequation.coping","structuralequation.resilience")
 
@@ -379,7 +379,7 @@ kobo_prepare_form <- function(form = "form.xls") {
       cat(" Good: You have a column `order` in your choices worksheet.\n");
     } else {
       cat(" No column `order` in your choices worksheet. Creating a dummy one for the moment...\n");
-      choices$order <- ""
+      choices$order <- character()
     }
     if ("labelReport" %in% colnames(choices)) {
       cat(" Good: You have a column `labelReport` in your choices worksheet.\n");
@@ -393,21 +393,21 @@ kobo_prepare_form <- function(form = "form.xls") {
       cat("  Good: You have a column `weight` in your `choices` worksheet.\n");
     } else
     {cat(" No column `weight` in your `choices` worksheet. Creating a dummy one for the moment...\n");
-      choices$weight <- ""}
+      choices$weight <- character()}
 
     if ("recategorise" %in% colnames(choices))
     {
       cat("  Good: You have a column `recategorise` in your `choices` worksheet.\n");
     } else
     {cat("  No column `recategorise` in your `choices` worksheet. Creating a dummy one for the moment...\n");
-      choices$recategorise <- ""}
+      choices$recategorise <- character()}
 
     if ("score" %in% colnames(choices))
     {
       cat("  Good: You have a column `score` in your `choices` worksheet.\n");
     } else
     {cat("  No column `score` in your `choices` worksheet. Creating a dummy one for the moment...\n");
-      choices$score <- ""}
+      choices$score <- character()}
 
     namesOfCho <- c("list_name", "name", "label", "labelReport", "order", "weight","score","recategorise")
     choices <- choices[ ,namesOfCho]
@@ -888,115 +888,115 @@ kobo_prepare_form <- function(form = "form.xls") {
       cat(" Good: You have a column `type` in your indicator worksheet.\n");
     } else {
       cat(" No column `type` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$type <- ""
+      indicator$type <- character()
     }
     if ("fullname" %in% colnames(indicator)) {
       cat(" Good: You have a column `fullname` in your indicator worksheet.\n");
     } else {
       cat(" No column `fullname` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$fullname <- ""
+      indicator$fullname <- character()
     }
     if ("frame" %in% colnames(indicator)) {
       cat(" Good: You have a column `frame` in your indicator worksheet.\n");
     } else {
       cat(" No column `frame` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$frame <- ""
+      indicator$frame <- character()
     }
     if ("labelReport" %in% colnames(indicator)) {
       cat(" Good: You have a column `labelReport` in your indicator worksheet.\n");
     } else {
       cat(" No column `labelReport` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$labelReport <- ""
+      indicator$labelReport <- character()
     }
     if ("hintReport" %in% colnames(indicator)) {
       cat(" Good: You have a column `hintReport` in your indicator worksheet.\n");
     } else {
       cat(" No column `hintReport` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$hintReport <- ""
+      indicator$hintReport <- character()
     }
     if ("listname" %in% colnames(indicator)) {
       cat(" Good: You have a column `listname` in your indicator worksheet.\n");
     } else {
       cat(" No column `listname` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$listname <- ""
+      indicator$listname <- character()
     }
     if ("calculation" %in% colnames(indicator)) {
       cat(" Good: You have a column `calculation` in your indicator worksheet.\n");
     } else {
       cat(" No column `calculation` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$calculation <- ""
+      indicator$calculation <- character()
     }
     if ("chapter" %in% colnames(indicator)) {
       cat(" Good: You have a column `chapter` in your indicator worksheet.\n");
     } else {
       cat(" No column `chapter` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$chapter <- ""
+      indicator$chapter <- character()
     }
     if ("disaggregation" %in% colnames(indicator)) {
       cat(" Good: You have a column `disaggregation` in your indicator worksheet.\n");
     } else {
       cat(" No column `disaggregation` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$disaggregation <- ""
+      indicator$disaggregation <- character()
     }
     if ("correlate" %in% colnames(indicator)) {
       cat(" Good: You have a column `correlate` in your indicator worksheet.\n");
     } else {
       cat(" No column `correlate` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$correlate <- ""
+      indicator$correlate <- character()
     }
     if ("anonymise" %in% colnames(indicator)) {
       cat(" Good: You have a column `anonymise` in your indicator worksheet.\n");
     } else {
       cat(" No column `anonymise` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$anonymise <- ""
+      indicator$anonymise <- character()
     }
     if ("cluster" %in% colnames(indicator)) {
       cat(" Good: You have a column `cluster` in your indicator worksheet.\n");
     } else {
       cat(" No column `cluster` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$cluster <- ""
+      indicator$cluster <- character()
     }
     if ("predict" %in% colnames(indicator)) {
       cat(" Good: You have a column `predict` in your indicator worksheet.\n");
     } else {
       cat(" No column `predict` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$predict <- ""
+      indicator$predict <- character()
     }
     if ("variable" %in% colnames(indicator)) {
       cat(" Good: You have a column `variable` in your indicator worksheet.\n");
     } else {
       cat(" No column `variable` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$variable <- ""
+      indicator$variable <- character()
     }
     if ("mappoint" %in% colnames(indicator)) {
       cat(" Good: You have a column `mappoint` in your indicator worksheet.\n");
     } else {
       cat(" No column `mappoint` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$mappoint <- ""
+      indicator$mappoint <- character()
     }
     if ("mappoly" %in% colnames(indicator)) {
       cat(" Good: You have a column `mappoly` in your indicator worksheet.\n");
     } else {
       cat(" No column `mappoly` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$mappoly <- ""
+      indicator$mappoly <- character()
     }
     if ("structuralequation.risk" %in% colnames(indicator)) {
       cat(" Good: You have a column `structuralequation.risk` in your indicator worksheet. This will be used to configure the vulnerability structural equation model\n");
     } else {
       cat(" No column `structuralequation.risk` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$structuralequation.risk <- ""
+      indicator$structuralequation.risk <- character()
     }
     if ("structuralequation.coping" %in% colnames(indicator)) {
       cat(" Good: You have a column `structuralequation.coping` in your indicator worksheet. This will be used to configure the vulnerability structural equation model\n");
     } else {
       cat(" No column `structuralequation.coping` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$structuralequation.coping <- ""
+      indicator$structuralequation.coping <- character()
     }
     if ("structuralequation.resilience" %in% colnames(indicator)) {
       cat(" Good: You have a column `structuralequation.resilience` in your indicator worksheet. This will be used to configure the vulnerability structural equation model\n");
     } else {
       cat(" No column `structuralequation.resilience` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$structuralequation.resilience <- ""
+      indicator$structuralequation.resilience <- character()
     }
 
     indicator <- indicator[ ,c("type","fullname","labelReport", "hintReport",

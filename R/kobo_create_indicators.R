@@ -41,7 +41,7 @@ kobo_create_indicators <- function(form = "form.xls") {
 
       rm(tried)
       ## Load all required packages
-      kobo_load_packages()
+      #kobo_load_packages()
       # library(koboloadeR)
 
       ## load all required data files #########################################
@@ -55,7 +55,7 @@ kobo_create_indicators <- function(form = "form.xls") {
 
 
       indicator <- read_excel(form_tmp, sheet = "indicator")
-      if(nrow(indicator)==0){
+      if (nrow(indicator) == 0) {
         writeLines("Note that you have not defined (or defined correctly) indicators within your xlsform file.  \n")
 
       } else {
@@ -103,7 +103,13 @@ kobo_create_indicators <- function(form = "form.xls") {
         dicotemp$score <- "trigger"
         dicotemp$recategorise <- "trigger"
         dicotemp$formpart <- "trigger"
-        dicotemp$indic <- "feature"
+        dicotemp$indic <- "trigger"
+        dicotemp$constraint <- "trigger"
+
+        dicotemp$label <- "trigger"
+        dicotemp$relevant <- "trigger"
+        dicotemp$repeat_count <- "trigger"
+        dicotemp$required <- "trigger"
 
 
         ## Need to check that all column are presents...
@@ -223,6 +229,12 @@ kobo_create_indicators <- function(form = "form.xls") {
           dicotemp1$formpart <- " "
           dicotemp1$indic <- "feature"
 
+          dicotemp1$constraint <- " "
+          dicotemp1$label <- " "
+          dicotemp1$relevant <- " "
+          dicotemp1$repeat_count <- " "
+          dicotemp1$required <- " "
+
           dicotemp <- rbind(dicotemp,dicotemp1)
 
         }
@@ -247,12 +259,7 @@ kobo_create_indicators <- function(form = "form.xls") {
         choices$listname <- trim(choices$listname)
         choices$label <- trim(choices$label)
 
-        if ("labelReport" %in% colnames(choices))
-        {
-          cat(" Good: You have a column `labelReport` in your `choices` worksheet.\n");
-        } else
-        {cat("  No column `labelReport` in your `choices` worksheet. Creating a dummy one for the moment...\n");
-          choices[,"labelReport"] <- substr(choices[,"label"],1,80)}
+
 
         if ("order" %in% colnames(choices))
         {
@@ -282,17 +289,18 @@ kobo_create_indicators <- function(form = "form.xls") {
         {cat("  No column `score` in your `choices` worksheet. Creating a dummy one for the moment...\n");
           choices$score <- ""}
 
-        choices <- choices[,c("listname",  "name",  "labelReport", "order", "weight","score","recategorise")]
+        choices <- choices[,c("listname",  "name",  "label",  "order", "weight","score","recategorise")]
         names(choices)[names(choices) == "label"] <- "labelchoice"
         #rm(choices)
 
-        dicotemp.choice <- dicotemp[ !(is.na(dicotemp$listname)), c( "type",  "name",  "fullname", "label", "labelReport","hintReport",
-                                                                     "chapter",  "disaggregation","correlate", "anonymise",
-                                                                     "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
-                                                                     "clean", "cluster",  "predict",
-                                                                     "variable",
-                                                                     "mappoint", "mappoly",  "listname",
-                                                                     "qrepeat",  "qrepeatlabel","qlevel","qgroup" )]
+        dicotemp.choice <- dicotemp[ !(is.na(dicotemp$listname)), c( "type", "name",
+                                                                     "fullname","labelReport","hintReport","chapter",
+        "disaggregation","correlate","anonymise",
+        "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
+        "clean","cluster","predict","variable","mappoint","mappoly",
+        "listname","qrepeat","qrepeatlabel","qlevel","qgroup","labelchoice",
+       # "order","weight","score","recategorise",
+        "formpart","indic","constraint","label","relevant","repeat_count","required" )]
 
         choices2 <- join(x = dicotemp.choice, y = choices,  by = "listname", type = "left")
 
@@ -318,10 +326,12 @@ kobo_create_indicators <- function(form = "form.xls") {
                                  "variable", "mappoint", "mappoly",  "listname",
                                  "qrepeat",  "qrepeatlabel","qlevel","qgroup",
                                  "labelchoice", "order", "weight","score",
-                                 "recategorise")]
+                                 "recategorise",
+                                 "formpart","indic","constraint","label","relevant","repeat_count","required")]
 
 
         names(choices3)[names(choices3) == "namefull"] <- "fullname"
+        names(choices3)[names(choices3) == "labelfull"] <- "labelReport"
         names(choices3)[names(choices3) == "labelfull"] <- "label"
 
 
@@ -332,7 +342,8 @@ kobo_create_indicators <- function(form = "form.xls") {
                                     "variable", "mappoint", "mappoly",  "listname",
                                     "qrepeat",  "qrepeatlabel","qlevel","qgroup",
                                     "labelchoice", "order", "weight","score",
-                                    "recategorise")]
+                                    "recategorise",
+                                    "formpart","indic","constraint","label","relevant","repeat_count","required")]
 
         ### Check -- normally there should not be duplicate
 

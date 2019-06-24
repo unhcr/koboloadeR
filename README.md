@@ -18,7 +18,7 @@ koboloadeR is a metapackage, that brings together a series of specialised packag
 
 This package first builds on the capacity of UNHCR Kobo server @ http://kobo.unhcr.org but it can also be used from any structured dataset. It comes as a companion tool to the [Integrated Framework for Household Survey](https://unhcr.github.io/Integrated-framework-household-survey).
 
-koboloadeR aims at helping [humanitarian data analysts](https://humanitarian-user-group.github.io/) to save time by quickly generating graphs and charts needed to discover insights from a dataset and ensure analysis __reproducibility__ through a separation of the analysis configuration and the analysis process. The package allows to account for sample weights and hierachical dataset structure (both capacities that are not available through the default [reporting engine](http://support.kobotoolbox.org/articles/2847676-viewing-and-creating-custom-reports) or the [excel-analyzer](http://support.kobotoolbox.org/articles/592387-using-the-excel-analyzer)). 
+koboloadeR aims at helping [humanitarian data analysts](https://humanitarian-user-group.github.io/) to focus in data interpretation by saving the time needed to quickly generate the graphs and charts required to discover insights from a dataset. It also ensure analysis __reproducibility__ through a separation of the analysis configuration and the analysis process. The package allows to account for sample weights and hierachical dataset structure (both capacities that are not available through the default [reporting engine](http://support.kobotoolbox.org/articles/2847676-viewing-and-creating-custom-reports) or the [excel-analyzer](http://support.kobotoolbox.org/articles/592387-using-the-excel-analyzer)). 
 
 ## Approach
  
@@ -43,11 +43,6 @@ The approach offered through the package has the following advantages:
  
  * Good __practices__ are enforced through the package.
 
-
-To go in more details, the suggested workflow is presented below (note that all of it is not yet fully implented - see [issue tracking for more details](https://github.com/unhcr/koboloadeR/issues))
-
-
-![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow2.png)
 
 A more detailed introduction to the concepts used in the package is presented in the [Data Crunching article](articles/Crunching.html). 
 
@@ -172,9 +167,12 @@ Note however that this implies that you configure correctly on your own the full
 
 # Contributing
 
-Contributions to the packages are welcome. Please read first the [contribution guidelines](articles/Sampling.html), follow the [code of conduct](articles/CODE_OF_CONDUCT.html) and use the [issue template](articles/ISSUE_TEMPLATE.html) 
+Contributions to the packages are welcome. Please read first the [contribution guidelines](articles/Sampling.html), follow the [code of conduct](articles/CODE_OF_CONDUCT.html) and use the [issue template](articles/ISSUE_TEMPLATE.html).
+
+To go in more details, the suggested workflow is presented below (note that all of it is not yet fully implented - see [issue tracking for more details](https://github.com/unhcr/koboloadeR/issues)). You can read the [function documentations](reference/index.html) directly.
 
 
+![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow2.png)
 
 
 

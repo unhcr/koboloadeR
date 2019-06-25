@@ -668,7 +668,7 @@ kobo_prepare_form <- function(form = "form.xls") {
       analysisSettings <- rbind(analysisSettings,
                                 data.frame(name = "sample_type",
                                            label = "Sample type of the project",
-                                           options = "1. No sampling(type 1) 2. Cluster sample (type 2) 3. Stratified sample (type 3)",
+                                           options = "1. No sampling (type 1) 2. Cluster sample (type 2) 3. Stratified sample (type 3)",
                                            value = "No sampling (type 1)",
                                            path = NA,
                                            stringsAsFactors = FALSE)
@@ -758,7 +758,7 @@ kobo_prepare_form <- function(form = "form.xls") {
                                 data.frame(name = "cleaning_log",
                                            label = "cleaning log plan for the project",
                                            options = "1. Yes 2. No, 3. csv filename",
-                                           value = "2. No",
+                                           value = "No",
                                            path = NA,
                                            stringsAsFactors = FALSE)
       )

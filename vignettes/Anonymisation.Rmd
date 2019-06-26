@@ -12,6 +12,9 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+KoboloadeR integrate the [SdcMicro package](http://surveys.worldbank.org/sdcmicro) for disclosure risk measurement. 
+
+The basis behind anonymisation
 
 ## Anonymisation
 

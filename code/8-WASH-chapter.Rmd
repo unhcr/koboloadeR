@@ -1,0 +1,1481 @@
+---
+title: "Data Crunching Report: WASH- Draft not for distribution. "
+author: "Generated with [Koboloader](https://unhcr.github.io/koboloadeR/docs) "
+date: " `r format(Sys.Date(),  '%d %B %Y')`"
+always_allow_html: yes
+output:
+  word_document:
+    fig_caption: yes
+    fig_height: 5
+    fig_width: 8
+    toc: yes
+    toc_depth: 2
+    reference_docx: style-unhcr-portrait.docx
+---
+```{r setup, include = FALSE, echo = FALSE, warning = FALSE, message = FALSE}
+mainDir <- getwd()
+mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 5)
+## Load all required packages
+library(tidyverse)
+library(ggthemes)
+library(plyr)
+library(ggrepel)
+library(viridis)
+library(RColorBrewer)
+library(extrafont)
+library(corrplot)
+library(reshape2)
+library(scales)
+library(survey)
+library(knitr)
+library(rmarkdown)
+library(ggpubr)
+library(grid)
+library(koboloadeR)
+options(scipen = 999) # turn-off scientific notation like 1e+48
+## Provide below the name of the form in xsl form - format should be xls not xlsx
+form <- "form.xls"
+dico <- read.csv(paste0(mainDirroot,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+MainDataFrame <- read.csv(paste0(mainDirroot,"/data/MainDataFrame_encoded.csv"), encoding = "UTF-8", na.strings = "")
+ListCaseNos <- read.csv(paste0(mainDirroot,"/data/ListCaseNos_encoded.csv"), encoding = "UTF-8", na.strings = "")
+IndBiodata <- read.csv(paste0(mainDirroot,"/data/IndBiodata_encoded.csv"), encoding = "UTF-8", na.strings = "")
+
+
+## label Variables
+MainDataFrame <- kobo_label(MainDataFrame , dico)
+ListCaseNos <- kobo_label(ListCaseNos , dico)
+IndBiodata <- kobo_label(IndBiodata , dico)
+
+
+## Set up ordinal Variables
+list.ordinal <- as.character(unique(dico[ dico$listname == "diff_res" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Profile.ArrivalHist.DifRes <- factor(MainDataFrame$Profile.ArrivalHist.DifRes, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "grade" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.YouthEduc.SchoolLevel.GradeLevel <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.YouthEduc.SchoolLevel.GradeLevel, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.SeeingDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.SeeingDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.HearingDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.HearingDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.WalkingDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.WalkingDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.RememberingDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.RememberingDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.SelfCareDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.SelfCareDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.CommunicatingDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.CommunicatingDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "poverty_ladder" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.PovertyPerception.vignetteFam1 <- factor(MainDataFrame$Integration.PovertyPerception.vignetteFam1, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "poverty_ladder" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.PovertyPerception.vignetteFam2 <- factor(MainDataFrame$Integration.PovertyPerception.vignetteFam2, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "poverty_ladder" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.PovertyPerception.vignetteFam3 <- factor(MainDataFrame$Integration.PovertyPerception.vignetteFam3, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "poverty_ladder" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.PovertyPerception.vignetteFam4 <- factor(MainDataFrame$Integration.PovertyPerception.vignetteFam4, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "poverty_ladder" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.PovertyPerception.selfAssessment <- factor(MainDataFrame$Integration.PovertyPerception.selfAssessment, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "opinion" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.Feeling.Isolation <- factor(MainDataFrame$Integration.Feeling.Isolation, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "opinion" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.Feeling.NeighoursConcern <- factor(MainDataFrame$Integration.Feeling.NeighoursConcern, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "opinion" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.Feeling.ParticipateMeetings <- factor(MainDataFrame$Integration.Feeling.ParticipateMeetings, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "opinion" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.Feeling.NeighboursHelp <- factor(MainDataFrame$Integration.Feeling.NeighboursHelp, levels = list.ordinal)
+
+
+## Create weighted survey object
+MainDataFrame.survey <- svydesign(ids = ~ 1 ,  data = MainDataFrame )
+ListCaseNos.survey <- svydesign(ids = ~ 1 ,  data = ListCaseNos )
+IndBiodata.survey <- svydesign(ids = ~ 1 ,  data = IndBiodata )
+
+```
+
+# Introduction
+
+This data crunching report allows to quickly explore the results of the survey that can be regenerated as needed.
+You can:  
+ 
+  *  adjust the configuration in the xlsform to break it into chapter;   
+
+  *  configure disaggregation & correlation for each questions;   
+
+  *  revise the data cleansing based on the cleaning log;   
+ 
+  *  add weight to each observation in order to account for a specific sampling plan;  
+
+  *  append calculated indicators to your data frame. 
+
+
+The objective of this report is to allow to quickly identify potential patterns in your dataset.
+                A quick screening of this initial report should allow to select the most meaningful graphs.
+                A data digest from this initial report can be then reviewed through a __data analysis workshop__
+                where subject matter experts can contribute with qualitative components.
+                When analyzing those representations in a collective setting, you may:  
+ 
+  *  __Reflect__: question data quality and/or make suggestions to change questions;   
+
+  *  __Interpret__: develop qualitative interpretations of data patterns;   
+
+  *  __Recommend__: develop recommendation in terms of programmatic adjustment;   
+
+  *  __Classify__: order the level of sensitivity for the information;   
+
+# Compilation of questions results
+
+ 
+## What is the main source of water for cooking?
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.WASH.WaterSourceCook.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=14.1666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.WASH.WaterSourceCook))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "WaterSourceCook"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.WASH.WaterSourceCook, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.WASH.WaterSourceCook,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.WASH.WaterSourceCook, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("What is the main source of water for cooking?",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.WASH.WaterSourceCook1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.WASH.WaterSourceCook + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("What is the main source of water for cooking? (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## Do you use the same water for drinking?
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.WASH.WaterSourceDrink.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=1.66666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.WASH.WaterSourceDrink))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "WaterSourceDrink"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.WASH.WaterSourceDrink, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.WASH.WaterSourceDrink,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.WASH.WaterSourceDrink, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Do you use the same water for drinking?",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.WASH.WaterSourceDrink1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.WASH.WaterSourceDrink + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Do you use the same water for drinking? (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## If not, what is the main source of water for drinking?
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.WASH.WaterSourceDrinkDiff.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=14.1666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.WASH.WaterSourceDrinkDiff))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "WaterSourceDrinkDiff"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.WASH.WaterSourceDrinkDiff, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.WASH.WaterSourceDrinkDiff,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.WASH.WaterSourceDrinkDiff, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("If not, what is the main source of water for drinking?",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.WASH.WaterSourceDrinkDiff1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.WASH.WaterSourceDrinkDiff + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("If not, what is the main source of water for drinking? (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## What is the main source of water for washing and domestic purposes?
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.WASH.WaterSourceWash.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=14.1666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.WASH.WaterSourceWash))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "WaterSourceWash"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.WASH.WaterSourceWash, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.WASH.WaterSourceWash,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.WASH.WaterSourceWash, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("What is the main source of water for washing and domestic purposes?",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.WASH.WaterSourceWash1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.WASH.WaterSourceWash + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("What is the main source of water for washing and domestic purposes? (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## How many bathrooms (or washrooms) does your household have access to?
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.WASH.Bathrooms.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.WASH.Bathrooms <- as.numeric(MainDataFrame$Welfare.WASH.Bathrooms)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.WASH.Bathrooms))
+average <- as.data.frame(svymean(~ Welfare.WASH.Bathrooms, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("How many bathrooms (or washrooms) does your household have access to?",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.WASH.Bathrooms
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.WASH.Bathrooms)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("How many bathrooms (or washrooms) does your household have access to?",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.WASH.Bathroomsx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.WASH.Bathrooms , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("How many bathrooms (or washrooms) does your household have access to?",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("How many bathrooms (or washrooms) does your household have access to?",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## How many people share the/these bathroom/s?
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.WASH.BathroomsShare.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.WASH.BathroomsShare <- as.numeric(MainDataFrame$Welfare.WASH.BathroomsShare)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.WASH.BathroomsShare))
+average <- as.data.frame(svymean(~ Welfare.WASH.BathroomsShare, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("How many people share the/these bathroom/s?",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.WASH.BathroomsShare
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.WASH.BathroomsShare)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("How many people share the/these bathroom/s?",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.WASH.BathroomsSharex1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.WASH.BathroomsShare , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("How many people share the/these bathroom/s?",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("How many people share the/these bathroom/s?",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## How many toilets/latrines does your household have access to?
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.WASH.Toilets.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.WASH.Toilets <- as.numeric(MainDataFrame$Welfare.WASH.Toilets)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.WASH.Toilets))
+average <- as.data.frame(svymean(~ Welfare.WASH.Toilets, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("How many toilets/latrines does your household have access to?",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.WASH.Toilets
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.WASH.Toilets)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("How many toilets/latrines does your household have access to?",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.WASH.Toiletsx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.WASH.Toilets , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("How many toilets/latrines does your household have access to?",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("How many toilets/latrines does your household have access to?",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Do you share this/these toilets/latrines with another household?
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.WASH.ToiletsShare.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=1.66666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.WASH.ToiletsShare))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "ToiletsShare"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.WASH.ToiletsShare, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.WASH.ToiletsShare,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.WASH.ToiletsShare, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Do you share this/these toilets/latrines with another household?",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.WASH.ToiletsShare1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.WASH.ToiletsShare + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Do you share this/these toilets/latrines with another household? (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## How many people share the/these toilets/latrines?
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.WASH.ToiletsShareNo.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.WASH.ToiletsShareNo <- as.numeric(MainDataFrame$Welfare.WASH.ToiletsShareNo)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.WASH.ToiletsShareNo))
+average <- as.data.frame(svymean(~ Welfare.WASH.ToiletsShareNo, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("How many people share the/these toilets/latrines?",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.WASH.ToiletsShareNo
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.WASH.ToiletsShareNo)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("How many people share the/these toilets/latrines?",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.WASH.ToiletsShareNox1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.WASH.ToiletsShareNo , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("How many people share the/these toilets/latrines?",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("How many people share the/these toilets/latrines?",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## What kind of toilet/latrine does the household use?
+NA
+
+
+Multiple choice question  
+
+
+### Tabulation
+
+```{r Welfare.WASH.ToiletType.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=8, size="small"}
+
+### Tabulation
+##Compute contengency table
+selectmultilist1 <- as.data.frame(dico[dico$type == "select_multiple" & dico$listname=="toilet" & grepl("ToiletType",dico$fullname)==TRUE , c("fullname")])
+names(selectmultilist1)[1] <- "check"
+check <- as.data.frame(names(MainDataFrame))
+names(check)[1] <- "check"
+check$id <- row.names(check)
+check <- merge(x = check, y = selectmultilist1, by = "check")
+selectmultilist <- as.character(check[ ,1])
+## Reshape answers
+data.selectmultilist <- MainDataFrame[ selectmultilist ]
+data.selectmultilist$id <- rownames(data.selectmultilist)
+totalanswer <- nrow(data.selectmultilist)
+data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!="Not replied", ]
+percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),"%")
+meltdata <- melt(data.selectmultilist,id="id")
+castdata <- as.data.frame(table(meltdata[c("value")]))
+castdata$freqper <- castdata$Freq/nrow(data.selectmultilist)
+castdata <- castdata[castdata$Var1!="Not selected", ]
+castdata$Var1 <- factor(castdata$Var1, levels=castdata[order(castdata$freqper), "Var1"])
+frequ <- castdata[castdata$Var1!="", ]
+## display table
+names(frequ)[1] <- "ToiletType"
+frequ[ ,3] <- paste0(round(frequ[ ,3]*100,digits = 1),"%")
+frequ1 <- castdata[castdata$Var1!="", ]
+frequ1[ ,4] <- paste0(round(frequ1[ ,3]*100,digits = 1),"%")
+names(frequ1)[4] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ1, aes(x=Var1, y=freqper)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = freqper, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("What kind of toilet/latrine does the household use?",
+subtitle = paste0("Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.WASH.ToiletType.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+```
+
+
+ 
+## Where is the latrine's wastewater disposed?
+NA
+
+
+Multiple choice question  
+
+
+### Tabulation
+
+```{r Welfare.WASH.Wastewater.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=8, size="small"}
+
+### Tabulation
+##Compute contengency table
+selectmultilist1 <- as.data.frame(dico[dico$type == "select_multiple" & dico$listname=="wastewater_disposed" & grepl("Wastewater",dico$fullname)==TRUE , c("fullname")])
+names(selectmultilist1)[1] <- "check"
+check <- as.data.frame(names(MainDataFrame))
+names(check)[1] <- "check"
+check$id <- row.names(check)
+check <- merge(x = check, y = selectmultilist1, by = "check")
+selectmultilist <- as.character(check[ ,1])
+## Reshape answers
+data.selectmultilist <- MainDataFrame[ selectmultilist ]
+data.selectmultilist$id <- rownames(data.selectmultilist)
+totalanswer <- nrow(data.selectmultilist)
+data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!="Not replied", ]
+percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),"%")
+meltdata <- melt(data.selectmultilist,id="id")
+castdata <- as.data.frame(table(meltdata[c("value")]))
+castdata$freqper <- castdata$Freq/nrow(data.selectmultilist)
+castdata <- castdata[castdata$Var1!="Not selected", ]
+castdata$Var1 <- factor(castdata$Var1, levels=castdata[order(castdata$freqper), "Var1"])
+frequ <- castdata[castdata$Var1!="", ]
+## display table
+names(frequ)[1] <- "Wastewater"
+frequ[ ,3] <- paste0(round(frequ[ ,3]*100,digits = 1),"%")
+frequ1 <- castdata[castdata$Var1!="", ]
+frequ1[ ,4] <- paste0(round(frequ1[ ,3]*100,digits = 1),"%")
+names(frequ1)[4] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ1, aes(x=Var1, y=freqper)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = freqper, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Where is the latrine's wastewater disposed?",
+subtitle = paste0("Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.WASH.Wastewater.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+```
+
+
+ 
+## Have you received any desludging services (removal of wastewater from septic tan
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.WASH.Desludging.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=1.66666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.WASH.Desludging))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "Desludging"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.WASH.Desludging, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.WASH.Desludging,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.WASH.Desludging, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Have you received any desludging services (removal of wastewater from septic tan",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.WASH.Desludging1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.WASH.Desludging + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Have you received any desludging services (removal of wastewater from septic tan (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## Personal hygiene items (soap, toothbrush/paste, other personal hygiene items) -
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.CleaningAndHygiene.PersonalHygiene.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=1.66666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.CleaningAndHygiene.PersonalHygiene))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "PersonalHygiene"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.CleaningAndHygiene.PersonalHygiene, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.CleaningAndHygiene.PersonalHygiene,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.CleaningAndHygiene.PersonalHygiene, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Personal hygiene items (soap, toothbrush/paste, other personal hygiene items) -",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.CleaningAndHygiene.PersonalHygiene1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.CleaningAndHygiene.PersonalHygiene + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Personal hygiene items (soap, toothbrush/paste, other personal hygiene items) - (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+
+```{r Welfare.CleaningAndHygiene.PersonalHygieneccc1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=6, size="small"}
+corrplot(chisq.test(MainDataFrame$Welfare.CleaningAndHygiene.PersonalHygiene,MainDataFrame$hh.elder.head)$residuals,
+is.cor = FALSE, # use for general matrix to convert to Sq form
+cl.pos = "n", ## Do not display the color legend
+cl.cex = 0.7, # Size of all label
+tl.cex = 0.7, # Size of axis label
+tl.srt = 45, # string rotation in degrees
+tl.col = "black", # color of text label.
+addCoef.col = "grey", # add coeff in the chart
+number.cex= 3/ncol(chisq.test(MainDataFrame$Welfare.CleaningAndHygiene.PersonalHygiene,MainDataFrame$hh.elder.head)), # size of coeff
+mar = c(0.5,0.5,4, 0.5), ## margin of plots
+title= paste0("Correlation between
+Personal hygiene items (soap, toothbrush/paste, other personal hygiene items) - (row)
+ & Cases headed by elder (above 59) (col)")) 
+
+```
+
+
+ 
+## Cleaning/hygiene items (laundry detergent, cleaning products etc)
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.CleaningAndHygiene.CleaningItems.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=1.66666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.CleaningAndHygiene.CleaningItems))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "CleaningItems"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.CleaningAndHygiene.CleaningItems, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.CleaningAndHygiene.CleaningItems,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.CleaningAndHygiene.CleaningItems, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Cleaning/hygiene items (laundry detergent, cleaning products etc)",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.CleaningAndHygiene.CleaningItems1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.CleaningAndHygiene.CleaningItems + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Cleaning/hygiene items (laundry detergent, cleaning products etc) (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## Female hygiene/dignity items
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.CleaningAndHygiene.FemaleHygiene.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=2.5, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.CleaningAndHygiene.FemaleHygiene))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "FemaleHygiene"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.CleaningAndHygiene.FemaleHygiene, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.CleaningAndHygiene.FemaleHygiene,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.CleaningAndHygiene.FemaleHygiene, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Female hygiene/dignity items",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.CleaningAndHygiene.FemaleHygiene1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.CleaningAndHygiene.FemaleHygiene + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Female hygiene/dignity items (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## Baby care items (diapers, etc.)
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.CleaningAndHygiene.BabyCare.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=2.5, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.CleaningAndHygiene.BabyCare))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "BabyCare"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.CleaningAndHygiene.BabyCare, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.CleaningAndHygiene.BabyCare,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.CleaningAndHygiene.BabyCare, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Baby care items (diapers, etc.)",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.CleaningAndHygiene.BabyCare1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.CleaningAndHygiene.BabyCare + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Baby care items (diapers, etc.) (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+##### Page Break

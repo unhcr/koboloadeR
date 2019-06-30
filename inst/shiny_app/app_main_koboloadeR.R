@@ -91,7 +91,7 @@ server <- shinyServer(function(input, output, session) {
         projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- FALSE
         projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- FALSE
         if(file.exists(paste(mainDir(), "data", "/form.xls", sep = "/", collapse = "/"))  ){
-          projectConfigurationInfo$log[["xlsForm"]] <- TRUE
+          #projectConfigurationInfo$log[["xlsForm"]] <- TRUE
           result <- kobo_get_begin_repeat()
           projectConfigurationInfo$data[["beginRepeatList"]] = c("MainDataFrame",result$names)
           projectConfigurationInfo$log[["beginRepeatList"]] = TRUE
@@ -154,8 +154,466 @@ server <- shinyServer(function(input, output, session) {
   })
 
   ####################################### Project Configuration page ############################################
-
   output$projectConfiguration <- renderUI({
+    s <- ""
+    cpg <- kobo_check_project_configuration()
+    if(cpg$flag){
+      return(
+        fluidRow(
+          box(id="doYouWantUseExProjectBox",
+              width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,
+              column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                     h4("Do you want to use the existing project?")
+              ),
+              column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
+                     selectInput("doYouWantUseExProjectSelectInput", label = NULL,choices = c("-- select --","Yes","No"))
+              )
+          ),
+          conditionalPanel(
+            condition = "input.doYouWantUseExProjectSelectInput == 'Yes'",
+            infoBox(
+              width = 12,strong("Done!"),h4("You can start the Analysis Plan Configuration...", align = "center")
+              ,icon = icon("check-circle"),
+              color = "green"
+            )
+          ),
+          conditionalPanel(
+            condition = "input.doYouWantUseExProjectSelectInput == 'No'",
+            box(id="doYouHaveFormBox",
+                width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,
+                column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                       h4("Do you have the xlsform?")
+                ),
+                column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
+                       selectInput("doYouHaveFormSelectInput", label = NULL,choices = c("-- select --","Yes","No"))
+                ),
+                column(width = projectConfigurationTheme$warningBlockWidth, offset = 0,
+                       if(file.exists(paste(mainDir(), "data", "/form.xls", sep = "/", collapse = "/"))){
+                         div(class = "warningBlock",
+                             span(class = "warningTitle","WARNING!"),
+                             span(class = "warningBody","Be careful, there is already xlsform file (form.xls) in the data directory, once you upload the new file, it will be overridden.")
+                         )
+                       }
+                       
+                ),
+                column(width = 9,
+                       conditionalPanel(
+                         condition = "input.doYouHaveFormSelectInput == 'Yes'",
+                         fileInput('xlsFormUploadedFile', 'Choose your xls form',
+                                   accept=c('.xls'))
+                       )
+                ),
+                column(width = 3,
+                       conditionalPanel(
+                         condition = "input.doYouHaveFormSelectInput == 'Yes'",
+                         actionButton("uploadxlsButton", "Upload xlsform", icon("upload"),
+                                      style="width:100%; margin-top: 25px;", class = "uploadButton" )
+                       )
+                )
+            )
+          ),
+          uiOutput("dataDDISamplingUI")
+        )
+      )
+                  
+    }else{
+      return(
+        fluidRow(
+          box(id="doYouHaveFormBox",
+              width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,
+              column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                     h4("Do you have the xlsform?")
+              ),
+              column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
+                     selectInput("doYouHaveFormSelectInput", label = NULL,choices = c("-- select --","Yes","No"))
+              ),
+              column(width = projectConfigurationTheme$warningBlockWidth, offset = 0,
+                     if(file.exists(paste(mainDir(), "data", "/form.xls", sep = "/", collapse = "/"))){
+                       div(class = "warningBlock",
+                           span(class = "warningTitle","WARNING!"),
+                           span(class = "warningBody","Be careful, there is already xlsform file (form.xls) in the data directory, once you upload the new file, it will be overridden.")
+                       )
+                     }
+                     
+              ),
+              column(width = 9,
+                     conditionalPanel(
+                       condition = "input.doYouHaveFormSelectInput == 'Yes'",
+                       fileInput('xlsFormUploadedFile', 'Choose your xls form',
+                                 accept=c('.xls'))
+                     )
+              ),
+              column(width = 3,
+                     conditionalPanel(
+                       condition = "input.doYouHaveFormSelectInput == 'Yes'",
+                       actionButton("uploadxlsButton", "Upload xlsform", icon("upload"),
+                                    style="width:100%; margin-top: 25px;", class = "uploadButton" )
+                     )
+              )
+          ),
+          uiOutput("dataDDISamplingUI")
+          
+          
+        )
+      )
+    }
+    
+  })
+  
+  
+  output$dataDDISamplingUI <- renderText({
+    if(projectConfigurationInfo$log[["xlsForm"]]){
+      return(
+        paste0("", 
+               box(id="doYouHaveDatasetsBox", title = "File(s) related to project (Mandatory)", status = "danger", 
+                   width=12, solidHeader = TRUE, collapsible = TRUE,
+                   column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                          h4("Do you have the Data file(s)?")
+                   ),
+                   column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
+                          selectInput("doYouHaveDatasetsSelectInput", label = NULL,choices = c("-- select --","Yes","No"))
+                   ),
+                   
+                   column(width = 12,
+                          conditionalPanel(
+                            condition = "input.doYouHaveDatasetsSelectInput == 'Yes'",
+                            column(width = 12,
+                                   uiOutput("dataInputsUI")
+                            ),
+                            column(width = 3,
+                                   actionButton("saveDataFilesButton", "Upload and Save files", icon("upload"), class = "uploadButton", style="margin: 15px 0px; height:45px; width:100%;")
+                            )
+                            
+                          )
+                   )
+               ),
+               box(id="recordSettingsBox", title = "Record Settings Configuration (Optional)", status = "primary",
+                   width=12, solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
+                   column(width = 12, align="left",
+                          uiOutput("recordSettingsUI")
+                   )
+               ),
+               box(id="ddiBox", title = "DDI informations (Optional)", status = "primary",
+                   width=12, solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
+                   column(width = 12, align="left",
+                          uiOutput("ddiUI")
+                   )
+               )
+        )
+      )
+    }
+  })
+  
+  output$dataInputsUI <- renderText({
+    s <- ""
+    for(i in 1:(length(projectConfigurationInfo$data[["beginRepeatList"]]))){
+      s <- paste(s , box(class = "uploadFilesBox",title = projectConfigurationInfo$data[["beginRepeatList"]][i],  status = "danger",
+                         fluidRow(
+                           column(10, offset = 1,
+                                  fileInput(inputId=paste("fileInput",projectConfigurationInfo$data[["beginRepeatList"]][i],sep = ""), NULL,
+                                            accept=c('text/csv',
+                                                     'text/comma-separated-values,text/plain',
+                                                     '.csv'))
+                           ),
+                           column(width = 10, offset = 1, style = "border-top: 1px solid lightgray; margin-top: 10px; padding-top: 15px",
+                                  radioButtons(inputId=paste("separator",projectConfigurationInfo$data[["beginRepeatList"]][i],sep = ""), 'Separator',
+                                               c(Comma=',',
+                                                 Semicolon=';',
+                                                 Tab='\t'),
+                                               ',', inline =TRUE)
+                           )
+                         )
+                         ,collapsible = FALSE ,width = 3),sep="" )
+    }
+    
+    return(s)
+  })
+  
+  output$recordSettingsUI <- renderUI({
+    fluidRow(
+      column(12, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px; margin-bottom: 20px; background-color: ghostwhite; padding-top: 20px;",
+             column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px dotted lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                    h4("What sampling do you have?")
+             ),
+             column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
+                    selectInput("samplingSelectInput", label = NULL,choices = c("-- select --",
+                                                                                "No sampling (type 1)",
+                                                                                "Cluster sample (type 2)",
+                                                                                "Stratified sample (type 3)"
+                    ))
+                    
+             ),
+             conditionalPanel(
+               condition = "input.samplingSelectInput == 'Cluster sample (type 2)'",
+               column(width = 12, style="margin: 15px 0px 15px; border-top: 1px solid lightgray; padding: 20px 10px 0px;",
+                      column(width = 4,
+                             selectizeInput("variableNameCluster", label = "Select the name of cluster variable",choices = projectConfigurationInfo$data[["xlsFormFields"]]
+                                            ,options = list(placeholder = '-- select --', onInitialize = I('function() { this.setValue(""); }'))
+                             )
+                      ),
+                      column(width = 8,
+                             column(width = 9, style = "padding-left: 0px;",
+                                    fileInput('weightsClusterFileInput', 'Choose weights file for Cluster sample',
+                                              accept=c('text/csv',
+                                                       'text/comma-separated-values,text/plain',
+                                                       '.csv'))),
+                             column(width = 3, style = "border-left: 1px solid lightgray; margin-top: 10px;",
+                                    radioButtons('weightsClusterSep', 'Separator',
+                                                 c(Comma=',',
+                                                   Semicolon=';',
+                                                   Tab='\t'),
+                                                 ',', inline =TRUE)),
+                             column(width = 3, offset = 9,
+                                    if(file.exists(paste(mainDir(), "data", "/weightsCluster.csv", sep = "/", collapse = "/"))){
+                                      div(class = "warningBlock",
+                                          span(class = "warningTitle","WARNING!"),
+                                          span(class = "warningBody","Be careful, there is already weightsCluster.csv file in the data directory, once you upload the new file, it will be overridden.")
+                                      )
+                                    }
+                                    
+                             )
+                      )
+               )
+               
+             ),
+             conditionalPanel(
+               condition = "input.samplingSelectInput == 'Stratified sample (type 3)'",
+               column(width = 12, style="margin: 15px 0px 15px; border-top: 1px solid lightgray; padding: 20px 10px 0px;",
+                      column(width = 4,
+                             selectizeInput("variableNameStratified", label = "Select the name of stratified variable",choices = projectConfigurationInfo$data[["xlsFormFields"]]
+                                            ,options = list(placeholder = '-- select --', onInitialize = I('function() { this.setValue(""); }'))
+                             )
+                      ),
+                      column(width = 8,
+                             column(width = 9, style = "padding-left: 0px;",
+                                    fileInput('weightsStratifiedFileInput', 'Choose weights file for Stratified sample',
+                                              accept=c('text/csv',
+                                                       'text/comma-separated-values,text/plain',
+                                                       '.csv'))),
+                             column(width = 3, style = "border-left: 1px solid lightgray; margin-top: 10px;",
+                                    radioButtons('weightsStratifiedSep', 'Separator',
+                                                 c(Comma=',',
+                                                   Semicolon=';',
+                                                   Tab='\t'),
+                                                 ',', inline =TRUE)),
+                             column(width = 3, offset = 9,
+                                    if(file.exists(paste(mainDir(), "data", "/weightsStratified.csv", sep = "/", collapse = "/"))){
+                                      div(class = "warningBlock",
+                                          span(class = "warningTitle","WARNING!"),
+                                          span(class = "warningBody","Be careful, there is already weightsStratified.csv file in the data directory, once you upload the new file, it will be overridden.")
+                                      )
+                                    }
+                                    
+                             )
+                      )
+               )
+               
+             )
+      ),
+      
+      column(12, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px; margin-bottom: 20px;",
+             column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px dotted lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                    h4("Do you have data cleaning log?")
+             ),
+             column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
+                    selectInput("cleaningLogSelectInput", label = NULL,choices = c("-- select --","Yes","No"))
+             ),
+             column(width = projectConfigurationTheme$warningBlockWidth, offset = 0,
+                    if(file.exists(paste(mainDir(), "data", "/cleaningLog.csv", sep = "/", collapse = "/"))){
+                      div(class = "warningBlock",
+                          span(class = "warningTitle","WARNING!"),
+                          span(class = "warningBody","Be careful, there is already cleaningLog.csv file in the data directory, once you upload the new file, it will be overridden.")
+                      )
+                    }
+                    
+             ),
+             conditionalPanel(
+               condition = "input.cleaningLogSelectInput == 'Yes'",
+               column(width = 12, style="margin: 15px 0px 15px; border-top: 1px solid lightgray; padding: 20px 10px 0px;",
+                      column(width = 9, style = "padding-left: 0px;",
+                             fileInput('cleaningLogFileInput', 'Choose cleaning Log file',
+                                       accept=c('text/csv',
+                                                'text/comma-separated-values,text/plain',
+                                                '.csv'))),
+                      column(width = 3, style = "border-left: 1px solid lightgray; margin-top: 10px;",
+                             radioButtons('cleaningLogSep', 'Separator',
+                                          c(Comma=',',
+                                            Semicolon=';',
+                                            Tab='\t'),
+                                          ',', inline =TRUE))
+               )
+             )
+             
+      ),
+      column(3, style = "margin-bottom: 20px; padding-top: 0px;",
+             actionButton("saveRecordSettingsConfigurationButton", "Save Settings", icon("save"), class = "uploadButton", style="margin: 15px 0px; height:45px; width:100%;")
+      )
+      
+    )
+  })
+  
+  output$ddiUI <- renderUI({
+    fluidRow(
+      column(
+        width=12,
+        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               h4("Title of the study:")
+        ),
+        column(width = 6, offset = 0,
+               textInput("titlDDIInput", label = NULL, width = "100%", placeholder = "Free Text", value = "Refugee Survey in Country x")
+        )
+      ),
+      column(
+        width=12,
+        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               h4("Abstract:")
+        ),
+        column(width = 6, offset = 0,
+               textInput("abstractDDIInput", label = NULL, width = "100%", placeholder = "Free Text", value="Blablablablablabla")
+        )
+      ),
+      column(
+        width=12,
+        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               h4("Rights & Disclaimer:")
+        ),
+        column(width = 6, offset = 0,
+               textInput("disclaimerDDIInput", label = NULL, width = "100%", placeholder = "Free Text - adjust if necessary", value="UNHCR does not warrant in any way the accuracy of the information and data contained in the datasets and shall not be held liable for any loss caused by reliance on the accuracy or reliability thereof.")
+        )
+      ),
+      column(
+        width=12,
+        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               h4("Country where the study took place:")
+        ),
+        column(width = 6, offset = 0,
+               selectizeInput("countryDDIInput", label = NULL,
+                           choices = c("Afghanistan" = "AFG", "Albania" = "ALB", "Algeria" = "DZA", "American Samoa" = "ASM", "Andorra" = "AND", "Angola" = "AGO", "Anguilla" = "AIA", "Antarctica" = "ATA", "Antigua and Barbuda" = "ATG", "Argentina" = "ARG", "Armenia" = "ARM", "Aruba" = "ABW", "Australia" = "AUS", "Austria" = "AUT", "Azerbaijan" = "AZE", "Bahamas (the)" = "BHS", "Bahrain" = "BHR", "Bangladesh" = "BGD", "Barbados" = "BRB", "Belarus" = "BLR", "Belgium" = "BEL", "Belize" = "BLZ", "Benin" = "BEN", "Bermuda" = "BMU", "Bhutan" = "BTN", "Bolivia (Plurinational State of)" = "BOL", "Bonaire, Sint Eustatius and Saba" = "BES", "Bosnia and Herzegovina" = "BIH", "Botswana" = "BWA", "Bouvet Island" = "BVT", "Brazil" = "BRA", "British Indian Ocean Territory (the)" = "IOT", "Brunei Darussalam" = "BRN", "Bulgaria" = "BGR", "Burkina Faso" = "BFA", "Burundi" = "BDI", "Cabo Verde" = "CPV", "Cambodia" = "KHM", "Cameroon" = "CMR", "Canada" = "CAN", "Cayman Islands (the)" = "CYM", "Central African Republic (the)" = "CAF", "Chad" = "TCD", "Chile" = "CHL", "China" = "CHN", "Christmas Island" = "CXR", "Cocos (Keeling) Islands (the)" = "CCK", "Colombia" = "COL", "Comoros (the)" = "COM", "Congo (the Democratic Republic of the)" = "COD", "Congo (the)" = "COG", "Cook Islands (the)" = "COK", "Costa Rica" = "CRI", "Croatia" = "HRV", "Cuba" = "CUB", "Curaçao" = "CUW", "Cyprus" = "CYP", "Czechia" = "CZE", "Côte d'Ivoire" = "CIV", "Denmark" = "DNK", "Djibouti" = "DJI", "Dominica" = "DMA", "Dominican Republic (the)" = "DOM", "Ecuador" = "ECU", "Egypt" = "EGY", "El Salvador" = "SLV", "Equatorial Guinea" = "GNQ", "Eritrea" = "ERI", "Estonia" = "EST", "Eswatini" = "SWZ", "Ethiopia" = "ETH", "Falkland Islands (the) [Malvinas]" = "FLK", "Faroe Islands (the)" = "FRO", "Fiji" = "FJI", "Finland" = "FIN", "France" = "FRA", "French Guiana" = "GUF", "French Polynesia" = "PYF", "French Southern Territories (the)" = "ATF", "Gabon" = "GAB", "Gambia (the)" = "GMB", "Georgia" = "GEO", "Germany" = "DEU", "Ghana" = "GHA", "Gibraltar" = "GIB", "Greece" = "GRC", "Greenland" = "GRL", "Grenada" = "GRD", "Guadeloupe" = "GLP", "Guam" = "GUM", "Guatemala" = "GTM", "Guernsey" = "GGY", "Guinea" = "GIN", "Guinea-Bissau" = "GNB", "Guyana" = "GUY", "Haiti" = "HTI", "Heard Island and McDonald Islands" = "HMD", "Holy See (the)" = "VAT", "Honduras" = "HND", "Hong Kong" = "HKG", "Hungary" = "HUN", "Iceland" = "ISL", "India" = "IND", "Indonesia" = "IDN", "Iran (Islamic Republic of)" = "IRN", "Iraq" = "IRQ", "Ireland" = "IRL", "Isle of Man" = "IMN", "Israel" = "ISR", "Italy" = "ITA", "Jamaica" = "JAM", "Japan" = "JPN", "Jersey" = "JEY", "Jordan" = "JOR", "Kazakhstan" = "KAZ", "Kenya" = "KEN", "Kiribati" = "KIR", "Korea (the Democratic People's Republic of)" = "PRK", "Korea (the Republic of)" = "KOR", "Kuwait" = "KWT", "Kyrgyzstan" = "KGZ", "Lao People's Democratic Republic (the)" = "LAO", "Latvia" = "LVA", "Lebanon" = "LBN", "Lesotho" = "LSO", "Liberia" = "LBR", "Libya" = "LBY", "Liechtenstein" = "LIE", "Lithuania" = "LTU", "Luxembourg" = "LUX", "Macao" = "MAC", "Macedonia (the former Yugoslav Republic of)" = "MKD", "Madagascar" = "MDG", "Malawi" = "MWI", "Malaysia" = "MYS", "Maldives" = "MDV", "Mali" = "MLI", "Malta" = "MLT", "Marshall Islands (the)" = "MHL", "Martinique" = "MTQ", "Mauritania" = "MRT", "Mauritius" = "MUS", "Mayotte" = "MYT", "Mexico" = "MEX", "Micronesia (Federated States of)" = "FSM", "Moldova (the Republic of)" = "MDA", "Monaco" = "MCO", "Mongolia" = "MNG", "Montenegro" = "MNE", "Montserrat" = "MSR", "Morocco" = "MAR", "Mozambique" = "MOZ", "Myanmar" = "MMR", "Namibia" = "NAM", "Nauru" = "NRU", "Nepal" = "NPL", "Netherlands (the)" = "NLD", "New Caledonia" = "NCL", "New Zealand" = "NZL", "Nicaragua" = "NIC", "Niger (the)" = "NER", "Nigeria" = "NGA", "Niue" = "NIU", "Norfolk Island" = "NFK", "Northern Mariana Islands (the)" = "MNP", "Norway" = "NOR", "Oman" = "OMN", "Pakistan" = "PAK", "Palau" = "PLW", "Palestine, State of" = "PSE", "Panama" = "PAN", "Papua New Guinea" = "PNG", "Paraguay" = "PRY", "Peru" = "PER", "Philippines (the)" = "PHL", "Pitcairn" = "PCN", "Poland" = "POL", "Portugal" = "PRT", "Puerto Rico" = "PRI", "Qatar" = "QAT", "Romania" = "ROU", "Russian Federation (the)" = "RUS", "Rwanda" = "RWA", "Réunion" = "REU", "Saint Barthélemy" = "BLM", "Saint Helena, Ascension and Tristan da Cunha" = "SHN", "Saint Kitts and Nevis" = "KNA", "Saint Lucia" = "LCA", "Saint Martin (French part)" = "MAF", "Saint Pierre and Miquelon" = "SPM", "Saint Vincent and the Grenadines" = "VCT", "Samoa" = "WSM", "San Marino" = "SMR", "Sao Tome and Principe" = "STP", "Saudi Arabia" = "SAU", "Senegal" = "SEN", "Serbia" = "SRB", "Seychelles" = "SYC", "Sierra Leone" = "SLE", "Singapore" = "SGP", "Sint Maarten (Dutch part)" = "SXM", "Slovakia" = "SVK", "Slovenia" = "SVN", "Solomon Islands" = "SLB", "Somalia" = "SOM", "South Africa" = "ZAF", "South Georgia and the South Sandwich Islands" = "SGS", "South Sudan" = "SSD", "Spain" = "ESP", "Sri Lanka" = "LKA", "Sudan (the)" = "SDN", "Suriname" = "SUR", "Svalbard and Jan Mayen" = "SJM", "Sweden" = "SWE", "Switzerland" = "CHE", "Syrian Arab Republic" = "SYR", "Taiwan (Province of China)" = "TWN", "Tajikistan" = "TJK", "Tanzania, United Republic of" = "TZA", "Thailand" = "THA", "Timor-Leste" = "TLS", "Togo" = "TGO", "Tokelau" = "TKL", "Tonga" = "TON", "Trinidad and Tobago" = "TTO", "Tunisia" = "TUN", "Turkey" = "TUR", "Turkmenistan" = "TKM", "Turks and Caicos Islands (the)" = "TCA", "Tuvalu" = "TUV", "Uganda" = "UGA", "Ukraine" = "UKR", "United Arab Emirates (the)" = "ARE", "United Kingdom of Great Britain and Northern Ireland (the)" = "GBR", "United States Minor Outlying Islands (the)" = "UMI", "United States of America (the)" = "USA", "Uruguay" = "URY", "Uzbekistan" = "UZB", "Vanuatu" = "VUT", "Venezuela (Bolivarian Republic of)" = "VEN", "Viet Nam" = "VNM", "Virgin Islands (British)" = "VGB", "Virgin Islands (U.S.)" = "VIR", "Wallis and Futuna" = "WLF", "Western Sahara" = "ESH", "Yemen" = "YEM", "Zambia" = "ZMB", "Zimbabwe" = "ZWE", "Åland Islands" = "ALA" ))
+        )
+      ),
+      column(
+        width=12,
+        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               h4("Geographic Coverage for the study within the country:")
+        ),
+        column(width = 6, offset = 0,
+               textInput("geogCoverDDIInput", label = NULL, width = "100%", placeholder = "Free Text", value="Blablablablablabla")
+        )
+      ),
+      column(
+        width=12,
+        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               h4("Kind of Data:")
+        ),
+        column(width = 6, offset = 0,
+               textInput("dataKindDDIInput", label = NULL, width = "100%", placeholder = "Sample survey data [ssd] or Census/enumeration data [cen]", value="ssd")
+        )
+      ),
+      column(
+        width=12,
+        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               h4("Describes the entity being analyzed in the study or in the variable:")
+        ),
+        column(width = 6, offset = 0,
+               textInput("analysisUnitDDIInput", label = NULL, width = "100%", placeholder = "HousingUnit (household Survey) or GeographicUnit (Key informant Interview or Observation)", value="HousingUnit")
+        )
+      ),
+      column(
+        width=12,
+        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               h4("The procedure, technique, or mode of inquiry used to attain the data:")
+        ),
+        column(width = 6, offset = 0,
+               textInput("modeOfCollectionDDIInput", label = NULL, width = "100%", placeholder = "Interview.FaceToFace.CAPI or Interview.Telephone.CATI or SelfAdministeredQuestionnaire.FixedForm.WebBased or FocusGroup.FaceToFace or Observation", value="Interview.FaceToFace.CAPI")
+        )
+      ),
+      column(
+        width=12,
+        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               h4("Description of the study Universe: The group of persons or other elements that are the object of research and to which any analytic results refer:")
+        ),
+        column(width = 6, offset = 0,
+               textInput("universeDDIInput", label = NULL, width = "100%", placeholder = "Free Text", value="Refugee Survey in Country x")
+        )
+      ),
+      column(
+        width=12,
+        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               h4("Do you have a file describing the universe that can be joined to the survey (for instance registration data)?")
+        ),
+        column(width = 6, offset = 0,
+               selectInput("universeyesDDIInput", label = NULL,choices = c("No","Yes"))
+        )
+      ),
+      column(
+        width=12,
+        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               h4("Name of the csv file with universe data:")
+        ),
+        column(width = 6, offset = 0,
+               textInput("universefileDDIInput", label = NULL, width = "100%", placeholder = "Free Text", value="universe.csv")
+        )
+      ),
+      column(
+        width=12,
+        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               h4("Name of the variable within universe to do the join with the survey:")
+        ),
+        column(width = 6, offset = 0,
+               textInput("universeidDDIInput", label = NULL, width = "100%", placeholder = "Free Text", value="progres.id")
+        )
+      ),
+      column(
+        width=12,
+        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               h4("Name of the variable within survey to do the join with the universe:")
+        ),
+        column(width = 6, offset = 0,
+               textInput("universesurveyidDDIInput", label = NULL, width = "100%", placeholder = "Free Text", value="progres.id")
+        )
+      ),
+      column(
+        width=12,
+        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               h4("Description of the Sampling Procedure in the context of the study:")
+        ),
+        column(width = 6, offset = 0,
+               textInput("sampProcDDIInput", label = NULL, width = "100%", placeholder = "Free Text", value="Blablablablablabla")
+        )
+      ),
+      column(
+        width=12,
+        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               h4("Description of the generation of the final weight - for instance usage of post-stratification and other calibration:")
+        ),
+        column(width = 6, offset = 0,
+               textInput("weightDDIInput", label = NULL, width = "100%", placeholder = "Free Text", value="Blablablablablabla")
+        )
+      ),
+      column(
+        width=12,
+        column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+               h4("Data Editing and Cleaning Operation: Description of the cleaning procedure:")
+        ),
+        column(width = 6, offset = 0,
+               textInput("cleanOpsDDIInput", label = NULL, width = "100%", placeholder = "Free Text", value="Blablablablablabla")
+        )
+      ),
+      column(3, style = "margin-bottom: 20px; padding-top: 0px;",
+             actionButton("saveDDIButton", "Save DDI information", icon("save"), class = "uploadButton", style="margin: 15px 0px; height:45px; width:100%;")
+      )
+      
+    )
+  })
+  
+ 
+  
+  
+  
+  
+  
+  
+  output$projectConfiguration2 <- renderUI({
     fluidRow(
       box(id="doYouHaveFormBox",
           width=12,status="primary", solidHeader = FALSE, collapsible = FALSE,
@@ -248,20 +706,20 @@ server <- shinyServer(function(input, output, session) {
       conditionalPanel(
         condition = "input.doYouHaveFormSelectInput == 'Yes'",
         div(id="doYouHaveDatasetsDiv",
-            box(id="doYouHaveDatasetsBox", title = "File(s) related to project",
+            box(id="doYouHaveDatasetsBox", title = "File(s) related to project", status = "danger" , 
                 width=12,status="primary", solidHeader = FALSE, collapsible = TRUE,
                 column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
                        h4("Do you have the Data file(s)?")
                 ),
                 column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
-                       selectInput("doYouHaveDatasetsSelectInput", label = NULL,choices = c("-- select --","Yes","No"))
+                       selectInput("doYouHaveDatasetsSelectInput2", label = NULL,choices = c("-- select --","Yes","No"))
                 ),
 
                 column(width = 12,
                        conditionalPanel(
                          condition = "input.doYouHaveDatasetsSelectInput == 'Yes'",
                          column(width = 12,
-                                uiOutput("dataInputsUI")
+                                uiOutput("dataInputsUI9")
                          ),
                          column(width = 12,
                                 actionButton("saveDataFilesButton", "Upload and Save files", icon("upload"), class = "uploadButton", style="margin: 15px 0px; width:100%;")
@@ -403,10 +861,23 @@ server <- shinyServer(function(input, output, session) {
 
   observeEvent(input$uploadxlsButton, {
     tryCatch({
+      progress <- shiny::Progress$new()
+      progress$set(message = "Uploading xlsform in progress...", value = 0)
+      on.exit(progress$close())
+      updateProgress <- function(value = NULL, detail = NULL) {
+        if (is.null(value)) {
+          value <- progress$getValue()
+          value <- value + (progress$getMax() - value) / 5
+        }
+        progress$set(value = value, detail = detail)
+      }
+      updateProgress()
+      
       inFile <- input$xlsFormUploadedFile
       if (!is.null(inFile)){
         wb <- xlsx::loadWorkbook(inFile$datapath)
         xlsx::saveWorkbook(wb, paste(mainDir(), "data", "/form.xls", sep = "/", collapse = "/"))
+        updateProgress()
         projectConfigurationInfo$log[["xlsForm"]] <- TRUE
         result <- kobo_get_begin_repeat()
         projectConfigurationInfo$data[["beginRepeatList"]] = c("MainDataFrame",result$names)
@@ -423,7 +894,21 @@ server <- shinyServer(function(input, output, session) {
                    animation = FALSE,
                    showConfirmButton = TRUE
         )
-        projectConfigurationInfo$log[["isPrepared"]] <- FALSE
+        updateProgress()
+        result <- kobo_prepare_form()
+        if(class(result) == "try-error"){
+          shinyalert("Error",
+                     result,
+                     type = "error",
+                     closeOnClickOutside = FALSE,
+                     confirmButtonCol = "#ff4d4d",
+                     animation = FALSE,
+                     showConfirmButton = TRUE
+          )
+          return(FALSE)
+        }
+        updateProgress()
+        projectConfigurationInfo$log[["isPrepared"]] <- TRUE
         projectConfigurationInfo$log[["isRecordSettingsCompleted"]] <- FALSE
         projectConfigurationInfo$log[["isAnalysisPlanCompleted"]] <- FALSE
         projectConfigurationInfo$log[["isDataProcessingCompleted"]] <- FALSE
@@ -1027,230 +1512,9 @@ server <- shinyServer(function(input, output, session) {
     })
   })
 
-  output$dataInputsUI <- renderText({
-    if(!projectConfigurationInfo$log[["beginRepeatList"]]){
-      s <-""
-      s <- paste(
-        infoBox(
-          width = 12,strong("Information"),h4("You have to upload xlsform before uploading data files", align = "center"), icon = icon("exclamation-triangle"),
-          color = "orange"
-        )
-        , s ,sep="" )
-      return(s)
-    }else{
-      s <- ""
-      for(i in 1:(length(projectConfigurationInfo$data[["beginRepeatList"]]))){
-        s <- paste(s , box(class = "uploadFilesBox",title = projectConfigurationInfo$data[["beginRepeatList"]][i],  status = "primary",
-                           fluidRow(
-                             column(10, offset = 1,
-                                    fileInput(inputId=paste("fileInput",projectConfigurationInfo$data[["beginRepeatList"]][i],sep = ""), NULL,
-                                              accept=c('text/csv',
-                                                       'text/comma-separated-values,text/plain',
-                                                       '.csv'))
-                             ),
-                             column(width = 10, offset = 1, style = "border-top: 1px solid lightgray; margin-top: 10px; padding-top: 15px",
-                                    radioButtons(inputId=paste("separator",projectConfigurationInfo$data[["beginRepeatList"]][i],sep = ""), 'Separator',
-                                                 c(Comma=',',
-                                                   Semicolon=';',
-                                                   Tab='\t'),
-                                                 ',', inline =TRUE)
-                             )
-                           )
-                           ,collapsible = FALSE ,width = 3),sep="" )
-      }
+  
 
-      return(s)
-    }
-  })
-
-  output$recordSettingsUI <- renderText({
-    s <-""
-    if(
-      sum(input$doYouHaveFormSelectInput == "No") &&
-      sum(input$doYouWantGenerateFormSelectInput == "Yes") &&
-      sum(input$doYouHaveDataSelectInput == "Yes") &&
-      projectConfigurationInfo$log[["data"]] == FALSE
-    ){
-      s <- paste(infoBox(
-        width = 12,strong("Information"),h4("You need to upload the data file before starting configuration of Record Settings", align = "center"), icon = icon("exclamation-triangle"),
-        color = "orange"
-      ), s ,sep="" )
-      return(s)
-    }else if(
-      (sum(input$doYouHaveFormSelectInput == "No") &&
-       sum(input$doYouWantGenerateFormSelectInput == "Yes") &&
-       sum(input$doYouHaveDataSelectInput == "Yes") &&
-       (
-         projectConfigurationInfo$log[["isPrepared"]] == FALSE ||
-         projectConfigurationInfo$log[["isGenerated"]] == FALSE )
-      )
-    ){
-      if(projectConfigurationInfo$log[["isPrepared"]] == FALSE  && projectConfigurationInfo$log[["isGenerated"]] == FALSE ){
-        s <- paste(infoBox(
-          width = 12,strong("Information"),h4("You have to run 'Generate xlsform' function and 'Prepare xlsform' function before starting configuration of Record Settings", align = "center"), icon = icon("exclamation-triangle"),
-          color = "orange"
-        ), s ,sep="" )
-      }else if(projectConfigurationInfo$log[["isGenerated"]] == FALSE ){
-        s <- paste(infoBox(
-          width = 12,strong("Information"),h4("You have to run 'Generate xlsform' function before starting configuration of Record Settings", align = "center"), icon = icon("exclamation-triangle"),
-          color = "orange"
-        ), s ,sep="" )
-      }else if(projectConfigurationInfo$log[["isPrepared"]] == FALSE ){
-        s <- paste(infoBox(
-          width = 12,strong("Information"),h4("You have to run 'Prepare xlsform' function before starting configuration of Record Settings", align = "center"), icon = icon("exclamation-triangle"),
-          color = "orange"
-        ), s ,sep="" )
-      }
-      return(s)
-    }else if(
-      sum(input$doYouHaveFormSelectInput == "Yes") &&
-      sum(input$doYouHaveDatasetsSelectInput == "Yes") &&
-      sum(input$formIncludeSettingsSelectInput == "No") &&
-      projectConfigurationInfo$log[["subAndMainfiles"]] == FALSE
-    ){
-      s <- paste(infoBox(
-        width = 12,strong("Information"),h4("You have to upload all required data files before starting configuration of Record Settings", align = "center"), icon = icon("exclamation-triangle"),
-        color = "orange"
-      ), s ,sep="" )
-      return(s)
-    }else if(
-      sum(input$doYouHaveFormSelectInput == "Yes") &&
-      sum(input$doYouHaveDatasetsSelectInput == "Yes") &&
-      sum(input$formIncludeSettingsSelectInput == "No") &&
-      projectConfigurationInfo$log[["isPrepared"]] == FALSE
-    ){
-      s <- paste(infoBox(
-        width = 12,strong("Information"),h4("You have to run 'Prepare xlsform' function before starting configuration of Record Settings", align = "center"), icon = icon("exclamation-triangle"),
-        color = "orange"
-      ), s ,sep="" )
-      return(s)
-    }
-    s <- paste(
-      fluidRow(
-
-        column(12, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px; margin-bottom: 20px; background-color: ghostwhite; padding-top: 20px;",
-               column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px dotted lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                      h4("What sampling do you have?")
-               ),
-               column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
-                      selectInput("samplingSelectInput", label = NULL,choices = c("-- select --",
-                                                                                  "No sampling(type 1)",
-                                                                                  "Cluster sample (type 2)",
-                                                                                  "Stratified sample (type 3)"
-                      ))
-
-               ),
-               conditionalPanel(
-                 condition = "input.samplingSelectInput == 'Cluster sample (type 2)'",
-                 column(width = 12, style="margin: 15px 0px 15px; border-top: 1px solid lightgray; padding: 20px 10px 0px;",
-                        column(width = 4,
-                               selectizeInput("variableNameCluster", label = "Select the name of cluster variable",choices = projectConfigurationInfo$data[["xlsFormFields"]]
-                                              ,options = list(placeholder = '-- select --', onInitialize = I('function() { this.setValue(""); }'))
-                               )
-                        ),
-                        column(width = 8,
-                               column(width = 9, style = "padding-left: 0px;",
-                                      fileInput('weightsClusterFileInput', 'Choose weights file for Cluster sample',
-                                                accept=c('text/csv',
-                                                         'text/comma-separated-values,text/plain',
-                                                         '.csv'))),
-                               column(width = 3, style = "border-left: 1px solid lightgray; margin-top: 10px;",
-                                      radioButtons('weightsClusterSep', 'Separator',
-                                                   c(Comma=',',
-                                                     Semicolon=';',
-                                                     Tab='\t'),
-                                                   ',', inline =TRUE)),
-                               column(width = 3, offset = 9,
-                                      if(file.exists(paste(mainDir(), "data", "/weightsCluster.csv", sep = "/", collapse = "/"))){
-                                        div(class = "warningBlock",
-                                            span(class = "warningTitle","WARNING!"),
-                                            span(class = "warningBody","Be careful, there is already weightsCluster.csv file in the data directory, once you upload the new file, it will be overridden.")
-                                        )
-                                      }
-
-                               )
-                        )
-                 )
-
-               ),
-               conditionalPanel(
-                 condition = "input.samplingSelectInput == 'Stratified sample (type 3)'",
-                 column(width = 12, style="margin: 15px 0px 15px; border-top: 1px solid lightgray; padding: 20px 10px 0px;",
-                        column(width = 4,
-                               selectizeInput("variableNameStratified", label = "Select the name of stratified variable",choices = projectConfigurationInfo$data[["xlsFormFields"]]
-                                              ,options = list(placeholder = '-- select --', onInitialize = I('function() { this.setValue(""); }'))
-                               )
-                        ),
-                        column(width = 8,
-                               column(width = 9, style = "padding-left: 0px;",
-                                      fileInput('weightsStratifiedFileInput', 'Choose weights file for Stratified sample',
-                                                accept=c('text/csv',
-                                                         'text/comma-separated-values,text/plain',
-                                                         '.csv'))),
-                               column(width = 3, style = "border-left: 1px solid lightgray; margin-top: 10px;",
-                                      radioButtons('weightsStratifiedSep', 'Separator',
-                                                   c(Comma=',',
-                                                     Semicolon=';',
-                                                     Tab='\t'),
-                                                   ',', inline =TRUE)),
-                               column(width = 3, offset = 9,
-                                      if(file.exists(paste(mainDir(), "data", "/weightsStratified.csv", sep = "/", collapse = "/"))){
-                                        div(class = "warningBlock",
-                                            span(class = "warningTitle","WARNING!"),
-                                            span(class = "warningBody","Be careful, there is already weightsStratified.csv file in the data directory, once you upload the new file, it will be overridden.")
-                                        )
-                                      }
-
-                               )
-                        )
-                 )
-
-               )
-        ),
-
-        column(12, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px; margin-bottom: 20px;",
-               column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px dotted lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-                      h4("Do you have data cleaning log?")
-               ),
-               column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
-                      selectInput("cleaningLogSelectInput", label = NULL,choices = c("-- select --","Yes","No"))
-               ),
-               column(width = projectConfigurationTheme$warningBlockWidth, offset = 0,
-                      if(file.exists(paste(mainDir(), "data", "/cleaningLog.csv", sep = "/", collapse = "/"))){
-                        div(class = "warningBlock",
-                            span(class = "warningTitle","WARNING!"),
-                            span(class = "warningBody","Be careful, there is already cleaningLog.csv file in the data directory, once you upload the new file, it will be overridden.")
-                        )
-                      }
-
-               ),
-               conditionalPanel(
-                 condition = "input.cleaningLogSelectInput == 'Yes'",
-                 column(width = 12, style="margin: 15px 0px 15px; border-top: 1px solid lightgray; padding: 20px 10px 0px;",
-                        column(width = 9, style = "padding-left: 0px;",
-                               fileInput('cleaningLogFileInput', 'Choose cleaning Log file',
-                                         accept=c('text/csv',
-                                                  'text/comma-separated-values,text/plain',
-                                                  '.csv'))),
-                        column(width = 3, style = "border-left: 1px solid lightgray; margin-top: 10px;",
-                               radioButtons('cleaningLogSep', 'Separator',
-                                            c(Comma=',',
-                                              Semicolon=';',
-                                              Tab='\t'),
-                                            ',', inline =TRUE))
-                 )
-               )
-
-        ),
-        column(12, style = "border: 1px solid lightgray; border-bottom-right-radius: 7px; margin-bottom: 20px; background-color: ghostwhite; padding-top: 0px;",
-               actionButton("saveRecordSettingsConfigurationButton", "Save Settings", icon("upload"), class = "uploadButton", style="margin: 15px 0px; height:45px; width:100%;")
-        )
-
-
-      ), s ,sep="" )
-
-    return(s)
-  })
+  
 
   observeEvent(input$saveRecordSettingsConfigurationButton, {
     tryCatch({
@@ -1288,16 +1552,16 @@ server <- shinyServer(function(input, output, session) {
         return(FALSE)
       }
       updateProgress()
-      if(sum(input$samplingSelectInput == "No sampling(type 1)")){
+      if(sum(input$samplingSelectInput == "No sampling (type 1)")){
         settingsDF[lastRow,"name"] <- "sample_type"
         settingsDF[lastRow,"label"] <- "Sample type of the project"
-        settingsDF[lastRow,"options"] <- "1. No sampling(type 1) 2. Cluster sample (type 2) 3. Stratified sample (type 3)"
-        settingsDF[lastRow,"value"] <- "No sampling(type 1)"
+        settingsDF[lastRow,"options"] <- "1. No sampling (type 1) 2. Cluster sample (type 2) 3. Stratified sample (type 3)"
+        settingsDF[lastRow,"value"] <- "No sampling (type 1)"
       }
       else if(sum(input$samplingSelectInput == "Cluster sample (type 2)")){
         settingsDF[lastRow,"name"] <- "sample_type"
         settingsDF[lastRow,"label"] <- "Sample type of the project"
-        settingsDF[lastRow,"options"] <- "1. No sampling(type 1) 2. Cluster sample (type 2) 3. Stratified sample (type 3)"
+        settingsDF[lastRow,"options"] <- "1. No sampling (type 1) 2. Cluster sample (type 2) 3. Stratified sample (type 3)"
         settingsDF[lastRow,"value"] <- input$samplingSelectInput
 
         if(sum(input$variableNameCluster == "")){
@@ -1347,7 +1611,7 @@ server <- shinyServer(function(input, output, session) {
       else if(sum(input$samplingSelectInput == "Stratified sample (type 3)")){
         settingsDF[lastRow,"name"] <- "sample_type"
         settingsDF[lastRow,"label"] <- "Sample type of the project"
-        settingsDF[lastRow,"options"] <- "1. No sampling(type 1) 2. Cluster sample (type 2) 3. Stratified sample (type 3)"
+        settingsDF[lastRow,"options"] <- "1. No sampling (type 1) 2. Cluster sample (type 2) 3. Stratified sample (type 3)"
         settingsDF[lastRow,"value"] <- input$samplingSelectInput
         updateProgress()
         if(sum(input$variableNameStratified == "")){
@@ -1462,7 +1726,7 @@ server <- shinyServer(function(input, output, session) {
 
       projectConfigurationInfo$log[["isRecordSettingsSaved"]] <- TRUE
       updateProgress()
-      if(sum(input$samplingSelectInput != "No sampling(type 1)")){
+      if(sum(input$samplingSelectInput != "No sampling (type 1)")){
         showModal(showSamplingMoreParm())
       }else{
         shinyalert("Done, Record Settings Configuration has been successfully saved",
@@ -6864,8 +7128,6 @@ server <- shinyServer(function(input, output, session) {
       )
     })
   })
-
-
 
   ####################################### Data Processing page ############################################
   output$dataProcessing <- renderUI({

@@ -98,7 +98,7 @@ kobo_prepare_form <- function(form = "form.xls") {
     names(survey)[tolower(names(survey)) == "hint::english"] <- "hint"
 
     if (sum(namesOfSur %in% colnames(survey)) != length(namesOfSur)) {
-      return(structure('Please make sure the survey sheet have the following columns "type", "name" , "label" or "label::English" , "hint" or "hint::English" , "relevant" , "required" , "constraint" , "repeat_count"', class = "try-error"))
+      return(structure('Please make sure the survey sheet have the following columns "type", "name" , "label" or "label::English" , "hint" or "hint::English"', class = "try-error"))
     }
 
     if ("hint" %in% colnames(survey)) {
@@ -371,7 +371,7 @@ kobo_prepare_form <- function(form = "form.xls") {
     namesOfCho <- c("list_name", "name", "label")
 
     if (sum(namesOfCho %in% colnames(choices)) != length(namesOfCho)) {
-      return(structure('Please make sure the choices sheet have the following columns "type", "name" , "label"', class = "try-error"))
+      return(structure('Please make sure the choices sheet have the following columns "list_name", "name" , "label"', class = "try-error"))
     }
 
     ### add column if not present

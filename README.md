@@ -1,7 +1,12 @@
 # koboloadeR: Survey Data Crunching <img src="man/figures/koboloadeR.png" width="200" align="right" /> 
 
-
+<!-- badges: start -->
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![license](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+
+[![packageversion](https://img.shields.io/badge/package%20version-0.0.1-orange.svg)](https://github.com/unhcr/koboloadeR/blob/master/DESCRIPTION)
+
 [![CRAN status](https://www.r-pkg.org/badges/version/koboloadeR)](https://cran.r-project.org/package=koboloadeR)
 [![CRAN](https://img.shields.io/cran/v/koboloadeR.svg)](https://cran.r-project.org/package=koboloadeR)
 [![CRAN](https://img.shields.io/cran/l/koboloadeR.svg)](https://CRAN.R-project.org/package=koboloadeR)
@@ -13,6 +18,10 @@
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/unhcr/koboloadeR?branch=gh-pages&svg=true)](https://ci.appveyor.com/project/unhcr/koboloadeR)
 [![codecov](https://codecov.io/gh/unhcr/koboloadeR/branch/gh-pages/graph/badge.svg)](https://codecov.io/gh/unhcr/koboloadeR)
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2adb516e959b4c1599ca4367b8480196)](https://www.codacy.com/app/Edouard-Legoupil/koboloadeR?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=unhcr/koboloadeR&amp;utm_campaign=Badge_Grade)
+[![Last-changedate](https://img.shields.io/github/last-commit/unhcr/koboloader.svg)](https://github.com/unhcr/koboloadeR/commits/master)
+
+<!-- badges: end -->
 
 koboloadeR is a metapackage, that brings together a series of specialised packages in an organised data analysis workflow, to conduct data discovery and analysis for data collected through  [KoboToolbox](https://www.kobotoolbox.org/), [ODK](https://opendatakit.org/), [ONA](https://ona.io/home/) or any __[xlsform](http://xlsform.org)__ compliant data collection platform.
 

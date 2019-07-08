@@ -33,7 +33,6 @@ kobo_check_project_configuration <- function(form = "form.xls") {
     form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
     configInfoOrigin <- kobo_get_config(form)
     configInfoOrigin <- configInfoOrigin[!is.na(configInfoOrigin$name),]
-    
     #check if the form is exist
     if(!file.exists(form_tmp)){
       result$flag <- F
@@ -42,12 +41,25 @@ kobo_check_project_configuration <- function(form = "form.xls") {
       result$message <- paste(result$message, "\n", result$xlsformExistence, sep = "")
       return(result)
     }
-    
+    if(nrow(configInfoOrigin)==0){
+      result$flag <- F
+      countE <- countE+1
+      result$settingsExistence <- paste(countE,"-"," The xlsform file doesn't have any settings", sep = "")
+      result$message <- paste(result$message, "\n", result$settingsExistence, sep = "")
+      return(result)
+    }
     #check if data files are exist
     subDataFrames <- kobo_get_begin_repeat()
     subDataFrames = c("MainDataFrame",subDataFrames$names)
     
     for (sdf in subDataFrames) {
+      if(!sdf %in% configInfoOrigin$name){
+        result$flag <- F
+        countE <- countE+1
+        result[[paste0("Existence_",sdf)]] <- paste(countE,"-", sdf, " does not exist in 'analysisSettings' sheet", sep = "")
+        result$message <- paste(result$message, "\n", result[[paste0("Existence_",sdf)]], sep = "")
+        next
+      }
       path <- configInfoOrigin[configInfoOrigin$name==sdf, "path"]
       val <- configInfoOrigin[configInfoOrigin$name==sdf, "value"]
       

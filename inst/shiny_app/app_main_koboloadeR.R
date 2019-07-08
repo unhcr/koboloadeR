@@ -212,7 +212,10 @@ server <- shinyServer(function(input, output, session) {
                 )
             )
           ),
-          uiOutput("dataDDISamplingUI")
+          conditionalPanel(
+            condition = "input.doYouHaveFormSelectInput == 'Yes' & input.doYouWantUseExProjectSelectInput == 'No'",
+            uiOutput("dataDDISamplingUI")
+          )
         )
       )
                   
@@ -251,8 +254,10 @@ server <- shinyServer(function(input, output, session) {
                      )
               )
           ),
-          uiOutput("dataDDISamplingUI")
-          
+          conditionalPanel(
+            condition = "input.doYouHaveFormSelectInput == 'Yes'",
+            uiOutput("dataDDISamplingUI")
+          )
           
         )
       )
@@ -285,7 +290,17 @@ server <- shinyServer(function(input, output, session) {
                             )
                             
                           )
+                   ),
+                   conditionalPanel(
+                     condition = "input.doYouHaveDatasetsSelectInput == 'No'",
+                     column(width = projectConfigurationTheme$questionsWidth, style = "margin-bottom: 10px; border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
+                            h4("Do you want to generate Data?")
+                     ),
+                     column(width = projectConfigurationTheme$yesNoInputWidth, offset = 0,
+                            selectInput("doYouWantGenerateDataSelectInput", label = NULL,choices = c("-- select --","Yes","No"))
+                     )
                    )
+                   
                ),
                box(id="recordSettingsBox", title = "Record Settings Configuration (Optional)", status = "primary",
                    width=12, solidHeader = TRUE, collapsible = TRUE, collapsed = TRUE,
@@ -503,10 +518,10 @@ server <- shinyServer(function(input, output, session) {
       column(
         width=12,
         column(width = 6, style = "border-bottom: 1px solid lightgray; border-right: 1px dotted lightgray; border-bottom-right-radius: 7px;",
-               h4("Kind of Data:")
+               h4("Kind of Data: Sample survey data [ssd] or Census/enumeration data [cen]")
         ),
         column(width = 6, offset = 0,
-               textInput("dataKindDDIInput", label = NULL, width = "100%", placeholder = "Sample survey data [ssd] or Census/enumeration data [cen]", value="ssd")
+               selectInput("analysisUnitDDIInput", label = NULL,choices = c("ssd", "cen"))
         )
       ),
       column(
@@ -515,8 +530,7 @@ server <- shinyServer(function(input, output, session) {
                h4("Describes the entity being analyzed in the study or in the variable:")
         ),
         column(width = 6, offset = 0,
-               textInput("analysisUnitDDIInput", label = NULL, width = "100%", placeholder = "HousingUnit (household Survey) or GeographicUnit (Key informant Interview or Observation)", value="HousingUnit")
-        )
+               selectInput("analysisUnitDDIInput", label = NULL,choices = c("HousingUnit", "GeographicUnit")))
       ),
       column(
         width=12,
@@ -524,7 +538,7 @@ server <- shinyServer(function(input, output, session) {
                h4("The procedure, technique, or mode of inquiry used to attain the data:")
         ),
         column(width = 6, offset = 0,
-               textInput("modeOfCollectionDDIInput", label = NULL, width = "100%", placeholder = "Interview.FaceToFace.CAPI or Interview.Telephone.CATI or SelfAdministeredQuestionnaire.FixedForm.WebBased or FocusGroup.FaceToFace or Observation", value="Interview.FaceToFace.CAPI")
+               selectInput("modeOfCollectionDDIInput", label = NULL,choices = c("Interview.FaceToFace.CAP", "Interview.Telephone.CATI", "SelfAdministeredQuestionnaire.FixedForm.WebBased", "FocusGroup.FaceToFace", "Observation"))
         )
       ),
       column(
@@ -606,7 +620,268 @@ server <- shinyServer(function(input, output, session) {
     )
   })
   
- 
+  observeEvent(input$saveDDIButton,{
+    tryCatch({
+      progress <- shiny::Progress$new()
+      progress$set(message = "Saving DDI's info in progress...", value = 0)
+      on.exit(progress$close())
+      updateProgress <- function(value = NULL, detail = NULL) {
+        if (is.null(value)) {
+          value <- progress$getValue()
+          value <- value + (progress$getMax() - value) / 5
+        }
+        progress$set(value = value, detail = detail)
+      }
+      updateProgress()
+      if(sum(trimws(input$titlDDIInput) == "")){
+        print("titlDDIInputEmpty")
+        shinyalert("Title is required",
+                   "'Title' is empty! please fill it with a proper text",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      if(sum(trimws(input$abstractDDIInput) == "")){
+        print("abstractDDIInputEmpty")
+        shinyalert("Abstract is required",
+                   "'Abstract' is empty! please fill it with a proper text",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      updateProgress()
+      if(sum(trimws(input$disclaimerDDIInput) == "")){
+        print("disclaimerDDIInputEmpty")
+        shinyalert("Rights & Disclaimer is required",
+                   "'Rights & Disclaimer' is empty! please fill it with a proper text",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      if(sum(trimws(input$countryDDIInput) == "")){
+        print("countryDDIInputEmpty")
+        shinyalert("Country is required",
+                   "'Country' is empty! please fill it with a proper text",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      updateProgress()
+      if(sum(trimws(input$geogCoverDDIInput) == "")){
+        print("geogCoverDDIInputEmpty")
+        shinyalert("Geographic Coverage is required",
+                   "'Geographic Coverage' is empty! please fill it with a proper text",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      updateProgress()
+      if(sum(trimws(input$dataKindDDIInput) == "")){
+        print("dataKindDDIInputEmpty")
+        shinyalert("Kind of Data is required",
+                   "'Kind of Data' is empty! please fill it with a proper text",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      updateProgress()
+      if(sum(trimws(input$analysisUnitDDIInput) == "")){
+        print("analysisUnitDDIInputEmpty")
+        shinyalert("analysisUnit is required",
+                   "'Describes the entity being analyzed in the study or in the variable' is empty! please fill it with a proper text",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      if(sum(trimws(input$modeOfCollectionDDIInput) == "")){
+        print("modeOfCollectionDDIInputEmpty")
+        shinyalert("modeOfCollection is required",
+                   "'The procedure, technique, or mode of inquiry used to attain the data' is empty! please fill it with a proper text",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      updateProgress()
+      if(sum(trimws(input$universeDDIInput) == "")){
+        print("universeDDIInputEmpty")
+        shinyalert("universe is required",
+                   "'Description of the study Universe' is empty! please fill it with a proper text",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      updateProgress()
+      if(sum(trimws(input$universeyesDDIInput) == "")){
+        print("universeyesDDIInputEmpty")
+        shinyalert("universeyes is required",
+                   "'Do you have a file describing the universe that can be joined to the survey (for instance registration data)' is empty! please fill it with a proper text",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
+      if(sum(trimws(input$universefileDDIInput) == "" & sum(trimws(input$universeyesDDIInput) == "Yes"))){
+        print("universefileDDIInputEmpty")
+        shinyalert("universefile is required",
+                   "'Name of the csv file with universe data' is empty! please fill it with a proper text",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      updateProgress()
+      if(sum(trimws(input$universeidDDIInput) == "")){
+        print("universeidDDIInputEmpty")
+        shinyalert("universeid is required",
+                   "'Name of the variable within universe to do the join with the survey' is empty! please fill it with a proper text",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
+      if(sum(trimws(input$universesurveyidDDIInput) == "")){
+        print("universesurveyidDDIInputEmpty")
+        shinyalert("universesurveyid is required",
+                   "'Name of the variable within survey to do the join with the universe' is empty! please fill it with a proper text",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
+      if(sum(trimws(input$sampProcDDIInput) == "")){
+        print("sampProcDDIInputEmpty")
+        shinyalert("sampProc is required",
+                   "'Description of the Sampling Procedure in the context of the study' is empty! please fill it with a proper text",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
+      if(sum(trimws(input$weightDDIInput) == "")){
+        print("weightDDIInputEmpty")
+        shinyalert("weight is required",
+                   "'Description of the generation of the final weight - for instance usage of post-stratification and other calibration' is empty! please fill it with a proper text",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      updateProgress()
+      if(sum(trimws(input$cleanOpsDDIInput) == "")){
+        print("cleanOpsDDIInputEmpty")
+        shinyalert("cleanOps is required",
+                   "'Data Editing and Cleaning Operation' is empty! please fill it with a proper text",
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      updateProgress()
+      configInfo <- kobo_get_config()
+      configInfo[configInfo$name=="titl", "value"] = trimws(input$titlDDIInput)
+      configInfo[configInfo$name=="abstract", "value"] = trimws(input$abstractDDIInput)
+      configInfo[configInfo$name=="disclaimer", "value"] = trimws(input$disclaimerDDIInput)
+      configInfo[configInfo$name=="Country", "value"] = trimws(input$countryDDIInput)
+      configInfo[configInfo$name=="geogCover", "value"] = trimws(input$geogCoverDDIInput)
+      configInfo[configInfo$name=="dataKind", "value"] = trimws(input$dataKindDDIInput)
+      configInfo[configInfo$name=="AnalysisUnit", "value"] = trimws(input$analysisUnitDDIInput)
+      configInfo[configInfo$name=="ModeOfCollection", "value"] = trimws(input$modeOfCollectionDDIInput)
+      configInfo[configInfo$name=="universe", "value"] = trimws(input$universeDDIInput)
+      configInfo[configInfo$name=="universeyes", "value"] = trimws(input$universeyesDDIInput)
+      configInfo[configInfo$name=="universefile", "value"] = trimws(input$universefileDDIInput)
+      configInfo[configInfo$name=="universeid", "value"] = trimws(input$universeidDDIInput)
+      configInfo[configInfo$name=="universesurveyid", "value"] = trimws(input$universesurveyidDDIInput)
+      configInfo[configInfo$name=="sampProc", "value"] = trimws(input$sampProcDDIInput)
+      configInfo[configInfo$name=="weight", "value"] = trimws(input$weightDDIInput)
+      configInfo[configInfo$name=="cleanOps", "value"] = trimws(input$cleanOpsDDIInput)
+      updateProgress()
+      result <- kobo_edit_form(analysisSettings = configInfo )
+      
+      if(class(result) == "try-error"){
+        shinyalert("Error",
+                   result,
+                   type = "error",
+                   closeOnClickOutside = FALSE,
+                   confirmButtonCol = "#ff4d4d",
+                   animation = FALSE,
+                   showConfirmButton = TRUE
+        )
+        return(FALSE)
+      }
+      
+    }, error = function(err) {
+      print("jkfhg8fsdjksdjioerf")
+      shinyalert("Error",
+                 err$message,
+                 type = "error",
+                 closeOnClickOutside = FALSE,
+                 confirmButtonCol = "#ff4d4d",
+                 animation = FALSE,
+                 showConfirmButton = TRUE
+      )
+    })
+  })
   
   
   

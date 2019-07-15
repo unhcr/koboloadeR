@@ -29,7 +29,6 @@ kobo_create_indicators <- function(form = "form.xls") {
   form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
 
   tryCatch({
-
     #### Load and test i indicators #############################################################################
     #library(readxl)
     tried <- try(read_excel(form_tmp, sheet = "indicator"),
@@ -38,11 +37,7 @@ kobo_create_indicators <- function(form = "form.xls") {
       writeLines("Note that you have not defined (or defined correctly) indicators within your xlsform file. \n")
 
     } else {
-
       rm(tried)
-      ## Load all required packages
-      #kobo_load_packages()
-      # library(koboloadeR)
 
       ## load all required data files #########################################
       cat("\n\nload all required data files..\n")
@@ -71,7 +66,7 @@ kobo_create_indicators <- function(form = "form.xls") {
         #dicotemp$type <- "trigger"
         dicotemp$name <- "trigger"
         dicotemp$fullname <- "trigger"
-     #   dicotemp$label <- "trigger"
+        dicotemp$label <- "trigger"
         dicotemp$labelReport <- "trigger"
         dicotemp$hintReport <- "trigger"
         dicotemp$chapter <- "trigger"
@@ -123,7 +118,7 @@ kobo_create_indicators <- function(form = "form.xls") {
           # i <- 1
           indicator.type	<- as.character(indicator[ i, c("type")])
           indicator.fullname	<- as.character(indicator[ i, c("fullname")])
-       #   indicator.label	<- as.character(indicator[ i, c("label")])
+          indicator.label	<- as.character(indicator[ i, c("label")])
           indicator.labelReport	<- as.character(indicator[ i, c("labelReport")])
           indicator.hintReport	<- as.character(indicator[ i, c("hintReport")])
           indicator.chapter	<- as.character(indicator[ i, c("chapter")])
@@ -164,7 +159,7 @@ kobo_create_indicators <- function(form = "form.xls") {
           cat('for (dbr in dataBeginRepeat) {
             dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
 
-            assign(dbr, dataFrame)
+            assign(paste0(dbr,"_edited"), dataFrame)
           }', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
 
           cat(indic.formula, file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
@@ -179,11 +174,11 @@ kobo_create_indicators <- function(form = "form.xls") {
           cat(paste0("str(",indicator.frame,"$",indicator.fullname,")"), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           cat(paste0("summary(",indicator.frame,"$",indicator.fullname,")"), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
 
-           if (indicator.frame == "MainDataFrame") {
+           if (indicator.frame == "MainDataFrame_edited") {
              cat('write.csv(MainDataFrame, paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
            }else{
              cat(paste('dbr<-"',indicator.frame,'"',sep = ""))
-             cat('write.csv(eval(as.name(dbr)),paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+             cat('write.csv(eval(as.name(dbr)),paste(mainDir,"/data/",dbr,".csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
            }
 
 
@@ -198,7 +193,7 @@ kobo_create_indicators <- function(form = "form.xls") {
           dicotemp1$type <- indicator.type
           dicotemp1$name <- indicator.fullname
           dicotemp1$fullname <- indicator.fullname
-          #dicotemp1$label <- indicator.label
+          dicotemp1$label <- indicator.label
           dicotemp1$labelReport <- indicator.labelReport
           dicotemp1$hintReport <- indicator.hintReport
           dicotemp1$chapter <- indicator.chapter

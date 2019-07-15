@@ -93,7 +93,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
     cat("\n\n\n Set up sampling \n\n\n\n")
 
     if (nrow(configInfoOrigin) == 0) {
-      cat("\n\n\n You need to enter the sampling methods and all required parameters in settings sheet before processed  \n\n No sampling(type 1) \n\n Cluster sample (type 2) \n\n Stratified sample (type 3) \n\n")
+      cat("\n\n\n You need to enter the sampling methods and all required parameters in settings sheet before processed  \n\n No sampling (type 1) \n\n Cluster sample (type 2) \n\n Stratified sample (type 3) \n\n")
       return(FALSE)
     }
 

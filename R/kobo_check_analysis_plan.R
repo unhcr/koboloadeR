@@ -156,8 +156,8 @@ kobo_check_analysis_plan <- function(form = "form.xls") {
       data.frame(
         type = character(),
         fullname = character(),
-        label = character(),
         labelReport = character(),
+        hintReport = character(),
         chapter = character(),
         disaggregation = character(),
         correlate = character(),
@@ -179,25 +179,25 @@ kobo_check_analysis_plan <- function(form = "form.xls") {
     indicator <- indicator[!is.na(indicator$fullname),]
     
     if(nrow(indicator)>0){
-      if(!"label"%in%colnames(indicator)){
+      if(!"labelReport"%in%colnames(indicator)){
         result$flag <- F
         countE <- countE+1
-        result$labelReportNotExisInd <- paste(countE,"-"," Indicator sheet does not contain label column, you must fist labelReport before Data Processing", sep = "")
+        result$labelReportNotExisInd <- paste(countE,"-"," Indicator sheet does not contain labelReport column, you must fist labelReport before Data Processing", sep = "")
         result$message <- paste(result$message, "\n", result$labelReportNotExisInd,sep = "")
       }else{
-        if(mean(str_length(indicator$label) <= 85, na.rm=T) != 1){
+        if(mean(str_length(indicator$labelReport) <= 85, na.rm=T) != 1){
           result$flag <- F
           countE <- countE+1
-          temp <- indicator[str_length(indicator$label) > 85,"fullname"]
+          temp <- indicator[str_length(indicator$labelReport) > 85,"fullname"]
           temp <- paste(temp, sep = " ", collapse = " ,")
-          result$labelReportLengthInd <- paste(countE,"-"," Please make sure that all label length are less than 85 character in indicator sheet where fullname equal: ",temp , sep = "")
+          result$labelReportLengthInd <- paste(countE,"-"," Please make sure that all labelReport length are less than 85 character in indicator sheet where fullname equal: ",temp , sep = "")
           result$message <- paste(result$message, "\n", result$labelReportLengthInd,sep = "")
         }
-        temp <- indicator[is.na(indicator$label),"label"]
+        temp <- indicator[is.na(indicator$labelReport),"labelReport"]
         if(length(temp)>0){
           result$flag <- F
           countE <- countE+1
-          result$labelInd <- paste(countE,"-"," Please make sure that you fill all cells of label column in the indicator sheet", sep = "")
+          result$labelInd <- paste(countE,"-"," Please make sure that you fill all cells of labelReport column in the indicator sheet", sep = "")
           result$message <- paste(result$message, "\n", result$labelInd,sep = "")
         }
       }

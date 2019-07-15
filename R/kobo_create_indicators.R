@@ -38,6 +38,7 @@ kobo_create_indicators <- function(form = "form.xls") {
 
     } else {
       rm(tried)
+
       ## load all required data files #########################################
       cat("\n\nload all required data files..\n")
       dataBeginRepeat <- kobo_get_begin_repeat()
@@ -49,7 +50,7 @@ kobo_create_indicators <- function(form = "form.xls") {
 
 
       indicator <- read_excel(form_tmp, sheet = "indicator")
-      if(nrow(indicator)==0){
+      if (nrow(indicator) == 0) {
         writeLines("Note that you have not defined (or defined correctly) indicators within your xlsform file.  \n")
 
       } else {
@@ -97,7 +98,13 @@ kobo_create_indicators <- function(form = "form.xls") {
         dicotemp$score <- "trigger"
         dicotemp$recategorise <- "trigger"
         dicotemp$formpart <- "trigger"
-        dicotemp$indic <- "feature"
+        dicotemp$indic <- "trigger"
+        dicotemp$constraint <- "trigger"
+
+        dicotemp$label <- "trigger"
+        dicotemp$relevant <- "trigger"
+        dicotemp$repeat_count <- "trigger"
+        dicotemp$required <- "trigger"
 
 
         ## Need to check that all column are presents...
@@ -217,75 +224,81 @@ kobo_create_indicators <- function(form = "form.xls") {
           dicotemp1$formpart <- " "
           dicotemp1$indic <- "feature"
 
+          dicotemp1$constraint <- " "
+          dicotemp1$label <- " "
+          dicotemp1$relevant <- " "
+          dicotemp1$repeat_count <- " "
+          dicotemp1$required <- " "
+
           dicotemp <- rbind(dicotemp,dicotemp1)
 
         }
         ## Append indicators in the dico  #############################################################################
 
         ## removing first line
-        dicotemp <- dicotemp[ 2:nrow(dicotemp), ]
+          dicotemp <- dicotemp[ 2:nrow(dicotemp), ]
 
-        ### mergin choices from the newly created indicators #################################################################
+          ### mergin choices from the newly created indicators #################################################################
 
-        cat("\n\n\n It's assumed that the modalities for newly calculated categoric indicators are in the same xlsform - choices worksheet  \n\n\n\n")
-        choices <- read_excel(form_tmp, sheet = "choices")
+          cat("\n\n\n It's assumed that the modalities for newly calculated categoric indicators are in the same xlsform - choices worksheet  \n\n\n\n")
+          choices <- read_excel(form_tmp, sheet = "choices")
 
-        #rm(choices)
-        names(choices)[names(choices) == "labelReport"] <- "label"
-        #names(choices)[names(choices) == "label::english"] <- "label"
-        names(choices)[names(choices) == "list name"] <- "listname"
-        names(choices)[names(choices) == "list_name"] <- "listname"
+          #rm(choices)
+          #names(choices)[names(choices) == "labelReport"] <- "label"
+          names(choices)[names(choices) == "label::english"] <- "label"
+          names(choices)[names(choices) == "label::English"] <- "label"
+          names(choices)[names(choices) == "list name"] <- "listname"
+          names(choices)[names(choices) == "list_name"] <- "listname"
 
-        ## Remove trailing space
-        choices$listname <- trim(choices$listname)
-        choices$label <- trim(choices$label)
+          ## Remove trailing space
+          choices$listname <- trim(choices$listname)
+          choices$label <- trim(choices$label)
 
-        if ("labelReport" %in% colnames(choices))
-        {
-          cat(" Good: You have a column `labelReport` in your `choices` worksheet.\n");
-        } else
-        {cat("  No column `labelReport` in your `choices` worksheet. Creating a dummy one for the moment...\n");
-          choices[,"labelReport"] <- substr(choices[,"label"],1,80)}
 
-        if ("order" %in% colnames(choices))
-        {
-          cat(" Good: You have a column `order` in your `choices` worksheet.\n");
-        } else
-        {cat("  No column `order` in your `choices` worksheet. Creating a dummy one for the moment...\n");
-          choices$order <- ""}
 
-        if ("weight" %in% colnames(choices))
-        {
-          cat("  Good: You have a column `weight` in your `choices` worksheet.\n");
-        } else
-        {cat(" No column `weight` in your `choices` worksheet. Creating a dummy one for the moment...\n");
-          choices$weight <- ""}
+          if ("order" %in% colnames(choices))
+          {
+            cat(" Good: You have a column `order` in your `choices` worksheet.\n");
+          } else
+          {cat("  No column `order` in your `choices` worksheet. Creating a dummy one for the moment...\n");
+            choices$order <- ""}
 
-        if ("recategorise" %in% colnames(choices))
-        {
-          cat("  Good: You have a column `recategorise` in your `choices` worksheet.\n");
-        } else
-        {cat("  No column `recategorise` in your `choices` worksheet. Creating a dummy one for the moment...\n");
-          choices$recategorise <- ""}
+          if ("weight" %in% colnames(choices))
+          {
+            cat("  Good: You have a column `weight` in your `choices` worksheet.\n");
+          } else
+          {cat(" No column `weight` in your `choices` worksheet. Creating a dummy one for the moment...\n");
+            choices$weight <- ""}
 
-        if ("score" %in% colnames(choices))
-        {
-          cat("  Good: You have a column `score` in your `choices` worksheet.\n");
-        } else
-        {cat("  No column `score` in your `choices` worksheet. Creating a dummy one for the moment...\n");
-          choices$score <- ""}
+          if ("recategorise" %in% colnames(choices))
+          {
+            cat("  Good: You have a column `recategorise` in your `choices` worksheet.\n");
+          } else
+          {cat("  No column `recategorise` in your `choices` worksheet. Creating a dummy one for the moment...\n");
+            choices$recategorise <- ""}
 
-        choices <- choices[,c("listname",  "name",  "label", "order", "weight","score","recategorise")]
-        names(choices)[names(choices) == "label"] <- "labelchoice"
-        #rm(choices)
+          if ("score" %in% colnames(choices))
+          {
+            cat("  Good: You have a column `score` in your `choices` worksheet.\n");
+          } else
+          {
+            cat("  No column `score` in your `choices` worksheet. Creating a dummy one for the moment...\n");
+            choices$score <- ""
+            }
 
-        dicotemp.choice <- dicotemp[ !(is.na(dicotemp$listname)), c( "type",  "name",  "fullname", "label", "labelReport","hintReport",
-                                                                     "chapter",  "disaggregation","correlate", "anonymise",
-                                                                     "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
-                                                                     "clean", "cluster",  "predict",
-                                                                     "variable",
-                                                                     "mappoint", "mappoly",  "listname",
-                                                                     "qrepeat",  "qrepeatlabel","qlevel","qgroup" )]
+          choices <- choices[,c("listname",  "name",  "label",  "order", "weight","score","recategorise")]
+
+          names(choices)[names(choices) == "label"] <- "labelchoice"
+          #rm(choices)
+
+        dicotemp.choice <- dicotemp[ !(is.na(dicotemp$listname)), c( "type", "name",
+                                                                  "fullname","labelReport","hintReport","chapter",
+                                                                  "disaggregation","correlate","anonymise",
+                                                                  "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
+                                                                  "clean","cluster","predict","variable","mappoint","mappoly",
+                                                                  "listname","qrepeat","qrepeatlabel","qlevel","qgroup",
+                                                                 # "order","weight","score","recategorise",
+                                                                  "formpart","indic","constraint","label","relevant","repeat_count","required" )]
 
         choices2 <- join(x = dicotemp.choice, y = choices,  by = "listname", type = "left")
 
@@ -298,34 +311,45 @@ kobo_create_indicators <- function(form = "form.xls") {
         names(choices2)[2] <- "nameq"
         names(choices2)[3] <- "nameqfull"
         names(choices2)[4] <- "labelq"
-        choices2$labelfull <- paste0(choices2$labelq, sep = ": ", choices2$labelchoice)
-        choices2$namefull <- paste0(choices2$nameqfull, sep = ".", choices2$name)
+        # choices$labelchoice
 
+        # View(choices2[ , c("labelchoice")])
+        #choices2$labelchoice <- as.factor(choices2$labelchoice)
+        #str(choices2$labelchoice)
+        #names(choices2)
+        # choices2$labelq
+        choices2$labelfull <- paste(choices2$labelq, choices2$labelchoice, sep = ": ")
+        choices2$namefull <- paste(choices2$nameqfull, choices2$name, sep = ".")
 
+       # names(choices2)
 
         #### Now Row bind questions & choices########################################################################################################
-        choices3 <- choices2[ ,c("type", "name", "namefull",  "labelfull", "labelReport","hintReport",
+        choices3 <- choices2[ ,c("type", "name", "namefull",  "labelfull","hintReport",
                                  "chapter",  "disaggregation","correlate", "anonymise",
                                  "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
                                  "clean", "cluster", "predict",
                                  "variable", "mappoint", "mappoly",  "listname",
                                  "qrepeat",  "qrepeatlabel","qlevel","qgroup",
                                  "labelchoice", "order", "weight","score",
-                                 "recategorise")]
+                                 "recategorise",
+                                 "formpart","indic","constraint","label","relevant","repeat_count","required")]
 
 
         names(choices3)[names(choices3) == "namefull"] <- "fullname"
-        names(choices3)[names(choices3) == "labelfull"] <- "label"
+        names(choices3)[names(choices3) == "labelfull"] <- "labelReport"
+        #names(choices3)[names(choices3) == "labelfull"] <- "label"
 
 
-        dicotemp <-    dicotemp[,c( "type", "name", "fullname", "label", "labelReport","hintReport",
+        dicotemp <-    dicotemp[,c( "type", "name", "fullname", #"label",
+                                    "labelReport","hintReport",
                                     "chapter",  "disaggregation","correlate", "anonymise",
                                     "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
                                     "clean", "cluster", "predict",
                                     "variable", "mappoint", "mappoly",  "listname",
                                     "qrepeat",  "qrepeatlabel","qlevel","qgroup",
                                     "labelchoice", "order", "weight","score",
-                                    "recategorise")]
+                                    "recategorise",
+                                    "formpart","indic","constraint","label","relevant","repeat_count","required")]
 
         ### Check -- normally there should not be duplicate
 
@@ -333,8 +357,12 @@ kobo_create_indicators <- function(form = "form.xls") {
         dicotemp$formpart <- "questions"
         choices3$formpart <- "answers"
 
+        # test1 <- as.data.frame(names(dicotemp))
+        # test2 <- as.data.frame(names(choices3))
+
         dicotemp <- rbind(dicotemp,choices3)
 
+        dicotemp$label <- dicotemp$labelReport
 
         dicotemp$indic <- "feature"
         dico$indic <- "data"

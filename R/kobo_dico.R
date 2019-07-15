@@ -496,7 +496,7 @@ kobo_dico <- function(form = "form.xls") {
 
   names(choices2)[names(choices2) == "namefull"] <- "fullname"
   names(choices2)[names(choices2) == "labelfull"] <- "label"
-
+  choices2$labelReport <- choices2$label
 
   survey2 <-    survey[,c("type", "name",  "fullname", "label", "labelReport","hintReport", "chapter", "disaggregation","correlate",  "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise",
                           "clean","cluster","predict","mappoint","mappoly",

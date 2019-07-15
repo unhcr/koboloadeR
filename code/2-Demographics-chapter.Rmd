@@ -1,0 +1,3264 @@
+---
+title: "Data Crunching Report: Demographics- Draft not for distribution. "
+author: "Generated with [Koboloader](https://unhcr.github.io/koboloadeR/docs) "
+date: " `r format(Sys.Date(),  '%d %B %Y')`"
+always_allow_html: yes
+output:
+  word_document:
+    fig_caption: yes
+    fig_height: 5
+    fig_width: 8
+    toc: yes
+    toc_depth: 2
+    reference_docx: style-unhcr-portrait.docx
+---
+```{r setup, include = FALSE, echo = FALSE, warning = FALSE, message = FALSE}
+mainDir <- getwd()
+mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 5)
+## Load all required packages
+library(tidyverse)
+library(ggthemes)
+library(plyr)
+library(ggrepel)
+library(viridis)
+library(RColorBrewer)
+library(extrafont)
+library(corrplot)
+library(reshape2)
+library(scales)
+library(survey)
+library(knitr)
+library(rmarkdown)
+library(ggpubr)
+library(grid)
+library(koboloadeR)
+options(scipen = 999) # turn-off scientific notation like 1e+48
+## Provide below the name of the form in xsl form - format should be xls not xlsx
+form <- "form.xls"
+dico <- read.csv(paste0(mainDirroot,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+MainDataFrame <- read.csv(paste0(mainDirroot,"/data/MainDataFrame_encoded.csv"), encoding = "UTF-8", na.strings = "")
+ListCaseNos <- read.csv(paste0(mainDirroot,"/data/ListCaseNos_encoded.csv"), encoding = "UTF-8", na.strings = "")
+IndBiodata <- read.csv(paste0(mainDirroot,"/data/IndBiodata_encoded.csv"), encoding = "UTF-8", na.strings = "")
+
+
+## label Variables
+MainDataFrame <- kobo_label(MainDataFrame , dico)
+ListCaseNos <- kobo_label(ListCaseNos , dico)
+IndBiodata <- kobo_label(IndBiodata , dico)
+
+
+## Set up ordinal Variables
+list.ordinal <- as.character(unique(dico[ dico$listname == "diff_res" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Profile.ArrivalHist.DifRes <- factor(MainDataFrame$Profile.ArrivalHist.DifRes, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "grade" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.YouthEduc.SchoolLevel.GradeLevel <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.YouthEduc.SchoolLevel.GradeLevel, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.SeeingDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.SeeingDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.HearingDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.HearingDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.WalkingDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.WalkingDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.RememberingDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.RememberingDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.SelfCareDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.SelfCareDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.CommunicatingDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.CommunicatingDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "poverty_ladder" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.PovertyPerception.vignetteFam1 <- factor(MainDataFrame$Integration.PovertyPerception.vignetteFam1, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "poverty_ladder" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.PovertyPerception.vignetteFam2 <- factor(MainDataFrame$Integration.PovertyPerception.vignetteFam2, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "poverty_ladder" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.PovertyPerception.vignetteFam3 <- factor(MainDataFrame$Integration.PovertyPerception.vignetteFam3, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "poverty_ladder" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.PovertyPerception.vignetteFam4 <- factor(MainDataFrame$Integration.PovertyPerception.vignetteFam4, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "poverty_ladder" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.PovertyPerception.selfAssessment <- factor(MainDataFrame$Integration.PovertyPerception.selfAssessment, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "opinion" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.Feeling.Isolation <- factor(MainDataFrame$Integration.Feeling.Isolation, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "opinion" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.Feeling.NeighoursConcern <- factor(MainDataFrame$Integration.Feeling.NeighoursConcern, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "opinion" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.Feeling.ParticipateMeetings <- factor(MainDataFrame$Integration.Feeling.ParticipateMeetings, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "opinion" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.Feeling.NeighboursHelp <- factor(MainDataFrame$Integration.Feeling.NeighboursHelp, levels = list.ordinal)
+
+
+## Create weighted survey object
+MainDataFrame.survey <- svydesign(ids = ~ 1 ,  data = MainDataFrame )
+ListCaseNos.survey <- svydesign(ids = ~ 1 ,  data = ListCaseNos )
+IndBiodata.survey <- svydesign(ids = ~ 1 ,  data = IndBiodata )
+
+```
+
+# Introduction
+
+This data crunching report allows to quickly explore the results of the survey that can be regenerated as needed.
+You can:  
+ 
+  *  adjust the configuration in the xlsform to break it into chapter;   
+
+  *  configure disaggregation & correlation for each questions;   
+
+  *  revise the data cleansing based on the cleaning log;   
+ 
+  *  add weight to each observation in order to account for a specific sampling plan;  
+
+  *  append calculated indicators to your data frame. 
+
+
+The objective of this report is to allow to quickly identify potential patterns in your dataset.
+                A quick screening of this initial report should allow to select the most meaningful graphs.
+                A data digest from this initial report can be then reviewed through a __data analysis workshop__
+                where subject matter experts can contribute with qualitative components.
+                When analyzing those representations in a collective setting, you may:  
+ 
+  *  __Reflect__: question data quality and/or make suggestions to change questions;   
+
+  *  __Interpret__: develop qualitative interpretations of data patterns;   
+
+  *  __Recommend__: develop recommendation in terms of programmatic adjustment;   
+
+  *  __Classify__: order the level of sensitivity for the information;   
+
+# Compilation of questions results
+
+ 
+## What is the relationship of the interviewee with the PA?
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Profile.Interviewee.RelationHoh.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=10.8333333333333, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Profile.Interviewee.RelationHoh))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "RelationHoh"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Profile.Interviewee.RelationHoh, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Profile.Interviewee.RelationHoh,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Profile.Interviewee.RelationHoh, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("What is the relationship of the interviewee with the PA?",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Profile.Interviewee.RelationHoh1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Profile.Interviewee.RelationHoh + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("What is the relationship of the interviewee with the PA? (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## What is the sex of the interviewee?
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Profile.Interviewee.SexInterviewee.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=1.66666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Profile.Interviewee.SexInterviewee))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "SexInterviewee"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Profile.Interviewee.SexInterviewee, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Profile.Interviewee.SexInterviewee,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Profile.Interviewee.SexInterviewee, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("What is the sex of the interviewee?",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Profile.Interviewee.SexInterviewee1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Profile.Interviewee.SexInterviewee + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("What is the sex of the interviewee? (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+
+```{r Profile.Interviewee.SexIntervieweeccc1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=6, size="small"}
+corrplot(chisq.test(MainDataFrame$Profile.Interviewee.SexInterviewee,MainDataFrame$female.ratio.cat)$residuals,
+is.cor = FALSE, # use for general matrix to convert to Sq form
+cl.pos = "n", ## Do not display the color legend
+cl.cex = 0.7, # Size of all label
+tl.cex = 0.7, # Size of axis label
+tl.srt = 45, # string rotation in degrees
+tl.col = "black", # color of text label.
+addCoef.col = "grey", # add coeff in the chart
+number.cex= 3/ncol(chisq.test(MainDataFrame$Profile.Interviewee.SexInterviewee,MainDataFrame$female.ratio.cat)), # size of coeff
+mar = c(0.5,0.5,4, 0.5), ## margin of plots
+title= paste0("Correlation between
+What is the sex of the interviewee? (row)
+ & Female Ratio - Discrete (col)")) 
+
+```
+
+
+ 
+## Please select a statement that is true about the PA
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Profile.Interviewee.FemaleInterviewee.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=5.83333333333333, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Profile.Interviewee.FemaleInterviewee))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "FemaleInterviewee"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Profile.Interviewee.FemaleInterviewee, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Profile.Interviewee.FemaleInterviewee,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Profile.Interviewee.FemaleInterviewee, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Please select a statement that is true about the PA",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Profile.Interviewee.FemaleInterviewee1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Profile.Interviewee.FemaleInterviewee + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Please select a statement that is true about the PA (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## What is the date of birth of the interviewee?
+NA
+
+
+Date question  in data frame: MainDataFrame
+
+
+
+ 
+## What is the nationality of the interviewee?
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Profile.Interviewee.NationalityInterviewee.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=5.83333333333333, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Profile.Interviewee.NationalityInterviewee))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "NationalityInterviewee"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Profile.Interviewee.NationalityInterviewee, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Profile.Interviewee.NationalityInterviewee,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Profile.Interviewee.NationalityInterviewee, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("What is the nationality of the interviewee?",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Profile.Interviewee.NationalityInterviewee1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Profile.Interviewee.NationalityInterviewee + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("What is the nationality of the interviewee? (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## How many people are registered under the same case number?
+This refers to UNHCR Registration process - which is the sampling universe for the survey
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Profile.HHDemo.RegCase.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Profile.HHDemo.RegCase <- as.numeric(MainDataFrame$Profile.HHDemo.RegCase)
+frequ <- as.data.frame(table(MainDataFrame$Profile.HHDemo.RegCase))
+average <- as.data.frame(svymean(~ Profile.HHDemo.RegCase, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("How many people are registered under the same case number?",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Profile.HHDemo.RegCase
+data.nooutlier <- as.data.frame(MainDataFrame$Profile.HHDemo.RegCase)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("How many people are registered under the same case number?",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Profile.HHDemo.RegCasex1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Profile.HHDemo.RegCase , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("How many people are registered under the same case number?",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("How many people are registered under the same case number?",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Are all those registered living with you?
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Profile.HHDemo.RegAllLiving.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=1.66666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Profile.HHDemo.RegAllLiving))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "RegAllLiving"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Profile.HHDemo.RegAllLiving, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Profile.HHDemo.RegAllLiving,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Profile.HHDemo.RegAllLiving, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Are all those registered living with you?",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Profile.HHDemo.RegAllLiving1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Profile.HHDemo.RegAllLiving + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Are all those registered living with you? (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+
+```{r Profile.HHDemo.RegAllLivingccc1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=6, size="small"}
+corrplot(chisq.test(MainDataFrame$Profile.HHDemo.RegAllLiving,MainDataFrame$female.ratio.cat)$residuals,
+is.cor = FALSE, # use for general matrix to convert to Sq form
+cl.pos = "n", ## Do not display the color legend
+cl.cex = 0.7, # Size of all label
+tl.cex = 0.7, # Size of axis label
+tl.srt = 45, # string rotation in degrees
+tl.col = "black", # color of text label.
+addCoef.col = "grey", # add coeff in the chart
+number.cex= 3/ncol(chisq.test(MainDataFrame$Profile.HHDemo.RegAllLiving,MainDataFrame$female.ratio.cat)), # size of coeff
+mar = c(0.5,0.5,4, 0.5), ## margin of plots
+title= paste0("Correlation between
+Are all those registered living with you? (row)
+ & Female Ratio - Discrete (col)")) 
+
+```
+
+
+ 
+## If not, why not?
+NA
+
+
+Multiple choice question  
+
+
+### Tabulation
+
+```{r Profile.HHDemo.RegNotAllLiving.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=8, size="small"}
+
+### Tabulation
+##Compute contengency table
+selectmultilist1 <- as.data.frame(dico[dico$type == "select_multiple" & dico$listname=="not_living" & grepl("RegNotAllLiving",dico$fullname)==TRUE , c("fullname")])
+names(selectmultilist1)[1] <- "check"
+check <- as.data.frame(names(MainDataFrame))
+names(check)[1] <- "check"
+check$id <- row.names(check)
+check <- merge(x = check, y = selectmultilist1, by = "check")
+selectmultilist <- as.character(check[ ,1])
+## Reshape answers
+data.selectmultilist <- MainDataFrame[ selectmultilist ]
+data.selectmultilist$id <- rownames(data.selectmultilist)
+totalanswer <- nrow(data.selectmultilist)
+data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!="Not replied", ]
+percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),"%")
+meltdata <- melt(data.selectmultilist,id="id")
+castdata <- as.data.frame(table(meltdata[c("value")]))
+castdata$freqper <- castdata$Freq/nrow(data.selectmultilist)
+castdata <- castdata[castdata$Var1!="Not selected", ]
+castdata$Var1 <- factor(castdata$Var1, levels=castdata[order(castdata$freqper), "Var1"])
+frequ <- castdata[castdata$Var1!="", ]
+## display table
+names(frequ)[1] <- "RegNotAllLiving"
+frequ[ ,3] <- paste0(round(frequ[ ,3]*100,digits = 1),"%")
+frequ1 <- castdata[castdata$Var1!="", ]
+frequ1[ ,4] <- paste0(round(frequ1[ ,3]*100,digits = 1),"%")
+names(frequ1)[4] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ1, aes(x=Var1, y=freqper)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = freqper, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("If not, why not?",
+subtitle = paste0("Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Profile.HHDemo.RegNotAllLiving.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+```
+
+
+ 
+## Are there other people living with you, who are not registered under the same ca
+This question may trigger some registration referals
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Profile.HHDemo.RegOtherLiving.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=1.66666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Profile.HHDemo.RegOtherLiving))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "RegOtherLiving"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Profile.HHDemo.RegOtherLiving, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Profile.HHDemo.RegOtherLiving,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Profile.HHDemo.RegOtherLiving, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Are there other people living with you, who are not registered under the same ca",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Profile.HHDemo.RegOtherLiving1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Profile.HHDemo.RegOtherLiving + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Are there other people living with you, who are not registered under the same ca (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## If yes, how many?
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Profile.HHDemo.RegOtherNo.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Profile.HHDemo.RegOtherNo <- as.numeric(MainDataFrame$Profile.HHDemo.RegOtherNo)
+frequ <- as.data.frame(table(MainDataFrame$Profile.HHDemo.RegOtherNo))
+average <- as.data.frame(svymean(~ Profile.HHDemo.RegOtherNo, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("If yes, how many?",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Profile.HHDemo.RegOtherNo
+data.nooutlier <- as.data.frame(MainDataFrame$Profile.HHDemo.RegOtherNo)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("If yes, how many?",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Profile.HHDemo.RegOtherNox1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Profile.HHDemo.RegOtherNo , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("If yes, how many?",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("If yes, how many?",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Are they refugees?
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Profile.HHDemo.RegOtherRef.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=1.66666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Profile.HHDemo.RegOtherRef))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "RegOtherRef"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Profile.HHDemo.RegOtherRef, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Profile.HHDemo.RegOtherRef,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Profile.HHDemo.RegOtherRef, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Are they refugees?",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Profile.HHDemo.RegOtherRef1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Profile.HHDemo.RegOtherRef + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Are they refugees? (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## If yes, how many additional case numbers are there?
+This question provides way to establish relation between different case established together as an household
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Profile.HHDemo.RegOtherCaseNo.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Profile.HHDemo.RegOtherCaseNo <- as.numeric(MainDataFrame$Profile.HHDemo.RegOtherCaseNo)
+frequ <- as.data.frame(table(MainDataFrame$Profile.HHDemo.RegOtherCaseNo))
+average <- as.data.frame(svymean(~ Profile.HHDemo.RegOtherCaseNo, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("If yes, how many additional case numbers are there?",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Profile.HHDemo.RegOtherCaseNo
+data.nooutlier <- as.data.frame(MainDataFrame$Profile.HHDemo.RegOtherCaseNo)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("If yes, how many additional case numbers are there?",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Profile.HHDemo.RegOtherCaseNox1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Profile.HHDemo.RegOtherCaseNo , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("If yes, how many additional case numbers are there?",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("If yes, how many additional case numbers are there?",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## If no, why are they living with you?
+NA
+
+
+Multiple choice question  
+
+
+### Tabulation
+
+```{r Profile.HHDemo.RegOtherWhy.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=8, size="small"}
+
+### Tabulation
+##Compute contengency table
+selectmultilist1 <- as.data.frame(dico[dico$type == "select_multiple" & dico$listname=="living_notreg" & grepl("RegOtherWhy",dico$fullname)==TRUE , c("fullname")])
+names(selectmultilist1)[1] <- "check"
+check <- as.data.frame(names(MainDataFrame))
+names(check)[1] <- "check"
+check$id <- row.names(check)
+check <- merge(x = check, y = selectmultilist1, by = "check")
+selectmultilist <- as.character(check[ ,1])
+## Reshape answers
+data.selectmultilist <- MainDataFrame[ selectmultilist ]
+data.selectmultilist$id <- rownames(data.selectmultilist)
+totalanswer <- nrow(data.selectmultilist)
+data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!="Not replied", ]
+percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),"%")
+meltdata <- melt(data.selectmultilist,id="id")
+castdata <- as.data.frame(table(meltdata[c("value")]))
+castdata$freqper <- castdata$Freq/nrow(data.selectmultilist)
+castdata <- castdata[castdata$Var1!="Not selected", ]
+castdata$Var1 <- factor(castdata$Var1, levels=castdata[order(castdata$freqper), "Var1"])
+frequ <- castdata[castdata$Var1!="", ]
+## display table
+names(frequ)[1] <- "RegOtherWhy"
+frequ[ ,3] <- paste0(round(frequ[ ,3]*100,digits = 1),"%")
+frequ1 <- castdata[castdata$Var1!="", ]
+frequ1[ ,4] <- paste0(round(frequ1[ ,3]*100,digits = 1),"%")
+names(frequ1)[4] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ1, aes(x=Var1, y=freqper)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = freqper, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("If no, why are they living with you?",
+subtitle = paste0("Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Profile.HHDemo.RegOtherWhy.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+```
+
+
+ 
+## Did all household members arrive in CoA at the same time?
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Profile.ArrivalHist.HHArrival.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=1.66666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Profile.ArrivalHist.HHArrival))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "HHArrival"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Profile.ArrivalHist.HHArrival, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Profile.ArrivalHist.HHArrival,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Profile.ArrivalHist.HHArrival, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Did all household members arrive in CoA at the same time?",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Profile.ArrivalHist.HHArrival1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Profile.ArrivalHist.HHArrival + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Did all household members arrive in CoA at the same time? (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## When did all household members arrive in CoA?
+NA
+
+
+Date question  in data frame: MainDataFrame
+
+
+
+ 
+## When did the FIRST household members arrive in CoA?
+NA
+
+
+Date question  in data frame: MainDataFrame
+
+
+
+ 
+## When did the LAST household members arrive in CoA?
+NA
+
+
+Date question  in data frame: MainDataFrame
+
+
+
+ 
+## Sex:
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Profile.CaseNoDetails.IndBiodata.Sex.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=1.66666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(IndBiodata$Profile.CaseNoDetails.IndBiodata.Sex))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "Sex"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(IndBiodata$Profile.CaseNoDetails.IndBiodata.Sex, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(IndBiodata$Profile.CaseNoDetails.IndBiodata.Sex,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Profile.CaseNoDetails.IndBiodata.Sex, design = IndBiodata.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Sex:",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Profile.CaseNoDetails.IndBiodata.Sex1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=1, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Profile.CaseNoDetails.IndBiodata.Sex + Location.LocationDistrict, design =IndBiodata.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Sex: (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+No correlation requested for this question...
+
+
+
+ 
+## Date of birth:
+NA
+
+
+Date question  in data frame: IndBiodata
+
+
+
+ 
+## Nationality:
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Profile.CaseNoDetails.IndBiodata.Nationality.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=5.83333333333333, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(IndBiodata$Profile.CaseNoDetails.IndBiodata.Nationality))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "Nationality"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(IndBiodata$Profile.CaseNoDetails.IndBiodata.Nationality, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(IndBiodata$Profile.CaseNoDetails.IndBiodata.Nationality,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Profile.CaseNoDetails.IndBiodata.Nationality, design = IndBiodata.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Nationality:",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Profile.CaseNoDetails.IndBiodata.Nationality1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=1, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Profile.CaseNoDetails.IndBiodata.Nationality + Location.LocationDistrict, design =IndBiodata.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Nationality: (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+No correlation requested for this question...
+
+
+
+ 
+## Relationship to PA:
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Profile.CaseNoDetails.IndBiodata.HohRelation.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=9.16666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(IndBiodata$Profile.CaseNoDetails.IndBiodata.HohRelation))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "HohRelation"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(IndBiodata$Profile.CaseNoDetails.IndBiodata.HohRelation, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(IndBiodata$Profile.CaseNoDetails.IndBiodata.HohRelation,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Profile.CaseNoDetails.IndBiodata.HohRelation, design = IndBiodata.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Relationship to PA:",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Profile.CaseNoDetails.IndBiodata.HohRelation1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=1, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Profile.CaseNoDetails.IndBiodata.HohRelation + Location.LocationDistrict, design =IndBiodata.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Relationship to PA: (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+No correlation requested for this question...
+
+
+
+ 
+## Is someone in this case the child's legal guardian?
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Profile.CaseNoDetails.IndBiodata.HoHRelationNot.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=2.5, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(IndBiodata$Profile.CaseNoDetails.IndBiodata.HoHRelationNot))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "HoHRelationNot"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(IndBiodata$Profile.CaseNoDetails.IndBiodata.HoHRelationNot, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(IndBiodata$Profile.CaseNoDetails.IndBiodata.HoHRelationNot,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Profile.CaseNoDetails.IndBiodata.HoHRelationNot, design = IndBiodata.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Is someone in this case the child's legal guardian?",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Profile.CaseNoDetails.IndBiodata.HoHRelationNot1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=1, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Profile.CaseNoDetails.IndBiodata.HoHRelationNot + Location.LocationDistrict, design =IndBiodata.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Is someone in this case the child's legal guardian? (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+No correlation requested for this question...
+
+
+
+ 
+## Are any members of the household currently in detention?
+Referral notice/hint
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Protection.Detention.DetentionInd.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=1.66666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Protection.Detention.DetentionInd))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "DetentionInd"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Protection.Detention.DetentionInd, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Protection.Detention.DetentionInd,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Protection.Detention.DetentionInd, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Are any members of the household currently in detention?",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Protection.Detention.DetentionInd1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Protection.Detention.DetentionInd + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Are any members of the household currently in detention? (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## Number of minors within household
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r nbr.minor.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$nbr.minor <- as.numeric(MainDataFrame$nbr.minor)
+frequ <- as.data.frame(table(MainDataFrame$nbr.minor))
+average <- as.data.frame(svymean(~ nbr.minor, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Number of minors within household",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$nbr.minor
+data.nooutlier <- as.data.frame(MainDataFrame$nbr.minor)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Number of minors within household",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r nbr.minorx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$nbr.minor , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of minors within household",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of minors within household",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Number of less than 2 years old kids within household
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r nbr.baby.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$nbr.baby <- as.numeric(MainDataFrame$nbr.baby)
+frequ <- as.data.frame(table(MainDataFrame$nbr.baby))
+average <- as.data.frame(svymean(~ nbr.baby, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Number of less than 2 years old kids within household",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$nbr.baby
+data.nooutlier <- as.data.frame(MainDataFrame$nbr.baby)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Number of less than 2 years old kids within household",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r nbr.babyx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$nbr.baby , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of less than 2 years old kids within household",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of less than 2 years old kids within household",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Number of girls within household - 5-12
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r nbr.minor.female.12.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$nbr.minor.female.12 <- as.numeric(MainDataFrame$nbr.minor.female.12)
+frequ <- as.data.frame(table(MainDataFrame$nbr.minor.female.12))
+average <- as.data.frame(svymean(~ nbr.minor.female.12, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Number of girls within household - 5-12",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$nbr.minor.female.12
+data.nooutlier <- as.data.frame(MainDataFrame$nbr.minor.female.12)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Number of girls within household - 5-12",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r nbr.minor.female.12x1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$nbr.minor.female.12 , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of girls within household - 5-12",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of girls within household - 5-12",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Number of boys within household - 5-12
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r nbr.minor.male.12.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$nbr.minor.male.12 <- as.numeric(MainDataFrame$nbr.minor.male.12)
+frequ <- as.data.frame(table(MainDataFrame$nbr.minor.male.12))
+average <- as.data.frame(svymean(~ nbr.minor.male.12, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Number of boys within household - 5-12",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$nbr.minor.male.12
+data.nooutlier <- as.data.frame(MainDataFrame$nbr.minor.male.12)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Number of boys within household - 5-12",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r nbr.minor.male.12x1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$nbr.minor.male.12 , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of boys within household - 5-12",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of boys within household - 5-12",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Number of girls within household - 13-18
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r nbr.minor.female.18.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$nbr.minor.female.18 <- as.numeric(MainDataFrame$nbr.minor.female.18)
+frequ <- as.data.frame(table(MainDataFrame$nbr.minor.female.18))
+average <- as.data.frame(svymean(~ nbr.minor.female.18, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Number of girls within household - 13-18",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$nbr.minor.female.18
+data.nooutlier <- as.data.frame(MainDataFrame$nbr.minor.female.18)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Number of girls within household - 13-18",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r nbr.minor.female.18x1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$nbr.minor.female.18 , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of girls within household - 13-18",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of girls within household - 13-18",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Number of boys within household - 13-18
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r nbr.minor.male.18.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$nbr.minor.male.18 <- as.numeric(MainDataFrame$nbr.minor.male.18)
+frequ <- as.data.frame(table(MainDataFrame$nbr.minor.male.18))
+average <- as.data.frame(svymean(~ nbr.minor.male.18, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Number of boys within household - 13-18",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$nbr.minor.male.18
+data.nooutlier <- as.data.frame(MainDataFrame$nbr.minor.male.18)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Number of boys within household - 13-18",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r nbr.minor.male.18x1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$nbr.minor.male.18 , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of boys within household - 13-18",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of boys within household - 13-18",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Household has kids of less than 2 years old
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r has.baby.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=1.66666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$has.baby))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "has.baby"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$has.baby, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$has.baby,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ has.baby, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Household has kids of less than 2 years old",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r has.baby1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~has.baby + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Household has kids of less than 2 years old (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+
+```{r has.babyccc1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=6, size="small"}
+corrplot(chisq.test(MainDataFrame$has.baby,MainDataFrame$school.age)$residuals,
+is.cor = FALSE, # use for general matrix to convert to Sq form
+cl.pos = "n", ## Do not display the color legend
+cl.cex = 0.7, # Size of all label
+tl.cex = 0.7, # Size of axis label
+tl.srt = 45, # string rotation in degrees
+tl.col = "black", # color of text label.
+addCoef.col = "grey", # add coeff in the chart
+number.cex= 3/ncol(chisq.test(MainDataFrame$has.baby,MainDataFrame$school.age)), # size of coeff
+mar = c(0.5,0.5,4, 0.5), ## margin of plots
+title= paste0("Correlation between
+Household has kids of less than 2 years old (row)
+ & Occurrence of school age kids (col)")) 
+
+```
+
+
+```{r has.babyccc2.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=6, size="small"}
+corrplot(chisq.test(MainDataFrame$has.baby,MainDataFrame$dependency.cat)$residuals,
+is.cor = FALSE, # use for general matrix to convert to Sq form
+cl.pos = "n", ## Do not display the color legend
+cl.cex = 0.7, # Size of all label
+tl.cex = 0.7, # Size of axis label
+tl.srt = 45, # string rotation in degrees
+tl.col = "black", # color of text label.
+addCoef.col = "grey", # add coeff in the chart
+number.cex= 3/ncol(chisq.test(MainDataFrame$has.baby,MainDataFrame$dependency.cat)), # size of coeff
+mar = c(0.5,0.5,4, 0.5), ## margin of plots
+title= paste0("Correlation between
+Household has kids of less than 2 years old (row)
+ & Dependency ratio - Discrete (col)")) 
+
+```
+
+
+```{r has.babyccc3.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=6, size="small"}
+corrplot(chisq.test(MainDataFrame$has.baby,MainDataFrame$female.ratio.cat)$residuals,
+is.cor = FALSE, # use for general matrix to convert to Sq form
+cl.pos = "n", ## Do not display the color legend
+cl.cex = 0.7, # Size of all label
+tl.cex = 0.7, # Size of axis label
+tl.srt = 45, # string rotation in degrees
+tl.col = "black", # color of text label.
+addCoef.col = "grey", # add coeff in the chart
+number.cex= 3/ncol(chisq.test(MainDataFrame$has.baby,MainDataFrame$female.ratio.cat)), # size of coeff
+mar = c(0.5,0.5,4, 0.5), ## margin of plots
+title= paste0("Correlation between
+Household has kids of less than 2 years old (row)
+ & Female Ratio - Discrete (col)")) 
+
+```
+
+
+ 
+## Number of kids 2-5 years within household
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r nbr.2.5.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$nbr.2.5 <- as.numeric(MainDataFrame$nbr.2.5)
+frequ <- as.data.frame(table(MainDataFrame$nbr.2.5))
+average <- as.data.frame(svymean(~ nbr.2.5, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Number of kids 2-5 years within household",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$nbr.2.5
+data.nooutlier <- as.data.frame(MainDataFrame$nbr.2.5)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Number of kids 2-5 years within household",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r nbr.2.5x1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$nbr.2.5 , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of kids 2-5 years within household",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of kids 2-5 years within household",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Number of kids 5-11 years within household
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r nbr.5.11.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$nbr.5.11 <- as.numeric(MainDataFrame$nbr.5.11)
+frequ <- as.data.frame(table(MainDataFrame$nbr.5.11))
+average <- as.data.frame(svymean(~ nbr.5.11, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Number of kids 5-11 years within household",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$nbr.5.11
+data.nooutlier <- as.data.frame(MainDataFrame$nbr.5.11)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Number of kids 5-11 years within household",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r nbr.5.11x1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$nbr.5.11 , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of kids 5-11 years within household",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of kids 5-11 years within household",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Number of kids 12-17 years within household
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r nbr.12.17.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$nbr.12.17 <- as.numeric(MainDataFrame$nbr.12.17)
+frequ <- as.data.frame(table(MainDataFrame$nbr.12.17))
+average <- as.data.frame(svymean(~ nbr.12.17, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Number of kids 12-17 years within household",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$nbr.12.17
+data.nooutlier <- as.data.frame(MainDataFrame$nbr.12.17)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Number of kids 12-17 years within household",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r nbr.12.17x1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$nbr.12.17 , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of kids 12-17 years within household",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of kids 12-17 years within household",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Number of adults 18-35 years within household
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r nbr.18.35.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$nbr.18.35 <- as.numeric(MainDataFrame$nbr.18.35)
+frequ <- as.data.frame(table(MainDataFrame$nbr.18.35))
+average <- as.data.frame(svymean(~ nbr.18.35, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Number of adults 18-35 years within household",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$nbr.18.35
+data.nooutlier <- as.data.frame(MainDataFrame$nbr.18.35)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Number of adults 18-35 years within household",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r nbr.18.35x1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$nbr.18.35 , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of adults 18-35 years within household",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of adults 18-35 years within household",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Number of adults 35-59 years within household
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r nbr.35.59.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$nbr.35.59 <- as.numeric(MainDataFrame$nbr.35.59)
+frequ <- as.data.frame(table(MainDataFrame$nbr.35.59))
+average <- as.data.frame(svymean(~ nbr.35.59, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Number of adults 35-59 years within household",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$nbr.35.59
+data.nooutlier <- as.data.frame(MainDataFrame$nbr.35.59)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Number of adults 35-59 years within household",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r nbr.35.59x1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$nbr.35.59 , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of adults 35-59 years within household",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of adults 35-59 years within household",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Number of adults plus de 60 years within household
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r nbr.over.60.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$nbr.over.60 <- as.numeric(MainDataFrame$nbr.over.60)
+frequ <- as.data.frame(table(MainDataFrame$nbr.over.60))
+average <- as.data.frame(svymean(~ nbr.over.60, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Number of adults plus de 60 years within household",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$nbr.over.60
+data.nooutlier <- as.data.frame(MainDataFrame$nbr.over.60)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Number of adults plus de 60 years within household",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r nbr.over.60x1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$nbr.over.60 , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of adults plus de 60 years within household",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Number of adults plus de 60 years within household",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Occurrence of school age kids
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r school.age.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=1.66666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$school.age))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "school.age"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$school.age, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$school.age,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ school.age, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Occurrence of school age kids",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r school.age1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~school.age + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Occurrence of school age kids (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+
+```{r school.ageccc1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=6, size="small"}
+corrplot(chisq.test(MainDataFrame$school.age,MainDataFrame$has.baby)$residuals,
+is.cor = FALSE, # use for general matrix to convert to Sq form
+cl.pos = "n", ## Do not display the color legend
+cl.cex = 0.7, # Size of all label
+tl.cex = 0.7, # Size of axis label
+tl.srt = 45, # string rotation in degrees
+tl.col = "black", # color of text label.
+addCoef.col = "grey", # add coeff in the chart
+number.cex= 3/ncol(chisq.test(MainDataFrame$school.age,MainDataFrame$has.baby)), # size of coeff
+mar = c(0.5,0.5,4, 0.5), ## margin of plots
+title= paste0("Correlation between
+Occurrence of school age kids (row)
+ & Household has kids of less than 2 years old (col)")) 
+
+```
+
+
+ 
+## Dependency ratio
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r dependency.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$dependency <- as.numeric(MainDataFrame$dependency)
+frequ <- as.data.frame(table(MainDataFrame$dependency))
+average <- as.data.frame(svymean(~ dependency, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Dependency ratio",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$dependency
+data.nooutlier <- as.data.frame(MainDataFrame$dependency)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Dependency ratio",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r dependencyx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$dependency , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Dependency ratio",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Dependency ratio",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Dependency ratio - Discrete
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r dependency.cat.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=2.5, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$dependency.cat))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "dependency.cat"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$dependency.cat, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$dependency.cat,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ dependency.cat, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Dependency ratio - Discrete",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r dependency.cat1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~dependency.cat + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Dependency ratio - Discrete (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+
+```{r dependency.catccc1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=6, size="small"}
+corrplot(chisq.test(MainDataFrame$dependency.cat,MainDataFrame$has.baby)$residuals,
+is.cor = FALSE, # use for general matrix to convert to Sq form
+cl.pos = "n", ## Do not display the color legend
+cl.cex = 0.7, # Size of all label
+tl.cex = 0.7, # Size of axis label
+tl.srt = 45, # string rotation in degrees
+tl.col = "black", # color of text label.
+addCoef.col = "grey", # add coeff in the chart
+number.cex= 3/ncol(chisq.test(MainDataFrame$dependency.cat,MainDataFrame$has.baby)), # size of coeff
+mar = c(0.5,0.5,4, 0.5), ## margin of plots
+title= paste0("Correlation between
+Dependency ratio - Discrete (row)
+ & Household has kids of less than 2 years old (col)")) 
+
+```
+
+
+ 
+## Female Ratio
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r female.ratio.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$female.ratio <- as.numeric(MainDataFrame$female.ratio)
+frequ <- as.data.frame(table(MainDataFrame$female.ratio))
+average <- as.data.frame(svymean(~ female.ratio, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Female Ratio",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$female.ratio
+data.nooutlier <- as.data.frame(MainDataFrame$female.ratio)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Female Ratio",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r female.ratiox1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$female.ratio , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Female Ratio",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Female Ratio",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Female Ratio - Discrete
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r female.ratio.cat.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=2.5, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$female.ratio.cat))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "female.ratio.cat"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$female.ratio.cat, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$female.ratio.cat,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ female.ratio.cat, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Female Ratio - Discrete",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r female.ratio.cat1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~female.ratio.cat + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Female Ratio - Discrete (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+
+```{r female.ratio.catccc1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=6, size="small"}
+corrplot(chisq.test(MainDataFrame$female.ratio.cat,MainDataFrame$Profile.Interviewee.SexInterviewee)$residuals,
+is.cor = FALSE, # use for general matrix to convert to Sq form
+cl.pos = "n", ## Do not display the color legend
+cl.cex = 0.7, # Size of all label
+tl.cex = 0.7, # Size of axis label
+tl.srt = 45, # string rotation in degrees
+tl.col = "black", # color of text label.
+addCoef.col = "grey", # add coeff in the chart
+number.cex= 3/ncol(chisq.test(MainDataFrame$female.ratio.cat,MainDataFrame$Profile.Interviewee.SexInterviewee)), # size of coeff
+mar = c(0.5,0.5,4, 0.5), ## margin of plots
+title= paste0("Correlation between
+Female Ratio - Discrete (row)
+ & What is the sex of the interviewee? (col)")) 
+
+```
+
+
+```{r female.ratio.catccc2.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=6, size="small"}
+corrplot(chisq.test(MainDataFrame$female.ratio.cat,MainDataFrame$has.baby)$residuals,
+is.cor = FALSE, # use for general matrix to convert to Sq form
+cl.pos = "n", ## Do not display the color legend
+cl.cex = 0.7, # Size of all label
+tl.cex = 0.7, # Size of axis label
+tl.srt = 45, # string rotation in degrees
+tl.col = "black", # color of text label.
+addCoef.col = "grey", # add coeff in the chart
+number.cex= 3/ncol(chisq.test(MainDataFrame$female.ratio.cat,MainDataFrame$has.baby)), # size of coeff
+mar = c(0.5,0.5,4, 0.5), ## margin of plots
+title= paste0("Correlation between
+Female Ratio - Discrete (row)
+ & Household has kids of less than 2 years old (col)")) 
+
+```
+
+##### Page Break

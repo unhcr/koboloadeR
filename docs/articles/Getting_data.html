@@ -107,7 +107,7 @@
       <h1>Getting data from server</h1>
                         <h4 class="author">Edouard Legoupil</h4>
             
-            <h4 class="date">2019-06-23</h4>
+            <h4 class="date">2019-07-03</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/unhcr/koboloadeR/blob/master/vignettes/Getting_data.Rmd"><code>vignettes/Getting_data.Rmd</code></a></small>
       <div class="hidden name"><code>Getting_data.Rmd</code></div>
@@ -116,41 +116,54 @@
 
     
     
-<div id="get-your-data" class="section level2">
+<p>The initial step to start your project is to get your data.</p>
+<p>The package is using only <code>csv</code> files. this is to avoid the limitations linked the number of columns that some version of excel can handle.</p>
+<div id="case-1-you-have-only-the-data-but-not-the-original-xslform" class="section level2">
 <h2 class="hasAnchor">
-<a href="#get-your-data" class="anchor"></a>Get your data</h2>
-<p>Either:</p>
-<ul>
-<li>Grab your data with <code>kobo_data_downloader</code> &amp; Get your form with <code>kobo_form</code>
-</li>
-<li>or simply copy your data in <code>csv</code> format and your xlsform in <code>xls</code> format in the <code>data</code> folder that was created during the project initiation</li>
-</ul>
-<p>use the following options to extract data <img src="https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/exportformat.png" alt="alt text"></p>
+<a href="#case-1-you-have-only-the-data-but-not-the-original-xslform" class="anchor"></a>Case 1: You have only the data but not the original xslform</h2>
+<p>In case, you have simple dataframe, you may load your data in R and then use the function <code><a href="../reference/kobo_to_xlsform.html">kobo_to_xlsform()</a></code></p>
+<pre><code>MainDataFrame &lt;- read.csv("data/MainDataFrame.csv")
+kobo_to_xlsform(MainDataFrame)
+</code></pre>
+<p>Note that this function will expect the dataframe headers contains variable names (not labels).</p>
+<p>The function will build an xslform file and save it under the data folder. You can then <em>manually</em> edit this file for instance to add the label for your questions.</p>
 </div>
-<div id="shiny-apps" class="section level2">
+<div id="case-2-you-do-not-have-yet-the-data-" class="section level2">
 <h2 class="hasAnchor">
-<a href="#shiny-apps" class="anchor"></a>Shiny Apps</h2>
-<p>The package contains the following Shiny apps, accessible via <code><a href="../reference/kobo_apps.html">kobo_apps("app_name")</a></code>:</p>
-<table class="table">
-<colgroup>
-<col width="50%">
-<col width="50%">
-</colgroup>
-<thead><tr class="header">
-<th>App</th>
-<th>Description</th>
-</tr></thead>
-<tbody><tr class="odd">
-<td><code>"data_viewer"</code></td>
-<td>The <code>"data_viewer"</code> app provides a basic login screen to authenticate against the specified API. Once authenticated, the datasets available via the specified login are displayed, and a dropdown list is populated with which one can select the dataset they want to view. The dataset is also made available in the users Global Environment.</td>
-</tr></tbody>
-</table>
-<p>Here’s <a href="http://news.mrdwab.com/post/koboloader/">a blog post introducing the package</a>!</p>
+<a href="#case-2-you-do-not-have-yet-the-data-" class="anchor"></a>Case 2: You do not have yet the data….</h2>
+<p>You have an xlsform - let’s say called <code>form.xls</code> - save it under the data folder and run the following (note that this will take time to process!!):</p>
+<pre><code>form &lt;- "form.xls"
+## Extend xlsform with necessary column
+kobo_prepare_form(form)
+
+### Eventually Generate dummy data (uncomment below if required)
+kobo_dummy(form, n = 100)</code></pre>
+<p>You can change the value of <code>n</code> to define how many fake records you would like to generate. Note that additional <code>repeat</code> tables will be generated if you form contains those elements.</p>
 </div>
-<div id="from-api" class="section level2">
+<div id="case-3-get-non-hierarchical-data-from-the-server" class="section level2">
 <h2 class="hasAnchor">
-<a href="#from-api" class="anchor"></a>From API</h2>
-<p>The following examples access the public data available via KoBo Toolbox. Note that all of the functions have been set with defaults of <code>user = NULL</code> and <code>api = 'kobo'</code>.</p>
+<a href="#case-3-get-non-hierarchical-data-from-the-server" class="anchor"></a>Case 3: Get non-hierarchical data from the server</h2>
+<p>In case your form <strong>does NOT include <code>repeat</code></strong> elements (i.e. the output of your survey is a single flat table), you can use any of the 3 options below:</p>
+<div id="using-the-online-interface" class="section level3">
+<h3 class="hasAnchor">
+<a href="#using-the-online-interface" class="anchor"></a>Using the online interface</h3>
+<p>Use the following options within the online interface to extract data <img src="https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/exportformat.png" alt="alt text"></p>
+<p>Now, you can simply copy your data in <code>csv</code> format and your xlsform in <code>xls</code> format in the <code>data</code> folder that was created during the project initiation</p>
+</div>
+<div id="using-the-shiny-app" class="section level3">
+<h3 class="hasAnchor">
+<a href="#using-the-shiny-app" class="anchor"></a>Using the Shiny App</h3>
+<p>The package contains a Shiny app to access data from the server. It is accessible via</p>
+<pre><code><a href="../reference/kobo_apps.html"> kobo_apps("data_viewer")</a></code></pre>
+<p>The <code>data_viewer</code> app provides a basic login screen to authenticate against the specified API. Once authenticated, the datasets available via the specified login are displayed, and a dropdown list is populated with which one can select the dataset they want to view. The dataset is also made available in the users Global Environment.</p>
+<p>Here’s <a href="http://news.mrdwab.com/post/koboloader/">a blog post introducing this specific function</a>!</p>
+</div>
+<div id="from-api-with-comand-line" class="section level3">
+<h3 class="hasAnchor">
+<a href="#from-api-with-comand-line" class="anchor"></a>From API with comand line</h3>
+<p>You can grab your data with the functions <code>kobo_data_downloader</code> &amp; get your form with <code>kobo_form</code></p>
+<p>The following examples access the public data available via KoBo Toolbox.</p>
+<p>Note that all of the functions have been set with defaults of <code>user = NULL</code> and <code>api = 'kobo'</code>.</p>
 <pre><code>kobo_datasets()[, c("description", "id"), with = FALSE] ## Just show the first two columns
 #                                                    description    id
 #   1:                                关于“西装微定制现状的调查“ 10427
@@ -185,11 +198,33 @@ kobo_data_downloader("4163")
 example("kobo_submission_count")
 example("kobo_data_downloader")</a></code></pre>
 </div>
+</div>
 <div id="authentication" class="section level2">
 <h2 class="hasAnchor">
 <a href="#authentication" class="anchor"></a>Authentication</h2>
 <p>These functions all use basic HTTP authentication. The easiest way to enter the password details is the common <code>"username:password"</code> approach. Thus, when accessing form data using authentication, the function would be used in the following manner:</p>
 <pre><code><a href="../reference/kobo_data_downloader.html">kobo_data_downloader("123456", "username:password")</a></code></pre>
+</div>
+<div id="case-4-get-hierarchical-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#case-4-get-hierarchical-data" class="anchor"></a>Case 4: Get hierarchical data</h2>
+<p>In case your form <strong>includes <code>repeat</code></strong> elements (i.e. the output of your survey is a single flat table), you can use any of the 3 options below:</p>
+<div id="using-the-online-interface-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#using-the-online-interface-1" class="anchor"></a>Using the online interface</h3>
+<p>When using the online interface, the only options to download hierachical data is to have an xls extract. This may <a href="https://community.kobotoolbox.org/t/export-repeat-tables-as-zipped-csv-files-from-api/3928">come with limitations</a> that can be handled only through the second option below.</p>
+<p>Once you have your xls extract, simply save each of the worksheet as distinct <code>csv</code> files. Note that within the package <code>MainDataFrame</code> is the default name used for the root frame.</p>
+</div>
+<div id="using-odk-briefcase" class="section level3">
+<h3 class="hasAnchor">
+<a href="#using-odk-briefcase" class="anchor"></a>Using ODK briefcase</h3>
+<p><a href="https://docs.opendatakit.org/briefcase-intro/">ODK Briefcase</a> ODK Briefcase is a desktop application for pulling, pushing, and converting form data on servers. Please consult the documentatio directly for more guidances.</p>
+</div>
+<div id="using-odkr-package" class="section level3">
+<h3 class="hasAnchor">
+<a href="#using-odkr-package" class="anchor"></a>Using odkR package</h3>
+<p>The odkR package embbed ODK briefcase. See the <a href="https://validmeasures.org/odkr/">odkr package documentation</a>.</p>
+</div>
 </div>
   </div>
 
@@ -198,10 +233,11 @@ example("kobo_data_downloader")</a></code></pre>
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#get-your-data">Get your data</a></li>
-      <li><a href="#shiny-apps">Shiny Apps</a></li>
-      <li><a href="#from-api">From API</a></li>
+<li><a href="#case-1-you-have-only-the-data-but-not-the-original-xslform">Case 1: You have only the data but not the original xslform</a></li>
+      <li><a href="#case-2-you-do-not-have-yet-the-data-">Case 2: You do not have yet the data….</a></li>
+      <li><a href="#case-3-get-non-hierarchical-data-from-the-server">Case 3: Get non-hierarchical data from the server</a></li>
       <li><a href="#authentication">Authentication</a></li>
+      <li><a href="#case-4-get-hierarchical-data">Case 4: Get hierarchical data</a></li>
       </ul>
 </div>
       </div>

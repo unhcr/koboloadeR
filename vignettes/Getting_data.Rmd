@@ -12,36 +12,77 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+The initial step to start your project is to get your data.
+
+The package is using only `csv` files. this is to avoid the limitations linked the number of columns that some version of excel can handle.
 
 
-## Get your data
 
-Either:  
+## Case 1: You have only the data but not the original xslform
+
+In case, you have simple dataframe, you may load your data in R and then use the function `kobo_to_xlsform()`
+
+```
+MainDataFrame <- read.csv("data/MainDataFrame.csv")
+kobo_to_xlsform(MainDataFrame)
+
+```
+
+Note that this function will expect the dataframe headers contains variable names (not labels).
+
+The function will build an xslform file and save it under the data folder. You can then _manually_ edit this file for instance to add the label for your questions.
+
+
+
+## Case 2: You do not have yet the data....
+
+
+You have an xlsform - let's say called `form.xls` - save it under the data folder and run the following (note that this will take time to process!!):
+
+```
+form <- "form.xls"
+## Extend xlsform with necessary column
+kobo_prepare_form(form)
+
+### Eventually Generate dummy data (uncomment below if required)
+kobo_dummy(form, n = 100)
+```
+
+You can change the value of `n` to define how many fake records you would like to generate. Note that additional `repeat` tables will be generated if you form contains those elements. 
+
+
+## Case 3: Get non-hierarchical data from the server
+
+In case your form __does NOT include `repeat`__ elements (i.e. the output of your survey is a single flat table), you can use any of the 3 options below:
+
+
+### Using the online interface
  
-   *  Grab your data with `kobo_data_downloader` & Get your form with `kobo_form`
-   * or simply copy your data in `csv` format and your xlsform in `xls` format in the `data` folder that was created during the project initiation
- 
- use the following options to extract data
+Use the following options within the online interface to extract data
 ![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/exportformat.png)
- 
 
-## Shiny Apps
+Now, you can simply copy your data in `csv` format and your xlsform in `xls` format in the `data` folder that was created during the project initiation
 
-The package contains the following Shiny apps, accessible via `kobo_apps("app_name")`:
+### Using the Shiny App
 
-App | Description
----|---
-`"data_viewer"` | The `"data_viewer"` app provides a basic login screen to authenticate against the specified API. Once authenticated, the datasets available via the specified login are displayed, and a dropdown list is populated with which one can select the dataset they want to view. The dataset is also made available in the users Global Environment.
+The package contains a Shiny app to access data from the server. It is accessible via
 
-Here's [a blog post introducing the package](http://news.mrdwab.com/post/koboloader/)!
+```
+ kobo_apps("data_viewer")
+```
+
+The `data_viewer` app provides a basic login screen to authenticate against the specified API. Once authenticated, the datasets available via the specified login are displayed, and a dropdown list is populated with which one can select the dataset they want to view. The dataset is also made available in the users Global Environment.
+
+Here's [a blog post introducing this specific function](http://news.mrdwab.com/post/koboloader/)!
 
 
+### From API with comand line
 
+You can grab your data with the functions `kobo_data_downloader` & get your form with `kobo_form`
 
+The following examples access the public data available via KoBo Toolbox. 
 
-## From API
-
-The following examples access the public data available via KoBo Toolbox. Note that all of the functions have been set with defaults of `user = NULL` and `api = 'kobo'`.
+Note that all of the functions have been set with defaults of `user = NULL` and `api = 'kobo'`.
 
 ```
 kobo_datasets()[, c("description", "id"), with = FALSE] ## Just show the first two columns
@@ -93,3 +134,22 @@ These functions all use basic HTTP authentication. The easiest way to enter the 
 ```
 kobo_data_downloader("123456", "username:password")
 ```
+
+
+## Case 4: Get hierarchical data 
+
+In case your form __includes `repeat`__ elements (i.e. the output of your survey is a single flat table), you can use any of the 3 options below:
+
+### Using the online interface
+
+When using the online interface, the only options to download hierachical data is to have an xls extract. This may [come with limitations](https://community.kobotoolbox.org/t/export-repeat-tables-as-zipped-csv-files-from-api/3928) that can be handled only through the second option below.
+
+Once you have your xls extract, simply save each of the worksheet as distinct `csv` files. Note that within the package `MainDataFrame` is the default name used for the root frame.
+
+### Using ODK briefcase
+
+[ODK Briefcase](https://docs.opendatakit.org/briefcase-intro/) ODK Briefcase is a desktop application for pulling, pushing, and converting form data on servers. Please consult the documentatio directly for more guidances. 
+ 
+### Using odkR package
+
+The odkR package embbed ODK briefcase. See the [odkr package documentation](https://validmeasures.org/odkr/).

@@ -1,6 +1,6 @@
 Package: koboloadeR
 Type: Package
-Title: Retrieve Data Using the KoBo Toolbox API & Automatise data exploration
+Title: A metapackage for Survey Data Crunching
 Version: 0.1.6
 Authors@R: c(person("Edouard", "Legoupil", role = c("aut", "cre"),  email = "legoupil@unhcr.org"),
               person("Maher", "Daoud", role = "aut", email = "daoudma@unhcr.org"),

@@ -5,11 +5,11 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Retrieve Data Using the KoBo Toolbox API &amp; Automatise data exploration • koboloadeR</title>
+<title>A metapackage for Survey Data Crunching • koboloadeR</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Retrieve Data Using the KoBo Toolbox API &amp; Automatise data exploration">
+<script src="pkgdown.js"></script><meta property="og:title" content="A metapackage for Survey Data Crunching">
 <meta property="og:description" content="This package facilitates the data crunching &amp; exploration for dataset collected using xlsform.">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -104,21 +104,27 @@
       </header><div class="row">
   <div class="contents col-md-9">
 
-<div id="koboloader-crunching-dataset-collected-using-xlsform" class="section level1">
+<div id="koboloader-survey-data-crunching" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#koboloader-crunching-dataset-collected-using-xlsform" class="anchor"></a>koboloadeR: Crunching dataset collected using xlsform</h1></div>
+<a href="#koboloader-survey-data-crunching" class="anchor"></a>koboloadeR: Survey Data Crunching <img src="reference/figures/koboloadeR.png" width="200" align="right">
+</h1></div>
+<!-- badges: start -->
 
+<p><a href="https://github.com/unhcr/koboloadeR/blob/master/DESCRIPTION"><img src="https://img.shields.io/badge/package%20version-0.0.1-orange.svg" alt="packageversion"></a></p>
+<p><a href="https://cran.r-project.org/package=koboloadeR"><img src="https://www.r-pkg.org/badges/version/koboloadeR" alt="CRAN status"></a> <a href="https://cran.r-project.org/package=koboloadeR"><img src="https://img.shields.io/cran/v/koboloadeR.svg" alt="CRAN"></a> <a href="https://CRAN.R-project.org/package=koboloadeR"><img src="https://img.shields.io/cran/l/koboloadeR.svg" alt="CRAN"></a></p>
 <p><a href="https://CRAN.R-project.org/package=koboloadeR"><img src="http://cranlogs.r-pkg.org/badges/koboloadeR" alt="CRAN"></a> <a href="https://CRAN.R-project.org/package=koboloadeR"><img src="http://cranlogs.r-pkg.org/badges/grand-total/koboloadeR" alt="CRAN"></a></p>
 <p><a href="https://travis-ci.org/unhcr/koboloadeR"><img src="https://travis-ci.org/unhcr/koboloadeR.svg?branch=gh-pages" alt="Travis build status"></a> <a href="https://ci.appveyor.com/project/unhcr/koboloadeR"><img src="https://ci.appveyor.com/api/projects/status/github/unhcr/koboloadeR?branch=gh-pages&amp;svg=true" alt="AppVeyor Build Status"></a> <a href="https://codecov.io/gh/unhcr/koboloadeR"><img src="https://codecov.io/gh/unhcr/koboloadeR/branch/gh-pages/graph/badge.svg" alt="codecov"></a></p>
-<p>koboloadeR is a R package to conduct data discovery and analysis for data collected through <a href="https://www.kobotoolbox.org/">KoboToolbox</a>, <a href="https://opendatakit.org/">ODK</a>, <a href="https://ona.io/home/">ONA</a> or any <strong><a href="http://xlsform.org">xlsform</a></strong> compliant data collection platform. This package first builds on the capacity of UNHCR Kobo server @ <a href="http://kobo.unhcr.org" class="uri">http://kobo.unhcr.org</a> but it can also be used from any structured dataset.</p>
-<p>The package comes as a companion tool to the <a href="https://unhcr.github.io/Integrated-framework-household-survey">Integrated Framework for Household Survey</a>.</p>
-<p>koboloadeR aims at helping <a href="https://humanitarian-user-group.github.io/">humanitarian data analysts</a> to save time by quickly generating graphs and charts needed to discover insights from a dataset and ensure analysis <strong>reproducibilty</strong> through a separation of the analysis configuration and the analysis process.</p>
+<p><a href="https://www.codacy.com/app/Edouard-Legoupil/koboloadeR?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=unhcr/koboloadeR&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/2adb516e959b4c1599ca4367b8480196" alt="Codacy Badge"></a> <a href="https://github.com/unhcr/koboloadeR/commits/master"><img src="https://img.shields.io/github/last-commit/unhcr/koboloader.svg" alt="Last-changedate"></a></p>
+<!-- badges: end -->
+<p>koboloadeR is a metapackage, that brings together a series of specialised packages in an organised data analysis workflow, to conduct data discovery and analysis for data collected through <a href="https://www.kobotoolbox.org/">KoboToolbox</a>, <a href="https://opendatakit.org/">ODK</a>, <a href="https://ona.io/home/">ONA</a> or any <strong><a href="http://xlsform.org">xlsform</a></strong> compliant data collection platform.</p>
+<p>This package first builds on the capacity of UNHCR Kobo server @ <a href="http://kobo.unhcr.org" class="uri">http://kobo.unhcr.org</a> but it can also be used from any structured dataset. It comes as a companion tool to the <a href="https://unhcr.github.io/Integrated-framework-household-survey">Integrated Framework for Household Survey</a>.</p>
+<p>koboloadeR aims at helping <a href="https://humanitarian-user-group.github.io/">humanitarian data analysts</a> to focus in data interpretation by saving the time needed to quickly generate the graphs and charts required to discover insights from a dataset. It also ensure analysis <strong>reproducibility</strong> through a separation of the analysis configuration and the analysis process. The package allows to account for sample weights and hierachical dataset structure (both capacities that are not available through the default <a href="http://support.kobotoolbox.org/articles/2847676-viewing-and-creating-custom-reports">reporting engine</a> or the <a href="http://support.kobotoolbox.org/articles/592387-using-the-excel-analyzer">excel-analyzer</a>).</p>
 <div id="approach" class="section level2">
 <h2 class="hasAnchor">
 <a href="#approach" class="anchor"></a>Approach</h2>
-<p>The main concept behind the package is to implement a survey data analysis plan and configuration directly within the <a href="http://xlsform.org">xlsform</a> excel file that has been used to develop the questionnaire. A few additional column are created in this excel document, the package read those column to generate a series of predefined report.</p>
+<p>The main concept behind the package is to implement a survey data analysis plan and configuration directly within the same <a href="http://xlsform.org">xlsform</a> excel file that has been used to develop the questionnaire. A few additional column are created in this excel document, the package read those column to generate a series of predefined report.</p>
 <p><img src="https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow.png" alt="alt text"></p>
-<p>You can have a look at <a href="https://github.com/unhcr/koboloadeR/out">some examples of output reports here</a>.</p>
+<p>You can have a look at <a href="https://github.com/unhcr/koboloadeR/tree/gh-pages/out">some examples of output reports here</a>.</p>
 <p>The approach offered through the package has the following advantages:</p>
 <ul>
 <li><p>End users <strong>do not need to code</strong> in R and to master the language in order to use the package;</p></li>
@@ -127,8 +133,6 @@
 <li><p>Analysis <strong>iterations</strong> are facilitated;</p></li>
 <li><p>Good <strong>practices</strong> are enforced through the package.</p></li>
 </ul>
-<p>To go in more details, the suggested workflow is presented below (note that all of it is not yet fully implented - see <a href="https://github.com/unhcr/koboloadeR/issues">issue tracking for more details</a>)</p>
-<p><img src="https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow2.png" alt="alt text"></p>
 <p>A more detailed introduction to the concepts used in the package is presented in the <a href="articles/Crunching.html">Data Crunching article</a>.</p>
 </div>
 </div>
@@ -216,6 +220,7 @@ kobo_projectinit() # Creates folders necessary and transfer files needed</a></co
 <li><p><a href="articles/Anonymisation.html">Data Anonymisation and disclosure risk measurement</a>: how to create anonymised data?</p></li>
 <li><p><a href="articles/Cleaning.html">Data Cleaning</a>: how to use the package for reproducible and documented data cleaning?</p></li>
 <li><p><a href="articles/Predicting_Scoring.html">Predicting and scoring</a>: how to use survey in conjunction wiht registration data to build risk prediction and vulnerability scoring?</p></li>
+<li><p><a href="articles/Dissiminating.html">Dissiminating</a>: how to dissiminate both survey microdata using DDI and variable crosstabulation on CKAN?</p></li>
 </ul>
 </div>
 </div>
@@ -223,7 +228,9 @@ kobo_projectinit() # Creates folders necessary and transfer files needed</a></co
 <div id="contributing" class="section level1">
 <h1 class="hasAnchor">
 <a href="#contributing" class="anchor"></a>Contributing</h1>
-<p>Contributions to the packages are welcome. Please read first the <a href="articles/Sampling.html">contribution guidelines</a>, follow the <a href="articles/CODE_OF_CONDUCT.html">code of conduct</a> and use the <a href="articles/ISSUE_TEMPLATE.html">issue template</a></p>
+<p>Contributions to the packages are welcome. Please read first the <a href="articles/Sampling.html">contribution guidelines</a>, follow the <a href="articles/CODE_OF_CONDUCT.html">code of conduct</a> and use the <a href="articles/ISSUE_TEMPLATE.html">issue template</a>.</p>
+<p>To go in more details, the suggested workflow is presented below (note that all of it is not yet fully implented - see <a href="https://github.com/unhcr/koboloadeR/issues">issue tracking for more details</a>). You can read the <a href="reference/index.html">function documentations</a> directly.</p>
+<p><img src="https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow2.png" alt="alt text"></p>
 </div>
 
   </div>
@@ -257,9 +264,8 @@ kobo_projectinit() # Creates folders necessary and transfer files needed</a></co
 <h2>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="http://www.repostatus.org/#active"><img src="http://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active – The project has reached a stable, usable state and is being actively developed."></a></li>
-<li><a href="https://cran.r-project.org/package=koboloadeR"><img src="https://www.r-pkg.org/badges/version/koboloadeR" alt="CRAN status"></a></li>
-<li><a href="https://cran.r-project.org/package=koboloadeR"><img src="https://img.shields.io/cran/v/koboloadeR.svg" alt="CRAN"></a></li>
-<li><a href="https://CRAN.R-project.org/package=koboloadeR"><img src="https://img.shields.io/cran/l/koboloadeR.svg" alt="CRAN"></a></li>
+<li><a href="https://www.tidyverse.org/lifecycle/#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="lifecycle"></a></li>
+<li><a href="https://www.gnu.org/licenses/gpl-3.0.en.html"><img src="https://img.shields.io/badge/license-GPL--3-blue.svg" alt="license"></a></li>
 </ul>
 </div>
 </div>

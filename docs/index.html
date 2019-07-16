@@ -117,7 +117,7 @@
 <p><a href="https://www.codacy.com/app/Edouard-Legoupil/koboloadeR?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=unhcr/koboloadeR&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/2adb516e959b4c1599ca4367b8480196" alt="Codacy Badge"></a> <a href="https://github.com/unhcr/koboloadeR/commits/master"><img src="https://img.shields.io/github/last-commit/unhcr/koboloader.svg" alt="Last-changedate"></a></p>
 <!-- badges: end -->
 <p>koboloadeR is a metapackage, that brings together a series of specialised packages in an organised data analysis workflow, to conduct data discovery and analysis for data collected through <a href="https://www.kobotoolbox.org/">KoboToolbox</a>, <a href="https://opendatakit.org/">ODK</a>, <a href="https://ona.io/home/">ONA</a> or any <strong><a href="http://xlsform.org">xlsform</a></strong> compliant data collection platform.</p>
-<p>This package first builds on the capacity of UNHCR Kobo server @ <a href="http://kobo.unhcr.org" class="uri">http://kobo.unhcr.org</a> but it can also be used from any structured dataset. It comes as a companion tool to the <a href="https://unhcr.github.io/Integrated-framework-household-survey">Integrated Framework for Household Survey</a>.</p>
+<p>This package first builds on the capacity of <a href="http://kobo.unhcr.org">UNHCR Kobo server</a> but it can also be used from any structured dataset. It comes as a companion tool to the <a href="https://unhcr.github.io/Integrated-framework-household-survey">Integrated Framework for Household Survey</a>.</p>
 <p>koboloadeR aims at helping <a href="https://humanitarian-user-group.github.io/">humanitarian data analysts</a> to focus in data interpretation by saving the time needed to quickly generate the graphs and charts required to discover insights from a dataset. It also ensure analysis <strong>reproducibility</strong> through a separation of the analysis configuration and the analysis process. The package allows to account for sample weights and hierachical dataset structure (both capacities that are not available through the default <a href="http://support.kobotoolbox.org/articles/2847676-viewing-and-creating-custom-reports">reporting engine</a> or the <a href="http://support.kobotoolbox.org/articles/592387-using-the-excel-analyzer">excel-analyzer</a>).</p>
 <div id="approach" class="section level2">
 <h2 class="hasAnchor">
@@ -135,13 +135,12 @@
 </ul>
 <p>A more detailed introduction to the concepts used in the package is presented in the <a href="articles/Crunching.html">Data Crunching article</a>.</p>
 </div>
-</div>
-<div id="environment-setup" class="section level1">
-<h1 class="hasAnchor">
-<a href="#environment-setup" class="anchor"></a>Environment setup</h1>
-<div id="software-installation" class="section level2">
+<div id="environment-setup" class="section level2">
 <h2 class="hasAnchor">
-<a href="#software-installation" class="anchor"></a>Software installation</h2>
+<a href="#environment-setup" class="anchor"></a>Environment setup</h2>
+<div id="software-installation" class="section level3">
+<h3 class="hasAnchor">
+<a href="#software-installation" class="anchor"></a>Software installation</h3>
 <ol>
 <li>Install either <a href="https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html">Java JRE</a> or <a href="http://jdk.java.net/12/">Java JDK</a>: JAVA is required to manipulate excel files.</li>
 </ol>
@@ -149,9 +148,7 @@
 <p>If you install, the <code>JDK</code> (Java Development kit), Please make sure that <code>JAVA_HOME</code> is actually recorded as an <a href="https://java.com/en/download/help/path.xml">Environment Variable</a>.</p>
 <p>If you install, the <code>JRE</code> (Java Runtime Environment), Please make sure that <code>JRE_HOME</code> is actually recorded as an <a href="https://confluence.atlassian.com/doc/setting-the-java_home-variable-in-windows-8895.html">Environment Variable</a>.</p>
 <p>Once in R, you may double-check that Environement variable are correctly, i.e. JAVA_HOME or JRE_HOME, set by</p>
-<blockquote>
-<p>Sys.getenv()</p>
-</blockquote>
+<pre class="{r}"><code><a href="https://www.rdocumentation.org/packages/base/topics/Sys.getenv">Sys.getenv()</a></code></pre>
 <p>If JAVA is not correctly set, you will see an installatin error at a latter stage when loading the package <code>RJava</code>.</p>
 <p>Note in some case, you may need to reboot your computer to ensure that this environement variable is properly accounted for.</p>
 <ol>
@@ -161,6 +158,7 @@
 </ol>
 <p>You can now Launch <strong>R Studio</strong> . You may check the list of common issues in the <a href="articles/Troubleshooting.html">Common Troubleshooting</a> article.</p>
 </div>
+</div>
 <div id="package-installation-from-github" class="section level2">
 <h2 class="hasAnchor">
 <a href="#package-installation-from-github" class="anchor"></a>Package installation from Github</h2>
@@ -168,50 +166,48 @@
 <ul>
 <li>Open R studio interface and within the R console, install <code>devtools</code> package:</li>
 </ul>
-<pre><code><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages("devtools")</a></code></pre>
+<pre class="{r}"><code><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages("devtools")</a></code></pre>
 <ul>
 <li>Install koboloadeR:</li>
 </ul>
-<pre><code><a href="https://www.rdocumentation.org/packages/base/topics/library">library(devtools)
-install_github("unhcr/koboloadeR", ref = "gh-pages") 
-</a></code></pre>
+<pre class="{r}"><code><a href="https://www.rdocumentation.org/packages/base/topics/library">library(devtools)
+install_github("unhcr/koboloadeR", ref = "gh-pages") </a></code></pre>
 <ul>
 <li>You are all set! You can know use koboloadeR. If you have a problem consult the common troubleshooting part at the end of this page.</li>
 </ul>
-</div>
-<div id="project-walk-through" class="section level2">
-<h2 class="hasAnchor">
-<a href="#project-walk-through" class="anchor"></a>Project Walk Through</h2>
+<div id="project-walk-through" class="section level3">
+<h3 class="hasAnchor">
+<a href="#project-walk-through" class="anchor"></a>Project Walk Through</h3>
 <ul>
-<li>In R Studio, select File, click New project. A box opens</li>
-<li>Choose New Directory</li>
-<li>Choose Empty project</li>
-<li>Type the name of the folder where you want to put your data</li>
-<li>Select where you want to put this folder</li>
-<li>Click Create project</li>
+<li><p>In R Studio, select File, click New project. A box opens</p></li>
+<li><p>Choose New Directory</p></li>
+<li><p>Choose Empty project</p></li>
+<li><p>Type the name of the folder where you want to put your data</p></li>
+<li><p>Select where you want to put this folder</p></li>
+<li><p>Click Create project</p></li>
 </ul>
 <p>Then setup a few things: run those two lines:</p>
-<pre><code><a href="https://www.rdocumentation.org/packages/base/topics/library">library (koboloadeR) # This loads koboloadeR package
+<pre class="{r}"><code><a href="https://www.rdocumentation.org/packages/base/topics/library">library (koboloadeR) # This loads koboloadeR package
 
 kobo_projectinit() # Creates folders necessary and transfer files needed</a></code></pre>
 <p>It might take a while as a few other packages have to be installed or loaded. Once the see the " &gt;" again at the beginning of the line, you are ready to start</p>
-<div id="graphical-user-interface-gui" class="section level3">
-<h3 class="hasAnchor">
-<a href="#graphical-user-interface-gui" class="anchor"></a>Graphical user interface (GUI)</h3>
+<div id="graphical-user-interface-gui" class="section level4">
+<h4 class="hasAnchor">
+<a href="#graphical-user-interface-gui" class="anchor"></a>Graphical user interface (GUI)</h4>
 <p>All instructions and options for the project configuration and analysis plan settings can be done through a dedicated GUI.</p>
-<pre><code><a href="reference/kobo_shiny.html">kobo_shiny("app_main_koboloadeR.R")</a></code></pre>
+<pre class="{r}"><code><a href="reference/kobo_shiny.html">kobo_shiny("app_main_koboloadeR.R")</a></code></pre>
 <p>For better performances, select “Open in Browser” on the top of the window.</p>
 </div>
-<div id="console-mode" class="section level3">
-<h3 class="hasAnchor">
-<a href="#console-mode" class="anchor"></a>Console mode</h3>
+<div id="console-mode" class="section level4">
+<h4 class="hasAnchor">
+<a href="#console-mode" class="anchor"></a>Console mode</h4>
 <p>Alternatively, you can use the <strong>console mode</strong> by running the file <code>run-analysis.R</code> that is automatically copied in the <code>code</code> folder after you run the <code><a href="reference/kobo_projectinit.html">kobo_projectinit()</a></code> function .</p>
 <p>This will be likely the quickest options, once your are used to the package.</p>
 <p>Note however that this implies that you configure correctly on your own the full configuration within the xlform file.</p>
 </div>
-<div id="presentation-of-features" class="section level3">
-<h3 class="hasAnchor">
-<a href="#presentation-of-features" class="anchor"></a>Presentation of features</h3>
+<div id="presentation-of-features" class="section level4">
+<h4 class="hasAnchor">
+<a href="#presentation-of-features" class="anchor"></a>Presentation of features</h4>
 <ul>
 <li><p><a href="articles/Getting_data.html">Getting data from server</a> - How to retrieve data from the server within R?</p></li>
 <li><p><a href="articles/xlsform.html">Data Analysis Plan within your <code>xlsfrom</code></a> - How to extend the xlsform to include your analysis plan?</p></li>
@@ -225,12 +221,13 @@ kobo_projectinit() # Creates folders necessary and transfer files needed</a></co
 </div>
 </div>
 </div>
-<div id="contributing" class="section level1">
-<h1 class="hasAnchor">
-<a href="#contributing" class="anchor"></a>Contributing</h1>
+<div id="contributing" class="section level2">
+<h2 class="hasAnchor">
+<a href="#contributing" class="anchor"></a>Contributing</h2>
 <p>Contributions to the packages are welcome. Please read first the <a href="articles/Sampling.html">contribution guidelines</a>, follow the <a href="articles/CODE_OF_CONDUCT.html">code of conduct</a> and use the <a href="articles/ISSUE_TEMPLATE.html">issue template</a>.</p>
 <p>To go in more details, the suggested workflow is presented below (note that all of it is not yet fully implented - see <a href="https://github.com/unhcr/koboloadeR/issues">issue tracking for more details</a>). You can read the <a href="reference/index.html">function documentations</a> directly.</p>
 <p><img src="https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow2.png" alt="alt text"></p>
+</div>
 </div>
 <div id="cran-notes" class="section level1">
 <h1 class="hasAnchor">

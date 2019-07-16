@@ -171,14 +171,8 @@ It is assumed that the form is stored in the data folder.</p></td>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>kobo_get_dataframes_levels</span>()</div><div class='output co'>#&gt; [1] "kkobo_get_dataframes_levels_ERROR"</div><div class='output co'>#&gt; $message
-#&gt; [1] "could not find function \"str_replace\""
-#&gt; 
-#&gt; $call
-#&gt; str_replace(survey$type, "_", " ")
-#&gt; 
-#&gt; attr(,"class")
-#&gt; [1] "try-error"</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>kobo_get_dataframes_levels</span>()</div><div class='output co'>#&gt;            name level parent
+#&gt; 1 MainDataFrame     1   root</div><div class='input'>
 </div><span class='co'># NOT RUN {</span>
 <span class='fu'>kobo_get_dataframes_levels</span>(<span class='st'>"myform.xls"</span>)
 <span class='co'># }</span><div class='input'>

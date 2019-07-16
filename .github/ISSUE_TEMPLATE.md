@@ -1,25 +1,25 @@
-[provide general introduction to the issue logging and why it is relevant to this repository]
+__provide general introduction to the issue logging and why it is relevant to this repository__
 
 
 ## Context
-[provide more detailed introduction to the issue itself and why it is relevant]
+__provide more detailed introduction to the issue itself and why it is relevant__
 
 
 ## Process
-[ordered list the process to finding and recreating the issue, example below]
+__ordered list the process to finding and recreating the issue, example below__
 
 
 ## Expected result
-[describe what you would expect to have resulted from this process]
+__describe what you would expect to have resulted from this process__
 
 
 ## Current result
-[describe what you you currently experience from this process, and thereby explain the bug]
+__describe what you you currently experience from this process, and thereby explain the bug__
 
 
 ## Possible Fix
-[not obligatory, but suggest fixes or reasons for the bug]
+__not obligatory, but suggest fixes or reasons for the bug__
 
 
 ## `name of issue` screenshot
-[if relevant, include a screenshot]
+__if relevant, include a screenshot__

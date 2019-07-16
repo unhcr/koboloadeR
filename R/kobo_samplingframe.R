@@ -2,11 +2,14 @@
 #' @rdname kobo_samplingframe
 #' @title  Sample a dataframe
 #'
-#' @description Do basic simple random samples based on a provided dataframe. Takes 3 types of sampling strategies:
+#' @description Do basic simple random samples based on a provided dataframe.
+#'
+#' Takes 3 types of sampling strategies:
 #'  - Simple random
 #'  - Stratified 2-stages
 #'  - Cluster sampling
-#'  All are based on a random selection of primary survey units (PSU) according to confidence level, margin of error, proportion and survey buffer provided.
+#'  All are based on a random selection of primary survey units (PSU) according to confidence level,
+#'   margin of error, proportion and survey buffer provided.
 #'
 #' @param data Data frame containing the population informations
 #' @param strata Column name of the data frame to serve as PSU (as character)
@@ -24,12 +27,16 @@
 #' @author Elliott Messeiller
 #' @examples
 #' \dontrun{
-#' kobo_samplingframe(data=SamplingFrame, strata="Province", pop_col="Households",confidence_level=0.95,margin_error=0.05,proportion=0.5,method="strat2st")
+#' kobo_samplingframe(data=SamplingFrame, strata="Province", pop_col = "Households",
+#'                    confidence_level = 0.95, margin_error = 0.05, proportion = 0.5,
+#'                     method = "strat2st")
 #' }
 #'
 
 
-kobo_samplingframe <- function(data, strata, pop_col, confidence_level=0.95, margin_error=0.05, proportion=0.5, method, buffer=0.05){
+kobo_samplingframe <- function(data, strata, pop_col, confidence_level = 0.95, margin_error = 0.05,
+                               proportion = 0.5,
+                               method, buffer = 0.05){
 ## sampling frame
     if (method == "strat2st") {
         SamplingFrame <- data.frame(data)
@@ -47,7 +54,10 @@ kobo_samplingframe <- function(data, strata, pop_col, confidence_level=0.95, mar
             strata_population <- data.frame(table(SamplingFrame_extended[,c(strata)]))
             strata_population$sample_target <- ""
             for (i in 1:nrow(strata_population)) {
-                strata_population[i,"sample_target"] <- as.numeric(round(strata_population[i,"Freq"]/(1 + 1/(proportion*(1-proportion))*(margin_error/qnorm(1 - (1 - confidence_level)/2))^2*(strata_population[i,"Freq"] - 1)),0))
+                strata_population[i,"sample_target"] <- as.numeric(
+                                                   round(strata_population[i,"Freq"]/(1 + 1/(proportion * (1 - proportion)) *
+                                                   (margin_error/stats::qnorm(1 - (1 - confidence_level)/2))^2 *
+                                                       (strata_population[i,"Freq"] - 1)),0))
                 strata_population$sample_target <- as.numeric(strata_population$sample_target)
                 }
             strata_s <- as.numeric(as.vector(SamplingFrame_extended$strata))

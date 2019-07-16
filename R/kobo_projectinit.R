@@ -416,52 +416,52 @@ kobo_projectinit <- function() {
     ## Out subfolder creation ####
 
     mainDirectory <- paste0(mainDir,"/out")
-    subDir <- "/bar_multi"
-    if (file.exists(paste(mainDirectory, subDir, "/", sep = "/", collapse = "/"))) {
-      cat("bar_multi directory exists in out directory and is a directory.\n")
-    } else if (file.exists(paste(mainDirectory, subDir, sep = "/", collapse = "/"))) {
-      cat("bar_multi directory exists in your out directory.\n")
-      # you will probably want to handle this separately
-    } else {
-      cat("bar_multi directory does not exist in your out directory - creating now!\n ")
-      dir.create(file.path(mainDirectory, subDir))
-    }
-
-    mainDirectory <- paste0(mainDir,"/out")
-    subDir <- "/disagg_multi"
-    if (file.exists(paste(mainDirectory, subDir, "/", sep = "/", collapse = "/"))) {
-      cat("disagg_multi directory exists in out directory and is a directory.\n")
-    } else if (file.exists(paste(mainDirectory, subDir, sep = "/", collapse = "/"))) {
-      cat("disagg_multi directory exists in your out directory.\n")
-      # you will probably want to handle this separately
-    } else {
-      cat("disagg_multi directory does not exist in your out directory - creating now!\n ")
-      dir.create(file.path(mainDirectory, subDir))
-    }
-
-    mainDirectory <- paste0(mainDir,"/out")
-    subDir <- "/bar_one"
-    if (file.exists(paste(mainDirectory, subDir, "/", sep = "/", collapse = "/"))) {
-      cat("bar_one directory exists in out directory and is a directory.\n")
-    } else if (file.exists(paste(mainDirectory, subDir, sep = "/", collapse = "/"))) {
-      cat("bar_one directory exists in your out directory.\n")
-      # you will probably want to handle this separately
-    } else {
-      cat("bar_one directory does not exist in your out directory - creating now!\n ")
-      dir.create(file.path(mainDirectory, subDir))
-    }
-
-    mainDirectory <- paste0(mainDir,"/out")
-    subDir <- "/disagg_one"
-    if (file.exists(paste(mainDirectory, subDir, "/", sep = "/", collapse = "/"))) {
-      cat("disagg_one directory exists in out directory and is a directory.\n")
-    } else if (file.exists(paste(mainDirectory, subDir, sep = "/", collapse = "/"))) {
-      cat("disagg_one directory exists in your out directory.\n")
-      # you will probably want to handle this separately
-    } else {
-      cat("disagg_one directory does not exist in your out directory - creating now!\n ")
-      dir.create(file.path(mainDirectory, subDir))
-    }
+    # subDir <- "/bar_multi"
+    # if (file.exists(paste(mainDirectory, subDir, "/", sep = "/", collapse = "/"))) {
+    #   cat("bar_multi directory exists in out directory and is a directory.\n")
+    # } else if (file.exists(paste(mainDirectory, subDir, sep = "/", collapse = "/"))) {
+    #   cat("bar_multi directory exists in your out directory.\n")
+    #   # you will probably want to handle this separately
+    # } else {
+    #   cat("bar_multi directory does not exist in your out directory - creating now!\n ")
+    #   dir.create(file.path(mainDirectory, subDir))
+    # }
+    #
+    # mainDirectory <- paste0(mainDir,"/out")
+    # subDir <- "/disagg_multi"
+    # if (file.exists(paste(mainDirectory, subDir, "/", sep = "/", collapse = "/"))) {
+    #   cat("disagg_multi directory exists in out directory and is a directory.\n")
+    # } else if (file.exists(paste(mainDirectory, subDir, sep = "/", collapse = "/"))) {
+    #   cat("disagg_multi directory exists in your out directory.\n")
+    #   # you will probably want to handle this separately
+    # } else {
+    #   cat("disagg_multi directory does not exist in your out directory - creating now!\n ")
+    #   dir.create(file.path(mainDirectory, subDir))
+    # }
+    #
+    # mainDirectory <- paste0(mainDir,"/out")
+    # subDir <- "/bar_one"
+    # if (file.exists(paste(mainDirectory, subDir, "/", sep = "/", collapse = "/"))) {
+    #   cat("bar_one directory exists in out directory and is a directory.\n")
+    # } else if (file.exists(paste(mainDirectory, subDir, sep = "/", collapse = "/"))) {
+    #   cat("bar_one directory exists in your out directory.\n")
+    #   # you will probably want to handle this separately
+    # } else {
+    #   cat("bar_one directory does not exist in your out directory - creating now!\n ")
+    #   dir.create(file.path(mainDirectory, subDir))
+    # }
+    #
+    # mainDirectory <- paste0(mainDir,"/out")
+    # subDir <- "/disagg_one"
+    # if (file.exists(paste(mainDirectory, subDir, "/", sep = "/", collapse = "/"))) {
+    #   cat("disagg_one directory exists in out directory and is a directory.\n")
+    # } else if (file.exists(paste(mainDirectory, subDir, sep = "/", collapse = "/"))) {
+    #   cat("disagg_one directory exists in your out directory.\n")
+    #   # you will probably want to handle this separately
+    # } else {
+    #   cat("disagg_one directory does not exist in your out directory - creating now!\n ")
+    #   dir.create(file.path(mainDirectory, subDir))
+    # }
 
 
     mainDirectory <- paste0(mainDir,"/out")

@@ -7,7 +7,7 @@
 kobo_dummy(form = "form.xls")
 }
 \arguments{
-\item{dico}{file representing the xlsform data dictionnary - generated from kobo_dico()}
+\item{form}{file xlsform}
 }
 \description{
 Automatically produce an dummy dataset in line with the structure of an xlsform.
@@ -19,7 +19,7 @@ samplesize is set per defautl at 500 records
 
  Supported Features
 
-- Gnerate a data set with an output similar to the one needed in koboloader
+- Generate a data set with an output similar to the one needed in koboloader
 - respects ODK structure "`relevant`" skip logic (Some advanced functionality such as "coalesce()" not covered)
   "`constraint`" and "`repeat`"
 - adds InstandID column to link hierearchical data based on "`repeat_count`"

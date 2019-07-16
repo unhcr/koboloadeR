@@ -4,12 +4,12 @@
 \alias{kobo_clean}
 \title{Add cleaned variables to the frame based on a reference table}
 \usage{
-kobo_clean(frame, dico)
+kobo_clean(frame, dico = "dico_form.xls.csv")
 }
 \arguments{
-\item{dico}{Generated from kobo_dico function}
+\item{frame}{odk dataset to use}
 
-\item{kobo}{or odk dataset to use}
+\item{dico}{Generated from kobo_dico function}
 }
 \description{
 The function works on a loop based on the dictionnary.

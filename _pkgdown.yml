@@ -42,6 +42,7 @@ reference:
       - kobo_load_data
   - title: Reports Generation
     contents:
+      - kobo_question
       - kobo_crunching_report
       - kobo_cluster_report
       - kobo_anonymisation_report
@@ -83,25 +84,6 @@ reference:
       - kobo_submission_count
       - kobo_surveyname
       - pwd_parse
-  - title: Utilities for batch Chart & Graph Generation
-    contents:
-      - kobo_bar_multi
-      - kobo_bar_multi_facet
-      - kobo_bar_multi_print
-      - kobo_bar_one
-      - kobo_bar_one_facet
-      - kobo_bar_one_facet_print
-      - kobo_bar_one_print
-      - kobo_boxplot_facet
-      - kobo_correlation
-      - kobo_corrplot
-      - kobo_histo
-      - kobo_histo_print
-      - kobo_map_cat
-      - kobo_map_int
-      - kobo_question
-      - kobo_text_cloud
-      - kobo_trend
   - title: Shiny Apps
     contents:
       - kobo_apps

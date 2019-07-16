@@ -7,7 +7,7 @@
 kobo_shiny(app = "")
 }
 \arguments{
-\item{app}{}
+\item{app}{script where shyni app is located}
 }
 \description{
 A function to launch shiny apps

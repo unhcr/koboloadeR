@@ -4,6 +4,7 @@
 #' @description Helper function that will sum values even if we have NA
 #'
 #' @param \dots List of integer or numeric
+#' @param na.rm Bolean indicating if NA shall be removed
 #'
 #' @return Integer or numeric.
 #'
@@ -14,9 +15,9 @@
 #'
 #' @export psum
 #'
-psum <- function(..., na.rm=FALSE) {
+psum <- function(..., na.rm = FALSE) {
   x <- list(...)
-  rowSums(matrix(unlist(x), ncol=length(x)), na.rm=na.rm)
+  rowSums(matrix(unlist(x), ncol = length(x)), na.rm = na.rm)
 }
 
 
@@ -26,8 +27,8 @@ psum <- function(..., na.rm=FALSE) {
 #' @title Create roundup function
 #'
 #'
-#' @param List of integer or numeric to be rounded
-#' @param Rounding level
+#' @param x List of integer or numeric to be rounded
+#' @param n Rounding level
 #'
 #' @return rounded figure.
 #'

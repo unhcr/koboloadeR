@@ -24,7 +24,7 @@ kobo_weight <- function(mainDir = '') {
 
   source(paste0(mainDir, "/code/0-config.R"), local = TRUE)
 
-  sampling <- read_excel(path.to.form, sheet = "sampling_frame")
+  sampling <- readxl::read_excel(path.to.form, sheet = "sampling_frame")
 
 
   data$weight <- ""
@@ -108,13 +108,13 @@ kobo_weight <- function(mainDir = '') {
 
 
         data$weight <- as.numeric(data$weight)
-        surveydesign <- svydesign(
+        surveydesign <- survey::svydesign(
           ids =  ~ 1,
           strata = data[[fullname_strata]],
           weights = ~ weight,
           data = data
         )
-        pastedesign <- paste0("svydesign(ids=~1,
+        pastedesign <- paste0("survey::svydesign(ids=~1,
                                 strata= data[[strata1]],
                                 weights= ~weight,
                                 data=data)")

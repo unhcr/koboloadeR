@@ -7,9 +7,9 @@
 kobo_anonymise(frame, dico = "dico_form.xls.csv")
 }
 \arguments{
-\item{dico}{Generated from kobo_dico function}
+\item{frame}{dataset to use}
 
-\item{kobo}{or odk dataset to use}
+\item{dico}{Generated from kobo_dico function}
 }
 \description{
 Automatically produce an anonymised dataset in line with the anonymisation plan set up in the xlsform.

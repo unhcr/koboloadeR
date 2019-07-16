@@ -26,13 +26,13 @@
 #'
 
 kobo_get_begin_repeat <- function(form = "form.xls") {
-  
+
   mainDir <- kobo_getMainDirectory()
   form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
-  
+
   ### First review all questions from survey sheet #################################################
   survey <- tryCatch({
-    as.data.frame(read_excel(form_tmp, sheet = "survey")) #read survey sheet from the form
+    as.data.frame(readxl::read_excel(form_tmp, sheet = "survey")) #read survey sheet from the form
   }, error = function(err) {
     return(
       list(
@@ -41,12 +41,12 @@ kobo_get_begin_repeat <- function(form = "form.xls") {
       )
     )
   })
-  
+
   survey$type <- tolower(survey$type)
-  result <- survey %>% filter(type=="begin repeat" | type=="begin_repeat" | type=="begin-repeat") 
+  result <- survey %>% dplyr::filter(type == "begin repeat" | type == "begin_repeat" | type == "begin-repeat")
   result <- result$name
-  
-  if(length(result)==0){
+
+  if (length(result) == 0) {
     return(
       list(
         names = result,

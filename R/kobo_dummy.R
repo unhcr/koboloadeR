@@ -11,12 +11,12 @@
 #'
 #'  Supported Features
 #'
-#' - Gnerate a data set with an output similar to the one needed in koboloader
+#' - Generate a data set with an output similar to the one needed in koboloader
 #' - respects ODK structure "`relevant`" skip logic (Some advanced functionality such as "coalesce()" not covered)
 #'   "`constraint`" and "`repeat`"
 #' - adds InstandID column to link hierearchical data based on "`repeat_count`"
 #'
-#' @param  dico file representing the xlsform data dictionnary - generated from kobo_dico()
+#' @param  form file xlsform
 #'
 #' @author Edouard Legoupil
 #'
@@ -56,9 +56,9 @@ kobo_dummy <- function(form = "form.xls") {
   #form <- "form.xls"
   #library(koboloadeR)
   kobo_dico(form)
-  # dico <- read.csv("data/dico_form.xls.csv")
+  # dico <- utils::read.csv("data/dico_form.xls.csv")
   #dico <- paste(mainDir, "data", dico, sep = "/", collapse = "/")
-  dico <- read.csv(paste0(mainDir, "/data/dico_", form, ".csv"))
+  dico <- utils::read.csv(paste0(mainDir, "/data/dico_", form, ".csv"))
 
   ## Extract constraint on data ###########
   ## From constraint  lower bounds &  upper bound
@@ -80,24 +80,24 @@ kobo_dummy <- function(form = "form.xls") {
     cat( paste0(var1 ," / bound = ", bound, " / relevant = ",  relevant, "\n"))
 
     if (!(is.na(bound)) ) {
-      detectlow <- as.data.frame(rbind( str_locate(bound, ".>"),
-                                        str_locate(bound, ".>="),
-                                        str_locate(bound, ".> "),
-                                        str_locate(bound, ".>= ")))
+      detectlow <- as.data.frame(rbind( stringr::str_locate(bound, ".>"),
+                                        stringr::str_locate(bound, ".>="),
+                                        stringr::str_locate(bound, ".> "),
+                                        stringr::str_locate(bound, ".>= ")))
       detectlow <- as.numeric(max(detectlow$end, na.rm = TRUE))
-      detectlowzero <- as.data.frame(str_locate(substr(bound, detectlow + 1,nchar(bound)), " "))
+      detectlowzero <- as.data.frame(stringr::str_locate(substr(bound, detectlow + 1,nchar(bound)), " "))
       detectlowzero <- ifelse( is.na(detectlowzero$start),
                                nchar(bound),
                                as.numeric(min(detectlowzero$start, na.rm = TRUE)))
 
       dico[i, c("lowerbound")] <- substr(bound, detectlow + 1, detectlow + detectlowzero )
 
-      detecthigh <- as.data.frame(rbind( str_locate(bound, ".<"),
-                                         str_locate(bound, ".<="),
-                                         str_locate(bound, ".< "),
-                                         str_locate(bound, ".<= ")))
+      detecthigh <- as.data.frame(rbind( stringr::str_locate(bound, ".<"),
+                                         stringr::str_locate(bound, ".<="),
+                                         stringr::str_locate(bound, ".< "),
+                                         stringr::str_locate(bound, ".<= ")))
       detecthigh <- as.numeric(max(detecthigh$end, na.rm = TRUE))
-      detecthighzero <- as.data.frame(str_locate(substr(bound, detecthigh + 1,nchar(bound)), " "))
+      detecthighzero <- as.data.frame(stringr::str_locate(substr(bound, detecthigh + 1,nchar(bound)), " "))
       #detecthighzero <- as.numeric(min(detecthighzero$end, na.rm = TRUE))
 
       detecthighzero <- ifelse( is.na(detecthighzero$start),
@@ -109,13 +109,13 @@ kobo_dummy <- function(form = "form.xls") {
 
     if ( !(is.na(relevant)) & relevant != "" ) {
       # selected(${
-      detectrelevant1 <- as.data.frame(str_locate(relevant, "\\{"))
+      detectrelevant1 <- as.data.frame(stringr::str_locate(relevant, "\\{"))
       detectrelevant1 <- as.numeric(max(detectrelevant1$end, na.rm = TRUE))
       # },'
-      detectrelevant2 <- as.data.frame(str_locate(relevant, "\\}"))
+      detectrelevant2 <- as.data.frame(stringr::str_locate(relevant, "\\}"))
       detectrelevant2 <- as.numeric(max(detectrelevant2$end, na.rm = TRUE))
       # ')
-      detectrelevant3 <- as.data.frame(str_locate(relevant, "\\)"))
+      detectrelevant3 <- as.data.frame(stringr::str_locate(relevant, "\\)"))
       detectrelevant3 <- as.numeric(max(detectrelevant3$end, na.rm = TRUE))
       dico[i, c("relevantifvar")] <- substr(relevant, detectrelevant1 + 1, detectrelevant2 - 1 )
       dico[i, c("relevantifvalue")] <- substr(relevant, detectrelevant2 + 3, detectrelevant3 - 2 )
@@ -140,7 +140,7 @@ kobo_dummy <- function(form = "form.xls") {
   # https://stringr.tidyverse.org/articles/regular-expressions.html
   # https://stat545.com/block022_regular-expression.html
 
-  # dummydata$UNHCRCaseNo <- stri_rand_strings(n = samplesize,
+  # dummydata$UNHCRCaseNo <- stringi::stri_rand_strings(n = samplesize,
   #                                            length = 4,
   #                                            #  pattern = "(LEB)|(leb)|(0-9)]{3}-[0-9]{2}[c|C][0-9]{5}")
   #                                            pattern = "^LEB|leb[0-9])$")
@@ -184,7 +184,7 @@ kobo_dummy <- function(form = "form.xls") {
 
 
   ## generate the unique ID for each observation
-  dummydata <- data.frame(stri_rand_strings(samplesize, 8))
+  dummydata <- data.frame(stringi::stri_rand_strings(samplesize, 8))
   names(dummydata)[1] <- "instanceID"
 
   cat("Generating household table")
@@ -201,7 +201,7 @@ kobo_dummy <- function(form = "form.xls") {
     ### case to handle
     #  "imei"   "deviceid"       "phonenumber"
     if (typedata %in% c("imei", "deviceid",  "phonenumber") ) {
-      dummydata[ , i + 1] <- stri_rand_strings(n = samplesize, 8)
+      dummydata[ , i + 1] <- stringi::stri_rand_strings(n = samplesize, 8)
     }
     #  "date"  "today"   "start"
     if (typedata %in% c("date", "today", "start") ) {
@@ -237,7 +237,7 @@ kobo_dummy <- function(form = "form.xls") {
     if (typedata == "integer") {
       lowerbound <-  ifelse( is.na(dico.household[ i,  c("lowerbound")]), 0,   as.numeric(dico.household[ i, c("lowerbound" )]))
       upperbound <- ifelse( is.na(dico.household[ i, c("upperbound")]), 100, as.numeric(dico.household[ i, c("upperbound")]))
-      dummydata[ , i + 1] <- round(rtruncnorm(n = samplesize,
+      dummydata[ , i + 1] <- round(truncnorm::rtruncnorm(n = samplesize,
                                               a = lowerbound, #lowerbound, # vector of lower bounds. These may be -Inf
                                               b = upperbound, # vector of upper bounds. These may be Inf
                                               mean = ((upperbound - lowerbound ) / 2), # vector of means.
@@ -247,7 +247,7 @@ kobo_dummy <- function(form = "form.xls") {
     if (typedata == "calculate") {
       lowerbound <- ifelse( is.na(as.numeric(dico.household[ i, c("lowerbound")])), 0,  as.numeric(dico.household[ i, c("lowerbound")]))
       upperbound <- ifelse(is.na(as.numeric(dico.household[ i, c("upperbound")])), 100, as.numeric(dico.household[ i, c("upperbound")]))
-      dummydata[ , i + 1] <- round(rtruncnorm(n = samplesize,
+      dummydata[ , i + 1] <- round(truncnorm::rtruncnorm(n = samplesize,
                                               a = lowerbound, #lowerbound, # vector of lower bounds. These may be -Inf
                                               b = upperbound, # vector of upper bounds. These may be Inf
                                               mean = ((upperbound - lowerbound ) / 2), # vector of means.
@@ -257,7 +257,7 @@ kobo_dummy <- function(form = "form.xls") {
     if (typedata == "decimal") {
       lowerbound <- ifelse( is.na(as.numeric(dico.household[ i, c("lowerbound")])), 0,  as.numeric(dico.household[ i, c("lowerbound")]))
       upperbound <- ifelse(is.na(as.numeric(dico.household[ i, c("upperbound")])), 100, as.numeric(dico.household[ i, c("upperbound")]))
-      dummydata[ , i + 1] <- rtruncnorm(n = samplesize,
+      dummydata[ , i + 1] <- truncnorm::rtruncnorm(n = samplesize,
                                         a = lowerbound, #lowerbound, # vector of lower bounds. These may be -Inf
                                         b = upperbound, # vector of upper bounds. These may be Inf
                                         mean = ((upperbound - lowerbound ) / 2), # vector of means.
@@ -268,14 +268,14 @@ kobo_dummy <- function(form = "form.xls") {
     #  "text"
     if (typedata == "text") {
       #dummydata[ , i + 1] <- "this is a dummy text"
-      dummydata[ , i + 1] <- randomSentences(n = samplesize, 3:10)
+      dummydata[ , i + 1] <- OpenRepGrid::randomSentences(n = samplesize, 3:10)
     }
 
     #  "geopoint"
     if (typedata == "geopoint") {
       #dummydata[ , i + 1] <- "this is a dummy text"
-      dummydata[ , i + 1] <-  paste( round(spsample(BoxSpatialPoly, n = samplesize, "random")@coords[ ,1], 6),
-                                     round(spsample(BoxSpatialPoly, n = samplesize, "random")@coords[ ,2], 6),
+      dummydata[ , i + 1] <-  paste( round(sp::spsample(BoxSpatialPoly, n = samplesize, "random")@coords[ ,1], 6),
+                                     round(sp::spsample(BoxSpatialPoly, n = samplesize, "random")@coords[ ,2], 6),
                                      sep = ",")
     }
 
@@ -301,7 +301,7 @@ kobo_dummy <- function(form = "form.xls") {
       }
     }
   }
-  write.csv(dummydata, "data/MainDataFrame.csv", row.names = FALSE)
+  utils::write.csv(dummydata, "data/MainDataFrame.csv", row.names = FALSE)
 
   rm(categ_level, fullname, i , l, listname, lowerbound, upperbound, value, datacheck, dico.household,
      relevantifvalue, relevantifvar, relevantifvar2, samplesize, typedata)
@@ -412,7 +412,7 @@ kobo_dummy <- function(form = "form.xls") {
             if (typedata == "integer") {
               lowerbound <- ifelse( is.na(as.numeric(dico.repeat1[ i, c("lowerbound")])), 0,  as.numeric(dico.repeat1[ i, c("lowerbound")]))
               upperbound <- ifelse(is.na(as.numeric(dico.repeat1[ i, c("upperbound")])), 100, as.numeric(dico.repeat1[ i, c("upperbound")]))
-              dummydatarepeat[ , i + 1] <- round(rtruncnorm(n = samplesize,
+              dummydatarepeat[ , i + 1] <- round(truncnorm::rtruncnorm(n = samplesize,
                                                             a = lowerbound, #lowerbound, # vector of lower bounds. These may be -Inf
                                                             b = upperbound, # vector of upper bounds. These may be Inf
                                                             mean = ((upperbound - lowerbound ) / 2), # vector of means.
@@ -422,7 +422,7 @@ kobo_dummy <- function(form = "form.xls") {
             if (typedata == "calculate") {
               lowerbound <- ifelse( is.na(as.numeric(dico.repeat1[ i, c("lowerbound")])), 0,  as.numeric(dico.repeat1[ i, c("lowerbound")]))
               upperbound <- ifelse(is.na(as.numeric(dico.repeat1[ i, c("upperbound")])), 100, as.numeric(dico.repeat1[ i, c("upperbound")]))
-              dummydatarepeat[ , i + 1] <- round(rtruncnorm(n = samplesize,
+              dummydatarepeat[ , i + 1] <- round(truncnorm::rtruncnorm(n = samplesize,
                                                             a = lowerbound, #lowerbound, # vector of lower bounds. These may be -Inf
                                                             b = upperbound, # vector of upper bounds. These may be Inf
                                                             mean = ((upperbound - lowerbound ) / 2), # vector of means.
@@ -432,7 +432,7 @@ kobo_dummy <- function(form = "form.xls") {
             if (typedata == "decimal") {
               lowerbound <- ifelse( is.na(as.numeric(dico.repeat1[ i, c("lowerbound")])), 0,  as.numeric(dico.repeat1[ i, c("lowerbound")]))
               upperbound <- ifelse(is.na(as.numeric(dico.repeat1[ i, c("upperbound")])), 100, as.numeric(dico.repeat1[ i, c("upperbound")]))
-              dummydatarepeat[ , i + 1] <- rtruncnorm(n = samplesize,
+              dummydatarepeat[ , i + 1] <- truncnorm::rtruncnorm(n = samplesize,
                                                       a = lowerbound, #lowerbound, # vector of lower bounds. These may be -Inf
                                                       b = upperbound, # vector of upper bounds. These may be Inf
                                                       mean = ((upperbound - lowerbound ) / 2), # vector of means.
@@ -442,7 +442,7 @@ kobo_dummy <- function(form = "form.xls") {
 
             if (typedata == "text") {
               #dummydatarepeat[ , i + 1] <- "this is a dummy text"
-              dummydatarepeat[ , i + 1] <- randomSentences(n = samplesize, 3:10)
+              dummydatarepeat[ , i + 1] <- OpenRepGrid::randomSentences(n = samplesize, 3:10)
             }
 
             ## Then rename correctly
@@ -475,7 +475,7 @@ kobo_dummy <- function(form = "form.xls") {
           }
         }
    # }
-    write.csv(dummydatarepeatall, paste0("data/",repeat_table,".csv"), row.names = FALSE)
+    utils::write.csv(dummydatarepeatall, paste0("data/",repeat_table,".csv"), row.names = FALSE)
     cat(paste0("\n\n\n Finished generation of nested table ", h, " - ", repeat_table, "\n"))
     rm(dummydatarepeatall)
 

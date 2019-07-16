@@ -7,11 +7,11 @@
 kobo_atlas_report(frame, dico, mappoly)
 }
 \arguments{
+\item{frame}{odk dataset to use}
+
 \item{dico}{Generated from kobo_dico function}
 
-\item{kobo}{or odk dataset to use}
-
-\item{map}{equaly mappoly or mappoint depending on the type of visualisation expected - polygons or points}
+\item{mappoly}{or mappoint depending on the type of visualisation expected - polygons or points}
 }
 \description{
 Generate report with data aggregated by location & spatial visualisation / cartography

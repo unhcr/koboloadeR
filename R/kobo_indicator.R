@@ -21,12 +21,12 @@ kobo_indicator <- function(mainDir = '') {
     mainDir <- getwd()
   }
   source(paste0(mainDir, "/code/0-config.R"), local = TRUE)
-  data <- read_excel(path.to.data, sheet=sheet)
+  data <- readxl::read_excel(path.to.data, sheet = sheet)
 
 
   if (analysis_plan == "y") {
     # Getting the analysis plan
-    selectdf <-read_excel(paste0(mainDir, "/data/", form) , sheet = 'analysis_plan')
+    selectdf <- readxl::read_excel(paste0(mainDir, "/data/", form) , sheet = 'analysis_plan')
     selectdf <- data.frame(selectdf, stringsAsFactors = FALSE)
 
     calculation <- data.frame(selectdf["calculation"])
@@ -81,15 +81,15 @@ kobo_indicator <- function(mainDir = '') {
       # Getting calculation
       calc <- as.character(calculation[i, "calculation"])
       #splitting variables and operators
-      calc_split <-data.frame(strsplit(calc, ",")[[1]], stringsAsFactors = FALSE)
+      calc_split <- data.frame(strsplit(calc, ",")[[1]], stringsAsFactors = FALSE)
       operators <- c("+", "-", "/", "*", "(", ")")
 
       #Matching variables with dico and renaming
       for (j in 1:nrow(calc_split)) {
-        split_temp <- as.character(trim(calc_split[j, ]))
+        split_temp <- as.character(glue::trim(calc_split[j, ]))
 
         if (split_temp %in% operators) {
-          calc_split[j, ] <- trim(calc_split[j, ])
+          calc_split[j, ] <- glue::trim(calc_split[j, ])
 
         } else{
           calc_split[j, ] <- as.character(dico[dico$name == split_temp, c("fullname"), ])
@@ -100,7 +100,7 @@ kobo_indicator <- function(mainDir = '') {
 
       # Calculating values
       ### data frame to keep all the results
-      res_tab <-data.frame(c(1:nrow(calc_split)), stringsAsFactors = FALSE)
+      res_tab <- data.frame(c(1:nrow(calc_split)), stringsAsFactors = FALSE)
 
       #Going through all observations
       for (k in 1:nrow(data)) {
@@ -141,12 +141,12 @@ kobo_indicator <- function(mainDir = '') {
     data <- data.frame(data)
 
     #Rewrite data with new variables
-    wb <- loadWorkbook(path.to.data)
-    sheets <- getSheets(wb)
-    removeSheet(wb, sheetName = "cleaned_data")
-    new_sheet <- createSheet(wb, sheetName = as.character("cleaned_data"))
-    addDataFrame(data, new_sheet, row.names = FALSE)
-    saveWorkbook(wb, path.to.data)
+    wb <- xlsx::loadWorkbook(path.to.data)
+    sheets <- xlsx::getSheets(wb)
+    xlsx::removeSheet(wb, sheetName = "cleaned_data")
+    new_sheet <- xlsx::createSheet(wb, sheetName = as.character("cleaned_data"))
+    xlsx::addDataFrame(data, new_sheet, row.names = FALSE)
+    xlsx::saveWorkbook(wb, path.to.data)
   }
 
 

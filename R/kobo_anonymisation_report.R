@@ -21,9 +21,9 @@
 #'
 #'
 
-kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
+kobo_anonymisation_report <- function(frame, form = "form.xls", app = "console") {
   tryCatch({
-    if(app=="shiny"){
+    if (app == "shiny") {
       progress <- shiny::Progress$new()
       progress$set(message = "Generating crunching report in progress...", value = 0)
       on.exit(progress$close())
@@ -40,9 +40,9 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
     mainDir <- kobo_getMainDirectory()
     form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
 
-    dico <- read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+    dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
     framename <- deparse(substitute(frame))
-    write.csv(frame, paste0(mainDir,"/data/anomreport-",framename,".csv"), row.names = FALSE, na = "")
+    utils::write.csv(frame, paste0(mainDir,"/data/anomreport-",framename,".csv"), row.names = FALSE, na = "")
 
     ## Check that all those selectedVars are in the frame ####
     check <- as.data.frame(names(frame))
@@ -51,12 +51,12 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
 
 
     #### Check presence of variable for anom plan...
-    if(app=="shiny"){
+    if (app == "shiny") {
       progress$set(message = "Check presence of variable for anom plan...")
       updateProgress()
     }
     selected.key <- dico[ which(dico$anonymise == "key" & dico$type == "select_one" ) , ]
-    selected.key <- join(x = selected.key, y = check, by = "fullname", type = "left")
+    selected.key <- plyr::join(x = selected.key, y = check, by = "fullname", type = "left")
     selected.key <- selected.key[!is.na(selected.key$id),  ]
 
     if ( nrow(selected.key) == 0) {
@@ -64,11 +64,11 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
       return(structure("You have not selected key variables for your dataset!", class = "try-error"))
     } else {
           selected.sensible <- dico[ which(dico$anonymise == "sensitive" & dico$type == "select_one" ), ]
-          selected.sensible <- join(x = selected.sensible, y = check, by = "fullname", type = "left")
+          selected.sensible <- plyr::join(x = selected.sensible, y = check, by = "fullname", type = "left")
           selected.sensible <- selected.sensible[!is.na(selected.sensible$id), ]
 
           selected.num <- dico[ which(dico$anonymise == "outlier" ), ]
-          selected.num <- join(x = selected.num, y = check, by = "fullname", type = "left")
+          selected.num <- plyr::join(x = selected.num, y = check, by = "fullname", type = "left")
           selected.num <- selected.num[!is.na(selected.num$id),  ]
 
 
@@ -113,10 +113,10 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           cat("## Provide below the name of the form in xsl form - format should be xls not xlsx", file = reportanom , sep = "\n", append = TRUE)
           cat("form <- \"form.xls\"", file = reportanom , sep = "\n", append = TRUE)
           #cat("kobo_dico(form)", file = reportanom , sep = "\n", append = TRUE)
-          cat("dico <- read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = reportanom , sep = "\n", append = TRUE)
+          cat("dico <- utils::read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
 
-          cat(paste0("dataanom <- read.csv(paste0(mainDirroot,\"/data/anomreport-",framename,".csv\"), sep = \",\", encoding = \"UTF-8\", na.strings = \"\")"), file = reportanom , sep = "\n", append = TRUE)
+          cat(paste0("dataanom <- utils::read.csv(paste0(mainDirroot,\"/data/anomreport-",framename,".csv\"), sep = \",\", encoding = \"UTF-8\", na.strings = \"\")"), file = reportanom , sep = "\n", append = TRUE)
 
 
         #  cat(paste0("dataanom <- read.csv(paste0(mainDirroot,\"/data/anomreport-",framename,".csv\")    , sep = \";\", encoding = \"UTF-8\", na.strings = \"\")", file = reportanom , sep = "\n", append = TRUE))
@@ -134,16 +134,16 @@ kobo_anonymisation_report <- function(frame, form = "form.xls", app="console") {
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat(" #### Remove ###############", file = reportanom , sep = "\n", append = TRUE)
           cat("selected.key <- dico[ which(dico$anonymise == \"key\" & dico$type == \"select_one\" ) , ]", file = reportanom , sep = "\n", append = TRUE)
-          cat("selected.key <- join(x = selected.key, y = check, by = \"fullname\", type = \"left\")", file = reportanom , sep = "\n", append = TRUE)
+          cat("selected.key <- plyr::join(x = selected.key, y = check, by = \"fullname\", type = \"left\")", file = reportanom , sep = "\n", append = TRUE)
           cat("selected.key <- selected.key[!is.na(selected.key$id),  ]", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("selected.sensible <- dico[ which(dico$anonymise == \"sensitive\" & dico$type == \"select_one\" ), ]", file = reportanom , sep = "\n", append = TRUE)
-          cat("selected.sensible <- join(x = selected.sensible, y = check, by = \"fullname\", type = \"left\")", file = reportanom , sep = "\n", append = TRUE)
+          cat("selected.sensible <- plyr::join(x = selected.sensible, y = check, by = \"fullname\", type = \"left\")", file = reportanom , sep = "\n", append = TRUE)
           cat("selected.sensible <- selected.sensible[!is.na(selected.sensible$id), ]", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("selected.num <- dico[ which(dico$anonymise == \"outlier\" ), ]", file = reportanom , sep = "\n", append = TRUE)
-          cat("selected.num <- join(x = selected.num, y = check, by = \"fullname\", type = \"left\")", file = reportanom , sep = "\n", append = TRUE)
+          cat("selected.num <- plyr::join(x = selected.num, y = check, by = \"fullname\", type = \"left\")", file = reportanom , sep = "\n", append = TRUE)
           cat("selected.num <- selected.num[!is.na(selected.num$id),  ]", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)

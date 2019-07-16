@@ -8,7 +8,7 @@
 #' The new cleaned variable will be inserted in the dictionnary. with a suffix '.clean'
 #'
 #'
-#' @param  kobo or odk dataset to use
+#' @param  frame odk dataset to use
 #' @param  dico Generated from kobo_dico function
 #'
 #' @author Edouard Legoupil
@@ -25,7 +25,10 @@
 #'
 #'
 
-kobo_clean <- function(frame, dico) {
+kobo_clean <- function(frame, dico = "dico_form.xls.csv") {
+
+  mainDir <- kobo_getMainDirectory()
+  dico1 <- paste(mainDir, "data", dico, sep = "/", collapse = "/")
 
   # frame <- household
   # framename <- "household"
@@ -37,7 +40,7 @@ kobo_clean <- function(frame, dico) {
     cat(paste0("You have not defined variables to clean within your xlsform. \n"))
     cat(paste0(" Insert a column named clean and reference the csv file to use for cleaning. \n")) }
   else {
-    dico.clean <- dico[ !(is.na(dico$clean)) ,  ]
+    dico.clean <- dico1[ !(is.na(dico1[, c("clean")])) ,  ]
       if (nrow(dico.clean) > 0) {
         cat(paste0(nrow(dico.clean), " potential variables to clean\n"))
 
@@ -48,7 +51,7 @@ kobo_clean <- function(frame, dico) {
             varia <- paste0(framename,"$",as.character(dico.clean[ i, c("fullname")]))
             variable <- paste0(as.character(dico.clean[ i, c("fullname")]))
             cleanfile <- paste0(as.character(dico.clean[ i, c("clean")]))
-            cleanframe <- paste0(substr(as.character(dico.clean[ i, c("clean")]), 1, nchar(cleanfile)-4))
+            cleanframe <- paste0(substr(as.character(dico.clean[ i, c("clean")]), 1, nchar(cleanfile) - 4))
             formula1 <-  paste0(cleanframe," <- read.csv(\"data/", cleanfile,"\", encoding = \"UTF-8\", na.strings = \"\")" )
             formula2 <- paste0("names(",cleanframe,")[1] <- \"",dico.clean[ i, c("fullname")],"\"" )
             formula3 <- paste0("names(",cleanframe,")[2] <- \"",dico.clean[ i, c("fullname")],".clean\"" )

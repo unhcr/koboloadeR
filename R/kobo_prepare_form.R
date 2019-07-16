@@ -47,7 +47,7 @@ kobo_prepare_form <- function(form = "form.xls") {
 
     # Survey sheet ######################################
     survey <- tryCatch({
-      as.data.frame(read_excel(form_tmp, sheet = "survey"),
+      as.data.frame(readxl::read_excel(form_tmp, sheet = "survey"),
                     stringsAsFactors = FALSE) #read survey sheet from the form
     }, error = function(err) {
       data.frame( #if it doesn't exist, we need to create empty dataframe with those fields
@@ -279,12 +279,12 @@ kobo_prepare_form <- function(form = "form.xls") {
       xlsx::Fill(backgroundColor = "GREY_50_PERCENT",foregroundColor = "GREY_50_PERCENT",
            pattern = "SOLID_FOREGROUND")  +
       xlsx::Border(color = "GREY_80_PERCENT", position = c("TOP", "BOTTOM"), "BORDER_THIN")
-    cs1 <- CellStyle(wb) +
+    cs1 <- xlsx::CellStyle(wb) +
       xlsx::Font(wb, isBold = TRUE, isItalic = FALSE, color = "black") +
       xlsx::Fill(backgroundColor = "SKY_BLUE", foregroundColor = "SKY_BLUE",
            pattern = "SOLID_FOREGROUND")   +
       xlsx::Border(color = "SKY_BLUE", position = c("TOP", "BOTTOM"), "BORDER_THIN")
-    cs2 <- CellStyle(wb) +
+    cs2 <- xlsx::CellStyle(wb) +
       xlsx::Font(wb, isBold = TRUE, isItalic = FALSE, color = "white") +
       xlsx::Fill(backgroundColor = "orange", foregroundColor = "orange",
            pattern = "SOLID_FOREGROUND")    +
@@ -349,7 +349,7 @@ kobo_prepare_form <- function(form = "form.xls") {
 
     # Choices sheet ######################################
     choices <- tryCatch({
-      as.data.frame(read_excel(form_tmp, sheet = "choices"),
+      as.data.frame(readxl::read_excel(form_tmp, sheet = "choices"),
                     stringsAsFactors = FALSE) #read survey sheet from the form
     }, error = function(err) {
       data.frame( #if it doesn't exist, we need to create empty dataframe with those fields
@@ -446,7 +446,7 @@ kobo_prepare_form <- function(form = "form.xls") {
 
 
       settings <- tryCatch({
-        as.data.frame(read_excel(form_tmp, sheet = "settings"),
+        as.data.frame(readxl::read_excel(form_tmp, sheet = "settings"),
                       stringsAsFactors = FALSE)
       }, error = function(err) {
         data.frame(
@@ -494,7 +494,7 @@ kobo_prepare_form <- function(form = "form.xls") {
     cat("############################################ \n\n")
 
     analysisSettings <- tryCatch({
-      as.data.frame(read_excel(form_tmp, sheet = "analysisSettings"),
+      as.data.frame(readxl::read_excel(form_tmp, sheet = "analysisSettings"),
                     stringsAsFactors = FALSE)
     }, error = function(err) {
       data.frame(
@@ -858,7 +858,7 @@ kobo_prepare_form <- function(form = "form.xls") {
 
 
     indicator <- tryCatch({
-      as.data.frame(read_excel(form_tmp, sheet = "indicator"),stringsAsFactors = FALSE)
+      as.data.frame(readxl::read_excel(form_tmp, sheet = "indicator"),stringsAsFactors = FALSE)
     }, error = function(err) {
       data.frame(
         type = character(),

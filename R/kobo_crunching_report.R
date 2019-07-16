@@ -48,7 +48,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
     ### Load the data
     cat("\n\n Loading data. It is assumed that the cleaning, weighting & re-encoding has been done previously \n")
 
-    MainDataFrame <- read.csv(paste(mainDir,"/data/MainDataFrame_encoded.csv",sep = ""), encoding = "UTF-8", na.strings = "")
+    MainDataFrame <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_encoded.csv",sep = ""), encoding = "UTF-8", na.strings = "")
 
 
     ###Form##########################################
@@ -58,7 +58,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
     #form <- "form.xls"
     ## Generate & Load dictionnary
     #kobo_dico(form)
-    dico <- read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+    dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
     #rm(form)
 
 
@@ -77,7 +77,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
     dataBeginRepeat <- dataBeginRepeat$names
     for (dbr in dataBeginRepeat) {
 
-      dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"_encoded.csv",sep = ""),stringsAsFactors = F)
+      dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_encoded.csv",sep = ""),stringsAsFactors = F)
 
       assign(dbr, kobo_label(dataFrame, dico))
       if (app == "shiny") {
@@ -127,7 +127,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
 
     names(chapters)[1] <- "Chapter"
 
-    write.csv(chapters, paste(mainDir,"/data/chapters.csv",sep = ""), row.names = FALSE, na = "")
+    utils::write.csv(chapters, paste(mainDir,"/data/chapters.csv",sep = ""), row.names = FALSE, na = "")
 
 
     ## for each chapter: create a Rmd file -------
@@ -194,17 +194,17 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
 
       cat("## Provide below the name of the form in xsl form - format should be xls not xlsx", file = chapter.name , sep = "\n", append = TRUE)
       cat(paste0("form <- \"",form,"\""), file = chapter.name , sep = "\n", append = TRUE)
-      cat("dico <- read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = chapter.name , sep = "\n", append = TRUE)
+      cat("dico <- utils::read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = chapter.name , sep = "\n", append = TRUE)
 
 
       ## TO DO: Use config file to load the different frame
 
 
-      cat("MainDataFrame <- read.csv(paste0(mainDirroot,\"/data/MainDataFrame_encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = chapter.name , sep = "\n", append = TRUE)
+      cat("MainDataFrame <- utils::read.csv(paste0(mainDirroot,\"/data/MainDataFrame_encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = chapter.name , sep = "\n", append = TRUE)
 
 
       for (dbr in dataBeginRepeat) {
-        cat(paste(dbr, " <- read.csv(paste0(mainDirroot,\"/data/",dbr,"_encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
+        cat(paste(dbr, " <- utils::read.csv(paste0(mainDirroot,\"/data/",dbr,"_encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
 
       }
 
@@ -244,45 +244,45 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
 
       if (configInfo[configInfo$name == "sample_type","value"] == "No sampling (type 1)") {
         ## If no weight, the weighted object is unweigthted
-        cat("MainDataFrame.survey <- svydesign(ids = ~ 1 ,  data = MainDataFrame )", file = chapter.name , sep = "\n", append = TRUE)
+        cat("MainDataFrame.survey <- survey::svydesign(ids = ~ 1 ,  data = MainDataFrame )", file = chapter.name , sep = "\n", append = TRUE)
 
         for (dbr in dataBeginRepeat) {
-          cat(paste(dbr,".survey <- svydesign(ids = ~ 1 ,  data = ",dbr," )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
+          cat(paste(dbr,".survey <- survey::svydesign(ids = ~ 1 ,  data = ",dbr," )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
         }
         ## with clusters
 
       }else if (configInfo[configInfo$name == "sample_type","value"] == "Cluster sample (type 2)") {
         ## with clusters
-        cat(paste("MainDataFrame.survey <- svydesign(ids = ~ ", configInfo[configInfo$name == "variable_name","value"],",  data = MainDataFrame,  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"]," ,  fpc = ~ fpc )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
+        cat(paste("MainDataFrame.survey <- survey::svydesign(ids = ~ ", configInfo[configInfo$name == "variable_name","value"],",  data = MainDataFrame,  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"]," ,  fpc = ~ fpc )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
 
         for (dbr in dataBeginRepeat) {
-          cat(paste(dbr,".survey <- svydesign(ids = ~ ", configInfo[configInfo$name == "variable_name","value"],",  data = ",dbr,",  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"]," ,  fpc = ~ fpc )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
+          cat(paste(dbr,".survey <- survey::svydesign(ids = ~ ", configInfo[configInfo$name == "variable_name","value"],",  data = ",dbr,",  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"]," ,  fpc = ~ fpc )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
         }
         ## with strata
 
       }else if (configInfo[configInfo$name == "sample_type","value"] == "Stratified sample (type 3)") {
         ## with strata
-        cat(paste("MainDataFrame.survey <- svydesign(id=~1, strata= ~ ", configInfo[configInfo$name == "variable_name","value"]," ,check.strata = TRUE,  data = MainDataFrame,  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"],"  )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
+        cat(paste("MainDataFrame.survey <- survey::svydesign(id=~1, strata= ~ ", configInfo[configInfo$name == "variable_name","value"]," ,check.strata = TRUE,  data = MainDataFrame,  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"],"  )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
 
         for (dbr in dataBeginRepeat) {
-          cat(paste(dbr,".survey <- svydesign(id=~1, strata= ~ ", configInfo[configInfo$name == "variable_name","value"]," ,check.strata = TRUE,  data = ",dbr,",  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"],"  )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
+          cat(paste(dbr,".survey <- survey::svydesign(id=~1, strata= ~ ", configInfo[configInfo$name == "variable_name","value"]," ,check.strata = TRUE,  data = ",dbr,",  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"],"  )", sep = ""), file = chapter.name , sep = "\n", append = TRUE)
         }
       }
 
 
 
       ## with strata
-      #cat("MainDataFrame_edited.survey <- svydesign(id=~1, strata= ~ RecordCategory ,check.strata = TRUE,  data = MainDataFrame_edited,  weights = ~ WeightingCoefficient  )", file = chapter.name , sep = "\n", append = TRUE)
+      #cat("MainDataFrame_edited.survey <- survey::svydesign(id=~1, strata= ~ RecordCategory ,check.strata = TRUE,  data = MainDataFrame_edited,  weights = ~ WeightingCoefficient  )", file = chapter.name , sep = "\n", append = TRUE)
 
       ## with clusters
-      #cat("MainDataFrame_edited.survey <- svydesign(ids = ~ Camp.Province ,  data = MainDataFrame_edited,  weights = ~ weight ,  fpc = ~ fpc )", file = chapter.name , sep = "\n", append = TRUE)
-      #cat("br1.survey <- svydesign(ids = ~ Camp.Province ,  data = br1,  weights = ~ weight ,  fpc = ~ fpc )", file = chapter.name , sep = "\n", append = TRUE)
-      #cat("br2.survey <- svydesign(ids = ~ Camp.Province ,  data = br2,  weights = ~ weight ,  fpc = ~ fpc )", file = chapter.name , sep = "\n", append = TRUE)
+      #cat("MainDataFrame_edited.survey <- survey::svydesign(ids = ~ Camp.Province ,  data = MainDataFrame_edited,  weights = ~ weight ,  fpc = ~ fpc )", file = chapter.name , sep = "\n", append = TRUE)
+      #cat("br1.survey <- survey::svydesign(ids = ~ Camp.Province ,  data = br1,  weights = ~ weight ,  fpc = ~ fpc )", file = chapter.name , sep = "\n", append = TRUE)
+      #cat("br2.survey <- survey::svydesign(ids = ~ Camp.Province ,  data = br2,  weights = ~ weight ,  fpc = ~ fpc )", file = chapter.name , sep = "\n", append = TRUE)
 
       # ## If no weight, the weighted object is unweigthted
-      # cat("MainDataFrame_edited.survey <- svydesign(ids = ~ 1 ,  data = MainDataFrame_edited )", file = chapter.name , sep = "\n", append = TRUE)
-      # cat("br1.survey <- svydesign(ids = ~ 1 ,  data = br1 )", file = chapter.name , sep = "\n", append = TRUE)
-      # cat("br2.survey <- svydesign(ids = ~ 1 ,  data = br2 )", file = chapter.name , sep = "\n", append = TRUE)
+      # cat("MainDataFrame_edited.survey <- survey::svydesign(ids = ~ 1 ,  data = MainDataFrame_edited )", file = chapter.name , sep = "\n", append = TRUE)
+      # cat("br1.survey <- survey::svydesign(ids = ~ 1 ,  data = br1 )", file = chapter.name , sep = "\n", append = TRUE)
+      # cat("br2.survey <- (ids = ~ 1 ,  data = br2 )", file = chapter.name , sep = "\n", append = TRUE)
 
 
       cat(paste0("\n```\n", sep = '\n'), file = chapter.name, append = TRUE)
@@ -593,7 +593,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
 
                   if (disag.ordinal == "ordinal" & questions.ordinal == "ordinal" ) {
                     cat(paste0("## Reorder factor"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("crosssfrequ.weight <- as.data.frame(prop.table(svytable(~", questions.name ," + ", disag.name,", design =",questions.frame ,".survey  ), margin = 2))"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("crosssfrequ.weight <- as.data.frame(prop.table(survey::svytable(~", questions.name ," + ", disag.name,", design =",questions.frame ,".survey  ), margin = 2))"),file = chapter.name ,sep = "\n", append = TRUE)
                     cat(paste0("names(crosssfrequ.weight)[1] <- \"quest\""),file = chapter.name ,sep = "\n", append = TRUE)
                     cat(paste0("names(crosssfrequ.weight)[2] <- \"disag\""),file = chapter.name ,sep = "\n", append = TRUE)
                     cat(paste0("crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
@@ -604,7 +604,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
 
                   } else if (disag.ordinal == "ordinal" ) {
                     cat(paste0("## Reorder factor"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("crosssfrequ.weight <-as.data.frame(prop.table(svytable(~", questions.name ," + ", disag.name,", design =",questions.frame ,".survey  ), margin = 2))"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("crosssfrequ.weight <-as.data.frame(prop.table(survey::svytable(~", questions.name ," + ", disag.name,", design =",questions.frame ,".survey  ), margin = 2))"),file = chapter.name ,sep = "\n", append = TRUE)
                     cat(paste0("names(crosssfrequ.weight)[1] <- \"quest\""),file = chapter.name ,sep = "\n", append = TRUE)
                     cat(paste0("names(crosssfrequ.weight)[2] <- \"disag\""),file = chapter.name ,sep = "\n", append = TRUE)
                     cat(paste0("crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
@@ -612,7 +612,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
                     cat(paste0("levels(crosssfrequ.weight$disag) <- list.ordinal"),file = chapter.name ,sep = "\n", append = TRUE)
 
                   } else {
-                    cat(paste0("crosssfrequ.weight <-as.data.frame(prop.table(svytable(~", questions.name ," + ", disag.name,", design =",questions.frame ,".survey  ), margin = 2))"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("crosssfrequ.weight <-as.data.frame(prop.table(survey::svytable(~", questions.name ," + ", disag.name,", design =",questions.frame ,".survey  ), margin = 2))"),file = chapter.name ,sep = "\n", append = TRUE)
                     cat(paste0("names(crosssfrequ.weight)[1] <- \"quest\""),file = chapter.name ,sep = "\n", append = TRUE)
                     cat(paste0("names(crosssfrequ.weight)[2] <- \"disag\""),file = chapter.name ,sep = "\n", append = TRUE)
                     cat(paste0("crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
@@ -659,7 +659,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
           check <- as.data.frame(names(get(paste0(questions.frame))))
           names(check)[1] <- "fullname"
           check$id <- row.names(check)
-          correlationdf <- join(x = correlation1, y = check, by = "fullname", type = "left")
+          correlationdf <- plyr::join(x = correlation1, y = check, by = "fullname", type = "left")
           correlationdf <- correlationdf[!is.na(correlationdf$id), ]
 
 
@@ -728,7 +728,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
                    n.class == n.class.notnull
 
               )
-              { chiquare.result[1, c("p.value")]  <- round(chisq.test(formula$target,formula$tested)$p.value,4)
+              { chiquare.result[1, c("p.value")]  <- round(stats::chisq.test(formula$target,formula$tested)$p.value,4)
               } else {chiquare.result[1, c("p.value")] <- 1  }
               chiquare.resultall <- rbind(chiquare.resultall, chiquare.result)
               rm(chiquare.result)
@@ -761,7 +761,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
                 ## Open chunk
                 cat(paste0("\n```{r ", questions.name,"ccc",m, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=6, size=\"small\"}\n"), file = chapter.name, append = TRUE)
 
-                cat(paste0("corrplot(chisq.test(",formula.target1,",", formula.tested1,")$residuals,"), file = chapter.name , sep = "\n", append = TRUE)
+                cat(paste0("corrplot(stats::chisq.test(",formula.target1,",", formula.tested1,")$residuals,"), file = chapter.name , sep = "\n", append = TRUE)
                 cat(paste0("is.cor = FALSE, # use for general matrix to convert to Sq form"), file = chapter.name , sep = "\n", append = TRUE)
                 cat(paste0("cl.pos = \"n\", ## Do not display the color legend"), file = chapter.name , sep = "\n", append = TRUE)
                 cat(paste0("cl.cex = 0.7, # Size of all label"), file = chapter.name , sep = "\n", append = TRUE)
@@ -769,7 +769,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
                 cat(paste0("tl.srt = 45, # string rotation in degrees"), file = chapter.name , sep = "\n", append = TRUE)
                 cat(paste0("tl.col = \"black\", # color of text label."), file = chapter.name , sep = "\n", append = TRUE)
                 cat(paste0("addCoef.col = \"grey\", # add coeff in the chart"), file = chapter.name , sep = "\n", append = TRUE)
-                cat(paste0("number.cex= 3/ncol(chisq.test(",formula.target1,",", formula.tested1,")), # size of coeff"), file = chapter.name , sep = "\n", append = TRUE)
+                cat(paste0("number.cex= 3/ncol(stats::chisq.test(",formula.target1,",", formula.tested1,")), # size of coeff"), file = chapter.name , sep = "\n", append = TRUE)
                 cat(paste0("mar = c(0.5,0.5,4, 0.5), ## margin of plots"), file = chapter.name , sep = "\n", append = TRUE)
                 cat(paste0("title= paste0(\"Correlation between", "\n",target.label," (row)\n", " & ",tested.label," (col)\")) "), file = chapter.name , sep = "\n", append = TRUE)
                 ## Close chunk
@@ -1040,7 +1040,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
             totalanswer <- nrow(data.selectmultilist)
             data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1] != "Not replied", ]
             percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),"%")
-            meltdata <- melt(data.selectmultilist,id = "id")
+            meltdata <- reshape2::melt(data.selectmultilist,id = "id")
             castdata <- as.data.frame(table(meltdata[c("value")]))
 
 
@@ -1073,7 +1073,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
               cat(paste0("totalanswer <- nrow(data.selectmultilist)"),file = chapter.name ,sep = "\n", append = TRUE)
               cat(paste0("data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!=\"Not replied\", ]"),file = chapter.name ,sep = "\n", append = TRUE)
               cat(paste0("percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
-              cat(paste0("meltdata <- melt(data.selectmultilist,id=\"id\")"),file = chapter.name ,sep = "\n", append = TRUE)
+              cat(paste0("meltdata <- reshape2::melt(data.selectmultilist,id=\"id\")"),file = chapter.name ,sep = "\n", append = TRUE)
               cat(paste0("castdata <- as.data.frame(table(meltdata[c(\"value\")]))"),file = chapter.name ,sep = "\n", append = TRUE)
               cat(paste0("castdata$freqper <- castdata$Freq/nrow(data.selectmultilist)"),file = chapter.name ,sep = "\n", append = TRUE)
               cat(paste0("castdata <- castdata[castdata$Var1!=\"Not selected\", ]"),file = chapter.name ,sep = "\n", append = TRUE)
@@ -1163,7 +1163,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
     #rm(list = ls())
     kobo_load_packages()
     mainDir <- kobo_getMainDirectory()
-    chapters <- read.csv(paste(mainDir,"/data/chapters.csv",sep = ""), encoding = "UTF-8", na.strings = "")
+    chapters <- utils::read.csv(paste(mainDir,"/data/chapters.csv",sep = ""), encoding = "UTF-8", na.strings = "")
     ### Render now all reports
     cat(" Render now reports... \n")
     for (i in 1:nrow(chapters)) {
@@ -1174,7 +1174,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
       }
       cat(paste(i, " - Render word output report for ",chaptersname))
       mainDir <- kobo_getMainDirectory()
-      render(paste(mainDir,"/code/",i,"-", chaptersname, "-chapter.Rmd", sep = ""))
+      rmarkdown::render(paste(mainDir,"/code/",i,"-", chaptersname, "-chapter.Rmd", sep = ""))
       ## Put the report in the out folder
       mainDir <- kobo_getMainDirectory()
       file.rename(paste(mainDir,"/code/",i,"-", chaptersname, "-chapter.docx", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", chaptersname,"-",Sys.Date(), "-chapter.docx"))

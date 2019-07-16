@@ -2,7 +2,7 @@ Package: koboloadeR
 Type: Package
 Title: A metapackage for Survey Data Crunching
 Version: 0.1.6
-Authors@R: c(person("Edouard", "Legoupil", role = c("aut", "cre"),  email = "legoupil@unhcr.org"),
+Authors@R: c(person("Edouard", "Legoupil", role = c("aut", "cre"),  email = "edouard.legoupil@gmail.com"),
               person("Maher", "Daoud", role = "aut", email = "daoudma@unhcr.org"),
               person("Elliott", "Messeiller", role = "ctb", email = "elliott.messeiller@acted.org"),
               person("Damien", "Seite", role = "ctb", email = "damien.seite@eleve.ensai.fr"))
@@ -11,47 +11,67 @@ Description: This package facilitates the data crunching & exploration for datas
 License: GPL-3
 LazyData: TRUE
 Depends:
-    utils,
-    data.table (>= 1.9.4),
-    curl,
-    RCurl,
-    httr,
-    bit64,
-    readr,
-    DT,
-    plyr,
-    dplyr,
-    tidyr,
-    readxl,
+    utils
+Imports:
     ggplot2,
+    DDIwR,
+    DT,
+    glue,
+    ggthemes,
+    ggrepel, 
+    httr,
+    haven, 
+    OpenRepGrid,
+    plyr, 
+    RCurl,
+    readxl,
     reshape2,
-    digest,
-    sdcMicro,
+    readr,
     rJava,
-    xlsx,
-    haven,
+    RODBC,
+    rstudioapi,
+    shiny,
     shinydashboard,
     shinyalert,
-    ape,
-    sp,
-    gdata,
-    rhandsontable,
+    survey,
     stringr,
     stringi,
+    sp,
     simFrame,
-    classInt,
-    ggrepel,
-    DDIwR,
+    sdcMicro,
     truncnorm,
-    OpenRepGrid
+    xlsx, 
+    tidyr
 Suggests:
-    shiny,
+    ape,
+    bit64,
+    classInt,
+    curl,
+    car,
+    corrplot,
+    data.table,                       
+    digest,
+    dplyr,
+    forcats,
+    graphics,
+    gridExtra,
+    hexbin,
+    kableExtra,
+    knitr,
+    koRpus,
+    lubridate,
+    rmarkdown,
+    RColorBrewer,
+    rhandsontable,
+    scales,
+    tables,
+    vcd,
+    viridis,
     testthat (>= 2.1.0),
-    utils,
-    knitr
+    zoo
 URL: https://github.com/unhcr/koboloadeR/docs
 BugReports: https://github.com/unhcr/koboloadeR/issues
 RoxygenNote: 6.1.1
-VignetteBuilder: utils
+VignetteBuilder: knitr
 Encoding: UTF-8
 SystemRequirements: Java (>= 8)

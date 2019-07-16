@@ -8,6 +8,9 @@
 #'
 #' @author Edouard Legoupil - with inspiration from bbc
 #'
+#' @param plot_name ggplot2 object
+#' @param pieces  plot labels to align
+#'
 #' @examples
 #' kobo_left_align()
 #'

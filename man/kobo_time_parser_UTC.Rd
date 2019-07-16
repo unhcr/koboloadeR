@@ -8,9 +8,6 @@ kobo_time_parser_UTC(instring)
 }
 \arguments{
 \item{instring}{A date/time format coming from KoBo.}
-
-\item{timezone}{A valid timezone, available in the list available
-from \code{\link[base:OlsonNames]{OlsonNames}}.}
 }
 \value{
 The \code{kobo_time_parser_UTC} function returns a POSIXct object,

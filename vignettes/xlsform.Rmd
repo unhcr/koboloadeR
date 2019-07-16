@@ -7,7 +7,7 @@ output:
     toc: yes
     toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{KoboloadeR Introduction}
+  %\VignetteIndexEntry{Data Analysis Plan within your `xlsfrom`}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

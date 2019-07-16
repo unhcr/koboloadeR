@@ -34,7 +34,7 @@ kobo_dico <- function(form = "form.xls") {
 
 
   ### First review all questions from survey sheet #################################################
-  survey <- read_excel(form_tmp, sheet = "survey")
+  survey <- readxl::read_excel(form_tmp, sheet = "survey")
 
   ## Rename the variable label
   names(survey)[names(survey) == "label::English"] <- "label"
@@ -240,8 +240,8 @@ kobo_dico <- function(form = "form.xls") {
                                          survey$listname))
 
   ## Remove trailing space
-  survey$listname <- trim(survey$listname)
-  survey$label <- trim(survey$label)
+  survey$listname <- glue::trim(survey$listname)
+  survey$label <- glue::trim(survey$label)
   #str(survey)
 
   ## Now creating full name in order to match with data variables name
@@ -410,15 +410,15 @@ kobo_dico <- function(form = "form.xls") {
   ####
   #### Now looking at choices --#########################################################################################################
   #rm(choices)
-  choices <- read_excel(form_tmp, sheet = "choices")
+  choices <- readxl::read_excel(form_tmp, sheet = "choices")
   names(choices)[names(choices) == "label::English"] <- "label"
   names(choices)[names(choices) == "label::english"] <- "label"
   names(choices)[names(choices) == "list name"] <- "listname"
   names(choices)[names(choices) == "list_name"] <- "listname"
 
   ## Remove trailing space
-  choices$listname <- trim(choices$listname)
-  choices$label <- trim(choices$label)
+  choices$listname <- glue::trim(choices$listname)
+  choices$label <- glue::trim(choices$label)
 
   if ("labelReport" %in% colnames(choices))
   {
@@ -463,7 +463,7 @@ kobo_dico <- function(form = "form.xls") {
 
   names(choices)[names(choices) == "labelReport"] <- "labelchoice"
   #rm(choices)
-  choices <- join(x = choices, y = survey, by = "listname", type = "left")
+  choices <- plyr::join(x = choices, y = survey, by = "listname", type = "left")
 
   choices$type <- with(choices, ifelse(grepl("select_one", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  choices$type),
                                        paste0("select_one_d"),choices$type))
@@ -521,8 +521,8 @@ kobo_dico <- function(form = "form.xls") {
 
 
   ## Remove trailing space
-  dico$fullname <- trim(dico$fullname)
-  dico$listname <- trim(dico$listname)
+  dico$fullname <- glue::trim(dico$fullname)
+  dico$listname <- glue::trim(dico$listname)
 
 
   ## Trim long label...
@@ -551,7 +551,7 @@ kobo_dico <- function(form = "form.xls") {
   #} else { dico$type <- dico$type
    #  cat("Note that select_one & select_multiple questions within REPEAT part are converted to integer (results are summed up).\n")
 
-  write.csv(dico, paste0(mainDir,"/data/dico_",form,".csv"), row.names = FALSE, na = "")
+  utils::write.csv(dico, paste0(mainDir,"/data/dico_",form,".csv"), row.names = FALSE, na = "")
 
  # f_csv(dico)
 #  return(dico)

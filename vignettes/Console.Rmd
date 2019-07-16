@@ -7,7 +7,7 @@ output:
     toc: yes
     toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{KoboloadeR Introduction}
+  %\VignetteIndexEntry{Using console script}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

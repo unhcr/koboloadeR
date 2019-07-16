@@ -8,6 +8,8 @@ psum(..., na.rm = FALSE)
 }
 \arguments{
 \item{\dots}{List of integer or numeric}
+
+\item{na.rm}{Bolean indicating if NA shall be removed}
 }
 \value{
 Integer or numeric.

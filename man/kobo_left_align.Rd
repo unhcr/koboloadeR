@@ -6,6 +6,11 @@
 \usage{
 kobo_left_align(plot_name, pieces)
 }
+\arguments{
+\item{plot_name}{ggplot2 object}
+
+\item{pieces}{plot labels to align}
+}
 \value{
 Return better chart
 }

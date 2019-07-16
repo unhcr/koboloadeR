@@ -38,7 +38,8 @@ kobo_forminfo <- function(formid, user = NULL, api = api) {
 
   x <- get_me(user, URL)
   out <- f_csv(x)
-  assign(locfile, out, envir = .GlobalEnv)
+  assign(locfile, out #, envir = .GlobalEnv
+         )
   out
   formauthor <- as.charater(out[, c("owner")])
   formdescr <- out[, c("id_string")]

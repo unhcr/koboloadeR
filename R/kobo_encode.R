@@ -29,7 +29,7 @@ kobo_encode <- function(data, dico) {
   # data <- MainDataFrame
   data.label <- as.data.frame(names(data))
   names(data.label)[1] <- "fullname"
-  data.label <- join(x = data.label, y = dico, by = "fullname", type = "left" )
+  data.label <- plyr::join(x = data.label, y = dico, by = "fullname", type = "left" )
   ## Now we can also re-encode the records themself
 
   #################################################################################################
@@ -41,7 +41,7 @@ kobo_encode <- function(data, dico) {
   check <- as.data.frame(names(data))
   names(check)[1] <- "fullname"
   check$id <- row.names(check)
-  selectdf2 <- join(y = check, x = selectdf, by = "fullname", type = "left")
+  selectdf2 <- plyr::join(y = check, x = selectdf, by = "fullname", type = "left")
   selectdf3 <- selectdf[!is.na(selectdf2$id), ]
 
   if (nrow(selectdf3) == 0) {
@@ -103,7 +103,7 @@ kobo_encode <- function(data, dico) {
   check <- as.data.frame(names(data))
   names(check)[1] <- "fullname"
   check$id <- row.names(check)
-  selectdf2 <- join(y = check, x = selectdf, by = "fullname", type = "left")
+  selectdf2 <- plyr::join(y = check, x = selectdf, by = "fullname", type = "left")
   selectdf3 <- selectdf[!is.na(selectdf2$id), ]
 
   if (nrow(selectdf3) == 0) {
@@ -131,7 +131,7 @@ kobo_encode <- function(data, dico) {
 
       if (nrow(variablelevel) > 0) {
         variablelevel <- cbind(variablelevel,fullname,variablename,variablelistname)
-        variablelevel <- join(x = variablelevel, y = dico, by = "fullname", type = "left" )
+        variablelevel <- plyr::join(x = variablelevel, y = dico, by = "fullname", type = "left" )
         labelchoice <- as.character(dico[dico$fullname == fullname, c("labelchoice")])
         data[ , fullname][data[ , fullname] == variablecode] <- labelchoice
 
@@ -152,7 +152,7 @@ kobo_encode <- function(data, dico) {
   check <- as.data.frame(names(data))
   names(check)[1] <- "fullname"
   check$id <- row.names(check)
-  selectdf2 <- join(y = check, x = selectdf, by = "fullname", type = "left")
+  selectdf2 <- plyr::join(y = check, x = selectdf, by = "fullname", type = "left")
   selectdf3 <- selectdf[!is.na(selectdf2$id), ]
   #names(selectdf)[1] <- "selectvar"
 
@@ -180,7 +180,7 @@ kobo_encode <- function(data, dico) {
         df <- as.data.frame(data[ , fullname])
         names(df)[1] <- "name"
         df$name <- as.character(df$name)
-        df <- join(df,variablelevel, by = "name")
+        df <- plyr::join(x = df, y = variablelevel, by = "name")
         data[ , fullname] <- as.character(data[ , fullname])
         data[ , fullname] <- df$labelchoice
         #data[ , fullname] <- as.factor(data[ , fullname])
@@ -200,7 +200,7 @@ kobo_encode <- function(data, dico) {
   check <- as.data.frame(names(data))
   names(check)[1] <- "fullname"
   check$id <- row.names(check)
-  selectdf2 <- join(y = check, x = selectdf, by = "fullname", type = "left")
+  selectdf2 <- plyr::join(y = check, x = selectdf, by = "fullname", type = "left")
   selectdf3 <- selectdf[!is.na(selectdf2$id), ]
   #names(selectdf)[1] <- "selectvar"
 

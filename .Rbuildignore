@@ -2,6 +2,7 @@
 ^\.Rproj\.user$
 ^\.Rprofile$
 ^appveyor\.yml$
+^codecov\.yml$
 ^\.travis\.yml$
 ^cran-comments\.md$
 ^_config\.yml$

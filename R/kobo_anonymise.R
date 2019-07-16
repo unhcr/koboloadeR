@@ -30,7 +30,7 @@
 #' }
 #'
 #'
-#' @param  kobo or odk dataset to use
+#' @param  frame dataset to use
 #' @param  dico Generated from kobo_dico function
 #'
 #' @author Edouard Legoupil

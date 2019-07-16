@@ -7,7 +7,11 @@
 kobo_prediction_report(dico, frame, registry)
 }
 \arguments{
-\item{kobo}{or odk dataset to use}
+\item{dico}{generated from kobo_dico)}
+
+\item{frame}{odk dataset to use}
+
+\item{registry}{file with registration information}
 }
 \description{
 Automatically produce prediction reports

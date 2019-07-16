@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Remove direct identifier — kobo_anonymise • koboloadeR</title>
+<title>Check kobo_check_project_configuration — kobo_check_project_configuration • koboloadeR</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,28 +30,9 @@
 
 
 
-<meta property="og:title" content="Remove direct identifier — kobo_anonymise" />
+<meta property="og:title" content="Check kobo_check_project_configuration — kobo_check_project_configuration" />
 
-<meta property="og:description" content="Automatically produce an anonymised dataset in line with the anonymisation plan set up in the xlsform.
-This method should be used whenever Kobo or ODK forms are used as data collection tools and personal data is being collected.
- Even when personal data is not being collected it still may be appropriate to apply the methodology since quasi-identifiable data
-  or other sensitive data could lead to personal identification or should not be shared.
-  https://jangorecki.github.io/blog/2014-11-07/Data-Anonymization-in-R.html
-
-TypeDescription
----------------------------
-Direct identifiersCan be directly used to identify an individual. E.g. Name, Address, Date of birth, Telephone number, GPS locationQuasi- identifiers
-Can be used to identify individuals when it is joined with other information. E.g. Age, Salary, Next of kin, School name, Place of workSensitive information
-&amp;amp; Community identifiable information	Might not identify an individual but could put an individual or group at risk. E.g. Gender, Ethnicity, Religious beliefMeta dataData about who, where and how the data is collected is often stored separately to the main data and can be used identify individuals
-" />
-
-<meta property="og:description" content="The following are different anonymisation actions that can be performed on sensitive fields. The type of anonymisation should be dictated by the desired use of the data. A good approach to follow is to start from the minimum data required, and then to identify if any of those fields should be obscured.
-The methods above can be reference in the column
-
-MethodDescription
-------------------------------Remove
-Data is removed entirely from the data set. The data is preserved in the original file.ReferenceData is removed entirely from the data set and is copied into a reference file. A random unique identifier field is added to the reference file and the data set so that they can be joined together in future.  The reference file is never shared and the data is also preserved in the original file.
-" />
+<meta property="og:description" content="Check if the project configurations exist and all required files are in the right place." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -161,55 +142,46 @@ Data is removed entirely from the data set. The data is preserved in the origina
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Remove direct identifier</h1>
-    <small class="dont-index">Source: <a href='https://github.com/unhcr/koboloadeR/blob/master/R/kobo_anonymise.R'><code>R/kobo_anonymise.R</code></a></small>
-    <div class="hidden name"><code>kobo_anonymise.Rd</code></div>
+    <h1>Check kobo_check_project_configuration</h1>
+    <small class="dont-index">Source: <a href='https://github.com/unhcr/koboloadeR/blob/master/R/kobo_check_project_configuration.R'><code>R/kobo_check_project_configuration.R</code></a></small>
+    <div class="hidden name"><code>kobo_check_project_configuration.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Automatically produce an anonymised dataset in line with the anonymisation plan set up in the xlsform.</p>
-<p>This method should be used whenever Kobo or ODK forms are used as data collection tools and personal data is being collected.
- Even when personal data is not being collected it still may be appropriate to apply the methodology since quasi-identifiable data
-  or other sensitive data could lead to personal identification or should not be shared.
-  https://jangorecki.github.io/blog/2014-11-07/Data-Anonymization-in-R.html</p>
-<table class='table'>
-<tr><td></td><td></td><td><strong>Type</strong></td><td></td><td></td><td><strong>Description</strong></td></tr>
-<tr><td></td><td></td><td>----------------</td><td>-----------</td><td></td><td></td></tr>
-<tr><td><strong>Direct identifiers</strong></td><td></td><td>Can be directly used to identify an individual. E.g. Name, Address, Date of birth, Telephone number, GPS location</td><td></td><td></td><td><strong>Quasi- identifiers</strong></td></tr>
-<tr><td></td><td>Can be used to identify individuals when it is joined with other information. E.g. Age, Salary, Next of kin, School name, Place of work</td><td></td><td></td><td><strong>Sensitive information</strong></td><td></td></tr>
-<tr><td>&amp; Community identifiable information	Might not identify an individual but could put an individual or group at risk. E.g. Gender, Ethnicity, Religious belief</td><td></td><td></td><td><strong>Meta data</strong></td><td></td><td>Data about who, where and how the data is collected is often stored separately to the main data and can be used identify individuals</td></tr>
-</table>
-
-    <p>The following are different anonymisation actions that can be performed on sensitive fields. The type of anonymisation should be dictated by the desired use of the data. A good approach to follow is to start from the minimum data required, and then to identify if any of those fields should be obscured.</p>
-<p>The methods above can be reference in the column</p>
-<table class='table'>
-<tr><td></td><td><strong>Method</strong></td><td></td><td></td><td><strong>Description</strong></td><td></td></tr>
-<tr><td></td><td>----------------</td><td>--------------</td><td></td><td><strong>Remove</strong></td><td></td></tr>
-<tr><td>Data is removed entirely from the data set. The data is preserved in the original file.</td><td></td><td><strong>Reference</strong></td><td></td><td>Data is removed entirely from the data set and is copied into a reference file. A random unique identifier field is added to the reference file and the data set so that they can be joined together in future.  The reference file is never shared and the data is also preserved in the original file.</td><td></td></tr>
-</table>
+    <p>Check if the project configurations exist and all required files are in the right place.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>kobo_anonymise</span>(<span class='no'>frame</span>, <span class='kw'>dico</span> <span class='kw'>=</span> <span class='st'>"dico_form.xls.csv"</span>)</pre>
+    <pre class="usage"><span class='fu'>kobo_check_project_configuration</span>(<span class='kw'>form</span> <span class='kw'>=</span> <span class='st'>"form.xls"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>frame</th>
-      <td><p>dataset to use</p></td>
-    </tr>
-    <tr>
-      <th>dico</th>
-      <td><p>Generated from kobo_dico function</p></td>
+      <th>form</th>
+      <td><p>The full filename of the form to be accessed (xls or xlsx file).
+It is assumed that the form is stored in the data folder.</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>The return will be a list that contains a list that checks all elements of the project configuration and a message of confirmation</p>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='fu'>kobo_anonymise</span>(<span class='no'>frame</span>, <span class='no'>dico</span>)
+    <pre class="examples"><div class='input'><span class='fu'>kobo_check_project_configuration</span>()</div><div class='output co'>#&gt; $flag
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $message
+#&gt; [1] "\n1- The xlsform file doesn't have any settings"
+#&gt; 
+#&gt; $settingsExistence
+#&gt; [1] "1- The xlsform file doesn't have any settings"
+#&gt; </div><div class='input'>
+</div><span class='co'># NOT RUN {</span>
+<span class='fu'>kobo_check_project_configuration</span>(<span class='st'>"myform.xls"</span>)
 <span class='co'># }</span><div class='input'>
 </div></pre>
   </div>
@@ -217,12 +189,14 @@ Data is removed entirely from the data set. The data is preserved in the origina
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-            
+      
+      <li><a href="#value">Value</a></li>
+      
       <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>
-    <p>Edouard Legoupil</p>
+    <p>Maher Daoud</p>
   </div>
 </div>
 

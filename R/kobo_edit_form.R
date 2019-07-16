@@ -33,11 +33,11 @@ kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, ind
     wb <- xlsx::createWorkbook(type = "xls") #create xls workbook
     mainDir <- kobo_getMainDirectory()
     form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
-    
+
     #################################### survey sheet ######################################
     if(is.null(survey)){
       survey <- tryCatch({
-        as.data.frame(read_excel(form_tmp, sheet = "survey"),
+        as.data.frame(readxl::read_excel(form_tmp, sheet = "survey"),
                       stringsAsFactors = FALSE) #read survey sheet from the form
       }, error = function(err) {
         data.frame( #if it doesn't exist, we need to create empty dataframe with those fields
@@ -61,7 +61,7 @@ kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, ind
         )
       })
     }
-  
+
     if(!is.null(survey)){
       survey[is.na(survey)] <-  ""
       sheetname <- "survey"
@@ -70,12 +70,12 @@ kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, ind
       surveySheet <- xlsx::createSheet(wb, sheetname) #create survey sheet in wb
       xlsx::addDataFrame(survey, surveySheet, col.names=TRUE, row.names=FALSE) #add survey dataframe in the survey sheet
     }
-  
-    
+
+
     #################################### choices sheet ######################################
     if(is.null(choices)){
       choices <- tryCatch({
-        as.data.frame(read_excel(form_tmp, sheet = "choices"),
+        as.data.frame(readxl::read_excel(form_tmp, sheet = "choices"),
                       stringsAsFactors = FALSE) #read survey sheet from the form
       }, error = function(err) {
         data.frame( #if it doesn't exist, we need to create empty dataframe with those fields
@@ -94,11 +94,11 @@ kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, ind
       choicesSheet <- xlsx::createSheet(wb, sheetName=sheetname)
       xlsx::addDataFrame(choices, choicesSheet, col.names=TRUE, row.names=FALSE)
     }
-    
+
     #################################### indicator sheet ######################################
     if(is.null(indicator)){
       indicator <- tryCatch({
-        as.data.frame(read_excel(form_tmp, sheet = "indicator"),stringsAsFactors = FALSE)
+        as.data.frame(readxl::read_excel(form_tmp, sheet = "indicator"),stringsAsFactors = FALSE)
       }, error = function(err) {
         data.frame(
           type = character(),
@@ -131,13 +131,13 @@ kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, ind
       indicatorSheet <- xlsx::createSheet(wb, sheetName=sheetname)
       xlsx::addDataFrame(indicator, indicatorSheet, col.names=TRUE, row.names=FALSE)
     }
-  
-    
-    
+
+
+
     #################################### settings sheet ######################################
     if(is.null(settings)){
       settings <- tryCatch({
-        as.data.frame(read_excel(form_tmp, sheet = "settings"),
+        as.data.frame(readxl::read_excel(form_tmp, sheet = "settings"),
                       stringsAsFactors = FALSE)
       }, error = function(err) {
         data.frame(
@@ -150,18 +150,18 @@ kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, ind
     }
     if(!is.null(settings)){
       sheetname <- "settings"
-  
+
       if(!is.null(xlsx::getSheets(wb)[[sheetname]]))
         xlsx::removeSheet(wb, sheetname)
       settingsSheet <- xlsx::createSheet(wb, sheetName=sheetname) #create sheet with settings name
       xlsx::addDataFrame(settings, settingsSheet, col.names=TRUE, row.names=FALSE) #add settings data frame to this sheet
     }
-    
-    
+
+
     #################################### settings sheet ######################################
     if(is.null(analysisSettings)){
       analysisSettings <- tryCatch({
-        as.data.frame(read_excel(form_tmp, sheet = "analysisSettings"),
+        as.data.frame(readxl::read_excel(form_tmp, sheet = "analysisSettings"),
                       stringsAsFactors = FALSE)
       }, error = function(err) {
         data.frame(
@@ -175,7 +175,7 @@ kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, ind
     }
     if(!is.null(analysisSettings)){
       sheetname <- "analysisSettings"
-      
+
       if(!is.null(xlsx::getSheets(wb)[[sheetname]]))
         xlsx::removeSheet(wb, sheetname)
       settingsSheet <- xlsx::createSheet(wb, sheetName=sheetname) #create sheet with analysisSettings name
@@ -183,8 +183,8 @@ kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, ind
     }
     if (file.exists(form_tmp)) file.remove(form_tmp)
     xlsx::saveWorkbook(wb, form_tmp)
-  
-  
+
+
   }, error = function(err) {
     print("kobo_load_data_ERROR")
     return(structure(err, class = "try-error"))

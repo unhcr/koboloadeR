@@ -28,7 +28,7 @@ kobo_get_dataframes_levels <- function(form="form.xls") {
     mainDir <- kobo_getMainDirectory()
     form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
     survey <- tryCatch({
-      as.data.frame(read_excel(form_tmp, sheet = "survey"),
+      as.data.frame(readxl::read_excel(form_tmp, sheet = "survey"),
                     stringsAsFactors = FALSE) #read survey sheet from the form
     }, error = function(err) {
       data.frame( #if it doesn't exist, we need to create empty dataframe with those fields
@@ -53,11 +53,11 @@ kobo_get_dataframes_levels <- function(form="form.xls") {
     })
     survey <- survey[c("name","type")]
     survey$type <- tolower(survey$type)
-    survey$type <- str_replace(survey$type,"_"," ")
-    survey$type <- str_replace(survey$type,"-"," ")
+    survey$type <- stringr::str_replace(survey$type,"_"," ")
+    survey$type <- stringr::str_replace(survey$type,"-"," ")
     survey <- survey[!is.na(survey$type),]
     survey <- survey[survey$type=="begin repeat" | survey$type=="end repeat", ]
-    
+
     if(nrow(survey)==0){
       return(data.frame(
         name = "MainDataFrame",
@@ -66,7 +66,7 @@ kobo_get_dataframes_levels <- function(form="form.xls") {
         ,stringsAsFactors = F
       ))
     }
-    
+
     result <- data.frame(
       name = "MainDataFrame",
       level = 1,
@@ -78,7 +78,7 @@ kobo_get_dataframes_levels <- function(form="form.xls") {
       open = logical(),
       stringsAsFactors = F
     )
-    
+
     for(i in 1:nrow(survey)){
       st <- survey$type[i]
       sn <- ifelse(st=="begin repeat",survey$name[i],NA)
@@ -94,7 +94,7 @@ kobo_get_dataframes_levels <- function(form="form.xls") {
                           c(sn, as.integer(result[result$name==tempName,"level"]) + 1, tempName)
           )
         }
-        opcl <- rbind(opcl, 
+        opcl <- rbind(opcl,
                       data.frame(
                         name = sn,
                         open = T,

@@ -16,6 +16,7 @@
 #' @return A "data.table" with the full dataset. If data is already found on
 #' disk and the number of rows matches with the online datasets, the local copy
 #' would be used. The dataset would be named in the form of "data_formid".
+#'
 #' @author Ananda Mahto
 #' @examples
 #' \dontrun{
@@ -56,7 +57,8 @@ kobo_data_downloader <- function(formid, user = NULL, api = "unhcr", check = TRU
     x <- get_me(user, URL)
     cat("\n\n")
     out <- f_csv(x)
-    assign(locfile, out, envir = .GlobalEnv)
+    assign(locfile, out #, envir = .GlobalEnv
+           )
     out
   } else {
     message("Using local file.")

@@ -32,11 +32,13 @@
 
 <meta property="og:title" content="Sample a dataframe — kobo_samplingframe" />
 
-<meta property="og:description" content="Do basic simple random samples based on a provided dataframe. Takes 3 types of sampling strategies:
+<meta property="og:description" content="Do basic simple random samples based on a provided dataframe.
+Takes 3 types of sampling strategies:
  - Simple random
  - Stratified 2-stages
  - Cluster sampling
- All are based on a random selection of primary survey units (PSU) according to confidence level, margin of error, proportion and survey buffer provided." />
+ All are based on a random selection of primary survey units (PSU) according to confidence level,
+  margin of error, proportion and survey buffer provided." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -153,11 +155,13 @@
 
     <div class="ref-description">
     
-    <p>Do basic simple random samples based on a provided dataframe. Takes 3 types of sampling strategies:
+    <p>Do basic simple random samples based on a provided dataframe.</p>
+<p>Takes 3 types of sampling strategies:
  - Simple random
  - Stratified 2-stages
  - Cluster sampling
- All are based on a random selection of primary survey units (PSU) according to confidence level, margin of error, proportion and survey buffer provided.</p>
+ All are based on a random selection of primary survey units (PSU) according to confidence level,
+  margin of error, proportion and survey buffer provided.</p>
     
     </div>
 
@@ -207,7 +211,9 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='fu'>kobo_samplingframe</span>(<span class='kw'>data</span><span class='kw'>=</span><span class='no'>SamplingFrame</span>, <span class='kw'>strata</span><span class='kw'>=</span><span class='st'>"Province"</span>, <span class='kw'>pop_col</span><span class='kw'>=</span><span class='st'>"Households"</span>,<span class='kw'>confidence_level</span><span class='kw'>=</span><span class='fl'>0.95</span>,<span class='kw'>margin_error</span><span class='kw'>=</span><span class='fl'>0.05</span>,<span class='kw'>proportion</span><span class='kw'>=</span><span class='fl'>0.5</span>,<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"strat2st"</span>)
+<span class='fu'>kobo_samplingframe</span>(<span class='kw'>data</span><span class='kw'>=</span><span class='no'>SamplingFrame</span>, <span class='kw'>strata</span><span class='kw'>=</span><span class='st'>"Province"</span>, <span class='kw'>pop_col</span> <span class='kw'>=</span> <span class='st'>"Households"</span>,
+                   <span class='kw'>confidence_level</span> <span class='kw'>=</span> <span class='fl'>0.95</span>, <span class='kw'>margin_error</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>proportion</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
+                    <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"strat2st"</span>)
 <span class='co'># }</span><div class='input'>
 </div></pre>
   </div>

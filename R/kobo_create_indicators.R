@@ -44,7 +44,7 @@ kobo_create_indicators <- function(form = "form.xls") {
       dataBeginRepeat <- kobo_get_begin_repeat()
       dataBeginRepeat <- dataBeginRepeat$names
       for (dbr in dataBeginRepeat) {
-        dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
+        dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
         assign(dbr, dataFrame)
       }
 
@@ -57,7 +57,7 @@ kobo_create_indicators <- function(form = "form.xls") {
         ## Load data & dico #############################################################################
         #form <- "form.xls"
         ## Run this only after data cleaning
-        dico <- read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+        dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
 
         ## Create the dicotemp #############################################################################
         #names(dico)
@@ -154,10 +154,10 @@ kobo_create_indicators <- function(form = "form.xls") {
           cat('dataBeginRepeat <- kobo_get_begin_repeat()', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           cat('dataBeginRepeat <- dataBeginRepeat$names', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
 
-          cat('MainDataFrame <- read.csv(paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+          cat('MainDataFrame <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
 
           cat('for (dbr in dataBeginRepeat) {
-            dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
+            dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
 
             assign(paste0(dbr,"_edited"), dataFrame)
           }', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
@@ -175,10 +175,10 @@ kobo_create_indicators <- function(form = "form.xls") {
           cat(paste0("summary(",indicator.frame,"$",indicator.fullname,")"), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
 
            if (indicator.frame == "MainDataFrame_edited") {
-             cat('write.csv(MainDataFrame, paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+             cat('utils::write.csv(MainDataFrame, paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
            }else{
              cat(paste('dbr<-"',indicator.frame,'"',sep = ""))
-             cat('write.csv(eval(as.name(dbr)),paste(mainDir,"/data/",dbr,".csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+             cat('utils::write.csv(eval(as.name(dbr)),paste(mainDir,"/data/",dbr,".csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
            }
 
 
@@ -300,7 +300,7 @@ kobo_create_indicators <- function(form = "form.xls") {
                                                                  # "order","weight","score","recategorise",
                                                                   "formpart","indic","constraint","label","relevant","repeat_count","required" )]
 
-        choices2 <- join(x = dicotemp.choice, y = choices,  by = "listname", type = "left")
+        choices2 <- plyr::join(x = dicotemp.choice, y = choices,  by = "listname", type = "left")
 
         choices2$type <- with(choices2, ifelse(grepl("select_one", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  choices2$type),
                                                paste0("select_one_d"),choices2$type))
@@ -405,20 +405,20 @@ kobo_create_indicators <- function(form = "form.xls") {
         rm(dicotemp,dicotemp1, choices, choices2, choices3, dicotemp.choice)
 
 
-        MainDataFrame <- read.csv(paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")
+        MainDataFrame <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")
         ## label Variables
         cat("\n\n quick check on labeling\n")
         MainDataFrame <- kobo_label(MainDataFrame , dico)
         for (dbr in dataBeginRepeat) {
-          dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
+          dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
 
           dataFrame <- kobo_label(dataFrame, dico)
-          write.csv(dataFrame,paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""), row.names = FALSE, na = "")
+          utils::write.csv(dataFrame,paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""), row.names = FALSE, na = "")
         }
         cat("\n\nWrite dico\n")
-        write.csv(dico, paste0(mainDir,"/data/dico_",form,".csv"), row.names = FALSE, na = "")
+        utils::write.csv(dico, paste0(mainDir,"/data/dico_",form,".csv"), row.names = FALSE, na = "")
 
-        write.csv(MainDataFrame, paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), row.names = FALSE, na = "")
+        utils::write.csv(MainDataFrame, paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), row.names = FALSE, na = "")
 
 
       }

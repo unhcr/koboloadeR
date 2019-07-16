@@ -185,5 +185,10 @@ To go in more details, the suggested workflow is presented below (note that all 
 
 
 
+CRAN Notes
+==========
+
+Test results
+------------
 
 

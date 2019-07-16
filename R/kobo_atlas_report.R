@@ -7,9 +7,9 @@
 #'
 #'
 #'
-#' @param  kobo or odk dataset to use
+#' @param  frame odk dataset to use
 #' @param  dico Generated from kobo_dico function
-#' @param  map equaly mappoly or mappoint depending on the type of visualisation expected - polygons or points
+#' @param  mappoly or mappoint depending on the type of visualisation expected - polygons or points
 #'
 #' @author Edouard Legoupil
 #'

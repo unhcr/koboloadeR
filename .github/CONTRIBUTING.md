@@ -29,6 +29,7 @@ Please note we have a [code of conduct](https://github.com/unhcr/koboloadeR/blob
   *  Push your branch to your fork on Github, the remote `origin`.
 
   *  From your fork open a pull request in the correct branch using the specified [Issue Template](https://github.com/unhcr/koboloadeR/blob/gh-pages/.github/ISSUE_TEMPLATE.md)
+  
   *  Update the `README.md` with details of changes to the interface particularly changes in how indicators are defined or addition of new indicators.
 
   *  Increase the version numbers in any examples files and the `README.md` to the new version that this `Pull Request` would represent. The versioning scheme we use is [SemVer](http://semver.org/).

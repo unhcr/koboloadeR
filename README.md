@@ -163,7 +163,7 @@ Note however that this implies that you configure correctly on your own the full
 
 ## Contributing
 
-Contributions to the packages are welcome. Please read first the [contribution guidelines](articles/Sampling.html), follow the [code of conduct](articles/CODE_OF_CONDUCT.html) and use the [issue template](articles/ISSUE_TEMPLATE.html).
+Contributions to the packages are welcome. Please read first the [contribution guidelines](CONTRIBUTING.html), follow the [code of conduct](CODE_OF_CONDUCT.html) and use the [issue template](ISSUE_TEMPLATE.html).
 
 To go in more details, the suggested workflow is presented below (note that all of it is not yet fully implented - see [issue tracking for more details](https://github.com/unhcr/koboloadeR/issues)). You can read the [function documentations](reference/index.html) directly.
 

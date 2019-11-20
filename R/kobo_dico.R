@@ -45,6 +45,14 @@ kobo_dico <- function(form = "form.xls") {
   names(survey)[names(survey) == "hint::english"] <- "hint"
 
 
+  names(survey)[names(survey) == "label::Report"] <- "labelReport"
+  names(survey)[names(survey) == "label::Report"] <- "labelReport"
+
+
+  names(survey)[names(survey) == "hint::Report"] <- "hintReport"
+  names(survey)[names(survey) == "hint::Report"] <- "hintReport"
+
+
   cat("Checking now for additional information within your xlsform. Note that you can insert them in the xls and re-run the function! \n \n ")
 
 
@@ -54,8 +62,18 @@ kobo_dico <- function(form = "form.xls") {
   {
     cat(" Good: You have a column `labelReport` in your survey worksheet.\n");
   } else
-  {cat(" No column `labelReport` in your survey worksheet. Creating a dummy one for the moment...\n");
-    survey[,"labelReport"] <- substr(survey[,"label"],1,80)}
+  {cat(" No column `labelReport` in your survey worksheet. Creating a dummy one for the moment based on trimmed labels...\n");
+
+    for (i in 1:nrow(survey)){ survey[i,"labelReport"] <- as.character(substr(survey[i,"label"],1,80)) }
+
+  }
+
+  if ("hint" %in% colnames(survey))
+  {
+    cat(" Good: You have a column `hint` in your survey worksheet.\n");
+  } else
+  {cat(" No column `hint` in your survey worksheet. Creating a dummy one for the moment...\n");
+    survey$hint <- ""}
 
 
   if ("hintReport" %in% colnames(survey))
@@ -63,7 +81,8 @@ kobo_dico <- function(form = "form.xls") {
     cat(" Good: You have a column `hintReport` in your survey worksheet.\n");
   } else
   {cat(" No column `hintReport` in your survey worksheet. Creating a dummy one for the moment...\n");
-    survey[,"hintReport"] <- survey[,"hint"]}
+    for (i in 1:nrow(survey)){ survey[i,"hintReport"] <- as.character(survey[,"hint"])}
+    }
 
   if ("disaggregation" %in% colnames(survey))
   {
@@ -413,6 +432,8 @@ kobo_dico <- function(form = "form.xls") {
   choices <- readxl::read_excel(form_tmp, sheet = "choices")
   names(choices)[names(choices) == "label::English"] <- "label"
   names(choices)[names(choices) == "label::english"] <- "label"
+  names(choices)[names(choices) == "label::Report"] <- "labelReport"
+  names(choices)[names(choices) == "label::Report"] <- "labelReport"
   names(choices)[names(choices) == "list name"] <- "listname"
   names(choices)[names(choices) == "list_name"] <- "listname"
 

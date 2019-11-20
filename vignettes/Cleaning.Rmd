@@ -14,3 +14,26 @@ vignette: >
 
 
 ## Introduction
+
+A well-designed and tested survey should allow to minimise data cleaning issues. Specifically unconsistent answers can be anticipated and avoided through a series of well set-up constraints. You can learn more on [questionnaire design here](https://unhcr.github.io/Integrated-framework-household-survey/Configure-forms.html) 
+
+However even with the best designed questionnaires, there will still be some issues to fix
+
+Survey data cleaning may involves different steps:
+
+## Remove Records
+
+ identifying and removing responses from individuals who either don’t match the target audience criteria or didn’t answer your questions thoughtfully. In case of self-administered questionnaire online, there might be also issues called “speeders” and “flat-liners” (respondents expiditing the questionnaire), in such situation, date/time stamp on questions or group of questions can help identifying the records to be removed 
+
+## Adjust closed question from open-end answers
+
+Often some people will tend to use this last _other_ options to enter information. The result is an open ended question that is very difficult to analyse. 
+Re-encoding certains __select_one__ _list_name_ __or_other__ variables is therefore quite often a necessary step. 
+
+Koboloader has some functions to handle this situation
+
+  *  `kobo_cleanlog(form) `
+
+  *  `kobo_clean(frame, dico)` 
+
+Insert a column named clean and reference the csv file to use for cleaning.

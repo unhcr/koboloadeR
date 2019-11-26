@@ -16,7 +16,9 @@ last part of question headings
 Helper function to concatenate multiple choices (select_mutiple type question) formatted TRUE / FALSE
 }
 \examples{
+\dontrun{
 multresponse(x)
+}
 
 }
 \author{

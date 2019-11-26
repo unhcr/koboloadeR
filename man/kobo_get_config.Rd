@@ -16,7 +16,9 @@ Return a dataframe that contains configuration of the project
 Return all configuration from Analysis Settings sheet of xlsform
 }
 \examples{
+\dontrun{
 kobo_get_config()
+}
 
 }
 \author{

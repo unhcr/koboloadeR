@@ -12,7 +12,9 @@
 #' @param pieces  plot labels to align
 #'
 #' @examples
+#' \dontrun{
 #' kobo_left_align()
+#' }
 #'
 #' @export kobo_left_align
 #'

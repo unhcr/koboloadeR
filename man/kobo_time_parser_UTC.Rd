@@ -20,8 +20,10 @@ like the following: "2015-08-27T13:28:29.000+06:30". These functions
 process these date/times into more usable formats.
 }
 \examples{
+\dontrun{
 TIME <- "2015-08-27T13:28:29.000+06:30"
 kobo_time_parser_UTC(TIME)
+}
 
 }
 \author{

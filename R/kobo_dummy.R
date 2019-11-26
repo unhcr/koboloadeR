@@ -20,8 +20,6 @@
 #'
 #' @author Edouard Legoupil
 #'
-#' @examples
-#' kobo_dummy()
 #'
 #' @export kobo_dummy
 #'
@@ -158,7 +156,7 @@ kobo_dummy <- function(form = "form.xls") {
 
   dico.household <- dico[(dico$qrepeatlabel == "MainDataFrame" &
                             dico$formpart == "questions" &
-                            !(dico$type %in% c("note","end",
+                            !(dico$type %in% c("note","end","image","acknowledge",
                                                "begin_group", "end_group",
                                                "begin group", "end group",
                                                "begin_repeat", "end_repeat",
@@ -190,13 +188,13 @@ kobo_dummy <- function(form = "form.xls") {
   cat("Generating household table")
   for (i in 1:nrow(dico.household) ) {
     # i <- 1
-    # i <- 106
+    # i <- 7
     fullname <- as.character(dico.household[i, c("fullname")])
     typedata <- as.character(dico.household[dico.household$fullname == fullname, c("type")])
     relevantifvar <- as.character(dico.household[dico.household$fullname == fullname, c("relevantifvar")])
     relevantifvar2 <- as.character(dico.household[dico.household$name == relevantifvar, c("fullname")])
     relevantifvalue <- as.character(dico.household[dico.household$fullname == fullname, c("relevantifvalue")])
-    cat(paste0("Entering summy data for variable ", i, "- ", fullname, " / ", typedata, " / ", relevantifvar,"\n"))
+    cat(paste0("Entering dummy data for variable ", i, "- ", fullname, " / ", typedata, " / ", relevantifvar,"\n"))
 
     ### case to handle
     #  "imei"   "deviceid"       "phonenumber"
@@ -213,8 +211,8 @@ kobo_dummy <- function(form = "form.xls") {
 
     #  "select_one"
     if (typedata == "select_one") {
-      listname <- as.character(dico[dico$fullname == fullname &
-                                      dico$type == "select_one", c("listname")])
+      listname <- glue::trim(as.character(dico[dico$fullname == fullname &
+                                      dico$type == "select_one", c("listname")]))
       categ_level <- as.character( unique(dico[dico$listname == listname &
                                                  dico$type == "select_one_d", c("name")]))
       dummydata[ , i + 1] <- factor(sample(categ_level,
@@ -279,7 +277,7 @@ kobo_dummy <- function(form = "form.xls") {
                                      sep = ",")
     }
 
-    cat(paste0(" Rename  variable",fullname,"\n"))
+    cat(paste0(" Rename  variable", fullname,"\n"))
     names(dummydata)[i + 1 ] <- fullname
     #cat(summary(dummydata[i]))
     #str(dummydata)
@@ -318,6 +316,10 @@ kobo_dummy <- function(form = "form.xls") {
                                             "begin repeat", "end repeat"))), ]
 
   repeat_name <- as.factor(levels(as.factor(as.character(dico.repeat$qrepeatlabel))))
+
+  ## Remove the main frame from repeat name
+  repeat_name <- repeat_name[ !(repeat_name =="MainDataFrame") ]
+
   #levels(as.factor(as.character(dico.repeat$type)))
 
   for (h in  1:length(repeat_name)) {
@@ -330,17 +332,32 @@ kobo_dummy <- function(form = "form.xls") {
     maxvariable <- as.character(dico[dico$qrepeatlabel == repeat_table &
                                        dico$type %in% c("begin_repeat", "begin repeat")
                                      , c("repeat_count") ])
+
     maxvariable <- gsub('[${}]', '', maxvariable)
+
+    ## replace values if maxvariable is not defined -
+
+    if(maxvariable != "") {
+
     maxvariablefullname <- dico[ (dico$name == maxvariable & !(is.na(dico$fullname))), ]
     maxvariablefullname <- maxvariablefullname[!(is.na(maxvariablefullname$fullname)), c("fullname")]
     maxvariablefullname <- as.character(maxvariablefullname)
     #str(maxvariablefullname)
     rm(dummydatamaxvariable)
-    dummydatamaxvariable <- dummydata[ ,c("instanceID",maxvariablefullname )]
+    dummydatamaxvariable <- dummydata[ , c("instanceID",maxvariablefullname )]
+
+
 
     #str(dummydatamaxvariable)
     ## Account for NA - relevant nested table
     dummydatamaxvariable <- dummydatamaxvariable[ !(is.na(dummydatamaxvariable[ ,2])), ]
+
+
+    } else {
+      ### No repeat_count was set up
+      dummydatamaxvariable <- as.data.frame(dummydata[ , c("instanceID" )])
+    }
+
 
    # names(dummydata)
     #dummydatarepeat <- data.frame("instanceID" )
@@ -360,7 +377,7 @@ kobo_dummy <- function(form = "form.xls") {
       ## Loop around IDs for each case
       for (j in 1:nrow(dummydatamaxvariable) ) {
         # j <- 1
-        samplesize <- as.numeric(dummydatamaxvariable[ j, 2])
+        samplesize <- as.numeric(dummydatamaxvariable[ j, 1])
 
         if (samplesize !=0 ) {
           this.id <- as.character(dummydatamaxvariable[ j, 1])

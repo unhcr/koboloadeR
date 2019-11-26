@@ -4,8 +4,16 @@
 \alias{kobo_samplingframe}
 \title{Sample a dataframe}
 \usage{
-kobo_samplingframe(data, strata, pop_col, confidence_level = 0.95,
-  margin_error = 0.05, proportion = 0.5, method, buffer = 0.05)
+kobo_samplingframe(
+  data,
+  strata,
+  pop_col,
+  confidence_level = 0.95,
+  margin_error = 0.05,
+  proportion = 0.5,
+  method,
+  buffer = 0.05
+)
 }
 \arguments{
 \item{data}{Data frame containing the population informations}

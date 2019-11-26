@@ -31,8 +31,6 @@
 #' @export kobo_prediction_report
 #'
 #'
-#' @examples
-#' kobo_prediction_report()
 #'
 #' @examples
 #' \dontrun{

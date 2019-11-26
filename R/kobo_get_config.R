@@ -11,7 +11,9 @@
 #' @author Maher Daoud
 #'
 #' @examples
+#' \dontrun{
 #' kobo_get_config()
+#'}
 #'
 #' @export kobo_get_config
 #'

@@ -8,16 +8,14 @@
 #' It is assumed that the form is stored in the data folder.
 #'
 #'
-#' @return A "data.table" with the full data dictionnary. To be used in the rest of the analysis.
+#' @return A "data.frame" with the full data dictionnary. To be used in the rest of the analysis.
 #'
 #' @author Edouard Legoupil
 #'
-#' @examples
-#' kobo_dico()
 #'
 #' @examples
 #' \dontrun{
-#' kobo_dico("myform.xls")
+#' kobo_dico(form = "form.xls")
 #' }
 #'
 #' @export kobo_dico
@@ -39,10 +37,12 @@ kobo_dico <- function(form = "form.xls") {
   ## Rename the variable label
   names(survey)[names(survey) == "label::English"] <- "label"
   names(survey)[names(survey) == "label::english"] <- "label"
+  names(survey)[names(survey) == "label::English (en)"] <- "label"
 
 
   names(survey)[names(survey) == "hint::English"] <- "hint"
   names(survey)[names(survey) == "hint::english"] <- "hint"
+  names(survey)[names(survey) == "hint::English (en)"] <- "hint"
 
 
   names(survey)[names(survey) == "label::Report"] <- "labelReport"
@@ -259,8 +259,9 @@ kobo_dico <- function(form = "form.xls") {
                                          survey$listname))
 
   ## Remove trailing space
-  survey$listname <- glue::trim(survey$listname)
-  survey$label <- glue::trim(survey$label)
+  survey$listname <- trimws(survey$listname)
+  #glue::trimtrimws(survey$listname)
+  survey$label <- trimws(survey$label)
   #str(survey)
 
   ## Now creating full name in order to match with data variables name
@@ -417,13 +418,13 @@ kobo_dico <- function(form = "form.xls") {
     else {survey[ i, c("fullname")]  <-  paste(survey[ i, c("qgroup")],survey[ i, c("name")],sep = ".") }
   }
 
+
   ## a few colummns to adjust to match questions & choices
   survey$labelchoice <- survey$labelReport #survey$label
   survey$order <- ""
   survey$weight <- ""
   survey$score <- ""
   survey$recategorise <- ""
-
 
 
   ####
@@ -437,9 +438,13 @@ kobo_dico <- function(form = "form.xls") {
   names(choices)[names(choices) == "list name"] <- "listname"
   names(choices)[names(choices) == "list_name"] <- "listname"
 
+
+  ## need to delete empty rows from the form
+  choices <- as.data.frame(choices[!is.na(choices$listname), ])
+
   ## Remove trailing space
-  choices$listname <- glue::trim(choices$listname)
-  choices$label <- glue::trim(choices$label)
+  choices$listname <- trimws(choices$listname)
+  choices$label <- trimws(choices$label)
 
   if ("labelReport" %in% colnames(choices))
   {
@@ -484,7 +489,20 @@ kobo_dico <- function(form = "form.xls") {
 
   names(choices)[names(choices) == "labelReport"] <- "labelchoice"
   #rm(choices)
-  choices <- plyr::join(x = choices, y = survey, by = "listname", type = "left")
+
+  ## merge with related questions -
+  names(survey)
+  surveychoice <- survey[ ,c("type" ,    "name" , "label" ,    "labelReport" , "hintReport","chapter",  "variable", "disaggregation" ,
+                             "structuralequation.risk" ,      "structuralequation.coping" ,   "structuralequation.resilience",
+                             "anonymise",  "correlate", "clean", "cluster" ,  "predict",
+                              "mappoint",  "mappoly" , "relevant",  "required",  "constraint","repeat_count",
+                             "listname",  "qrepeat",   "qrepeatlabel",    "qlevel",    "type2",     "qgroup",   "fullname" )]
+  names(surveychoice)[names(surveychoice) == "name"] <- "nameq"
+  #names(surveychoice)[names(surveychoice) == "labelReport"] <- "labelq"
+
+
+  choices <- plyr::join(x = choices, y = surveychoice, by = "listname", type = "left")
+  #choices <- merge(x = choices, y = surveychoice, by = "listname")
 
   choices$type <- with(choices, ifelse(grepl("select_one", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE,  choices$type),
                                        paste0("select_one_d"),choices$type))
@@ -493,33 +511,47 @@ kobo_dico <- function(form = "form.xls") {
                                        paste0("select_multiple"),choices$type))
 
 
-  names(choices)[9] <- "nameq"
-  names(choices)[10] <- "labelq"
-  choices$labelfull <- paste0(choices$labelq, sep = ": ", choices$labelchoice)
-  choices$namefull <- paste0(choices$fullname, sep = ".", choices$name)
 
+  choices$labelReport <- paste0(choices$labelReport, sep = ": ", choices$labelchoice)
+  choices$fullname <- paste0(choices$fullname, sep = ".", choices$name)
+
+
+  #names(choices2)[names(choices2) == "namefull"] <- "fullname"
+ # names(choices2)[names(choices2) == "labelfull"] <- "labelReport"
+ # choices2$labelReport <- choices2$label
 
 
   #### Now Row bing questions & choices########################################################################################################
   #
+
+
+
+
+
     #names(choices) -"type", "name", "namefull",  "labelfull", "listname", "qrepeat", "qlevel", "qgroup"
     ## not kept: "nameq"     "labelq"   ,"fullname", "label",
     #names(survey) - "type" "name",  "fullname", "label",  "listname", "qrepeat"m  "qlevel",   "qgroup"
-  choices2 <- choices[ ,c("type", "name", "namefull",  "labelfull", "labelReport","hintReport", "chapter","disaggregation","correlate", "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise",
-                          "clean","cluster","predict","mappoint","mappoly",
+  choices2 <- choices[ ,c("type", "name", "fullname", "label", "labelReport","hintReport","chapter",
+                          "disaggregation","correlate",
+                          "structuralequation.risk","structuralequation.coping", "structuralequation.resilience",
+                          "anonymise",  "clean","cluster","predict","mappoint","mappoly",
                           "relevant",  "required", "constraint", "repeat_count",
-                          "listname", "qrepeat","qrepeatlabel",  "qlevel", "qgroup", "labelchoice",
+                          "listname", "qrepeat","qrepeatlabel",  "qlevel", "qgroup",
+                          "labelchoice",
                          #"repeatsummarize",
                          "variable",
                          #"indicator","indicatorgroup","indicatortype", "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation",
                          "order", "weight","score", "recategorise")]
 
 
-  names(choices2)[names(choices2) == "namefull"] <- "fullname"
-  names(choices2)[names(choices2) == "labelfull"] <- "label"
-  choices2$labelReport <- choices2$label
 
-  survey2 <-    survey[,c("type", "name",  "fullname", "label", "labelReport","hintReport", "chapter", "disaggregation","correlate",  "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise",
+
+
+
+
+  survey2 <-    survey[,c("type", "name",  "fullname", "label", "labelReport","hintReport", "chapter",
+                          "disaggregation","correlate",
+                          "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise",
                           "clean","cluster","predict","mappoint","mappoly",
                           "relevant",  "required", "constraint", "repeat_count",
                           "listname", "qrepeat","qrepeatlabel",  "qlevel",   "qgroup", "labelchoice",
@@ -542,12 +574,12 @@ kobo_dico <- function(form = "form.xls") {
 
 
   ## Remove trailing space
-  dico$fullname <- glue::trim(dico$fullname)
-  dico$listname <- glue::trim(dico$listname)
+  dico$fullname <- trimws(dico$fullname)
+  dico$listname <- trimws(dico$listname)
 
 
   ## Trim long label...
-  dico$label <- substring(dico$label, 0, 85)
+  #dico$label <- substring(dico$label, 0, 85)
   dico$labelReport <- substring(dico$labelReport, 0, 85)
 
   ## A few fix on the dico

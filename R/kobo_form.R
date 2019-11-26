@@ -16,8 +16,6 @@
 #'
 #' @author Edouard Legoupil
 #'
-#' @examples
-#' kobo_form()
 #'
 #' @examples
 #' \dontrun{

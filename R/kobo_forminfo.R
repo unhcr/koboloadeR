@@ -19,8 +19,7 @@
 #'
 #' @author Edouard Legoupil
 #'
-#' @examples kobo_forminfo()
-#'#' @examples
+#' @examples
 #' \dontrun{
 #' kobo_forminfo("15051")
 #' kobo_forminfo("31511", api = "unhcr")

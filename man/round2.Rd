@@ -18,7 +18,9 @@ rounded figure.
 Create roundup function
 }
 \examples{
+\dontrun{
 round2(x, n)
+}
 
 }
 \author{

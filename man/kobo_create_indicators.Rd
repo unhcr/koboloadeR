@@ -17,8 +17,6 @@ No return, all results will be saved inside new CSV files
 Function to compute indicators from indicator sheet
 }
 \examples{
-kobo_create_indicators()
-
 \dontrun{
 kobo_create_indicators("myform.xls")
 }

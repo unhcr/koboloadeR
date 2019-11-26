@@ -30,8 +30,6 @@ and select the most accurate one.
 The user needs to have previously loaded the registry, survey and form files
 }
 \examples{
-kobo_prediction_report()
-
 \dontrun{
 kobo_prediction_report("myform.xls")
 }

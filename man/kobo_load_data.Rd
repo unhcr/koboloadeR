@@ -19,8 +19,6 @@ No return, all results will be saved inside new CSV files
 Load form, building dictionnary, loading all required data into the environment, Check to split select_multiple if data is extracted from ODK, Clean variable if any and Re-encoding data based on the dictionnary
 }
 \examples{
-kobo_load_data()
-
 \dontrun{
 kobo_load_data("myform.xls")
 }

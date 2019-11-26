@@ -23,9 +23,11 @@ Note that this function only works with \code{data.frames}. The function
 will throw an error for any other object types.
 }
 \examples{
+\dontrun{
 data(iris)
 str(iris)
 kobo_to_xlsform(iris)
+}
 
 }
 \author{

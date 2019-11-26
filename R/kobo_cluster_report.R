@@ -7,26 +7,24 @@
 #'  The report is generated from functions released within FactoMiner & FactoMineR
 #'
 #'
-#' @param  frame kobo or odk dataset to use
-#' @param form The full filename of the form to be accessed (xls or xlsx file).
+#' @param  frame kobo or odk exported dataset to use
+#' @param form The full filename of the form to be accessed (has to be an xls file).
 #' @param app The place where the function has been executed, the default is the console and the second option is the shiny app
 #'
 #' @author Edouard Legoupil
 #'
-#' @examples
-#' kobo_cluster_report()
 #'
 #' @export kobo_cluster_report
 #'
 #' @examples
 #' \dontrun{
-#' kobo_cluster_report(frame)
+#' kobo_cluster_report(frame =  MainDataFrame , form = "form.xls")
 #' }
 #'
 
-kobo_cluster_report <- function(frame, form = "form.xls", app="console") {
+kobo_cluster_report <- function(frame , form = "form.xls", app = "console") {
   tryCatch({
-    if(app=="shiny"){
+    if (app == "shiny") {
       progress <- shiny::Progress$new()
       progress$set(message = "Generating crunching report in progress...", value = 0)
       on.exit(progress$close())
@@ -41,9 +39,9 @@ kobo_cluster_report <- function(frame, form = "form.xls", app="console") {
     }
     configInfo <- kobo_get_config()
     mainDir <- kobo_getMainDirectory()
-    form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
 
-    # frame <- household
+
+    # frame <- MainDataFrame
     # framename <- "household"
     framename <- deparse(substitute(frame))
     utils::write.csv(frame, paste0(mainDir,"/data/clustering-report-",framename,".csv"), row.names = FALSE, na = "")
@@ -73,9 +71,19 @@ kobo_cluster_report <- function(frame, form = "form.xls", app="console") {
 
 
     selected.id <- dico[ which(dico$cluster == "id"), ]
+
+
     selected.id <- plyr::join(x = selected.id, y = check, by = "fullname", type = "left")
     selected.id <- selected.id[!is.na(selected.id$id),  ]
+
+    ## if no id defined - instanceID used default
+    if (nrow(selected.id) != 1) {
+      cat("you have not selected a correct unique id, we use instanceID per default")
+      selected.idVars <- as.character(selected.id[ , c("instanceID")])
+    } else {
     selected.idVars <- as.character(selected.id[ , c("fullname")])
+    cat(paste("you have configure ",selected.idVars , " as unique id" ))
+    }
 
 
     if (nrow(selected.cluster) == 0) {
@@ -125,7 +133,7 @@ kobo_cluster_report <- function(frame, form = "form.xls", app="console") {
           cat("mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 5)", file = reportcluster , sep = "\n", append = TRUE)
           cat("## Load all required packages", file = reportcluster , sep = "\n", append = TRUE)
           cat("library(koboloadeR)", file = reportcluster , sep = "\n", append = TRUE)
-          cat("kobo_load_data()", file = reportcluster , sep = "\n", append = TRUE)
+          #cat("kobo_load_data()", file = reportcluster , sep = "\n", append = TRUE)
           cat("## Provide below the name of the form in xsl form - format should be xls not xlsx", file = reportcluster , sep = "\n", append = TRUE)
           cat("form <- \"form.xls\"", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
@@ -197,7 +205,7 @@ kobo_cluster_report <- function(frame, form = "form.xls", app="console") {
           cat("check <- plyr::join(x = check, y = dico, by = \"fullname\", type = \"left\")", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-          cat("selected.cluster <- dico[ which(dico$cluster == \"yes\" & dico$type == \"select_one\" ), ]", file = reportcluster , sep = "\n", append = TRUE)
+          cat("selected.cluster <- dico[ which(dico$cluster == \"TRUE\" & dico$type == \"select_one\" ), ]", file = reportcluster , sep = "\n", append = TRUE)
           cat("selected.cluster <- plyr::join(x = selected.cluster, y = check, by = \"fullname\", type = \"left\")", file = reportcluster , sep = "\n", append = TRUE)
           cat("selected.cluster <- selected.cluster[!is.na(selected.cluster$id), ]", file = reportcluster , sep = "\n", append = TRUE)
           cat("selected.clusterVars <- as.character(selected.cluster[ , c(\"fullname\")])", file = reportcluster , sep = "\n", append = TRUE)
@@ -208,6 +216,14 @@ kobo_cluster_report <- function(frame, form = "form.xls", app="console") {
           cat("selected.id <- dico[ which(dico$cluster == \"id\"), ]", file = reportcluster , sep = "\n", append = TRUE)
           cat("selected.id <- plyr::join(x = selected.id, y = check, by = \"fullname\", type = \"left\")", file = reportcluster , sep = "\n", append = TRUE)
           cat("selected.id <- selected.id[!is.na(selected.id$id),  ]", file = reportcluster , sep = "\n", append = TRUE)
+
+          cat("if (nrow(selected.id) != 1) {\n", file = reportcluster , sep = "\n", append = TRUE)
+          cat("selected.idVars <- as.character(selected.id[ , c(\"instanceID\")])", file = reportcluster , sep = "\n", append = TRUE)
+          cat("} else {\n", file = reportcluster , sep = "\n", append = TRUE)
+          cat("selected.idVars <- as.character(selected.id[ , c(\"fullname\")])", file = reportcluster , sep = "\n", append = TRUE)
+          cat("}\n", file = reportcluster , sep = "\n", append = TRUE)
+
+
           cat("selected.idVars <- as.character(selected.id[ , c(\"fullname\")])", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
@@ -335,6 +351,8 @@ kobo_cluster_report <- function(frame, form = "form.xls", app="console") {
           cat("cluster$clust[cluster$clust == 2] <- \"Profile 2\"", file = reportcluster , sep = "\n", append = TRUE)
           cat("cluster$clust[cluster$clust == 3] <- \"Profile 3\"", file = reportcluster , sep = "\n", append = TRUE)
           cat("cluster$clust[cluster$clust == 4] <- \"Profile 4\"", file = reportcluster , sep = "\n", append = TRUE)
+          cat("cluster$clust[cluster$clust == 5] <- \"Profile 5\"", file = reportcluster , sep = "\n", append = TRUE)
+          cat("cluster$clust[cluster$clust == 6] <- \"Profile 6\"", file = reportcluster , sep = "\n", append = TRUE)
           cat("cluster$clust <- as.factor(cluster$clust)", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("#names(cluster)", file = reportcluster , sep = "\n", append = TRUE)

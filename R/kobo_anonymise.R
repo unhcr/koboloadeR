@@ -31,7 +31,8 @@
 #'
 #'
 #' @param  frame dataset to use
-#' @param  dico Generated from kobo_dico function
+#' @param  form name of the form file in xls format
+#' @param app The place where the function has been executed, the default is the console and the second option is the shiny app
 #'
 #' @author Edouard Legoupil
 #'
@@ -40,18 +41,23 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_anonymise(frame, dico)
+#' kobo_anonymise(frame,  form = "form.xls")
 #' }
 #'
 
-kobo_anonymise <- function(frame, dico = "dico_form.xls.csv") {
+kobo_anonymise <- function(frame, form = "form.xls", app = "console") {
+
+  mainDir <- kobo_getMainDirectory()
+  form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
+
+  dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
 
   # frame <- household
   # framename <- "household"
   framename <- deparse(substitute(frame))
 
   mainDir <- kobo_getMainDirectory()
-  dico <- paste(mainDir, "data", dico, sep = "/", collapse = "/")
+  #dico <- paste(mainDir, "data", dico, sep = "/", collapse = "/")
 
 
   ## Get the anonymisation type defined within the xlsform / dictionnary ######
@@ -70,74 +76,74 @@ kobo_anonymise <- function(frame, dico = "dico_form.xls.csv") {
 
 
 
-  #### Remove ###############
-  anotype.remove  <- dico[ which(dico$anonymise == "remove" ),  ]
-  if (nrow(anotype.remove) > 0) {
-    cat(paste0(nrow(anotype.remove), " potential variables to remove \n\n"))
+      #### Remove ###############
+      anotype.remove  <- dico[ which(dico$anonymise == "remove" ),  ]
+      if (nrow(anotype.remove) > 0) {
+        cat(paste0(nrow(anotype.remove), " potential variables to remove \n\n"))
 
-    if (file.exists("code/temp-remove.R")) file.remove("code/temp-remove.R")
-    cat("cat(\"Now Running removal Script \n \")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-
-
-    ### Specific cases  ###
-    cat(paste0("colname <- grep(\"geopoint_latitude\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat("if (length(colname) > 0) { cat(\"Removing Latitude column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat(paste0("colname <- grep(\"Latitude\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat("if (length(colname) > 0) { cat(\"Removing Latitude column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-
-    cat(paste0("colname <- grep(\"geopoint_longitude\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat("if (length(colname) > 0) { cat(\"Removing Longitude column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat(paste0("colname <- grep(\"Longitude\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat("if (length(colname) > 0) { cat(\"Removing Longitude column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-
-    cat(paste0("colname <- grep(\"geopoint_altitude\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat("if (length(colname) > 0) { cat(\"Removing Altitude column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat(paste0("colname <- grep(\"Altitude\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat("if (length(colname) > 0) { cat(\"Removing Altitude column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-
-    cat(paste0("colname <- grep(\"geopoint_precision\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat("if (length(colname) > 0) { cat(\"Removing accuracy column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat(paste0("colname <- grep(\"Accuracy\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat("if (length(colname) > 0 ) { cat(\"Removing accuracy column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-
-    cat(paste0("colname <- grep(\"SubmissionDate\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat("if (length(colname) > 0 ) { cat(\"Removing SubmissionDate column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-    cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        if (file.exists("code/temp-remove.R")) file.remove("code/temp-remove.R")
+        cat("cat(\"Now Running removal Script \n \")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
 
 
+        ### Specific cases  ###
+        cat(paste0("colname <- grep(\"geopoint_latitude\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat("if (length(colname) > 0) { cat(\"Removing Latitude column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat(paste0("colname <- grep(\"Latitude\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat("if (length(colname) > 0) { cat(\"Removing Latitude column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
 
-      for (i in 1:nrow(anotype.remove)) {
-       # i <- 1
-        cat(paste0(i, "- Remove, if exists, the value of: ", as.character(anotype.remove[ i, c("label")]),"\n"))
-        varia <- paste0(framename,"$",as.character(anotype.remove[ i, c("fullname")]))
-        cat(paste0("if (\"", as.character(anotype.remove[ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-        cat(paste0(framename,"$",as.character(anotype.remove[ i, c("fullname")])," <- \"removed\" } else" ), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-        cat("{}", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-      }
+        cat(paste0("colname <- grep(\"geopoint_longitude\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat("if (length(colname) > 0) { cat(\"Removing Longitude column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat(paste0("colname <- grep(\"Longitude\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat("if (length(colname) > 0) { cat(\"Removing Longitude column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
 
-    cat(" Source removal script \n\n")
-    #mainDir <- getwd()
-    #source(paste0(mainDir,"/code/temp-remove.R"))
-    source("code/temp-remove.R")
-    #if (file.exists("code/temp-remove.R")) file.remove("code/temp-remove.R")
+        cat(paste0("colname <- grep(\"geopoint_altitude\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat("if (length(colname) > 0) { cat(\"Removing Altitude column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat(paste0("colname <- grep(\"Altitude\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat("if (length(colname) > 0) { cat(\"Removing Altitude column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
 
-    } else{}
+        cat(paste0("colname <- grep(\"geopoint_precision\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat("if (length(colname) > 0) { cat(\"Removing accuracy column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat(paste0("colname <- grep(\"Accuracy\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat("if (length(colname) > 0 ) { cat(\"Removing accuracy column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+
+        cat(paste0("colname <- grep(\"SubmissionDate\", colnames(",framename,"))"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat("if (length(colname) > 0 ) { cat(\"Removing SubmissionDate column \n\")", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        cat(paste0(framename,"[ ,colname] <- \"remove\"} else {}"), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
 
 
 
-  #### Reference ###############
-  anotype.reference <- dico[ which(dico$anonymise == "reference" ),  ]
-  # & dico$qrepeatlabel == framename
-  if (nrow(anotype.reference) > 0) {
-    cat(paste0(nrow(anotype.reference), " variables to encrypt \n\n"))
+        for (i in 1:nrow(anotype.remove)) {
+          # i <- 1
+          cat(paste0(i, "- Remove, if exists, the value of: ", as.character(anotype.remove[ i, c("label")]),"\n"))
+          varia <- paste0(framename,"$",as.character(anotype.remove[ i, c("fullname")]))
+          cat(paste0("if (\"", as.character(anotype.remove[ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+          cat(paste0(framename,"$",as.character(anotype.remove[ i, c("fullname")])," <- \"removed\" } else" ), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+          cat("{}", file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+        }
+
+        cat(" Source removal script \n\n")
+        #mainDir <- getwd()
+        #source(paste0(mainDir,"/code/temp-remove.R"))
+        source("code/temp-remove.R")
+        #if (file.exists("code/temp-remove.R")) file.remove("code/temp-remove.R")
+
+      } else{}
+
+
+
+      #### Reference ###############
+      anotype.reference <- dico[ which(dico$anonymise == "reference" ),  ]
+      # & dico$qrepeatlabel == framename
+      if (nrow(anotype.reference) > 0) {
+        cat(paste0(nrow(anotype.reference), " variables to encrypt \n\n"))
 
         if (file.exists("code/temp-reference.R")) file.remove("code/temp-reference.R")
         cat("cat(\"Now Running reference Script \n \")", file = "code/temp-reference.R" , sep = "\n", append = TRUE)
@@ -146,62 +152,62 @@ kobo_anonymise <- function(frame, dico = "dico_form.xls.csv") {
         formula0 <- paste0(framename,".anom.reference <- as.data.frame(row.names(", framename,"))" )
         cat(paste0(formula0, ""), file = "code/temp-reference.R" , sep = "\n", append = TRUE)
 
-      for (i in 1:nrow(anotype.reference)) {
-        # i <- 1
-        cat(paste0(i, "- Replace by row id and create a reference table, the value of: ", as.character(anotype.reference[ i, c("label")]),"\n"))
+        for (i in 1:nrow(anotype.reference)) {
+          # i <- 1
+          cat(paste0(i, "- Replace by row id and create a reference table, the value of: ", as.character(anotype.reference[ i, c("label")]),"\n"))
 
-        formula1 <-  paste0(framename,".anom.reference1 <- as.data.frame(", framename,"$",as.character(anotype.reference[ i, c("fullname")]),")" )
-        formula11 <- paste0("names(",framename,".anom.reference1) <- \"",anotype.reference[ i, c("fullname")],"\"")
-        formula12 <- paste0(framename,".anom.reference <- cbind(",framename,".anom.reference, ", framename,".anom.reference1)")
-        formula13 <- paste0("rm(",framename,".anom.reference1) ")
-        formula2 <-  paste0(framename, "$", as.character(anotype.reference[ i, c("fullname")]), " <- row.names(", framename,")")
+          formula1 <-  paste0(framename,".anom.reference1 <- as.data.frame(", framename,"$",as.character(anotype.reference[ i, c("fullname")]),")" )
+          formula11 <- paste0("names(",framename,".anom.reference1) <- \"",anotype.reference[ i, c("fullname")],"\"")
+          formula12 <- paste0(framename,".anom.reference <- cbind(",framename,".anom.reference, ", framename,".anom.reference1)")
+          formula13 <- paste0("rm(",framename,".anom.reference1) ")
+          formula2 <-  paste0(framename, "$", as.character(anotype.reference[ i, c("fullname")]), " <- row.names(", framename,")")
 
 
-        cat(paste0("if (\"", as.character(anotype.reference[ i, c("fullname")]) , "\" %in% names(", framename, ")) {"), file = "code/temp-reference.R", sep = "\n", append = TRUE)
-        cat(paste0(formula1, ""), file = "code/temp-reference.R" , sep = "\n", append = TRUE)
-        cat(paste0(formula11, ""), file = "code/temp-reference.R" , sep = "\n", append = TRUE)
-        cat(paste0(formula12, ""), file = "code/temp-reference.R" , sep = "\n", append = TRUE)
-        cat(paste0(formula13, ""), file = "code/temp-reference.R" , sep = "\n", append = TRUE)
-        cat(paste0(formula2, "} else"), file = "code/temp-reference.R" , sep = "\n", append = TRUE)
-        cat("{}", file = "code/temp-reference.R" , sep = "\n", append = TRUE)
-      }
-    formula3 <- paste0( "write.csv(",framename,".anom.reference, \"data/anom_reference_",framename,".csv\", row.names = FALSE, na = \"\")")
-    cat(formula3, file = "code/temp-reference.R" , sep = "\n", append = TRUE)
+          cat(paste0("if (\"", as.character(anotype.reference[ i, c("fullname")]) , "\" %in% names(", framename, ")) {"), file = "code/temp-reference.R", sep = "\n", append = TRUE)
+          cat(paste0(formula1, ""), file = "code/temp-reference.R" , sep = "\n", append = TRUE)
+          cat(paste0(formula11, ""), file = "code/temp-reference.R" , sep = "\n", append = TRUE)
+          cat(paste0(formula12, ""), file = "code/temp-reference.R" , sep = "\n", append = TRUE)
+          cat(paste0(formula13, ""), file = "code/temp-reference.R" , sep = "\n", append = TRUE)
+          cat(paste0(formula2, "} else"), file = "code/temp-reference.R" , sep = "\n", append = TRUE)
+          cat("{}", file = "code/temp-reference.R" , sep = "\n", append = TRUE)
+        }
+        formula3 <- paste0( "write.csv(",framename,".anom.reference, \"data/anom_reference_",framename,".csv\", row.names = FALSE, na = \"\")")
+        cat(formula3, file = "code/temp-reference.R" , sep = "\n", append = TRUE)
 
-  #  mainDir <- getwd()
-  #  source(paste0(mainDir,"/code/temp-reference.R"))
-    source("code/temp-reference.R")
-    if (file.exists("code/temp-reference-reference.R")) file.remove("code/temp-reference.R")
+        #  mainDir <- getwd()
+        #  source(paste0(mainDir,"/code/temp-reference.R"))
+        source("code/temp-reference.R")
+        if (file.exists("code/temp-reference-reference.R")) file.remove("code/temp-reference.R")
 
-    } else{}
+      } else{}
 
-  #### Scramble ###############
-  anotype.scramble <- dico[ which(dico$anonymise == "scramble" & dico$qrepeatlabel == framename), ]
+      #### Scramble ###############
+      anotype.scramble <- dico[ which(dico$anonymise == "scramble" & dico$qrepeatlabel == framename), ]
 
-  if (nrow(anotype.scramble ) > 0) {
-    cat(paste0(nrow(anotype.scramble), " variables to scramble \n\n"))
+      if (nrow(anotype.scramble ) > 0) {
+        cat(paste0(nrow(anotype.scramble), " variables to scramble \n\n"))
 
         if (file.exists("code/temp-scramble.R")) file.remove("code/temp-scramble.R")
-       cat("cat(\"Now Running scramble Script \n \")", file = "code/temp-scramble.R" , sep = "\n", append = TRUE)
+        cat("cat(\"Now Running scramble Script \n \")", file = "code/temp-scramble.R" , sep = "\n", append = TRUE)
 
-       for (i in 1:nrow(anotype.scramble )) {
-        cat(paste0(i, "- Scramble through cryptographical hash function, if exists, the value of: ", as.character(anotype.scramble[ i, c("label")]),"\n"))
+        for (i in 1:nrow(anotype.scramble )) {
+          cat(paste0(i, "- Scramble through cryptographical hash function, if exists, the value of: ", as.character(anotype.scramble[ i, c("label")]),"\n"))
 
-        indic.formula <- paste0(framename,"$",as.character(anotype.scramble[ i, c("fullname")]),
-                                "<- digest(" ,framename,"$",as.character(anotype.scramble[ i, c("fullname")]),
-                                ", algo= \"crc32\")" )
-        cat(paste0("if (\"", as.character(anotype.scramble[ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
-        cat(paste0(formula, "} else"), file = "code/temp-scramble.R" , sep = "\n", append = TRUE)
-        cat("{}", file = "code/temp-scramble.R" , sep = "\n", append = TRUE)
-      }
+          indic.formula <- paste0(framename,"$",as.character(anotype.scramble[ i, c("fullname")]),
+                                  "<- digest(" ,framename,"$",as.character(anotype.scramble[ i, c("fullname")]),
+                                  ", algo= \"crc32\")" )
+          cat(paste0("if (\"", as.character(anotype.scramble[ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file = "code/temp-remove.R" , sep = "\n", append = TRUE)
+          cat(paste0(formula, "} else"), file = "code/temp-scramble.R" , sep = "\n", append = TRUE)
+          cat("{}", file = "code/temp-scramble.R" , sep = "\n", append = TRUE)
+        }
         source("code/temp-scramble.R")
-       # source(paste0(getwd(),"/code/temp-scramble.R"))
-       # if (file.exists("code/temp-scramble.R")) file.remove("code/temp-scramble.R")
-  } else{}  }
-  else {cat("Sorry, it looks like there's nothing to anonymise based on the anonymisation plan within the xlsform dictionnary... \n") }
+        # source(paste0(getwd(),"/code/temp-scramble.R"))
+        # if (file.exists("code/temp-scramble.R")) file.remove("code/temp-scramble.R")
+      } else{}  }
+    else {cat("Sorry, it looks like there's nothing to anonymise based on the anonymisation plan within the xlsform dictionnary... \n") }
   }
 
- # return(frame)
+  # return(frame)
 
 }
 NULL

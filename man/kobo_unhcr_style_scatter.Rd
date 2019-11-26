@@ -13,7 +13,9 @@ Return UNHCR Style
 Return ggplot2 styling for scatter plot
 }
 \examples{
+\dontrun{
 kobo_unhcr_style_scatter()
+}
 
 }
 \author{

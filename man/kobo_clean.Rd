@@ -4,12 +4,14 @@
 \alias{kobo_clean}
 \title{Add cleaned variables to the frame based on a reference table}
 \usage{
-kobo_clean(frame, dico = "dico_form.xls.csv")
+kobo_clean(frame, form = "form.xls", app = "console")
 }
 \arguments{
-\item{frame}{odk dataset to use}
+\item{frame}{dataframe to use}
 
-\item{dico}{Generated from kobo_dico function}
+\item{form}{name of the form file in xls format}
+
+\item{app}{The place where the function has been executed, the default is the console and the second option is the shiny app}
 }
 \description{
 The function works on a loop based on the dictionnary.
@@ -18,10 +20,8 @@ The first column of that file will be used for the matching, the second column w
 The new cleaned variable will be inserted in the dictionnary. with a suffix '.clean'
 }
 \examples{
-kobo_clean()
-
 \dontrun{
-kobo_clean(frame, dico)
+kobo_clean(frame, form = "form.xls")
 }
 
 

@@ -13,8 +13,6 @@
 #'
 #' @author Edouard Legoupil
 #'
-#' @examples
-#' kobo_encode_repeat()
 #'
 #' @export kobo_encode_repeat
 #'

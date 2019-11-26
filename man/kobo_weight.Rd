@@ -13,8 +13,6 @@ kobo_weight(mainDir = "")
 Automatically weight the data according to the information of 0-config.R
 }
 \examples{
-kobo_weight()
-
 \dontrun{
 kobo_weight()
 }

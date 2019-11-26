@@ -6,10 +6,9 @@
 #' @param mainDir Path to the project's working directory: mainly for shiny app
 #' @author Elliott Messeiller
 #'
-#' @examples
-#' kobo_weight()
 #'
 #' @export kobo_weight
+#'
 #' @examples
 #' \dontrun{
 #' kobo_weight()

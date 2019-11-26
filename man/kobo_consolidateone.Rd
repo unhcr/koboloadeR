@@ -4,27 +4,24 @@
 \alias{kobo_consolidateone}
 \title{Merge disagregated select_one variable}
 \usage{
-kobo_consolidateone(data, dico)
+kobo_consolidateone(frame, form = "form.xls")
 }
 \arguments{
-\item{data}{original dataset}
+\item{frame}{kobo or odk exported dataset to use}
 
-\item{dico}{dictionnary}
+\item{form}{The full filename of the form to be accessed (has to be an xls file).}
 }
 \value{
-A "data.table" with additional select_one variable.
-
 data
 }
 \description{
 Merge disagregated select_one variable
 }
 \examples{
-kobo_consolidateone()
-
 \dontrun{
-kobo_consolidateone("myform.xls")
+kobo_consolidateone(frame , form = "form.xls")
 }
+
 
 }
 \author{

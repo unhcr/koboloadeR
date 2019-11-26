@@ -19,8 +19,6 @@ No return, All results will be saved on RMD files and Word files
 Generate crunching Report that contains all descriptive statistics, correlation analysis, tabulation and data visualization for variables and indicators.
 }
 \examples{
-kobo_crunching_report()
-
 \dontrun{
 kobo_crunching_report("myform.xls")
 }

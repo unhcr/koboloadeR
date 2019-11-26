@@ -17,9 +17,11 @@
 #' @author Edouard Legoupil
 #'
 #' @examples
+#' \dontrun{
 #' data(iris)
 #' str(iris)
 #' kobo_to_xlsform(iris)
+#' }
 #'
 #' @export kobo_to_xlsform
 #'

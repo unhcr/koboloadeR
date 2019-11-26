@@ -17,8 +17,6 @@
 #'
 #' @author Maher Daoud
 #'
-#' @examples
-#' kobo_edit_form()
 #'
 #' @examples
 #' \dontrun{

@@ -17,8 +17,6 @@ The return will be a list that contains a list that checks all elements of the p
 Check if the project configurations exist and all required files are in the right place.
 }
 \examples{
-kobo_check_project_configuration()
-
 \dontrun{
 kobo_check_project_configuration("myform.xls")
 }

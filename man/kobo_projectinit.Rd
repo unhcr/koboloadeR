@@ -13,8 +13,9 @@ A structure of directory and scripts in order to set up quickly a project.
 Create analysis project structure
 }
 \examples{
+\dontrun{
 kobo_projectinit()
-
+}
 }
 \author{
 Edouard Legoupil, Elliott MEesseiller

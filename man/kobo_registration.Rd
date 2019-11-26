@@ -55,7 +55,9 @@ Demographics - Head of Household variables
  Head of HH below 18
 }
 \examples{
+\dontrun{
 kobo_registration()
+}
 
 }
 \author{

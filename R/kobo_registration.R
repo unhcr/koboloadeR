@@ -55,7 +55,9 @@
 #' @author Edouard Legoupil
 #'
 #' @examples
+#' \dontrun{
 #' kobo_registration()
+#' }
 #'
 
 

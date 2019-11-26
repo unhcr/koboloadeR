@@ -13,8 +13,6 @@
 #'
 #' @author Edouard Legoupil, Maher Daoud
 #'
-#' @examples
-#' kobo_load_data()
 #'
 #' @examples
 #' \dontrun{

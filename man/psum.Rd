@@ -18,7 +18,9 @@ Integer or numeric.
 Helper function that will sum values even if we have NA
 }
 \examples{
+\dontrun{
 psum()
+}
 
 }
 \author{

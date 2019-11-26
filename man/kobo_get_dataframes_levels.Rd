@@ -17,8 +17,6 @@ A "data.frame" contains levels and parents for the main dataframe and all sub da
 Produce a dataframe that represents levels and parents for the main dataframe and all sub datasets.
 }
 \examples{
-kobo_get_dataframes_levels()
-
 \dontrun{
 kobo_get_dataframes_levels("myform.xls")
 }

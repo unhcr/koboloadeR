@@ -4,27 +4,28 @@
 #'
 #' @description  Merge disagregated select_one variable
 #'
-#' @param data original dataset
-#' @param dico dictionnary
-#'
-#' @return A "data.table" with additional select_one variable.
+#' @param  frame kobo or odk exported dataset to use
+#' @param form The full filename of the form to be accessed (has to be an xls file).
 #'
 #' @author Edouard Legoupil
 #'
-#' @examples
-#' kobo_consolidateone()
 #'
 #' @export kobo_consolidateone
+#'
 #' @examples
 #' \dontrun{
-#' kobo_consolidateone("myform.xls")
+#' kobo_consolidateone(frame , form = "form.xls")
 #' }
 #'
-#' @export kobo_consolidateone
 #'
 #' @return data
 
-kobo_consolidateone <- function(data,dico) {
+kobo_consolidateone <- function(frame , form = "form.xls") {
+
+  configInfo <- kobo_get_config()
+  mainDir <- kobo_getMainDirectory()
+  dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+
 
   ### List of select_one questions
   listoned <- dico[dico$type == "select_one_d" , c("listname","label","name","fullname")]

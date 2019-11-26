@@ -19,7 +19,9 @@ no return. only if there is error.
 Rename xlsform under data file to form.xls and all dataframes to the
 }
 \examples{
+\dontrun{
 kobo_rename_xlsform_dataframes()
+}
 
 }
 \author{

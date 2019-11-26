@@ -17,8 +17,6 @@ kobo_atlas_report(frame, dico, mappoly)
 Generate report with data aggregated by location & spatial visualisation / cartography
 }
 \examples{
-kobo_atlas_report(frame, dico, mappoly)
-
 \dontrun{
 kobo_atlas_report(frame, dico, mappoly)
 }

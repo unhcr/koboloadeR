@@ -25,8 +25,6 @@ samplesize is set per defautl at 500 records
 - adds InstandID column to link hierearchical data based on "`repeat_count`"
 }
 \examples{
-kobo_dummy()
-
 \dontrun{
 kobo_dummy(form)
 }

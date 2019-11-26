@@ -13,8 +13,6 @@
 #'
 #' @author Edouard Legoupil
 #'
-#' @examples
-#' kobo_label()
 #'
 #' @export kobo_label
 #' @examples

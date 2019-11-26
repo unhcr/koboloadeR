@@ -18,8 +18,6 @@ A "data.table" with the full data.label. To be used for graphs generation.
 Insert the full label in data frame based on dictionnary
 }
 \examples{
-kobo_label()
-
 \dontrun{
 kobo_label(data, dico)
 }

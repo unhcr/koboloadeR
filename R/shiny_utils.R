@@ -15,7 +15,6 @@
 #' }
 #'
 #' @examples
-#'
 #' \dontrun{
 #' kobo_apps()
 #' kobo_apps("data_viewer")

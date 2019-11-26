@@ -19,8 +19,6 @@ DDI version 2.5, XML file structure will saved under out/ddi
 This function creates a DDI version 2.5, XML file structure for microdata library
 }
 \examples{
-kobo_ddi()
-
 \dontrun{
 kobo_ddi("myform.xls")
 }

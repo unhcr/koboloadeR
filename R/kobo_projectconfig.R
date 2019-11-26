@@ -11,7 +11,9 @@
 #' @export kobo_projectconfig
 #'
 #' @examples
+#' \dontrun{
 #' kobo_projectconfig()
+#' }
 #'
 
 

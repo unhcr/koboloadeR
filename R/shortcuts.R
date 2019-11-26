@@ -11,4 +11,4 @@ NULL
 #' @import readxl
 NULL
 
-f_csv <- function(x) setDT(read_csv(content(x, "raw")))[]
+f_csv <- function(x) data.table::setDT(utils::read.csv(content(x, "raw")))[]

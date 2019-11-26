@@ -4,8 +4,14 @@
 \alias{kobo_edit_form}
 \title{Edit XLS form with shiny app for configuration}
 \usage{
-kobo_edit_form(form = "form.xls", survey = NULL, choices = NULL,
-  indicator = NULL, settings = NULL, analysisSettings = NULL)
+kobo_edit_form(
+  form = "form.xls",
+  survey = NULL,
+  choices = NULL,
+  indicator = NULL,
+  settings = NULL,
+  analysisSettings = NULL
+)
 }
 \arguments{
 \item{form}{The full filename of the form to be accessed (xls or xlsx file).
@@ -28,8 +34,6 @@ No return, this function edit the original XLSform directly
 This function used to change the data of sheets in the xlsform and apply all required styles for each sheet
 }
 \examples{
-kobo_edit_form()
-
 \dontrun{
 kobo_edit_form("myform.xls")
 }

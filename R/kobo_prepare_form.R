@@ -14,8 +14,6 @@
 #'
 #' @author Maher Daoud
 #'
-#' @examples
-#' kobo_prepare_form()
 #'
 #' @examples
 #' \dontrun{
@@ -254,7 +252,32 @@ kobo_prepare_form <- function(form = "form.xls") {
     }
     namesOfSur <- c(namesOfSur,"structuralequation.risk","structuralequation.coping","structuralequation.resilience")
 
+    ### order in user friendly    way
 
+    namesOfSur <- c( "type",
+     "name",
+     "labelReport",
+     "hintReport",
+     "chapter",
+     "anonymise",
+     "disaggregation",
+     "correlate",
+     "variable",
+     "clean"     ,
+     "cluster"  ,
+     "predict" ,
+     "mappoint",
+     "mappoly",
+     "structuralequation.risk",
+     "structuralequation.coping",
+     "structuralequation.resilience",
+     "label",
+      "hint",
+      "required",
+      "relevant",
+      "constraint",
+      "calculation",
+     "repeat_count" )
 
     ## Avoid columns without names
     survey <- survey[ ,namesOfSur]
@@ -286,14 +309,14 @@ kobo_prepare_form <- function(form = "form.xls") {
       xlsx::Border(color = "GREY_80_PERCENT", position = c("TOP", "BOTTOM"), "BORDER_THIN")
     cs1 <- xlsx::CellStyle(wb) +
       xlsx::Font(wb, isBold = TRUE, isItalic = FALSE, color = "black") +
-      xlsx::Fill(backgroundColor = "SKY_BLUE", foregroundColor = "SKY_BLUE",
+      xlsx::Fill(backgroundColor = "orange", foregroundColor = "orange",
            pattern = "SOLID_FOREGROUND")   +
-      xlsx::Border(color = "SKY_BLUE", position = c("TOP", "BOTTOM"), "BORDER_THIN")
+      xlsx::Border(color = "orange", position = c("TOP", "BOTTOM"), "BORDER_THIN")
     cs2 <- xlsx::CellStyle(wb) +
       xlsx::Font(wb, isBold = TRUE, isItalic = FALSE, color = "white") +
-      xlsx::Fill(backgroundColor = "orange", foregroundColor = "orange",
+      xlsx::Fill(backgroundColor = "SKY_BLUE", foregroundColor = "SKY_BLUE",
            pattern = "SOLID_FOREGROUND")    +
-      xlsx::Border(color = "orange", position = c("TOP", "BOTTOM"), "BORDER_THIN")
+      xlsx::Border(color = "SKY_BLUE", position = c("TOP", "BOTTOM"), "BORDER_THIN")
     rows <- xlsx::getRows(surveySheet) # get rows of survey Sheet
     cells <- xlsx::getCells(rows) # get cells of survey Sheet
 

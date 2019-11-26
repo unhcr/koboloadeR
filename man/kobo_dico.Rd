@@ -11,16 +11,14 @@ kobo_dico(form = "form.xls")
 It is assumed that the form is stored in the data folder.}
 }
 \value{
-A "data.table" with the full data dictionnary. To be used in the rest of the analysis.
+A "data.frame" with the full data dictionnary. To be used in the rest of the analysis.
 }
 \description{
 Produce a data dictionnary based on the xlsform for the project
 }
 \examples{
-kobo_dico()
-
 \dontrun{
-kobo_dico("myform.xls")
+kobo_dico(form = "form.xls")
 }
 
 }

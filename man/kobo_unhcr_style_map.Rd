@@ -13,7 +13,9 @@ Return UNHCR Style
 Return ggplot2 styling for maps
 }
 \examples{
+\dontrun{
 kobo_unhcr_style_map()
+}
 
 }
 \author{

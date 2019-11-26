@@ -12,8 +12,6 @@
 #'
 #' @author Maher Daoud
 #'
-#' @examples
-#' kobo_get_dataframes_levels()
 #'
 #' @examples
 #' \dontrun{

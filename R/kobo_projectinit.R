@@ -12,8 +12,9 @@
 #' @author Edouard Legoupil, Elliott MEesseiller
 #'
 #' @examples
+#' \dontrun{
 #' kobo_projectinit()
-#'
+#' }
 
 
 kobo_projectinit <- function() {

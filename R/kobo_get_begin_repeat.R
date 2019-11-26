@@ -12,8 +12,6 @@
 #'
 #' @author Maher Daoud
 #'
-#' @examples
-#' kobo_get_begin_repeat()
 #'
 #' @examples
 #' \dontrun{

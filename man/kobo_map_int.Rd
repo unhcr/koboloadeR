@@ -23,8 +23,6 @@ kobo_map_int(data, xmax, xmin, ymax, ymin, dico)
 Automatically generate maps for all nominal & ordinal variables based on dates. ggplot2 is used.
 }
 \examples{
-kobo_map_int()
-
 \dontrun{
 kobo_map_int(data,xmax,xmin,ymax,ymin, dico)
 }

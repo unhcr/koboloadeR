@@ -4,12 +4,14 @@
 \alias{kobo_anonymise}
 \title{Remove direct identifier}
 \usage{
-kobo_anonymise(frame, dico = "dico_form.xls.csv")
+kobo_anonymise(frame, form = "form.xls", app = "console")
 }
 \arguments{
 \item{frame}{dataset to use}
 
-\item{dico}{Generated from kobo_dico function}
+\item{form}{name of the form file in xls format}
+
+\item{app}{The place where the function has been executed, the default is the console and the second option is the shiny app}
 }
 \description{
 Automatically produce an anonymised dataset in line with the anonymisation plan set up in the xlsform.
@@ -41,7 +43,7 @@ The methods above can be reference in the column
 }
 \examples{
 \dontrun{
-kobo_anonymise(frame, dico)
+kobo_anonymise(frame,  form = "form.xls")
 }
 
 }

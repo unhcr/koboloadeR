@@ -15,7 +15,9 @@
 #' @author Edouard Legoupil
 #'
 #' @examples
-#' kobo_anonymisation_report()
+#' \dontrun{
+#' kobo_anonymisation_report(frame, form = "form.xls")
+#' }
 #'
 #' @export kobo_anonymisation_report
 #'

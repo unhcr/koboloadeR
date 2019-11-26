@@ -12,7 +12,9 @@
 #' @export kobo_indicator
 #'
 #' @examples
+#' \dontrun{
 #' kobo_indicator()
+#' }
 #'
 
 

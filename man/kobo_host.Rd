@@ -29,7 +29,7 @@ This function is not intended to be called directly.
 It is used in other functions.
 }
 \examples{
-
+#'
 \dontrun{
 kobo_host("unhcr")
 kobo_host("ttps://kobocat.unhcr.org/api/v1/")

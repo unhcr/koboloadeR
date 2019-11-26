@@ -13,8 +13,6 @@ kobo_shiny(app = "")
 A function to launch shiny apps
 }
 \examples{
-kobo_shiny()
-
 \dontrun{
 kobo_shiny(appname)
 }

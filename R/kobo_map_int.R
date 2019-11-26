@@ -18,8 +18,6 @@
 #'
 #' @author Edouard Legoupil
 #'
-#' @examples
-#' kobo_map_int()
 #'
 #' @export kobo_map_int
 #'

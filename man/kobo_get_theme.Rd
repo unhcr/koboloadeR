@@ -13,8 +13,9 @@ Return a list that contains all themes
 Return all themes that are used for styling reports and charts
 }
 \examples{
+\dontrun{
 kobo_get_theme()
-
+}
 }
 \author{
 Maher Daoud, Edouard Legoupil - with insiparation from bbc

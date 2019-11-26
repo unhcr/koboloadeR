@@ -13,8 +13,6 @@
 #'
 #' @author Edouard Legoupil
 #'
-#' @examples
-#' kobo_atlas_report(frame, dico, mappoly)
 #'
 #' @export kobo_atlas_report
 #'

@@ -11,8 +11,6 @@
 #'
 #' @author Elliott Messeiller
 #'
-#' @examples
-#' kobo_question("s2.beneficiary_code")
 #'
 #' @export kobo_question
 #' @examples

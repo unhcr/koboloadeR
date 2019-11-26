@@ -12,7 +12,9 @@
 #' @author Maher Daoud
 #'
 #' @examples
+#' \dontrun{
 #' kobo_projectinit()
+#' }
 #'
 
 

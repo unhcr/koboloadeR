@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Data Crunching • koboloadeR</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Data Crunching">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -88,7 +89,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/unhcr/koboloadeR">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -101,13 +102,14 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Data Crunching</h1>
                         <h4 class="author">Edouard Legoupil</h4>
             
-            <h4 class="date">2019-07-16</h4>
+            <h4 class="date">2019-11-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/unhcr/koboloadeR/blob/master/vignettes/Crunching.Rmd"><code>vignettes/Crunching.Rmd</code></a></small>
       <div class="hidden name"><code>Crunching.Rmd</code></div>
@@ -127,29 +129,21 @@
 <p>KoboloadeR packages aims at separating “<em>input</em>”, “<em>processing</em>” and “<em>output</em>” within the data crunching phase of the data analysis worklfow.</p>
 <p>The “output” will be one or multiple Rmd (Rmarkdown) file(s) than will generate word, pdf or html reports and the configuration file includes references to all “input”:</p>
 <ul>
-<li>Path to <strong>raw data</strong> files collected using <a href="https://opendatakit.org/">OpenDataKit</a>, <a href="http://www.kobotoolbox.org/">Kobotoolbox</a> or <a href="https://ona.io">ONA</a><br>
-</li>
-<li>Path to form (defined using the standard format <a href="http://xlsform.org">xlsform</a>) in order to build a <strong>data dictionary</strong><br>
-</li>
-<li>Path to the <strong>sample weight</strong> for each observation (based on cluster or strata…)<br>
-</li>
-<li>Path to the data <strong>cleaning log</strong><br>
-</li>
-<li>Path to the <strong>indicator calculation</strong> sheet</li>
+<li><p>Path to <strong>raw data</strong> files collected using <a href="https://opendatakit.org/">OpenDataKit</a>, <a href="http://www.kobotoolbox.org/">Kobotoolbox</a> or <a href="https://ona.io">ONA</a></p></li>
+<li><p>Path to form (defined using the standard format <a href="http://xlsform.org">xlsform</a>) in order to build a <strong>data dictionary</strong></p></li>
+<li><p>Path to the <strong>sample weight</strong> for each observation (based on cluster or strata…)</p></li>
+<li><p>Path to the data <strong>cleaning log</strong></p></li>
+<li><p>Path to the <strong>indicator calculation</strong> sheet</p></li>
 </ul>
 </div>
 <div id="advantage-of-koboloader" class="section level2">
 <h2 class="hasAnchor">
 <a href="#advantage-of-koboloader" class="anchor"></a>Advantage of KoboLoadeR</h2>
 <ul>
-<li>
-<strong>Productivity</strong>: Once the configuration file is written, run the script in Rstudio to get the output</li>
-<li>
-<strong>Training</strong>: No need to write R instruction – limited knowledge of R is required</li>
-<li>
-<strong>Iteration</strong>: Check the output, adjust the various input files &amp; re-run the script till you get a satisfying report</li>
-<li>
-<strong>Reproducibility</strong>: all analysis input are de facto documented</li>
+<li><p><strong>Productivity</strong>: Once the configuration file is written, run the script in Rstudio to get the output</p></li>
+<li><p><strong>Training</strong>: No need to write R instruction – limited knowledge of R is required</p></li>
+<li><p><strong>Iteration</strong>: Check the output, adjust the various input files &amp; re-run the script till you get a satisfying report</p></li>
+<li><p><strong>Reproducibility</strong>: all analysis input are de facto documented</p></li>
 </ul>
 <p>KoboLoadeR takes care of the processing component so that the technical team can focus on the interpretation.</p>
 </div>
@@ -173,18 +167,19 @@
 <h2 class="hasAnchor">
 <a href="#output-from-the-package" class="anchor"></a>Output from the package</h2>
 <ul>
-<li>Frequency tables &amp; Bar chart for select type questions</li>
-<li>Frequency tables &amp; Histogram for numeric questions</li>
-<li>Frequency table for text questions</li>
-<li>Cross-tab &amp; graph (if 2 categorical: bar chart, if 1 categoric + 1 numeric: boxplot &amp; if 2 numeric: scatterplot)</li>
-<li>Chi-squared test &amp; corrplot presentation</li>
-<li>Mapping if geographic field are configured (still in development)</li>
-<li>and more to come…</li>
+<li><p>Frequency tables &amp; Bar chart for select type questions</p></li>
+<li><p>Frequency tables &amp; Histogram for numeric questions</p></li>
+<li><p>Frequency table for text questions</p></li>
+<li><p>Cross-tab &amp; graph (if 2 categorical: bar chart, if 1 categoric + 1 numeric: boxplot &amp; if 2 numeric: scatterplot)</p></li>
+<li><p>Chi-squared test &amp; corrplot presentation</p></li>
+<li><p>Mapping if geographic field are configured (still in development)</p></li>
+<li><p>and more to come…</p></li>
 </ul>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -201,17 +196,20 @@
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Edouard Legoupil, Maher Daoud.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

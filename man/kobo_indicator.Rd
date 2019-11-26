@@ -16,7 +16,9 @@ A file with all elements to get your data & form.
 Add additional variables based on the data analysis plan to the data frame
 }
 \examples{
+\dontrun{
 kobo_indicator()
+}
 
 }
 \author{

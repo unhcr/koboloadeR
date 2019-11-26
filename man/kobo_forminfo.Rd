@@ -27,8 +27,6 @@ The URL of the form based on form id.
 Obtain form info in order to correctly retrieve the form.
 }
 \examples{
-kobo_forminfo()
-#' @examples
 \dontrun{
 kobo_forminfo("15051")
 kobo_forminfo("31511", api = "unhcr")

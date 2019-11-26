@@ -7,9 +7,9 @@
 kobo_cluster_report(frame, form = "form.xls", app = "console")
 }
 \arguments{
-\item{frame}{kobo or odk dataset to use}
+\item{frame}{kobo or odk exported dataset to use}
 
-\item{form}{The full filename of the form to be accessed (xls or xlsx file).}
+\item{form}{The full filename of the form to be accessed (has to be an xls file).}
 
 \item{app}{The place where the function has been executed, the default is the console and the second option is the shiny app}
 }
@@ -19,10 +19,8 @@ Automatically produce a report exploring potential clusters within survey record
  The report is generated from functions released within FactoMiner & FactoMineR
 }
 \examples{
-kobo_cluster_report()
-
 \dontrun{
-kobo_cluster_report(frame)
+kobo_cluster_report(frame =  MainDataFrame , form = "form.xls")
 }
 
 }

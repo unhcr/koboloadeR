@@ -13,7 +13,9 @@
 #' @author Maher Daoud
 #'
 #' @examples
+#' \dontrun{
 #' kobo_rename_xlsform_dataframes()
+#' }
 #'
 #' @export kobo_rename_xlsform_dataframes
 #'

@@ -11,8 +11,6 @@
 #'
 #' @author Edouard Legoupil, Maher Daoud
 #'
-#' @examples
-#' kobo_crunching_report()
 #'
 #' @examples
 #' \dontrun{
@@ -88,7 +86,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
 
 
     ## Get a list of variables to be used for disaggregation #######
-    disaggregation <- dico[ which(dico$disaggregation %in% c("facet","correlate") & dico$formpart == "questions"),
+    disaggregation <- dico[ which(dico$disaggregation %in% c("facet", "stak", "fill", "dodge") & dico$formpart == "questions"),
                             c("chapter", "name", "label","labelReport", "type", "qrepeatlabel", "fullname", "disaggregation", "correlate", "listname", "variable") ]
 
     ## Get a list of variables to be used for analyisis of association - chisquarred #######

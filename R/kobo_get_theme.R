@@ -23,8 +23,9 @@
 #' It also defined a very subtle grid and a warmgrey background, which gives it some sort of paper map feeling..
 #'
 #' @examples
+#' \dontrun{
 #' kobo_get_theme()
-#'
+#' }
 #' @export kobo_get_theme
 #'
 

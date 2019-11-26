@@ -26,7 +26,6 @@ A launcher for the Shiny apps available in the koboloadeR package.
 }
 
 \examples{
-
 \dontrun{
 kobo_apps()
 kobo_apps("data_viewer")

@@ -12,8 +12,6 @@
 #'
 #' @author Edouard Legoupil, Maher Daoud
 #'
-#' @examples
-#' kobo_create_indicators()
 #'
 #' @examples
 #' \dontrun{

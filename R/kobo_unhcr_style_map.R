@@ -9,7 +9,9 @@
 #' @author Edouard Legoupil -
 #'
 #' @examples
+#' \dontrun{
 #' kobo_unhcr_style_map()
+#' }
 #'
 #' @export kobo_unhcr_style_map
 #'

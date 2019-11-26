@@ -12,8 +12,8 @@ kobo_datasets2(user, api)
 length 2, with the first value being the "username", and the second being
 the "password".}
 
-\item{api}{The URL at which the API can be accessed. Defaults to "kobo",
-which loads the KoBo Toolbox API.}
+\item{api}{The URL at which the API can be accessed. Defaults to "unhcr",
+which loads the UNHCR server KoBo Toolbox API.}
 }
 \value{
 A data.table containing details about the datasets available,
@@ -24,7 +24,9 @@ Lists the Datasets Available including count of submission.
 - description    id  -    id_string - title   -   url
 }
 \examples{
+\dontrun{
 kobo_datasets2()
+}
 
 }
 \author{

@@ -9,8 +9,6 @@
 #'
 #' @author Elliott Messeiller
 #'
-#' @examples
-#' kobo_shiny()
 #'
 #' @export kobo_shiny
 #' @examples

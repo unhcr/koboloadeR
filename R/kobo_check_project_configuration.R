@@ -5,14 +5,12 @@
 #' @description Check if the project configurations exist and all required files are in the right place.
 #' @param form The full filename of the form to be accessed (xls or xlsx file).
 #' It is assumed that the form is stored in the data folder.
-#' 
+#'
 #'
 #' @return The return will be a list that contains a list that checks all elements of the project configuration and a message of confirmation
 #'
 #' @author Maher Daoud
 #'
-#' @examples
-#' kobo_check_project_configuration()
 #'
 #' @examples
 #' \dontrun{
@@ -28,7 +26,7 @@ kobo_check_project_configuration <- function(form = "form.xls") {
     result$flag <- T
     result$message <- ""
     countE <- 0
-    
+
     mainDir <- kobo_getMainDirectory()
     form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
     configInfoOrigin <- kobo_get_config(form)
@@ -51,7 +49,7 @@ kobo_check_project_configuration <- function(form = "form.xls") {
     #check if data files are exist
     subDataFrames <- kobo_get_begin_repeat()
     subDataFrames = c("MainDataFrame",subDataFrames$names)
-    
+
     for (sdf in subDataFrames) {
       if(!sdf %in% configInfoOrigin$name){
         result$flag <- F
@@ -62,13 +60,13 @@ kobo_check_project_configuration <- function(form = "form.xls") {
       }
       path <- configInfoOrigin[configInfoOrigin$name==sdf, "path"]
       val <- configInfoOrigin[configInfoOrigin$name==sdf, "value"]
-      
+
       if(is.na(val) | trimws(val) == ""){
         countE <- countE+1
         result[[paste0("emptyValue_",sdf)]] <- paste(countE,"-", " The value column for ", sdf," doesn't fill in the 'analysisSettings' sheet", sep = "")
         result$message <- paste(result$message, "\n", result[[paste0("emptyValue_",sdf)]], sep = "")
       }
-      
+
       if(is.na(path) | trimws(path) == ""){
         countE <- countE+1
         result[[paste0("emptyPath_",sdf)]] <- paste(countE,"-", " The path for ", sdf," doesn't exist in the 'analysisSettings' sheet", sep = "")
@@ -80,12 +78,12 @@ kobo_check_project_configuration <- function(form = "form.xls") {
         result$message <- paste(result$message, "\n", result[[sdf]], sep = "")
       }
     }
-    
+
     instanceidRows <- configInfoOrigin[startsWith(tolower(configInfoOrigin$name), "instanceid"),]
     instanceidValues <- instanceidRows[,"value"]
     instanceidNames <- instanceidRows[,"name"]
-    
-    
+
+
     #check if instanceid Values are filled
     if(sum(is.na(instanceidValues) | trimws(instanceidValues) == "") != 0){
       instanceidNames <- instanceidNames[which(is.na(instanceidValues) | trimws(instanceidValues)=="")]
@@ -95,7 +93,7 @@ kobo_check_project_configuration <- function(form = "form.xls") {
       result$instanceId <- paste(countE,"- ", " Please make sure that you fill the instance id in the 'analysisSettings' sheet for ", instanceidNames, sep = "")
       result$message <- paste(result$message, "\n", result$instanceId, sep = "")
     }
-    
+
     #check if the information of sampling are filled
     if (configInfoOrigin[configInfoOrigin$name == "sample_type", "value"] == "Cluster sample (type 2)") {
       weightsInfoPath <- configInfoOrigin[configInfoOrigin$name == "weights_info", "path"]
@@ -103,7 +101,7 @@ kobo_check_project_configuration <- function(form = "form.xls") {
       variableName <- configInfoOrigin[configInfoOrigin$name == "variable_name", "value"]
       weightsVariable <- configInfoOrigin[configInfoOrigin$name == "weightsVariable", "value"]
       numberOfClusters <- configInfoOrigin[configInfoOrigin$name == "numberOfClusters", "value"]
-      
+
       if(is.na(weightsInfoPath) | trimws(weightsInfoPath) == ""){
         result$flag <- F
         countE <- countE+1
@@ -139,7 +137,7 @@ kobo_check_project_configuration <- function(form = "form.xls") {
       weightsInfoValue <- configInfoOrigin[configInfoOrigin$name == "weights_info", "value"]
       variableName <- configInfoOrigin[configInfoOrigin$name == "variable_name", "value"]
       weightsVariable <- configInfoOrigin[configInfoOrigin$name == "weightsVariable", "value"]
-      
+
       if(is.na(weightsInfoPath) | trimws(weightsInfoPath) == ""){
         result$flag <- F
         countE <- countE+1
@@ -165,7 +163,7 @@ kobo_check_project_configuration <- function(form = "form.xls") {
         result$message <- paste(result$message, "\n", result$weightsVariable, sep = "")
       }
     }
-    
+
     #Check if the cluster id is exist###################
     survey <- tryCatch({
       as.data.frame(read_excel(form_tmp, sheet = "survey"),
@@ -192,7 +190,7 @@ kobo_check_project_configuration <- function(form = "form.xls") {
         stringsAsFactors = FALSE
       )
     })
-    
+
     if("cluster" %in% colnames(survey)){
       if(!"id" %in% survey$cluster){
         result$flag <- F
@@ -201,11 +199,11 @@ kobo_check_project_configuration <- function(form = "form.xls") {
         result$message <- paste(result$message, "\n", result$clusterID, sep = "")
       }
     }
-    
+
     if(result$flag){
       result$message <- "All required information is existed and filled with the right value"
     }
-    
+
     return(result)
   }, error = function(err) {
     print("kobo_check_project_configuration_ERROR")

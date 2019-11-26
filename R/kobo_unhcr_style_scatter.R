@@ -9,7 +9,9 @@
 #' @author Edouard Legoupil - with inspiration from bbc
 #'
 #' @examples
+#' \dontrun{
 #' kobo_unhcr_style_scatter()
+#' }
 #'
 #' @export kobo_unhcr_style_scatter
 #'

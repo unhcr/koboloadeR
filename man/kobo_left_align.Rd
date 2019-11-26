@@ -18,7 +18,9 @@ Return better chart
 Left align chart title and subtitle on a ggplot2
 }
 \examples{
+\dontrun{
 kobo_left_align()
+}
 
 }
 \author{

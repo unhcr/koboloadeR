@@ -11,8 +11,6 @@
 #'
 #' @author Maher Daoud
 #'
-#' @examples
-#' kobo_check_analysis_plan()
 #'
 #' @examples
 #' \dontrun{

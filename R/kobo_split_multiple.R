@@ -12,8 +12,6 @@
 #'
 #' @author Edouard Legoupil
 #'
-#' @examples
-#' kobo_split_multiple()
 #'
 #' @export kobo_split_multiple
 #'

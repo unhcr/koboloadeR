@@ -13,7 +13,9 @@ A string for Main Directory path.
 the function return the Main Directory for KoboloadeR packag
 }
 \examples{
+\dontrun{
 kobo_projectinit()
+}
 
 }
 \author{

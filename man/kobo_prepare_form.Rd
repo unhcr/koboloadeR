@@ -19,8 +19,6 @@ clean, cluster, predict, mappoint, mappoly in case if those fields are not exist
 Also, coloring all rows that have type equal to "begin group", "end group", "begin repeat" or "end repeat".
 }
 \examples{
-kobo_prepare_form()
-
 \dontrun{
 kobo_prepare_form("myform.xls")
 }

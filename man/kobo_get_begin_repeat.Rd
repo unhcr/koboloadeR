@@ -17,8 +17,6 @@ return a list that contains 1.vector of string represent the names 2.message abo
 Get the 'name' column for all rows that have 'begin repeat' value in 'type' column
 }
 \examples{
-kobo_get_begin_repeat()
-
 \dontrun{
 kobo_get_begin_repeat("myform.xls")
 }

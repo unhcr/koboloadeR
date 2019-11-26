@@ -17,8 +17,6 @@ The return will be a list that contains a list that checks all elements of the a
 Check if the user setup the analysis plan in the right way.
 }
 \examples{
-kobo_check_analysis_plan()
-
 \dontrun{
 kobo_check_analysis_plan("myform.xls")
 }

@@ -15,7 +15,9 @@
 #' @author Maher Daoud
 #'
 #' @examples
+#' \dontrun{
 #' kobo_correlation_analysis()
+#' }
 #'
 #' @export kobo_correlation_analysis
 #'

@@ -1,23 +1,15 @@
-# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
-
 language: r
-cache: packages
 
-#sudo: required
+sudo: required
 
-#warnings_are_errors: true
-#sudo: false
-#cache: packages
+env: _R_CHECK_CRAN_INCOMING_=FALSE
 
-#r_packages:
-#  - koboloadeR
+r_packages:
+  - covr
+  - devtools
 
-#install:
-#- R -e 'devtools::install_deps(dep = T)'
-
-#script:
-#- R CMD build .
-#- R CMD check *tar.gz
+r_github_packages:
+  - codecov/koboloadeR
 
 after_success:
-  - Rscript -e 'covr::codecov()'
+  - Rscript -e 'library(covr);codecov()'

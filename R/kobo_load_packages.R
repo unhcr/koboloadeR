@@ -291,7 +291,7 @@ kobo_load_packages <- function() {
         ,"\n\n")
     if (is.element(elpa,exc))  { cat(elpa," is already installed on your computer \n")  }
     if (!is.element(elpa,exc)) { cat(elpa," will be installed on your computer  \n")
-      try(utils:::install.packages(elpa,dependencies = TRUE))
+      try(utils::install.packages(elpa,dependencies = TRUE))
       packs <- installed.packages()
       exc <- names(packs[,'Package'])
       if (is.element(elpa,exc)) { cat("   The installation went well for the package: ",elpa,"\n")
@@ -344,42 +344,42 @@ kobo_load_packages <- function() {
   # .libPaths()
   # gpclibPermit()
 
-  #library("tidyverse")
-  library("ggthemes")
-  library("plyr")
-  #library("ggrepel")
-  library("viridis")
-  library("RColorBrewer")
-  #library("classInt")
-  library("hexbin")
-
-  library("DT")
-  #library("extrafont")
-  library("corrplot")
-  library("graphics")
-  library("vcd")
-  library("stringi")
-  library("forcats")
-
-
-  library("zoo")
-  library("reshape2")
-  library("lubridate")
-  #library("date")
-  library("gdata")
-  library("gridExtra")
-  library("scales")
-
-  #library("survey")
-
-  library("knitr")
-  library("kableExtra")
-  library("koRpus")
-  library("tables")
-  library("rmarkdown")
-
-  library("readxl")
-  #library("xlsx")
-
-  library("car")
+  # #library("tidyverse")
+  # library("ggthemes")
+  # library("plyr")
+  # #library("ggrepel")
+  # library("viridis")
+  # library("RColorBrewer")
+  # #library("classInt")
+  # library("hexbin")
+  #
+  # library("DT")
+  # #library("extrafont")
+  # library("corrplot")
+  # library("graphics")
+  # library("vcd")
+  # library("stringi")
+  # library("forcats")
+  #
+  #
+  # library("zoo")
+  # library("reshape2")
+  # library("lubridate")
+  # #library("date")
+  # library("gdata")
+  # library("gridExtra")
+  # library("scales")
+  #
+  # #library("survey")
+  #
+  # library("knitr")
+  # library("kableExtra")
+  # library("koRpus")
+  # library("tables")
+  # library("rmarkdown")
+  #
+  # library("readxl")
+  # #library("xlsx")
+  #
+  # library("car")
 }

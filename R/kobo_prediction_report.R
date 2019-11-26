@@ -53,7 +53,7 @@ kobo_prediction_report <- function(dico, frame, registry) {
   mainDirroot <- getwd()
   framename <- deparse(substitute(frame))
   progrescase <- deparse(substitute(registry))
-  library(plyr)
+
   ## Check that all those selectedVars are in the frame ####
   check <- as.data.frame(names(frame))
   names(check)[1] <- "fullname"
@@ -65,7 +65,7 @@ kobo_prediction_report <- function(dico, frame, registry) {
   selected.predict <- plyr::join(x = selected.predict, y = check, by = "fullname", type = "left")
   selected.predict <- subset(selected.predict, fullname %in% check$fullname)
 
-  library(stringr)
+
   #selected.predict <- selected.predict[!is.na(selected.predict$id), ]
   selected.predictVars <- as.character(selected.predict[ , c("fullname")])
   #selected.clusterVars2 <- as.character(selected.cluster[ , c("name")])

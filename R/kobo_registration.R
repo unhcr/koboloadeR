@@ -62,7 +62,7 @@
 
 
 kobo_registration <- function() {
-require(RODBC)
+
 
 ## Db handle for progres Data to SQL server using ODBC##################################
 odbcname <- rstudioapi::askForPassword("Give the odbc db name")
@@ -278,22 +278,24 @@ prop.table(table(progres.case$nonnuclear, useNA = "ifany"))
 
 
 progres.case$familyprofile <- ""
-progres.case$familyprofile[progres.case$Num_Inds==1] <- "single"
+progres.case$familyprofile[progres.case$Num_Inds == 1] <- "single"
 prop.table(table(progres.case$familyprofile, useNA = "ifany"))
 
-progres.case$familyprofile[progres.case$Num_Inds==2 & progres.case$couple==1] <- "couple.no.kids"
+progres.case$familyprofile[progres.case$Num_Inds == 2 & progres.case$couple == 1] <- "couple.no.kids"
 prop.table(table(progres.case$familyprofile, useNA = "ifany"))
 
-progres.case$familyprofile[progres.case$Num_Inds>1 & progres.case$nonnuclear==1 & progres.case$couple==0 & progres.case$minordependant > 0 ] <- "uniparental.with.kids"
+progres.case$familyprofile[progres.case$Num_Inds > 1 & progres.case$nonnuclear == 1 &
+                             progres.case$couple == 0 & progres.case$minordependant > 0 ] <- "uniparental.with.kids"
 prop.table(table(progres.case$familyprofile, useNA = "ifany"))
 
-progres.case$familyprofile[ progres.case$minordependant > 0 &  progres.case$nonnuclear ==1 & progres.case$couple==1 ] <- "couple.with.kids.no.dependant"
+progres.case$familyprofile[ progres.case$minordependant > 0 &  progres.case$nonnuclear == 1 &
+                              progres.case$couple == 1 ] <- "couple.with.kids.no.dependant"
 prop.table(table(progres.case$familyprofile, useNA = "ifany"))
 
 progres.case$familyprofile[ progres.case$nonnuclear > 1 ] <- "non.nuclear.or.adult.dependant"
 prop.table(table(progres.case$familyprofile, useNA = "ifany"))
 
-progres.case$familyprofile[progres.case$familyprofile==""] <- "non.nuclear.or.adult.dependant"
+progres.case$familyprofile[progres.case$familyprofile == ""] <- "non.nuclear.or.adult.dependant"
 prop.table(table(progres.case$familyprofile, useNA = "ifany"))
 
 
@@ -303,11 +305,11 @@ cat("Recoding ethnicity & religion \n")
 prop.table(table(progres.case$dem_ethn, useNA = "ifany"))
 
 progres.case$dem_ethnCat <- as.character(progres.case$dem_ethn)
-progres.case$dem_ethnCat[progres.case$dem_ethn=="Armenian"] <- "Other/noData"
-progres.case$dem_ethnCat[progres.case$dem_ethn=="Assyrian"] <- "Other/noData"
-progres.case$dem_ethnCat[progres.case$dem_ethn=="Chaldean"] <- "Other/noData"
-progres.case$dem_ethnCat[progres.case$dem_ethn=="Cirassain"] <- "Other/noData"
-progres.case$dem_ethnCat[progres.case$dem_ethn=="Turkmen"] <- "Other/noData"
+progres.case$dem_ethnCat[progres.case$dem_ethn == "Armenian"] <- "Other/noData"
+progres.case$dem_ethnCat[progres.case$dem_ethn == "Assyrian"] <- "Other/noData"
+progres.case$dem_ethnCat[progres.case$dem_ethn == "Chaldean"] <- "Other/noData"
+progres.case$dem_ethnCat[progres.case$dem_ethn == "Cirassain"] <- "Other/noData"
+progres.case$dem_ethnCat[progres.case$dem_ethn == "Turkmen"] <- "Other/noData"
 progres.case$dem_ethnCat <- as.factor(progres.case$dem_ethnCat)
 prop.table(table(progres.case$dem_ethnCat, useNA = "ifany"))
 
@@ -316,12 +318,12 @@ freq.rel$dem_religion <- freq.rel$Var1
 freq.rel$dem_religionCat <- as.character(freq.rel$dem_religion)
 #str(freq.rel)
 freq.rel[freq.rel$Freq < 0.05, c("dem_religionCat")] <-  "Other.or.noData"
-freq.rel$dem_religionCat[freq.rel$dem_religion=="CHR"] <-  "Christian"
-freq.rel$dem_religionCat[freq.rel$dem_religion=="MUS"] <-  "Muslim"
-freq.rel$dem_religionCat[freq.rel$dem_religion=="SIT"] <-  "Shia"
-freq.rel$dem_religionCat[freq.rel$dem_religion=="SUN"] <-  "Sunni"
+freq.rel$dem_religionCat[freq.rel$dem_religion == "CHR"] <-  "Christian"
+freq.rel$dem_religionCat[freq.rel$dem_religion == "MUS"] <-  "Muslim"
+freq.rel$dem_religionCat[freq.rel$dem_religion == "SIT"] <-  "Shia"
+freq.rel$dem_religionCat[freq.rel$dem_religion == "SUN"] <-  "Sunni"
 
-progres.case <- join(x=progres.case, y=freq.rel, by="dem_religion", type="left")
+progres.case <- join(x=progres.case, y=freq.rel, by = "dem_religion", type="left")
 prop.table(table(progres.case$dem_religionCat, useNA = "ifany"))
 
 
@@ -1077,7 +1079,7 @@ progres.case <- progres.case[progres.case$dem_sex %in% c("Male","Female"), ]
 ### Recoding specific needs at the case level###########################################
 
 ### load re-encoding file for specific needs
-library(readxl)
+
 SpecificNeedsCodesV2 <- readxl::read_excel("/home/edouard/R-project/proGres-analysis/data/SpecificNeedsCodesV2.xlsx",
                                    sheet = "Revised")
 

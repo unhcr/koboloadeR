@@ -11,7 +11,26 @@ pkgdown::build_site()
 
 devtools::document()
 
+devtools::release()
+
+# devtools::build_win(version = c("R-release", "R-devel"))
+
+attachment::att_to_description()
+rhub::check_for_cran()
+rhub::check()
+
+rhub::check_for_cran(env_vars = c(`_R_CHECK_FORCE_SUGGESTS_` = "false",
+                                  `_R_CHECK_CRAN_INCOMING_USE_ASPELL_` = "false"))
+library(remotes)
+update(remotes::dev_package_deps(dependencies=TRUE))
+
 require(devtools)
+
+ch <- rhub::rhub_check_for_cran(, show_status = FALSE)
+ch$update()
+ch$livelog(3)
+
+
 # use_readme_rmd()
 # use_news_md()
 # use_vignette("koboloadeR")  #substitute with the name of your package

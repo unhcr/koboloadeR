@@ -41,7 +41,7 @@ kobo_get_begin_repeat <- function(form = "form.xls") {
   })
 
   survey$type <- tolower(survey$type)
-  result <- survey %>% dplyr::filter(type == "begin repeat" | type == "begin_repeat" | type == "begin-repeat")
+  result <- survey[ survey$type == "begin repeat" | survey$type == "begin_repeat" | survey$type == "begin-repeat", ]
   result <- result$name
 
   if (length(result) == 0) {

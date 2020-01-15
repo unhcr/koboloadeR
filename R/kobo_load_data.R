@@ -83,7 +83,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
 
 
     cat("\n\n\n Clean variable if any \n\n\n\n")
-    MainDataFrame <- kobo_clean(MainDataFrame, dico)
+    MainDataFrame <- kobo_clean(MainDataFrame)
 
 
 
@@ -109,7 +109,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
 
 
         variableName <- configInfoOrigin[configInfoOrigin$name == "variable_name", "value"]
-        MainDataFrame <- plyr::join(x = MainDataFrame, y = weight, by = variableName, type = "left")
+        MainDataFrame <- plyr::join(x = MainDataFrame, y = weight, by = variableName, type = "right")
 
 
       }
@@ -183,7 +183,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
           updateProgress()
         }
         cat(paste("Cleaning",dbr,"file in progress...\n"))
-        dataFrame <- kobo_clean(dataFrame, dico)
+        dataFrame <- kobo_clean(dataFrame)
 
 
         if (app == "shiny") {
@@ -251,7 +251,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
           dataFrame <- dataFrame[ unCN ]
 
           ### Now ready for a left join
-          dataFrame <- plyr::join(dataFrame, parentDf, by = "jointemp", type = "left")
+          dataFrame <- plyr::join(dataFrame, parentDf, by = "jointemp", type = "right")
           dataFrame["jointemp"] <- NULL
 
 

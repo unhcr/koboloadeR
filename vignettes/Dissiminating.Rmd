@@ -19,4 +19,4 @@ Two distinct processes are involved:
 
  *  Sharing of anonymised microdata under specific licence (Public Use File for highly anonimised/important information loss data and/or Scientific Use File for moderately anonymised / moderate information loss  data). The standard platform for this is [NADA microdata library](http://surveys.worldbank.org/tools/nada).
 
- *  Sharing of weighted and agregated crosstabulation in open data platform. The standard for this are [CKAN servers](https://ckan.org/), the same software being used for both [HDX - The Humanitarian Data Exchange](https://data.humdata.org/) and [UNHCR Raw Internal Data Library -RIDL -](https://ridl.unhcr.org)
+ *  Sharing of weighted and agregated crosstabulation in open data platform. The standard for this are [CKAN servers](https://ckan.org/), the same software being used for both [HDX - The Humanitarian Data Exchange](https://data.humdata.org/) and [UNHCR Raw Internal Data Library - RIDL](https://github.com/okfn/ckanext-unhcr)

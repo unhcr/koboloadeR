@@ -28,23 +28,25 @@
 kobo_clean <- function(frame, form = "form.xls", app = "console") {
 
   mainDir <- kobo_getMainDirectory()
-  mainDir <- kobo_getMainDirectory()
-  form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
+  form <- as.character(form)
+  #cat(paste0(form,"\n"))
+  formpath <- as.character(paste0(mainDir,"/data/dico_",form,".csv"))
+  #cat(paste0(formpath,"\n"))
+  dico <- utils::read.csv(formpath, encoding = "UTF-8", na.strings = "")
 
-  dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
-
-
+  # frame <- MainDataFrame
   # frame <- household
   # framename <- "household"
-  framename <- deparse(substitute(frame))
+  # framename <- "MainDataFrame"
+  framename <- as.character(deparse(substitute(frame)))
   ## library(digest)
   ## Get the anonymisation type defined within the xlsform / dictionnary
 
   if (levels(dico$clean) == "no") {
     cat(paste0("You have not defined variables to clean within your xlsform. \n"))
-    cat(paste0(" Insert a column named clean and reference the csv file to use for cleaning. \n")) }
-  else {
-    dico.clean <- dico[ !(is.na(dico[, c("clean")])) ,  ]
+    cat(paste0(" Insert a column named clean and reference the csv file to use for cleaning. \n"))
+    }  else {
+     dico.clean <- dico[ !(is.na(dico[, c("clean")])) ,  ]
       if (nrow(dico.clean) > 0) {
         cat(paste0(nrow(dico.clean), " potential variables to clean\n"))
 

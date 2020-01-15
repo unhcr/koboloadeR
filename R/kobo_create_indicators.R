@@ -29,7 +29,7 @@ kobo_create_indicators <- function(form = "form.xls") {
   tryCatch({
     #### Load and test i indicators #############################################################################
     #library(readxl)
-    tried <- try(read_excel(form_tmp, sheet = "indicator"),
+    tried <- try(readxl::read_excel(form_tmp, sheet = "indicator"),
                  silent = TRUE)
     if (inherits(tried, "try-error")) {
       writeLines("Note that you have not defined (or defined correctly) indicators within your xlsform file. \n")
@@ -47,7 +47,7 @@ kobo_create_indicators <- function(form = "form.xls") {
       }
 
 
-      indicator <- read_excel(form_tmp, sheet = "indicator")
+      indicator <- readxl::read_excel(form_tmp, sheet = "indicator")
       if (nrow(indicator) == 0) {
         writeLines("Note that you have not defined (or defined correctly) indicators within your xlsform file.  \n")
 
@@ -239,7 +239,7 @@ kobo_create_indicators <- function(form = "form.xls") {
           ### mergin choices from the newly created indicators #################################################################
 
           cat("\n\n\n It's assumed that the modalities for newly calculated categoric indicators are in the same xlsform - choices worksheet  \n\n\n\n")
-          choices <- read_excel(form_tmp, sheet = "choices")
+          choices <- readxl::read_excel(form_tmp, sheet = "choices")
 
           #rm(choices)
           #names(choices)[names(choices) == "labelReport"] <- "label"
@@ -422,7 +422,7 @@ kobo_create_indicators <- function(form = "form.xls") {
       }
     }
   }, error = function(err) {
-    print("There as an error in the indicator creation step!!! \n\n")
+    print("There was an error in the indicator creation step!!! \n\n")
     return(structure(err, class = "try-error"))
   })
 }

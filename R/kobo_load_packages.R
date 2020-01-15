@@ -9,7 +9,9 @@
 #' @author Edouard Legoupil, Maher Daoud
 #'
 #' @examples
+#' \dontrun{
 #' kobo_load_packages()
+#' }
 #'
 #'
 #' @export kobo_load_packages

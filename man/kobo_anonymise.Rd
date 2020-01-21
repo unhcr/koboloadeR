@@ -2,14 +2,16 @@
 % Please edit documentation in R/kobo_anonymise.R
 \name{kobo_anonymise}
 \alias{kobo_anonymise}
-\title{Generate anonymised dataset}
+\title{Remove direct identifier}
 \usage{
-kobo_anonymise(frame, dico)
+kobo_anonymise(frame, form = "form.xls", app = "console")
 }
 \arguments{
-\item{dico}{Generated from kobo_dico function}
+\item{frame}{dataset to use}
 
-\item{kobo}{or odk dataset to use}
+\item{form}{name of the form file in xls format}
+
+\item{app}{The place where the function has been executed, the default is the console and the second option is the shiny app}
 }
 \description{
 Automatically produce an anonymised dataset in line with the anonymisation plan set up in the xlsform.
@@ -37,15 +39,11 @@ The methods above can be reference in the column
 ----------------\tab-------------- \cr
 \strong{Remove}     \tab	Data is removed entirely from the data set. The data is preserved in the original file. \cr
 \strong{Reference}   \tab	Data is removed entirely from the data set and is copied into a reference file. A random unique identifier field is added to the reference file and the data set so that they can be joined together in future.  The reference file is never shared and the data is also preserved in the original file. \cr
-\strong{Mask}      \tab	The data values are replaced with meaningless values but the categories are preserved. A reference file is created to link the original value with the meaningless value. Typically applied to categorical data. For example, Town names could be masked with random combinations of letters. It would still be possible to perform statisitical analysis on the data but the person running the analysis would not be able to identify the original values, they would only become meaningful when replaced with the original values. The reference file is never shared and the data is also preserved in the original file. \cr
-\strong{Generalise}	\tab Continuous data is turned into categorical or ordinal data by summarising it into ranges. For example, Age could be turned into age ranges, Weight could be turned into ranges. It can also apply to categorical data where parent groups are created. For example, illness is grouped into illness type. Generalised data can also be masked for extra anonymisation. The data is preserved in the original file.
 }
 }
 \examples{
-kobo_anonymise()
-
 \dontrun{
-kobo_anonymise(frame, dico)
+kobo_anonymise(frame,  form = "form.xls")
 }
 
 }

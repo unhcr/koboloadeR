@@ -4,8 +4,16 @@
 \alias{kobo_samplingframe}
 \title{Sample a dataframe}
 \usage{
-kobo_samplingframe(data, strata, pop_col, confidence_level = 0.95,
-  margin_error = 0.05, proportion = 0.5, method, buffer = 0.05)
+kobo_samplingframe(
+  data,
+  strata,
+  pop_col,
+  confidence_level = 0.95,
+  margin_error = 0.05,
+  proportion = 0.5,
+  method,
+  buffer = 0.05
+)
 }
 \arguments{
 \item{data}{Data frame containing the population informations}
@@ -28,15 +36,20 @@ kobo_samplingframe(data, strata, pop_col, confidence_level = 0.95,
 \item{buffer}{Buffer to the sampling target to ensure datacollection, in fraction of one (e.g. 0.05)}
 }
 \description{
-Do basic simple random samples based on a provided dataframe. Takes 3 types of sampling strategies:
+Do basic simple random samples based on a provided dataframe.
+
+Takes 3 types of sampling strategies:
  - Simple random
  - Stratified 2-stages
  - Cluster sampling
- All are based on a random selection of primary survey units (PSU) according to confidence level, margin of error, proportion and survey buffer provided.
+ All are based on a random selection of primary survey units (PSU) according to confidence level,
+  margin of error, proportion and survey buffer provided.
 }
 \examples{
 \dontrun{
-kobo_samplingframe(data=SamplingFrame, strata="Province", pop_col="Households",confidence_level=0.95,margin_error=0.05,proportion=0.5,method="strat2st")
+kobo_samplingframe(data=SamplingFrame, strata="Province", pop_col = "Households",
+                   confidence_level = 0.95, margin_error = 0.05, proportion = 0.5,
+                    method = "strat2st")
 }
 
 }

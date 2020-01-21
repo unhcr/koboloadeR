@@ -18,8 +18,6 @@ data A "data.table" with the full splitted select_multiple.
 To be used when extracting from ODK that does not offers splitting capacity
 }
 \examples{
-kobo_split_multiple()
-
 \dontrun{
 kobo_split_multiple(data, dico)
 }

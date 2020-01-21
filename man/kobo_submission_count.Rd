@@ -24,8 +24,10 @@ A single number indicating the number of submissions received.
 Retrieves the number of submissions made to a specified dataset.
 }
 \examples{
+\dontrun{
 kobo_submission_count("15051")
 kobo_submission_count("31511", api = "kobohr")
+}
 
 }
 \author{

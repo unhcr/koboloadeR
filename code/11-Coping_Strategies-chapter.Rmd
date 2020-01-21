@@ -1,0 +1,2080 @@
+---
+title: "Data Crunching Report: Coping_Strategies- Draft not for distribution. "
+author: "Generated with [Koboloader](https://unhcr.github.io/koboloadeR/docs) "
+date: " `r format(Sys.Date(),  '%d %B %Y')`"
+always_allow_html: yes
+output:
+  word_document:
+    fig_caption: yes
+    fig_height: 5
+    fig_width: 8
+    toc: yes
+    toc_depth: 2
+    reference_docx: style-unhcr-portrait.docx
+---
+```{r setup, include = FALSE, echo = FALSE, warning = FALSE, message = FALSE}
+mainDir <- getwd()
+mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 5)
+## Load all required packages
+library(tidyverse)
+library(ggthemes)
+library(plyr)
+library(ggrepel)
+library(viridis)
+library(RColorBrewer)
+library(extrafont)
+library(corrplot)
+library(reshape2)
+library(scales)
+library(survey)
+library(knitr)
+library(rmarkdown)
+library(ggpubr)
+library(grid)
+library(koboloadeR)
+options(scipen = 999) # turn-off scientific notation like 1e+48
+## Provide below the name of the form in xsl form - format should be xls not xlsx
+form <- "form.xls"
+dico <- read.csv(paste0(mainDirroot,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+MainDataFrame <- read.csv(paste0(mainDirroot,"/data/MainDataFrame_encoded.csv"), encoding = "UTF-8", na.strings = "")
+ListCaseNos <- read.csv(paste0(mainDirroot,"/data/ListCaseNos_encoded.csv"), encoding = "UTF-8", na.strings = "")
+IndBiodata <- read.csv(paste0(mainDirroot,"/data/IndBiodata_encoded.csv"), encoding = "UTF-8", na.strings = "")
+
+
+## label Variables
+MainDataFrame <- kobo_label(MainDataFrame , dico)
+ListCaseNos <- kobo_label(ListCaseNos , dico)
+IndBiodata <- kobo_label(IndBiodata , dico)
+
+
+## Set up ordinal Variables
+list.ordinal <- as.character(unique(dico[ dico$listname == "diff_res" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Profile.ArrivalHist.DifRes <- factor(MainDataFrame$Profile.ArrivalHist.DifRes, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "grade" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.YouthEduc.SchoolLevel.GradeLevel <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.YouthEduc.SchoolLevel.GradeLevel, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.SeeingDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.SeeingDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.HearingDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.HearingDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.WalkingDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.WalkingDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.RememberingDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.RememberingDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.SelfCareDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.SelfCareDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.CommunicatingDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.CommunicatingDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "poverty_ladder" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.PovertyPerception.vignetteFam1 <- factor(MainDataFrame$Integration.PovertyPerception.vignetteFam1, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "poverty_ladder" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.PovertyPerception.vignetteFam2 <- factor(MainDataFrame$Integration.PovertyPerception.vignetteFam2, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "poverty_ladder" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.PovertyPerception.vignetteFam3 <- factor(MainDataFrame$Integration.PovertyPerception.vignetteFam3, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "poverty_ladder" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.PovertyPerception.vignetteFam4 <- factor(MainDataFrame$Integration.PovertyPerception.vignetteFam4, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "poverty_ladder" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.PovertyPerception.selfAssessment <- factor(MainDataFrame$Integration.PovertyPerception.selfAssessment, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "opinion" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.Feeling.Isolation <- factor(MainDataFrame$Integration.Feeling.Isolation, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "opinion" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.Feeling.NeighoursConcern <- factor(MainDataFrame$Integration.Feeling.NeighoursConcern, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "opinion" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.Feeling.ParticipateMeetings <- factor(MainDataFrame$Integration.Feeling.ParticipateMeetings, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "opinion" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.Feeling.NeighboursHelp <- factor(MainDataFrame$Integration.Feeling.NeighboursHelp, levels = list.ordinal)
+
+
+## Create weighted survey object
+MainDataFrame.survey <- svydesign(ids = ~ 1 ,  data = MainDataFrame )
+ListCaseNos.survey <- svydesign(ids = ~ 1 ,  data = ListCaseNos )
+IndBiodata.survey <- svydesign(ids = ~ 1 ,  data = IndBiodata )
+
+```
+
+# Introduction
+
+This data crunching report allows to quickly explore the results of the survey that can be regenerated as needed.
+You can:  
+ 
+  *  adjust the configuration in the xlsform to break it into chapter;   
+
+  *  configure disaggregation & correlation for each questions;   
+
+  *  revise the data cleansing based on the cleaning log;   
+ 
+  *  add weight to each observation in order to account for a specific sampling plan;  
+
+  *  append calculated indicators to your data frame. 
+
+
+The objective of this report is to allow to quickly identify potential patterns in your dataset.
+                A quick screening of this initial report should allow to select the most meaningful graphs.
+                A data digest from this initial report can be then reviewed through a __data analysis workshop__
+                where subject matter experts can contribute with qualitative components.
+                When analyzing those representations in a collective setting, you may:  
+ 
+  *  __Reflect__: question data quality and/or make suggestions to change questions;   
+
+  *  __Interpret__: develop qualitative interpretations of data patterns;   
+
+  *  __Recommend__: develop recommendation in terms of programmatic adjustment;   
+
+  *  __Classify__: order the level of sensitivity for the information;   
+
+# Compilation of questions results
+
+ 
+## Sell household goods (radio, furniture, television, jewellery etc)
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.SellingGoods.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4.16666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.SellingGoods))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "SellingGoods"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.SellingGoods, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.SellingGoods,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.LivelihoodCoping.SellingGoods, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Sell household goods (radio, furniture, television, jewellery etc)",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.SellingGoods1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.FoodSecurity.Coping.LivelihoodCoping.SellingGoods + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Sell household goods (radio, furniture, television, jewellery etc) (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## Sell productive assets and/or means of transport (sewing machine, wheelbarrow, b
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.SellingAssets.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4.16666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.SellingAssets))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "SellingAssets"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.SellingAssets, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.SellingAssets,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.LivelihoodCoping.SellingAssets, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Sell productive assets and/or means of transport (sewing machine, wheelbarrow, b",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.SellingAssets1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.FoodSecurity.Coping.LivelihoodCoping.SellingAssets + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Sell productive assets and/or means of transport (sewing machine, wheelbarrow, b (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.SellingAssetsccc1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=6, size="small"}
+corrplot(chisq.test(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.SellingAssets,MainDataFrame$Profile.Interviewee.SexInterviewee)$residuals,
+is.cor = FALSE, # use for general matrix to convert to Sq form
+cl.pos = "n", ## Do not display the color legend
+cl.cex = 0.7, # Size of all label
+tl.cex = 0.7, # Size of axis label
+tl.srt = 45, # string rotation in degrees
+tl.col = "black", # color of text label.
+addCoef.col = "grey", # add coeff in the chart
+number.cex= 3/ncol(chisq.test(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.SellingAssets,MainDataFrame$Profile.Interviewee.SexInterviewee)), # size of coeff
+mar = c(0.5,0.5,4, 0.5), ## margin of plots
+title= paste0("Correlation between
+Sell productive assets and/or means of transport (sewing machine, wheelbarrow, b (row)
+ & What is the sex of the interviewee? (col)")) 
+
+```
+
+
+ 
+## Reduce food expenditure
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceFood.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4.16666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceFood))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "ReduceFood"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceFood, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceFood,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceFood, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Reduce food expenditure",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceFood1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceFood + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Reduce food expenditure (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## Reduce non-food expenses on health (including medicines)
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceHealth.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4.16666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceHealth))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "ReduceHealth"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceHealth, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceHealth,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceHealth, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Reduce non-food expenses on health (including medicines)",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceHealth1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceHealth + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Reduce non-food expenses on health (including medicines) (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceHealthccc1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=6, size="small"}
+corrplot(chisq.test(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceHealth,MainDataFrame$hh.child.head)$residuals,
+is.cor = FALSE, # use for general matrix to convert to Sq form
+cl.pos = "n", ## Do not display the color legend
+cl.cex = 0.7, # Size of all label
+tl.cex = 0.7, # Size of axis label
+tl.srt = 45, # string rotation in degrees
+tl.col = "black", # color of text label.
+addCoef.col = "grey", # add coeff in the chart
+number.cex= 3/ncol(chisq.test(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceHealth,MainDataFrame$hh.child.head)), # size of coeff
+mar = c(0.5,0.5,4, 0.5), ## margin of plots
+title= paste0("Correlation between
+Reduce non-food expenses on health (including medicines) (row)
+ & Cases headed by child (under 18) (col)")) 
+
+```
+
+
+ 
+## Reduce non-food expenses on education
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceEduc.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4.16666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceEduc))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "ReduceEduc"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceEduc, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceEduc,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceEduc, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Reduce non-food expenses on education",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceEduc1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceEduc + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Reduce non-food expenses on education (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceEducccc1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=6, size="small"}
+corrplot(chisq.test(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceEduc,MainDataFrame$hh.child.head)$residuals,
+is.cor = FALSE, # use for general matrix to convert to Sq form
+cl.pos = "n", ## Do not display the color legend
+cl.cex = 0.7, # Size of all label
+tl.cex = 0.7, # Size of axis label
+tl.srt = 45, # string rotation in degrees
+tl.col = "black", # color of text label.
+addCoef.col = "grey", # add coeff in the chart
+number.cex= 3/ncol(chisq.test(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ReduceEduc,MainDataFrame$hh.child.head)), # size of coeff
+mar = c(0.5,0.5,4, 0.5), ## margin of plots
+title= paste0("Correlation between
+Reduce non-food expenses on education (row)
+ & Cases headed by child (under 18) (col)")) 
+
+```
+
+
+ 
+## Spend some or all of the household savings
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.SpentSaving.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4.16666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.SpentSaving))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "SpentSaving"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.SpentSaving, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.SpentSaving,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.LivelihoodCoping.SpentSaving, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Spend some or all of the household savings",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.SpentSaving1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.FoodSecurity.Coping.LivelihoodCoping.SpentSaving + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Spend some or all of the household savings (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## Buy food on credit and/or borrowed money to purchase food
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.FoodCredit.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4.16666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.FoodCredit))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "FoodCredit"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.FoodCredit, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.FoodCredit,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.LivelihoodCoping.FoodCredit, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Buy food on credit and/or borrowed money to purchase food",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.FoodCredit1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.FoodSecurity.Coping.LivelihoodCoping.FoodCredit + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Buy food on credit and/or borrowed money to purchase food (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## Sell house and/or land
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.SoldHouseLand.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4.16666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.SoldHouseLand))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "SoldHouseLand"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.SoldHouseLand, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.SoldHouseLand,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.LivelihoodCoping.SoldHouseLand, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Sell house and/or land",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.SoldHouseLand1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.FoodSecurity.Coping.LivelihoodCoping.SoldHouseLand + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Sell house and/or land (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## Move to a cheaper rental place/live on the street
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.MovedAccom.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4.16666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.MovedAccom))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "MovedAccom"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.MovedAccom, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.MovedAccom,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.LivelihoodCoping.MovedAccom, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Move to a cheaper rental place/live on the street",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.MovedAccom1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.FoodSecurity.Coping.LivelihoodCoping.MovedAccom + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Move to a cheaper rental place/live on the street (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.MovedAccomccc1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=6, size="small"}
+corrplot(chisq.test(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.MovedAccom,MainDataFrame$hh.elder.head)$residuals,
+is.cor = FALSE, # use for general matrix to convert to Sq form
+cl.pos = "n", ## Do not display the color legend
+cl.cex = 0.7, # Size of all label
+tl.cex = 0.7, # Size of axis label
+tl.srt = 45, # string rotation in degrees
+tl.col = "black", # color of text label.
+addCoef.col = "grey", # add coeff in the chart
+number.cex= 3/ncol(chisq.test(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.MovedAccom,MainDataFrame$hh.elder.head)), # size of coeff
+mar = c(0.5,0.5,4, 0.5), ## margin of plots
+title= paste0("Correlation between
+Move to a cheaper rental place/live on the street (row)
+ & Cases headed by elder (above 59) (col)")) 
+
+```
+
+
+ 
+## Withdraw children from school
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.WithdrawSchool.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4.16666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.WithdrawSchool))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "WithdrawSchool"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.WithdrawSchool, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.WithdrawSchool,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.LivelihoodCoping.WithdrawSchool, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Withdraw children from school",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.WithdrawSchool1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.FoodSecurity.Coping.LivelihoodCoping.WithdrawSchool + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Withdraw children from school (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## Involve school children (6 -15 years old) in income generation
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.ChildLabour.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4.16666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ChildLabour))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "ChildLabour"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ChildLabour, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ChildLabour,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.LivelihoodCoping.ChildLabour, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Involve school children (6 -15 years old) in income generation",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.ChildLabour1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.FoodSecurity.Coping.LivelihoodCoping.ChildLabour + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Involve school children (6 -15 years old) in income generation (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## Ask for money from strangers (begging)
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.Begging.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4.16666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.Begging))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "Begging"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.Begging, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.Begging,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.LivelihoodCoping.Begging, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Ask for money from strangers (begging)",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.Begging1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.FoodSecurity.Coping.LivelihoodCoping.Begging + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Ask for money from strangers (begging) (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## Have household members 18 years and over accept high risk, dangerous, or exploit
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.ExploitativeWorkAdult.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4.16666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ExploitativeWorkAdult))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "ExploitativeWorkAdult"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ExploitativeWorkAdult, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ExploitativeWorkAdult,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.LivelihoodCoping.ExploitativeWorkAdult, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Have household members 18 years and over accept high risk, dangerous, or exploit",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.ExploitativeWorkAdult1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.FoodSecurity.Coping.LivelihoodCoping.ExploitativeWorkAdult + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Have household members 18 years and over accept high risk, dangerous, or exploit (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.ExploitativeWorkAdultccc1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=6, size="small"}
+corrplot(chisq.test(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ExploitativeWorkAdult,MainDataFrame$Profile.Interviewee.SexInterviewee)$residuals,
+is.cor = FALSE, # use for general matrix to convert to Sq form
+cl.pos = "n", ## Do not display the color legend
+cl.cex = 0.7, # Size of all label
+tl.cex = 0.7, # Size of axis label
+tl.srt = 45, # string rotation in degrees
+tl.col = "black", # color of text label.
+addCoef.col = "grey", # add coeff in the chart
+number.cex= 3/ncol(chisq.test(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ExploitativeWorkAdult,MainDataFrame$Profile.Interviewee.SexInterviewee)), # size of coeff
+mar = c(0.5,0.5,4, 0.5), ## margin of plots
+title= paste0("Correlation between
+Have household members 18 years and over accept high risk, dangerous, or exploit (row)
+ & What is the sex of the interviewee? (col)")) 
+
+```
+
+
+ 
+## Have household members under the age of 18 accept high risk, dangerous, or explo
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.ExploitativeWorkChild.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4.16666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ExploitativeWorkChild))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "ExploitativeWorkChild"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ExploitativeWorkChild, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ExploitativeWorkChild,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.LivelihoodCoping.ExploitativeWorkChild, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Have household members under the age of 18 accept high risk, dangerous, or explo",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.ExploitativeWorkChild1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.FoodSecurity.Coping.LivelihoodCoping.ExploitativeWorkChild + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Have household members under the age of 18 accept high risk, dangerous, or explo (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## Send an adult household member to work elsewhere (not related to usual seasonal
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.WorkElsewhereAdult.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4.16666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.WorkElsewhereAdult))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "WorkElsewhereAdult"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.WorkElsewhereAdult, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.WorkElsewhereAdult,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.LivelihoodCoping.WorkElsewhereAdult, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Send an adult household member to work elsewhere (not related to usual seasonal",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.WorkElsewhereAdult1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.FoodSecurity.Coping.LivelihoodCoping.WorkElsewhereAdult + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Send an adult household member to work elsewhere (not related to usual seasonal (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## Send a child household member to work elsewhere (not related to usual seasonal m
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.WorkElsewhereChild.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4.16666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.WorkElsewhereChild))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "WorkElsewhereChild"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.WorkElsewhereChild, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.WorkElsewhereChild,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.LivelihoodCoping.WorkElsewhereChild, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Send a child household member to work elsewhere (not related to usual seasonal m",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.WorkElsewhereChild1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.FoodSecurity.Coping.LivelihoodCoping.WorkElsewhereChild + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Send a child household member to work elsewhere (not related to usual seasonal m (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.WorkElsewhereChildccc1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=6, size="small"}
+corrplot(chisq.test(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.WorkElsewhereChild,MainDataFrame$has.baby)$residuals,
+is.cor = FALSE, # use for general matrix to convert to Sq form
+cl.pos = "n", ## Do not display the color legend
+cl.cex = 0.7, # Size of all label
+tl.cex = 0.7, # Size of axis label
+tl.srt = 45, # string rotation in degrees
+tl.col = "black", # color of text label.
+addCoef.col = "grey", # add coeff in the chart
+number.cex= 3/ncol(chisq.test(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.WorkElsewhereChild,MainDataFrame$has.baby)), # size of coeff
+mar = c(0.5,0.5,4, 0.5), ## margin of plots
+title= paste0("Correlation between
+Send a child household member to work elsewhere (not related to usual seasonal m (row)
+ & Household has kids of less than 2 years old (col)")) 
+
+```
+
+
+ 
+## Marry children under 18
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.ChildMarriage.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4.16666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ChildMarriage))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "ChildMarriage"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ChildMarriage, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Welfare.FoodSecurity.Coping.LivelihoodCoping.ChildMarriage,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.LivelihoodCoping.ChildMarriage, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Marry children under 18",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Welfare.FoodSecurity.Coping.LivelihoodCoping.ChildMarriage1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Welfare.FoodSecurity.Coping.LivelihoodCoping.ChildMarriage + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Marry children under 18 (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## What do you consider to be your community's MOST important need?
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Assistance.PriorityNeeds.PriorityNeedsComm1st.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=14.1666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Assistance.PriorityNeeds.PriorityNeedsComm1st))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "PriorityNeedsComm1st"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Assistance.PriorityNeeds.PriorityNeedsComm1st, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Assistance.PriorityNeeds.PriorityNeedsComm1st,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Assistance.PriorityNeeds.PriorityNeedsComm1st, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("What do you consider to be your community's MOST important need?",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Assistance.PriorityNeeds.PriorityNeedsComm1st1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Assistance.PriorityNeeds.PriorityNeedsComm1st + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("What do you consider to be your community's MOST important need? (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## What are two or three other needs you consider your community has?
+NA
+
+
+Multiple choice question  
+
+
+### Tabulation
+
+```{r Assistance.PriorityNeeds.PriorityNeedsCommOth.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=8, size="small"}
+
+### Tabulation
+##Compute contengency table
+selectmultilist1 <- as.data.frame(dico[dico$type == "select_multiple" & dico$listname=="priority_needs" & grepl("PriorityNeedsCommOth",dico$fullname)==TRUE , c("fullname")])
+names(selectmultilist1)[1] <- "check"
+check <- as.data.frame(names(MainDataFrame))
+names(check)[1] <- "check"
+check$id <- row.names(check)
+check <- merge(x = check, y = selectmultilist1, by = "check")
+selectmultilist <- as.character(check[ ,1])
+## Reshape answers
+data.selectmultilist <- MainDataFrame[ selectmultilist ]
+data.selectmultilist$id <- rownames(data.selectmultilist)
+totalanswer <- nrow(data.selectmultilist)
+data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!="Not replied", ]
+percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),"%")
+meltdata <- melt(data.selectmultilist,id="id")
+castdata <- as.data.frame(table(meltdata[c("value")]))
+castdata$freqper <- castdata$Freq/nrow(data.selectmultilist)
+castdata <- castdata[castdata$Var1!="Not selected", ]
+castdata$Var1 <- factor(castdata$Var1, levels=castdata[order(castdata$freqper), "Var1"])
+frequ <- castdata[castdata$Var1!="", ]
+## display table
+names(frequ)[1] <- "PriorityNeedsCommOth"
+frequ[ ,3] <- paste0(round(frequ[ ,3]*100,digits = 1),"%")
+frequ1 <- castdata[castdata$Var1!="", ]
+frequ1[ ,4] <- paste0(round(frequ1[ ,3]*100,digits = 1),"%")
+names(frequ1)[4] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ1, aes(x=Var1, y=freqper)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = freqper, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("What are two or three other needs you consider your community has?",
+subtitle = paste0("Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Assistance.PriorityNeeds.PriorityNeedsCommOth.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+```
+
+
+ 
+## What do you consider to be your household's MOST important need?
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Assistance.PriorityNeeds.PriorityNeedsFirst.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=14.1666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Assistance.PriorityNeeds.PriorityNeedsFirst))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "PriorityNeedsFirst"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Assistance.PriorityNeeds.PriorityNeedsFirst, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Assistance.PriorityNeeds.PriorityNeedsFirst,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Assistance.PriorityNeeds.PriorityNeedsFirst, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("What do you consider to be your household's MOST important need?",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Assistance.PriorityNeeds.PriorityNeedsFirst1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Assistance.PriorityNeeds.PriorityNeedsFirst + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("What do you consider to be your household's MOST important need? (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## What are three other important needs you household has?
+NA
+
+
+Multiple choice question  
+
+
+### Tabulation
+
+```{r Assistance.PriorityNeeds.PriorityNeedsOth.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=8, size="small"}
+
+### Tabulation
+##Compute contengency table
+selectmultilist1 <- as.data.frame(dico[dico$type == "select_multiple" & dico$listname=="priority_needs" & grepl("PriorityNeedsOth",dico$fullname)==TRUE , c("fullname")])
+names(selectmultilist1)[1] <- "check"
+check <- as.data.frame(names(MainDataFrame))
+names(check)[1] <- "check"
+check$id <- row.names(check)
+check <- merge(x = check, y = selectmultilist1, by = "check")
+selectmultilist <- as.character(check[ ,1])
+## Reshape answers
+data.selectmultilist <- MainDataFrame[ selectmultilist ]
+data.selectmultilist$id <- rownames(data.selectmultilist)
+totalanswer <- nrow(data.selectmultilist)
+data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!="Not replied", ]
+percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),"%")
+meltdata <- melt(data.selectmultilist,id="id")
+castdata <- as.data.frame(table(meltdata[c("value")]))
+castdata$freqper <- castdata$Freq/nrow(data.selectmultilist)
+castdata <- castdata[castdata$Var1!="Not selected", ]
+castdata$Var1 <- factor(castdata$Var1, levels=castdata[order(castdata$freqper), "Var1"])
+frequ <- castdata[castdata$Var1!="", ]
+## display table
+names(frequ)[1] <- "PriorityNeedsOth"
+frequ[ ,3] <- paste0(round(frequ[ ,3]*100,digits = 1),"%")
+frequ1 <- castdata[castdata$Var1!="", ]
+frequ1[ ,4] <- paste0(round(frequ1[ ,3]*100,digits = 1),"%")
+names(frequ1)[4] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ1, aes(x=Var1, y=freqper)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = freqper, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("What are three other important needs you household has?",
+subtitle = paste0("Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Assistance.PriorityNeeds.PriorityNeedsOth.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+```
+
+##### Page Break

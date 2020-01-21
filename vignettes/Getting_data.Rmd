@@ -1,0 +1,155 @@
+---
+title: "Getting data from server"
+author: "Edouard Legoupil"
+date: '`r Sys.Date()`'
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{Getting data from server}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The initial step to start your project is to get your data.
+
+The package is using only `csv` files. this is to avoid the limitations linked the number of columns that some version of excel can handle.
+
+
+
+## Case 1: You have only the data but not the original xslform
+
+In case, you have simple dataframe, you may load your data in R and then use the function `kobo_to_xlsform()`
+
+```
+MainDataFrame <- read.csv("data/MainDataFrame.csv")
+kobo_to_xlsform(MainDataFrame)
+
+```
+
+Note that this function will expect the dataframe headers contains variable names (not labels).
+
+The function will build an xslform file and save it under the data folder. You can then _manually_ edit this file for instance to add the label for your questions.
+
+
+
+## Case 2: You do not have yet the data....
+
+
+You have an xlsform - let's say called `form.xls` - save it under the data folder and run the following (note that this will take time to process!!):
+
+```
+form <- "form.xls"
+## Extend xlsform with necessary column
+kobo_prepare_form(form)
+
+### Eventually Generate dummy data (uncomment below if required)
+kobo_dummy(form, n = 100)
+```
+
+You can change the value of `n` to define how many fake records you would like to generate. Note that additional `repeat` tables will be generated if you form contains those elements. 
+
+
+## Case 3: Get non-hierarchical data from the server
+
+In case your form __does NOT include `repeat`__ elements (i.e. the output of your survey is a single flat table), you can use any of the 3 options below:
+
+
+### Using the online interface
+ 
+Use the following options within the online interface to extract data
+![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/exportformat.png)
+
+Now, you can simply copy your data in `csv` format and your xlsform in `xls` format in the `data` folder that was created during the project initiation
+
+### Using the Shiny App
+
+The package contains a Shiny app to access data from the server. It is accessible via
+
+```
+ kobo_apps("data_viewer")
+```
+
+The `data_viewer` app provides a basic login screen to authenticate against the specified API. Once authenticated, the datasets available via the specified login are displayed, and a dropdown list is populated with which one can select the dataset they want to view. The dataset is also made available in the users Global Environment.
+
+Here's [a blog post introducing this specific function](http://news.mrdwab.com/post/koboloader/)!
+
+
+### From API with comand line
+
+You can grab your data with the functions `kobo_data_downloader` & get your form with `kobo_form`
+
+The following examples access the public data available via KoBo Toolbox. 
+
+Note that all of the functions have been set with defaults of `user = NULL` and `api = 'kobo'`.
+
+```
+kobo_datasets()[, c("description", "id"), with = FALSE] ## Just show the first two columns
+#                                                    description    id
+#   1:                                关于“西装微定制现状的调查“ 10427
+#   2:                زانیاری لەسەر كۆمپانیاكانی نەوت لە گەرمیان 11190
+#   3:                           מיפוי שדרות צ'רצ'יל - ורד ויואב 12568
+#   4:                                                      Test 39717
+#   5:                                             Market Survey  7640
+#  ---                                                                
+# 403: Webuy_Stock lot Business (No.1 Stock Bazar in Bangladesh) 30792
+# 404:                               WWF Zambia [Field Reporter]  4163
+# 405:                                         xls_form_training 41820
+# 406:                                    Mwanza KAP SURVEY 2015 25206
+# 407:                                    Elisha Zelina, GST6109  1857
+
+kobo_submission_count(4163)
+# [1] 37
+
+kobo_data_downloader("4163")
+# No local dataset found.
+# Downloading remote file.
+# ... The contents would normally be printed here
+
+### On a subsequent run, if the file is already there and no changes have been made
+kobo_data_downloader("4163")
+# Number of rows in local and remote file match.
+# Using local file.
+```
+
+The `kobo_data_downloader` automatically checks for the existence of an object in your workspace named "data_####" (where "####" is the numeric form ID). If such an object is found, it then uses `kobo_submission_count` to compare the number of rows in the local dataset against the number of rows in the remote dataset. If the number is found to be different, the remote dataset is re-downloaded. If they are found to be the same, the local dataset is used. 
+
+In the future, it is intended that there would be a more robust and efficient method rather than redownloading the entire dataset each time a change has been detected.
+
+--------------
+
+Run the examples at the help pages to get a sense of some of the other features:
+
+```
+example("kobo_datasets")
+example("kobo_submission_count")
+example("kobo_data_downloader")
+```
+
+## Authentication
+
+These functions all use basic HTTP authentication. The easiest way to enter the password details is the common `"username:password"` approach. Thus, when accessing form data using authentication, the function would be used in the following manner:
+
+```
+kobo_data_downloader("123456", "username:password")
+```
+
+
+## Case 4: Get hierarchical data 
+
+In case your form __includes `repeat`__ elements (i.e. the output of your survey is a single flat table), you can use any of the 3 options below:
+
+### Using the online interface
+
+When using the online interface, the only options to download hierachical data is to have an xls extract. This may [come with limitations](https://community.kobotoolbox.org/t/export-repeat-tables-as-zipped-csv-files-from-api/3928) that can be handled only through the second option below.
+
+Once you have your xls extract, simply save each of the worksheet as distinct `csv` files. Note that within the package `MainDataFrame` is the default name used for the root frame.
+
+### Using ODK briefcase
+
+[ODK Briefcase](https://docs.opendatakit.org/briefcase-intro/) ODK Briefcase is a desktop application for pulling, pushing, and converting form data on servers. Please consult the documentatio directly for more guidances. 
+ 
+### Using odkR package
+
+The odkR package embbed ODK briefcase. See the [odkr package documentation](https://validmeasures.org/odkr/).

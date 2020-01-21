@@ -18,8 +18,6 @@ A "data.table" with the full data.label. To be used for graphs generation.
 Insert the full label in data frame based on dictionnary - used when data is exported through briefcase because of repeated element in the dataset. In the this case, merge is done on name instead of fullname.
 }
 \examples{
-kobo_encode_repeat()
-
 \dontrun{
 kobo_encode_repeat(data, dico)
 }

@@ -8,36 +8,45 @@
 #' The new cleaned variable will be inserted in the dictionnary. with a suffix '.clean'
 #'
 #'
-#' @param  kobo or odk dataset to use
-#' @param  dico Generated from kobo_dico function
+#' @param  frame dataframe to use
+#' @param  form name of the form file in xls format
+#' @param app The place where the function has been executed, the default is the console and the second option is the shiny app
+#'
 #'
 #' @author Edouard Legoupil
 #'
-#' @examples
-#' kobo_clean()
 #'
 #' @export kobo_clean
 #'
 #' @examples
 #' \dontrun{
-#' kobo_clean(frame, dico)
+#' kobo_clean(frame, form = "form.xls")
 #' }
 #'
 #'
 
-kobo_clean <- function(frame, dico) {
+kobo_clean <- function(frame, form = "form.xls", app = "console") {
 
+  mainDir <- kobo_getMainDirectory()
+  form <- as.character(form)
+  #cat(paste0(form,"\n"))
+  formpath <- as.character(paste0(mainDir,"/data/dico_",form,".csv"))
+  #cat(paste0(formpath,"\n"))
+  dico <- utils::read.csv(formpath, encoding = "UTF-8", na.strings = "")
+
+  # frame <- MainDataFrame
   # frame <- household
   # framename <- "household"
-  framename <- deparse(substitute(frame))
+  # framename <- "MainDataFrame"
+  framename <- as.character(deparse(substitute(frame)))
   ## library(digest)
   ## Get the anonymisation type defined within the xlsform / dictionnary
 
   if (levels(dico$clean) == "no") {
     cat(paste0("You have not defined variables to clean within your xlsform. \n"))
-    cat(paste0(" Insert a column named clean and reference the csv file to use for cleaning. \n")) }
-  else {
-    dico.clean <- dico[ !(is.na(dico$clean)) ,  ]
+    cat(paste0(" Insert a column named clean and reference the csv file to use for cleaning. \n"))
+    }  else {
+     dico.clean <- dico[ !(is.na(dico[, c("clean")])) ,  ]
       if (nrow(dico.clean) > 0) {
         cat(paste0(nrow(dico.clean), " potential variables to clean\n"))
 
@@ -48,8 +57,8 @@ kobo_clean <- function(frame, dico) {
             varia <- paste0(framename,"$",as.character(dico.clean[ i, c("fullname")]))
             variable <- paste0(as.character(dico.clean[ i, c("fullname")]))
             cleanfile <- paste0(as.character(dico.clean[ i, c("clean")]))
-            cleanframe <- paste0(substr(as.character(dico.clean[ i, c("clean")]), 1, nchar(cleanfile)-4))
-            formula1 <-  paste0(cleanframe," <- read.csv(\"data/", cleanfile,"\", encoding = \"UTF-8\", na.strings = \"\")" )
+            cleanframe <- paste0(substr(as.character(dico.clean[ i, c("clean")]), 1, nchar(cleanfile) - 4))
+            formula1 <-  paste0(cleanframe," <- utils::read.csv(\"data/", cleanfile,"\", encoding = \"UTF-8\", na.strings = \"\")" )
             formula2 <- paste0("names(",cleanframe,")[1] <- \"",dico.clean[ i, c("fullname")],"\"" )
             formula3 <- paste0("names(",cleanframe,")[2] <- \"",dico.clean[ i, c("fullname")],".clean\"" )
             formula4 <- paste0("colname <- which(colnames(",framename,") == \"", variable,"\")")

@@ -1,0 +1,2124 @@
+---
+title: "Data Crunching Report: Food_Security- Draft not for distribution. "
+author: "Generated with [Koboloader](https://unhcr.github.io/koboloadeR/docs) "
+date: " `r format(Sys.Date(),  '%d %B %Y')`"
+always_allow_html: yes
+output:
+  word_document:
+    fig_caption: yes
+    fig_height: 5
+    fig_width: 8
+    toc: yes
+    toc_depth: 2
+    reference_docx: style-unhcr-portrait.docx
+---
+```{r setup, include = FALSE, echo = FALSE, warning = FALSE, message = FALSE}
+mainDir <- getwd()
+mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 5)
+## Load all required packages
+library(tidyverse)
+library(ggthemes)
+library(plyr)
+library(ggrepel)
+library(viridis)
+library(RColorBrewer)
+library(extrafont)
+library(corrplot)
+library(reshape2)
+library(scales)
+library(survey)
+library(knitr)
+library(rmarkdown)
+library(ggpubr)
+library(grid)
+library(koboloadeR)
+options(scipen = 999) # turn-off scientific notation like 1e+48
+## Provide below the name of the form in xsl form - format should be xls not xlsx
+form <- "form.xls"
+dico <- read.csv(paste0(mainDirroot,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+MainDataFrame <- read.csv(paste0(mainDirroot,"/data/MainDataFrame_encoded.csv"), encoding = "UTF-8", na.strings = "")
+ListCaseNos <- read.csv(paste0(mainDirroot,"/data/ListCaseNos_encoded.csv"), encoding = "UTF-8", na.strings = "")
+IndBiodata <- read.csv(paste0(mainDirroot,"/data/IndBiodata_encoded.csv"), encoding = "UTF-8", na.strings = "")
+
+
+## label Variables
+MainDataFrame <- kobo_label(MainDataFrame , dico)
+ListCaseNos <- kobo_label(ListCaseNos , dico)
+IndBiodata <- kobo_label(IndBiodata , dico)
+
+
+## Set up ordinal Variables
+list.ordinal <- as.character(unique(dico[ dico$listname == "diff_res" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Profile.ArrivalHist.DifRes <- factor(MainDataFrame$Profile.ArrivalHist.DifRes, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "grade" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.YouthEduc.SchoolLevel.GradeLevel <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.YouthEduc.SchoolLevel.GradeLevel, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.SeeingDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.SeeingDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.HearingDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.HearingDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.WalkingDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.WalkingDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.RememberingDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.RememberingDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.SelfCareDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.SelfCareDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "MedicalDifficulty" & dico$type == "select_one_d", c("labelchoice") ]))
+IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.CommunicatingDifficulty <- factor(IndBiodata$Profile.CaseNoDetails.IndBiodata.Impairment.CommunicatingDifficulty, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "poverty_ladder" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.PovertyPerception.vignetteFam1 <- factor(MainDataFrame$Integration.PovertyPerception.vignetteFam1, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "poverty_ladder" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.PovertyPerception.vignetteFam2 <- factor(MainDataFrame$Integration.PovertyPerception.vignetteFam2, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "poverty_ladder" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.PovertyPerception.vignetteFam3 <- factor(MainDataFrame$Integration.PovertyPerception.vignetteFam3, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "poverty_ladder" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.PovertyPerception.vignetteFam4 <- factor(MainDataFrame$Integration.PovertyPerception.vignetteFam4, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "poverty_ladder" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.PovertyPerception.selfAssessment <- factor(MainDataFrame$Integration.PovertyPerception.selfAssessment, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "opinion" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.Feeling.Isolation <- factor(MainDataFrame$Integration.Feeling.Isolation, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "opinion" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.Feeling.NeighoursConcern <- factor(MainDataFrame$Integration.Feeling.NeighoursConcern, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "opinion" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.Feeling.ParticipateMeetings <- factor(MainDataFrame$Integration.Feeling.ParticipateMeetings, levels = list.ordinal)
+list.ordinal <- as.character(unique(dico[ dico$listname == "opinion" & dico$type == "select_one_d", c("labelchoice") ]))
+MainDataFrame$Integration.Feeling.NeighboursHelp <- factor(MainDataFrame$Integration.Feeling.NeighboursHelp, levels = list.ordinal)
+
+
+## Create weighted survey object
+MainDataFrame.survey <- svydesign(ids = ~ 1 ,  data = MainDataFrame )
+ListCaseNos.survey <- svydesign(ids = ~ 1 ,  data = ListCaseNos )
+IndBiodata.survey <- svydesign(ids = ~ 1 ,  data = IndBiodata )
+
+```
+
+# Introduction
+
+This data crunching report allows to quickly explore the results of the survey that can be regenerated as needed.
+You can:  
+ 
+  *  adjust the configuration in the xlsform to break it into chapter;   
+
+  *  configure disaggregation & correlation for each questions;   
+
+  *  revise the data cleansing based on the cleaning log;   
+ 
+  *  add weight to each observation in order to account for a specific sampling plan;  
+
+  *  append calculated indicators to your data frame. 
+
+
+The objective of this report is to allow to quickly identify potential patterns in your dataset.
+                A quick screening of this initial report should allow to select the most meaningful graphs.
+                A data digest from this initial report can be then reviewed through a __data analysis workshop__
+                where subject matter experts can contribute with qualitative components.
+                When analyzing those representations in a collective setting, you may:  
+ 
+  *  __Reflect__: question data quality and/or make suggestions to change questions;   
+
+  *  __Interpret__: develop qualitative interpretations of data patterns;   
+
+  *  __Recommend__: develop recommendation in terms of programmatic adjustment;   
+
+  *  __Classify__: order the level of sensitivity for the information;   
+
+# Compilation of questions results
+
+ 
+## How many meals (warm and cooked or prepared) did the adults of this household ea
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.MealsAdult.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.MealsAdult <- as.numeric(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.MealsAdult)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.MealsAdult))
+cat("No responses recorded for this question...")
+cat("No responses recorded for this question...")
+
+```
+
+
+
+ 
+## How many meals (warm and cooked or prepared) did the children under 5 of this ho
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.MealsChild.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.MealsChild <- as.numeric(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.MealsChild)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.MealsChild))
+cat("No responses recorded for this question...")
+cat("No responses recorded for this question...")
+
+```
+
+
+
+ 
+## Over the past 7 days, how many days did members of your household eat: Tubers (p
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.CerealTubersGrp.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.CerealTubersGrp <- as.numeric(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.CerealTubersGrp)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.CerealTubersGrp))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.CerealTubersGrp, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Tubers (p",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.CerealTubersGrp
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.CerealTubersGrp)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Tubers (p",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.CerealTubersGrpx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.CerealTubersGrp , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Tubers (p",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Tubers (p",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Over the past 7 days, how many days did members of your household eat:  Legumes
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.RootsCons.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.RootsCons <- as.numeric(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.RootsCons)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.RootsCons))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.RootsCons, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat:  Legumes",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.RootsCons
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.RootsCons)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat:  Legumes",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.RootsConsx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.RootsCons , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat:  Legumes",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat:  Legumes",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Over the past 7 days, how many days did members of your household eat: Milk and
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.MilkCons.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.MilkCons <- as.numeric(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.MilkCons)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.MilkCons))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.MilkCons, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Milk and",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.MilkCons
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.MilkCons)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Milk and",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.MilkConsx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.MilkCons , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Milk and",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Milk and",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Over the past 7 days, how many days did members of your household eat: Flesh mea
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.FleshMeatCons.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.FleshMeatCons <- as.numeric(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.FleshMeatCons)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.FleshMeatCons))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.FleshMeatCons, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Flesh mea",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.FleshMeatCons
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.FleshMeatCons)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Flesh mea",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.FleshMeatConsx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.FleshMeatCons , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Flesh mea",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Flesh mea",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Over the past 7 days, how many days did members of your household eat: Organ mea
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrganMeatCons.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrganMeatCons <- as.numeric(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrganMeatCons)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrganMeatCons))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrganMeatCons, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Organ mea",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrganMeatCons
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrganMeatCons)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Organ mea",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrganMeatConsx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrganMeatCons , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Organ mea",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Organ mea",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Over the past 7 days, how many days did members of your household eat: Fish/shel
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.FishCons.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.FishCons <- as.numeric(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.FishCons)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.FishCons))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.FishCons, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Fish/shel",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.FishCons
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.FishCons)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Fish/shel",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.FishConsx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.FishCons , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Fish/shel",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Fish/shel",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Over the past 7 days, how many days did members of your household eat: Eggs
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.EggsCons.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.EggsCons <- as.numeric(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.EggsCons)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.EggsCons))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.EggsCons, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Eggs",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.EggsCons
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.EggsCons)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Eggs",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.EggsConsx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.EggsCons , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Eggs",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Eggs",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## How many days over the past 7 days, did members of your household eat: Orange ve
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrangeVegCons.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrangeVegCons <- as.numeric(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrangeVegCons)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrangeVegCons))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrangeVegCons, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("How many days over the past 7 days, did members of your household eat: Orange ve",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrangeVegCons
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrangeVegCons)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("How many days over the past 7 days, did members of your household eat: Orange ve",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrangeVegConsx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrangeVegCons , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("How many days over the past 7 days, did members of your household eat: Orange ve",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("How many days over the past 7 days, did members of your household eat: Orange ve",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Over the past 7 days, how many days did members of your household eat: Green lea
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.GreenLeafyCons.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.GreenLeafyCons <- as.numeric(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.GreenLeafyCons)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.GreenLeafyCons))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.GreenLeafyCons, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Green lea",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.GreenLeafyCons
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.GreenLeafyCons)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Green lea",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.GreenLeafyConsx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.GreenLeafyCons , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Green lea",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Green lea",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Over the past 7 days, how many days did members of your household eat: Other veg
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OtherVegCons.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OtherVegCons <- as.numeric(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OtherVegCons)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OtherVegCons))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OtherVegCons, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Other veg",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OtherVegCons
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OtherVegCons)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Other veg",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OtherVegConsx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OtherVegCons , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Other veg",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Other veg",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Over the past 7 days, how many days did members of your household eat: Fruits: b
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrangeFruitsGrp.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrangeFruitsGrp <- as.numeric(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrangeFruitsGrp)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrangeFruitsGrp))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrangeFruitsGrp, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Fruits: b",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrangeFruitsGrp
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrangeFruitsGrp)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Fruits: b",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrangeFruitsGrpx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OrangeFruitsGrp , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Fruits: b",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Fruits: b",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Over the past 7 days, how many days did members of your household eat: Oil / fat
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OilCons.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OilCons <- as.numeric(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OilCons)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OilCons))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OilCons, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Oil / fat",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OilCons
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OilCons)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Oil / fat",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OilConsx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.OilCons , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Oil / fat",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Oil / fat",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Over the past 7 days, how many days did members of your household eat: Sugar, or
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.SugarCons.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.SugarCons <- as.numeric(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.SugarCons)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.SugarCons))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.SugarCons, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Sugar, or",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.SugarCons
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.SugarCons)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Sugar, or",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.SugarConsx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.SugarCons , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Sugar, or",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Sugar, or",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Over the past 7 days, how many days did members of your household eat: Condiment
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.SpicesCons.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.SpicesCons <- as.numeric(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.SpicesCons)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.SpicesCons))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.SpicesCons, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Condiment",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.SpicesCons
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.SpicesCons)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Condiment",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.SpicesConsx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.ConsumptionDetails.ConsumptionGroups.SpicesCons , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Condiment",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Over the past 7 days, how many days did members of your household eat: Condiment",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Rely on less expensive/less preferred food
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.Coping.FoodCoping.LessExpensive.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.LessExpensive <- as.numeric(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.LessExpensive)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.LessExpensive))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.FoodCoping.LessExpensive, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Rely on less expensive/less preferred food",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.LessExpensive
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.LessExpensive)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Rely on less expensive/less preferred food",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.Coping.FoodCoping.LessExpensivex1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.LessExpensive , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Rely on less expensive/less preferred food",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Rely on less expensive/less preferred food",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Borrow food and/or relied on help from friends/relatives
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.Coping.FoodCoping.BorrowedFood.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.BorrowedFood <- as.numeric(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.BorrowedFood)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.BorrowedFood))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.FoodCoping.BorrowedFood, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Borrow food and/or relied on help from friends/relatives",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.BorrowedFood
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.BorrowedFood)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Borrow food and/or relied on help from friends/relatives",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.Coping.FoodCoping.BorrowedFoodx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.BorrowedFood , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Borrow food and/or relied on help from friends/relatives",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Borrow food and/or relied on help from friends/relatives",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Reduce the number of meals eaten per day
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.Coping.FoodCoping.ReducedMeals.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.ReducedMeals <- as.numeric(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.ReducedMeals)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.ReducedMeals))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.FoodCoping.ReducedMeals, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Reduce the number of meals eaten per day",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.ReducedMeals
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.ReducedMeals)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Reduce the number of meals eaten per day",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.Coping.FoodCoping.ReducedMealsx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.ReducedMeals , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Reduce the number of meals eaten per day",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Reduce the number of meals eaten per day",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Reduce portion size of meals
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.Coping.FoodCoping.ReducedPortion.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.ReducedPortion <- as.numeric(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.ReducedPortion)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.ReducedPortion))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.FoodCoping.ReducedPortion, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Reduce portion size of meals",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.ReducedPortion
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.ReducedPortion)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Reduce portion size of meals",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.Coping.FoodCoping.ReducedPortionx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.ReducedPortion , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Reduce portion size of meals",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Reduce portion size of meals",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Go an entire day without eating
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.Coping.FoodCoping.DaysNoFood.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.DaysNoFood <- as.numeric(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.DaysNoFood)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.DaysNoFood))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.FoodCoping.DaysNoFood, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Go an entire day without eating",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.DaysNoFood
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.DaysNoFood)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Go an entire day without eating",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.Coping.FoodCoping.DaysNoFoodx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.DaysNoFood , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Go an entire day without eating",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Go an entire day without eating",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Restrict consumption of adults in order for young children to eat
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.Coping.FoodCoping.RestrictConsumption.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.RestrictConsumption <- as.numeric(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.RestrictConsumption)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.RestrictConsumption))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.FoodCoping.RestrictConsumption, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Restrict consumption of adults in order for young children to eat",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.RestrictConsumption
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.RestrictConsumption)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Restrict consumption of adults in order for young children to eat",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.Coping.FoodCoping.RestrictConsumptionx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.RestrictConsumption , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Restrict consumption of adults in order for young children to eat",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Restrict consumption of adults in order for young children to eat",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Send household members to eat elsewhere
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.Coping.FoodCoping.EatElsewhere.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.EatElsewhere <- as.numeric(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.EatElsewhere)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.EatElsewhere))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.FoodCoping.EatElsewhere, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Send household members to eat elsewhere",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.EatElsewhere
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.EatElsewhere)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Send household members to eat elsewhere",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.Coping.FoodCoping.EatElsewherex1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.EatElsewhere , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Send household members to eat elsewhere",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Send household members to eat elsewhere",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Restrict consumption of female household members
+NA
+
+
+Numeric question  
+
+
+### Tabulation
+
+```{r Welfare.FoodSecurity.Coping.FoodCoping.RestrictConsumptionFem.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.RestrictConsumptionFem <- as.numeric(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.RestrictConsumptionFem)
+frequ <- as.data.frame(table(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.RestrictConsumptionFem))
+average <- as.data.frame(svymean(~ Welfare.FoodSecurity.Coping.FoodCoping.RestrictConsumptionFem, design = MainDataFrame.survey, na.rm = TRUE))
+cat(paste0("Based on the sample design, the average weighted mean response for this question is ", as.numeric(round(average$mean, digits = 2))))
+#  regular histogram
+plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +
+geom_bar(fill = "#2a87c8",colour = "white", stat = "identity", width = .8) +
+labs(x = "", y = "Count") +
+ggtitle("Restrict consumption of female household members",subtitle = "Before data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+data.outlier <- MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.RestrictConsumptionFem
+data.nooutlier <- as.data.frame(MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.RestrictConsumptionFem)
+qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+H  <- 1.5 * IQR(data.outlier, na.rm = T)
+data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]
+data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]
+names(data.nooutlier)[1] <- "variable"
+plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +
+geom_histogram(color = "white",fill = "#2a87c8", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +
+labs(x = "", y = "Count") +
+ggtitle("Restrict consumption of female household members",
+subtitle = "After data capping treatement.") +
+kobo_unhcr_style_histo()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+### Analysis of relationship
+
+```{r Welfare.FoodSecurity.Coping.FoodCoping.RestrictConsumptionFemx1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+
+
+plot1 <- ggplot(MainDataFrame, aes(y=MainDataFrame$Welfare.FoodSecurity.Coping.FoodCoping.RestrictConsumptionFem , x=MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") + 
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Restrict consumption of female household members",
+subtitle = "Before data capping treatement, by question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+## Boxplot
+plot1 <- ggplot(MainDataFrame, aes(y=data.nooutlier$variable, x= MainDataFrame$Location.LocationDistrict)) +
+geom_boxplot(fill="#2a87c8",colour="black") +  #notch=TRUE
+scale_size_area(max_size = 10) +
+guides(fill = FALSE) +
+xlab("") +
+ylab("") +
+coord_flip() +
+scale_y_continuous(breaks= pretty_breaks()) +
+ggtitle("Restrict consumption of female household members",
+subtitle = "After data capping treatement. By question: District") +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+ 
+## Does the household currently receive food assistance (cash-based)?
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Assistance.AssistanceDetails.FoodAssistance.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=1.66666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Assistance.AssistanceDetails.FoodAssistance))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "FoodAssistance"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Assistance.AssistanceDetails.FoodAssistance, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Assistance.AssistanceDetails.FoodAssistance,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Assistance.AssistanceDetails.FoodAssistance, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Does the household currently receive food assistance (cash-based)?",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Assistance.AssistanceDetails.FoodAssistance1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Assistance.AssistanceDetails.FoodAssistance + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Does the household currently receive food assistance (cash-based)? (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## Has the household received any food assistance (in-kind) over the past three mon
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Assistance.AssistanceDetails.FoodInkind.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=1.66666666666667, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Assistance.AssistanceDetails.FoodInkind))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "FoodInkind"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Assistance.AssistanceDetails.FoodInkind, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Assistance.AssistanceDetails.FoodInkind,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Assistance.AssistanceDetails.FoodInkind, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Has the household received any food assistance (in-kind) over the past three mon",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Assistance.AssistanceDetails.FoodInkind1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Assistance.AssistanceDetails.FoodInkind + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Has the household received any food assistance (in-kind) over the past three mon (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+No significant association found for this question...
+
+
+ 
+## Does the household receive food assistance (in-kind) regularly?
+NA
+
+
+Single choice question 
+
+
+### Tabulation
+```{r Assistance.AssistanceDetails.FoodInkindFreq.tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=3.33333333333333, size="small"}
+### Tabulation
+##Compute contengency table
+frequ <- as.data.frame(table(MainDataFrame$Assistance.AssistanceDetails.FoodInkindFreq))
+frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])
+frequ <- frequ[ order(frequ[ , 1]) ,  ]
+names(frequ)[1] <- "FoodInkindFreq"
+## Frequency table with NA in order to get non response rate
+frequ1 <- as.data.frame(prop.table(table(MainDataFrame$Assistance.AssistanceDetails.FoodInkindFreq, useNA = "ifany")))
+frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]
+frequ1 <- frequ1[!(frequ1$Var1 == "NA"), ]
+percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),"%")
+## Frequency table without NA
+frequ2 <- as.data.frame(prop.table(table(MainDataFrame$Assistance.AssistanceDetails.FoodInkindFreq,useNA = "no")))
+## Frequency table with weight
+frequ.weight <- as.data.frame(svymean(~ Assistance.AssistanceDetails.FoodInkindFreq, design = MainDataFrame.survey, na.rm = TRUE))
+## Binding the two
+frequ3 <- cbind(frequ2,frequ.weight)
+## Reorder factor
+frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])
+frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]
+frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),"%")
+names(frequ3)[5] <- "freqper2"
+
+
+## and now the graph
+plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +
+geom_bar(fill = "#2a87c8", colour = "#2a87c8", stat = "identity", width=.8) +
+guides(fill = FALSE) +
+geom_label_repel(aes(y = mean, label = freqper2), fill = "#2a87c8", color = 'white') +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+xlab("") +
+coord_flip() +
+ggtitle("Does the household receive food assistance (in-kind) regularly?",
+subtitle = paste0(" Question response rate: ",percentreponse," .")) +
+kobo_unhcr_style_bar()
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+
+
+
+
+### Cross-tabulations
+
+
+```{r Assistance.AssistanceDetails.FoodInkindFreq1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=4, size="small"}
+crosssfrequ.weight <-as.data.frame(prop.table(svytable(~Assistance.AssistanceDetails.FoodInkindFreq + Location.LocationDistrict, design =MainDataFrame.survey  ), margin = 2))
+names(crosssfrequ.weight)[1] <- "quest"
+names(crosssfrequ.weight)[2] <- "disag"
+crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),"%")
+## Reorder factor
+cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = "Freq")
+cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]
+crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))
+
+
+## and now the graph
+plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +
+geom_bar(colour="white", stat ="identity", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +
+ylab("Frequency") +
+scale_y_continuous(labels = percent) +
+scale_fill_viridis(discrete=TRUE) +
+xlab("") +
+coord_flip() +
+ggtitle("Does the household receive food assistance (in-kind) regularly? (color)",
+subtitle = " By question: District (bar)") +
+kobo_unhcr_style_bar() +
+theme(legend.direction = "horizontal", legend.position = "bottom", legend.box = "horizontal",legend.title=element_blank()  )
+ggpubr::ggarrange(kobo_left_align(plot1, c("subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+### Significant Associations (chi-square with p value < 5%)
+
+
+```{r Assistance.AssistanceDetails.FoodInkindFreqccc1.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=6, size="small"}
+corrplot(chisq.test(MainDataFrame$Assistance.AssistanceDetails.FoodInkindFreq,MainDataFrame$agechef.cat2)$residuals,
+is.cor = FALSE, # use for general matrix to convert to Sq form
+cl.pos = "n", ## Do not display the color legend
+cl.cex = 0.7, # Size of all label
+tl.cex = 0.7, # Size of axis label
+tl.srt = 45, # string rotation in degrees
+tl.col = "black", # color of text label.
+addCoef.col = "grey", # add coeff in the chart
+number.cex= 3/ncol(chisq.test(MainDataFrame$Assistance.AssistanceDetails.FoodInkindFreq,MainDataFrame$agechef.cat2)), # size of coeff
+mar = c(0.5,0.5,4, 0.5), ## margin of plots
+title= paste0("Correlation between
+Does the household receive food assistance (in-kind) regularly? (row)
+ & Age of main respondent / head of household - Categories 2 (col)")) 
+
+```
+
+
+```{r Assistance.AssistanceDetails.FoodInkindFreqccc2.rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = "", fig.height=6, size="small"}
+corrplot(chisq.test(MainDataFrame$Assistance.AssistanceDetails.FoodInkindFreq,MainDataFrame$hh.child.head)$residuals,
+is.cor = FALSE, # use for general matrix to convert to Sq form
+cl.pos = "n", ## Do not display the color legend
+cl.cex = 0.7, # Size of all label
+tl.cex = 0.7, # Size of axis label
+tl.srt = 45, # string rotation in degrees
+tl.col = "black", # color of text label.
+addCoef.col = "grey", # add coeff in the chart
+number.cex= 3/ncol(chisq.test(MainDataFrame$Assistance.AssistanceDetails.FoodInkindFreq,MainDataFrame$hh.child.head)), # size of coeff
+mar = c(0.5,0.5,4, 0.5), ## margin of plots
+title= paste0("Correlation between
+Does the household receive food assistance (in-kind) regularly? (row)
+ & Cases headed by child (under 18) (col)")) 
+
+```
+
+##### Page Break

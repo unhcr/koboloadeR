@@ -1,0 +1,1181 @@
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+body > div > div > section > nav > div > div.navbar-header{
+  height: 70px;
+  background-color: white;
+  padding-left: 20px;
+}
+body > div > div > section > nav > div > div.navbar-collapse.collapse{
+  background-color: #003d66;
+}
+.container-fluid{
+  padding-right: 0px; 
+  padding-left: 0px; 
+}
+body > div.wrapper > div > section > nav{
+  border-bottom: 1px solid lightgray;
+}
+
+/* Extra Small Devices, Phones */ 
+@media only screen and (max-width : 767px) {
+  body > div > div > section > div{
+        margin-top: 85px !important;
+  }
+}
+
+/* Small Devices, Tablets */
+@media only screen and (min-width : 768px) {
+  body > div > div > section > div{
+        margin-top: 200px !important;
+  }
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (min-width : 1045px) {
+  body > div > div > section > div{
+        margin-top: 145px !important;
+  }
+}
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width : 1340px) {
+  body > div > div > section > div{
+        margin-top: 90px !important;
+  }
+}
+
+
+body > div > div > section > nav > div > div.navbar-header > span{
+  min-width: 300px;
+  font-size: 20px;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+
+.warningBlock{
+  background-color: ghostwhite;
+  padding: 2px 15px 2px 15px;
+  border-left: 5px solid lightgray;
+  font-size: small;
+}
+.warningTitle{
+  font-size: medium;
+  font-weight: 500;
+  color:red;
+}
+.fa-14x{
+  font-size: 14em;
+  margin: 10px 0px;
+}
+.fa-14x-right{
+  font-size: 14em;
+  float:right;
+}
+
+.fa-24x{
+  font-size: 14em;
+  margin: 20% 0px;
+}
+
+.processButton, .processButton:focus, .processButton:active:focus{
+    -moz-box-shadow: 0px 10px 14px -7px #276873;
+  	-webkit-box-shadow: 0px 10px 14px -7px #276873;
+  	box-shadow: 0px 10px 14px -7px #276873;
+  	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #599bb3), color-stop(1, #408c99));
+  	background:-moz-linear-gradient(top, #599bb3 5%, #408c99 100%);
+  	background:-webkit-linear-gradient(top, #599bb3 5%, #408c99 100%);
+  	background:-o-linear-gradient(top, #599bb3 5%, #408c99 100%);
+  	background:-ms-linear-gradient(top, #599bb3 5%, #408c99 100%);
+  	background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+  	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#599bb3', endColorstr='#408c99',GradientType=0);
+  	background-color:#599bb3;
+  	-moz-border-radius:8px;
+  	-webkit-border-radius:8px;
+    border-radius: 200px;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-family: Arial;
+    font-size: smaller;
+    font-weight: bold;
+    padding: 9px 32px;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #3d768a;
+    border: 1px solid transparent;
+    height: 200px;
+    width: 200px;
+}
+
+.processButton:hover{
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #408c99), color-stop(1, #599bb3));
+  	background:-moz-linear-gradient(top, #408c99 5%, #599bb3 100%);
+  	background:-webkit-linear-gradient(top, #408c99 5%, #599bb3 100%);
+  	background:-o-linear-gradient(top, #408c99 5%, #599bb3 100%);
+  	background:-ms-linear-gradient(top, #408c99 5%, #599bb3 100%);
+  	background:linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
+  	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#408c99', endColorstr='#599bb3',GradientType=0);
+  	background-color:#408c99;
+    border: 1px solid transparent;
+}
+.processButton:active{
+    position:relative;
+	  top:1px;
+}
+
+
+
+
+
+.processButtonLarge, .processButtonLarge:focus, .processButtonLarge:active:focus{
+    -moz-box-shadow: 0px 10px 14px -7px #276873;
+  	-webkit-box-shadow: 0px 10px 14px -7px #276873;
+  	box-shadow: 0px 10px 14px -7px #276873;
+  	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #599bb3), color-stop(1, #408c99));
+  	background:-moz-linear-gradient(top, #599bb3 5%, #408c99 100%);
+  	background:-webkit-linear-gradient(top, #599bb3 5%, #408c99 100%);
+  	background:-o-linear-gradient(top, #599bb3 5%, #408c99 100%);
+  	background:-ms-linear-gradient(top, #599bb3 5%, #408c99 100%);
+  	background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+  	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#599bb3', endColorstr='#408c99',GradientType=0);
+  	background-color:#599bb3;
+  	-moz-border-radius:8px;
+  	-webkit-border-radius:8px;
+    border-radius: 300px;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-family: Arial;
+    font-size: medium;
+    font-weight: bold;
+    padding: 9px 32px;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #3d768a;
+    border: 1px solid transparent;
+    height: 300px;
+    width: 300px;
+}
+
+.processButtonLarge:hover{
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #408c99), color-stop(1, #599bb3));
+  	background:-moz-linear-gradient(top, #408c99 5%, #599bb3 100%);
+  	background:-webkit-linear-gradient(top, #408c99 5%, #599bb3 100%);
+  	background:-o-linear-gradient(top, #408c99 5%, #599bb3 100%);
+  	background:-ms-linear-gradient(top, #408c99 5%, #599bb3 100%);
+  	background:linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
+  	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#408c99', endColorstr='#599bb3',GradientType=0);
+  	background-color:#408c99;
+    border: 1px solid transparent;
+}
+.processButtonLarge:active{
+    position:relative;
+	  top:1px;
+}
+
+
+
+.sweet-alert p{
+    text-align: left !important;
+    border-bottom: 1px solid lightgray !important;
+    border-top: 1px solid lightgray !important;
+    padding: 20px 10px !important;
+    overflow: auto !important;
+}
+
+#dataInputsUI{
+    height: 300px;
+    overflow-y: auto;
+    padding: 20px 10px;
+    background-color: whitesmoke;
+    border: 1px solid lightgray;
+}
+
+#doYouHaveDatasetsDiv > div > div > div.box-header, #recordSettingsDiv > div > div > div.box-header{
+    color: white; 
+    background-color: #3c8dbc; 
+}
+#generateAndPrepareBox, #decoAndCheckplanBox, #loadDataButtonBox{
+    border-bottom: 3px solid #3c8dbc;
+    background-image: url(background-lines.png);
+    background-repeat: round;
+}
+.info-box{
+    box-shadow: 0 10px 10px rgba(0,0,0,.1);
+    border: 1px solid lightgray;
+}
+.info-box-icon{
+    height: 88px;
+}
+#informationBoxAboutNextStepDiv{
+    margin-bottom: 250px;
+}
+
+.htCenter{
+  text-align: center;
+}
+
+#showCalculationBuilderToolPopUp{
+  min-height: 600px;
+}
+
+
+.toolButton, .toolButton:focus, .toolButton:active:focus{
+  background:#1AAB8A;
+  color:#fff;
+  border:none;
+  position:relative;
+  font-size:15px;
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+}
+.toolButton:hover{
+  background:#fff;
+  color:#1AAB8A;
+  border-left: 2px solid #1AAB8A;
+  border-right: 2px solid #1AAB8A;
+}
+.toolButton:before,.toolButton:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #1AAB8A;
+  transition:400ms ease all;
+}
+.toolButton:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.toolButton:hover:before,.toolButton:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+
+.uploadButton, .uploadButton:focus, .uploadButton:active:focus{
+  background:#599bb3;
+  color:#fff;
+  border:none;
+  position:relative;
+  font-size:15px;
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+  font-family: Arial;
+    font-size: smaller;
+    font-weight: bold;
+    padding: 9px 32px;
+  
+}
+.uploadButton:hover{
+  background:#fff;
+  color:#599bb3;
+  border-left: 2px solid #599bb3;
+  border-right: 2px solid #599bb3;
+}
+.uploadButton:before,.uploadButton:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #599bb3;
+  transition:400ms ease all;
+}
+.uploadButton:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.uploadButton:hover:before,.uploadButton:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+
+
+
+.deleteButton, .deleteButton:focus, .deleteButton:active:focus{
+  background:#ff3333;
+  color:#fff;
+  border:none;
+  position:relative;
+  font-size:15px;
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+}
+.deleteButton:hover{
+  background:#fff;
+  color:#ff3333;
+  border-left: 2px solid #ff3333;
+  border-right: 2px solid #ff3333;
+}
+.deleteButton:before,.deleteButton:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #ff3333;
+  transition:400ms ease all;
+}
+.deleteButton:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.deleteButton:hover:before,.deleteButton:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+
+
+
+.help-tip{
+    z-index: 100;
+    position: absolute;
+    text-align: center;
+    background-color: black;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 35px;
+    font-weight: 100;
+    line-height: 40px;
+    cursor: default;
+}
+
+.help-tip:before{
+    content:'?';
+    font-weight: bold;
+    color:#fff;
+}
+
+.help-tip:hover p{
+    display:block;
+    transform-origin: 100% 0%;
+
+    -webkit-animation: fadeIn 0.3s ease-in-out;
+    animation: fadeIn 0.3s ease-in-out;
+
+}
+
+.help-tip p{    /* The tooltip */
+    display: none;
+    text-align: left;
+    background-color: #1E2021;
+    padding: 20px;
+    width: 300px;
+    position: absolute;
+    border-radius: 3px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+    right: -4px;
+    color: #FFF;
+    font-size: 13px;
+    line-height: 1.4;
+    z-index: 10;
+    opacity: 0.9;
+}
+
+.help-tip p:before{ /* The pointer of the tooltip */
+    position: absolute;
+    content: '';
+    width:0;
+    height: 0;
+    border:6px solid transparent;
+    border-bottom-color:#1E2021;
+    right:10px;
+    top:-12px;
+}
+
+.help-tip p:after{ /* Prevents the tooltip from being hidden */
+    width:100%;
+    height:40px;
+    content:'';
+    position: absolute;
+    top:-40px;
+    left:0;
+}
+
+
+
+
+
+
+.help-tip-small{
+    z-index: 100;
+    position: absolute;
+    text-align: center;
+    background-color: black;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 25px;
+    font-weight: 100;
+    line-height: 30px;
+    cursor: default;
+}
+
+.help-tip-small:before{
+    content:'?';
+    font-weight: bold;
+    color:#fff;
+}
+
+.help-tip-small:hover p{
+    display:block;
+    transform-origin: 100% 0%;
+
+    -webkit-animation: fadeIn 0.3s ease-in-out;
+    animation: fadeIn 0.3s ease-in-out;
+
+}
+
+.help-tip-small p{    /* The tooltip */
+    display: none;
+    text-align: left;
+    background-color: #1E2021;
+    padding: 20px;
+    width: 300px;
+    position: absolute;
+    border-radius: 3px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+    right: -4px;
+    color: #FFF;
+    font-size: 13px;
+    line-height: 1.4;
+    z-index: 10;
+    opacity: 0.9;
+}
+
+.help-tip-small p:before{ /* The pointer of the tooltip */
+    position: absolute;
+    content: '';
+    width:0;
+    height: 0;
+    border:6px solid transparent;
+    border-bottom-color:#1E2021;
+    right:10px;
+    top:-12px;
+}
+
+.help-tip-small p:after{ /* Prevents the tooltip from being hidden */
+    width:100%;
+    height:40px;
+    content:'';
+    position: absolute;
+    top:-40px;
+    left:0;
+}
+
+
+
+/* CSS animation */
+
+@-webkit-keyframes fadeIn {
+    0% { 
+        opacity:0; 
+        transform: scale(0.6);
+    }
+
+    100% {
+        opacity:100%;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeIn {
+    0% { opacity:0; }
+    100% { opacity:100%; }
+}
+
+
+
+.toolButtonDelete, .toolButtonDelete:focus, .toolButtonDelete:active:focus{
+  background:#ff4d4d;
+  color:#fff;
+  border:none;
+  position:relative;
+  /*font-size:15px;*/
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+}
+.toolButtonDelete:hover{
+  background:#fff;
+  color:#ff4d4d;
+  border-left: 2px solid #ff4d4d;
+  border-right: 2px solid #ff4d4d;
+}
+.toolButtonDelete:before,.toolButtonDelete:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #ff4d4d;
+  transition:400ms ease all;
+}
+.toolButtonDelete:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.toolButtonDelete:hover:before,.toolButtonDelete:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+
+.handsontable .htCheckboxRendererInput.noValue{
+  height: 30px;
+    width: 20px;
+}
+
+.handsontable .htCheckboxRendererInput{
+  height: 30px;
+    width: 20px;
+}
+.numberStep{
+    border: 1px solid;
+    padding: 5px 10px;
+    margin-right: 8px;
+    border-radius: 35px;
+}
+
+#wellMenuForAPC > div > div.col-sm-2 > form{
+    min-height: 20px;
+    padding: 0px;
+    margin-bottom: 20px;
+    background-color: #f5f5f5;
+    border: 0px solid #3c8dbc;
+    border-top: 5px solid #3c8dbc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+    color: black;
+    background-color: white;
+}
+.skin-blue .sidebar-menu>li>a{
+  border-bottom: 1px solid lightgray;
+}
+
+
+/************************************************/
+.navbar-default .navbar-nav>li>a{
+  line-height: 40px !important;
+}
+/**************active************************************************/
+#navbar > li.active > a {
+    position: relative;
+    box-shadow: 15px 15px 35px -5px darkgrey;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+/************************child(1)*****************************/
+
+#navbar > li:nth-child(1) > a {
+    position: relative;
+    background: #80ccff;
+    color:white;
+}
+#navbar > li:nth-child(1) > a:before {
+    content: "";
+    position: absolute;
+    right: -15px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 15px solid #80ccff;
+    border-top: 35px solid transparent;
+    border-bottom: 35px solid transparent;
+}
+#navbar > li:nth-child(1) > a:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 10px solid white;
+}
+#navbar > li:nth-child(1) > a > div > span:nth-child(1){
+    border: 1px solid;
+    padding: 10px 15px;
+    border-radius: 100px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+/************************child(2)*****************************/
+
+#navbar > li:nth-child(2) > a {
+    position: relative;
+    background: #1aa3ff;
+    color:white;
+}
+#navbar > li:nth-child(2) > a:before {
+    content: "";
+    position: absolute;
+    right: -15px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 15px solid #1aa3ff;
+    border-top: 35px solid transparent;
+    border-bottom: 35px solid transparent;
+}
+#navbar > li:nth-child(2) > a:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 15px solid #80ccff;
+    border-top: 35px solid transparent;
+    border-bottom: 35px solid transparent;
+}
+#navbar > li:nth-child(2) > a > div > span:nth-child(1){
+    border: 1px solid;
+    padding: 10px 15px;
+    border-radius: 100px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+/************************child(3)*****************************/
+
+#navbar > li:nth-child(3) > a {
+    position: relative;
+    background: #008ae6;
+    color:white;
+}
+#navbar > li:nth-child(3) > a:before {
+    content: "";
+    position: absolute;
+    right: -15px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 15px solid #008ae6;
+    border-top: 35px solid transparent;
+    border-bottom: 35px solid transparent;
+}
+#navbar > li:nth-child(3) > a:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 15px solid #1aa3ff;
+    border-top: 35px solid transparent;
+    border-bottom: 35px solid transparent;
+}
+#navbar > li:nth-child(3) > a > div > span:nth-child(1){
+    border: 1px solid;
+    padding: 10px 15px;
+    border-radius: 100px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+/************************child(4)*****************************/
+#navbar > li:nth-child(4) > a {
+    position: relative;
+    background: #005c99;
+    color:white;
+}
+#navbar > li:nth-child(4) > a:before {
+    content: "";
+    position: absolute;
+    right: -15px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 15px solid #005c99;
+    border-top: 35px solid transparent;
+    border-bottom: 35px solid transparent;
+}
+#navbar > li:nth-child(4) > a:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 15px solid #008ae6;
+    border-top: 35px solid transparent;
+    border-bottom: 35px solid transparent;
+}
+#navbar > li:nth-child(4) > a > div > span:nth-child(1){
+    border: 1px solid;
+    padding: 10px 15px;
+    border-radius: 100px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+/************************child(5)*****************************/
+#navbar > li:nth-child(5) > a {
+    position: relative;
+    background: #003d66;
+    color:white;
+}
+#navbar > li:nth-child(5) > a:before {
+    content: "";
+    position: absolute;
+    right: -15px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 15px solid #003d66;
+    border-top: 35px solid #003d66;
+    border-bottom: 35px solid #003d66;
+}
+#navbar > li:nth-child(5) > a:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 15px solid #005c99;
+    border-top: 35px solid transparent;
+    border-bottom: 35px solid transparent;
+}
+#navbar > li:nth-child(5) > a > div > span:nth-child(1){
+    border: 1px solid;
+    padding: 10px 15px;
+    border-radius: 100px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+#analysisPlanTab{
+    background-image: url(analysis-plan-configuration.png);
+    height: 650px;
+    width: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: aliceblue;
+    margin-bottom: 40px;
+}
+
+a[data-value="infoAPC"]{
+    text-align: center !important;
+    padding: 0px 25px 0px 0px !important;
+    border-bottom: 0px solid !important;
+    color: white !important;
+    font-size: 30px !important;
+    background-color: #003d66 !important;
+}
+
+li.active > a[data-value="infoAPC"]{
+    text-align: center !important;
+    padding: 0px 25px 0px 0px !important;
+    border-bottom: 0px solid !important;
+    color: white !important;
+    font-size: 30px !important;
+    background-color: black !important;
+}
+
+#relabelingSurveyTable{
+  border-bottom: 1px solid lightgray;
+}
+#wellMenuForAPC > div > div.col-sm-2 > form > ul > li:nth-child(10){
+  margin-top: 130px;
+}
+
+.tagInd{
+  font-size: medium;
+  margin: 10px 10px;
+  line-height: 50px;
+  background-color: aliceblue;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.titleTagInd{
+  font-size: x-large;
+}
+
+.tagVar{
+  font-size: medium;
+  margin: 10px 10px;
+  line-height: 50px;
+  background-color: aliceblue;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.titleTagVar{
+  font-size: x-large;
+}
+
+.divInd, .divVar{
+  margin: 10px 0px;
+  padding: 10px 0px 20px;
+  border-bottom: 1px solid ghostwhite;
+  max-height: 100px;
+  overflow: auto;
+}
+
+#showChapterToolPopUp{
+  min-height: 650px;
+}
+#showIndicatorToolPopUp{
+  max-height: 750px;
+  min-height: 750px;
+  overflow: auto;
+}
+.big-info-circle{
+  font-size: 300px;
+}
+
+.colNameInd{
+    font-size: large;
+    background-color: aliceblue;
+    padding: 12px 10px;
+}
+
+.colValInd{
+    margin-left: 10px;
+    font-size: medium;
+}
+
+.divOFIndRow{
+  margin: 10px 0px;
+  padding: 10px 15px 20px;
+  border-bottom: 1px solid ghostwhite;
+  max-height: 250px;
+  overflow: auto;
+}
+
+#calculationBuilderToolBody{
+    background-color: ghostwhite;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-top: 10px;
+    border: 1px solid lightgray;
+    padding: 20px 10px 10px;
+}
+
+
+@media (min-width: 992px){
+  .modal-lg {
+      width: 1185px !important;
+  }
+}
+
+#showSamplingMoreParmPopUp{
+    min-height: 150px;
+}
+
+
+#shiny-notification-panel{
+  position: fixed;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0,0,0,0);
+    padding: 2px;
+    width: 94%;
+    margin: 1% 4%;
+    z-index: 99999;
+}
+
+.shiny-progress-notification .progress-text .progress-message{
+  font-weight: bold;
+  font-size: larger;
+  margin-left: 20px;
+  color:white;
+}
+
+.shiny-notification{
+    background-color: black;
+    color: #333;
+    border: 1px solid #ccc;
+    opacity: 0.85;
+    padding: 35px 8px 35px 10px;
+    margin: 2px 2px 25px;
+    border-radius: 15px;
+}
+.shiny-progress-notification .progress{
+  margin: 0px 20px 10px;
+  height: 25px;
+}
+
+.toolButton006495, .toolButton006495:focus, .toolButton006495:active:focus{
+  background:#006495;
+  color:#fff;
+  border:none;
+  position:relative;
+  font-size:15px;
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+}
+.toolButton006495:hover{
+  background:#fff;
+  color:#006495;
+  border-left: 2px solid #006495;
+  border-right: 2px solid #006495;
+}
+.toolButton006495:before,.toolButton006495:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #006495;
+  transition:400ms ease all;
+}
+.toolButton006495:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.toolButton006495:hover:before,.toolButton006495:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+.toolButtonE0A025, .toolButtonE0A025:focus, .toolButtonE0A025:active:focus{
+  background:#E0A025;
+  color:#fff;
+  border:none;
+  position:relative;
+  font-size:15px;
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+}
+.toolButtonE0A025:hover{
+  background:#fff;
+  color:#E0A025;
+  border-left: 2px solid #E0A025;
+  border-right: 2px solid #E0A025;
+}
+.toolButtonE0A025:before,.toolButtonE0A025:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #E0A025;
+  transition:400ms ease all;
+}
+.toolButtonE0A025:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.toolButtonE0A025:hover:before,.toolButtonE0A025:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+
+.toolButtonF4D00C, .toolButtonF4D00C:focus, .toolButtonF4D00C:active:focus{
+  background:#F4D00C;
+  color:#fff;
+  border:none;
+  position:relative;
+  font-size:15px;
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+}
+.toolButtonF4D00C:hover{
+  background:#fff;
+  color:#F4D00C;
+  border-left: 2px solid #F4D00C;
+  border-right: 2px solid #F4D00C;
+}
+.toolButtonF4D00C:before,.toolButtonF4D00C:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #F4D00C;
+  transition:400ms ease all;
+}
+.toolButtonF4D00C:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.toolButtonF4D00C:hover:before,.toolButtonF4D00C:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+.toolButton004C70, .toolButton004C70:focus, .toolButton004C70:active:focus{
+  background:#004C70;
+  color:#fff;
+  border:none;
+  position:relative;
+  font-size:15px;
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+}
+.toolButton004C70:hover{
+  background:#fff;
+  color:#004C70;
+  border-left: 2px solid #004C70;
+  border-right: 2px solid #004C70;
+}
+.toolButton004C70:before,.toolButton004C70:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #004C70;
+  transition:400ms ease all;
+}
+.toolButton004C70:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.toolButton004C70:hover:before,.toolButton004C70:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+
+.toolButton0093D1, .toolButton0093D1:focus, .toolButton0093D1:active:focus{
+  background:#0093D1;
+  color:#fff;
+  border:none;
+  position:relative;
+  font-size:15px;
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+}
+.toolButton0093D1:hover{
+  background:#fff;
+  color:#0093D1;
+  border-left: 2px solid #0093D1;
+  border-right: 2px solid #0093D1;
+}
+.toolButton0093D1:before,.toolButton0093D1:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #0093D1;
+  transition:400ms ease all;
+}
+.toolButton0093D1:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.toolButton0093D1:hover:before,.toolButton0093D1:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+
+.toolButtonF2635F, .toolButtonF2635F:focus, .toolButtonF2635F:active:focus{
+  background:#F2635F;
+  color:#fff;
+  border:none;
+  position:relative;
+  font-size:15px;
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+}
+.toolButtonF2635F:hover{
+  background:#fff;
+  color:#F2635F;
+  border-left: 2px solid #F2635F;
+  border-right: 2px solid #F2635F;
+}
+.toolButtonF2635F:before,.toolButtonF2635F:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #F2635F;
+  transition:400ms ease all;
+}
+.toolButtonF2635F:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+.toolButtonF2635F:hover:before,.toolButtonF2635F:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
+
+#showCrunchingReportPopUp, #showClusterReportPopUp, #showAnonymisationReportPopUp, #showInputOfInstanceIDPopUp, #showDDIfilesPopUp{
+    min-height: 650px;
+    max-height: 650px;
+    overflow-y: auto;
+    background-color: ghostwhite;
+}
+
+#indicatorLabelInputLengthRed{
+  color: red;
+  font-weight: 600;
+  line-height: 1.2 !important;
+}
+#indicatorLabelInputLengthBlack{
+  line-height: 1.2 !important;
+}

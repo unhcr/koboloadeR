@@ -1,15 +1,14 @@
 #' @name kobo_weight
 #' @rdname kobo_weight
-#' @title  Weight the data
+#' @title  Weight a datset
 
 #' @description  Automatically weight the data according to the information of 0-config.R
 #' @param mainDir Path to the project's working directory: mainly for shiny app
 #' @author Elliott Messeiller
 #'
-#' @examples
-#' kobo_weight()
 #'
 #' @export kobo_weight
+#'
 #' @examples
 #' \dontrun{
 #' kobo_weight()
@@ -24,7 +23,7 @@ kobo_weight <- function(mainDir = '') {
 
   source(paste0(mainDir, "/code/0-config.R"), local = TRUE)
 
-  sampling <- read_excel(path.to.form, sheet = "sampling_frame")
+  sampling <- readxl::read_excel(path.to.form, sheet = "sampling_frame")
 
 
   data$weight <- ""
@@ -56,7 +55,7 @@ kobo_weight <- function(mainDir = '') {
           fullname_strata <- as.character(dico[strat_row_n, "fullname"])
           fullname_strata <- data.frame(strsplit(fullname_strata, "\\."))
           fullname_strata <- data.frame(fullname_strata[-nrow(fullname_strata), ])
-          fullname_strata <-as.character(fullname_strata[nrow(fullname_strata), ])
+          fullname_strata <- as.character(fullname_strata[nrow(fullname_strata), ])
 
           names(stratas)[names(stratas) == "strata"] <- fullname_strata
           names(sampling)[names(sampling) == "strata"] <- fullname_strata
@@ -65,7 +64,7 @@ kobo_weight <- function(mainDir = '') {
         }
 
         col_stratas <- data.frame(colnames(stratas), stringsAsFactors = FALSE)
-        nrow_su <- data.frame(Strata=character(), nsu=numeric(), stringsAsFactors = FALSE)
+        nrow_su <- data.frame(Strata=character(), nsu = numeric(), stringsAsFactors = FALSE)
 
         for (j in 1:nrow(col_stratas)) {
           split_temp <- as.character(col_stratas[j,1])
@@ -108,13 +107,13 @@ kobo_weight <- function(mainDir = '') {
 
 
         data$weight <- as.numeric(data$weight)
-        surveydesign <- svydesign(
+        surveydesign <- survey::svydesign(
           ids =  ~ 1,
           strata = data[[fullname_strata]],
           weights = ~ weight,
           data = data
         )
-        pastedesign <- paste0("svydesign(ids=~1,
+        pastedesign <- paste0("survey::svydesign(ids=~1,
                                 strata= data[[strata1]],
                                 weights= ~weight,
                                 data=data)")

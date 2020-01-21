@@ -5,12 +5,10 @@
 #' @description  A function to launch shiny apps
 #'
 #'
-#' @param app
+#' @param app script where shyni app is located
 #'
 #' @author Elliott Messeiller
 #'
-#' @examples
-#' kobo_shiny()
 #'
 #' @export kobo_shiny
 #' @examples
@@ -19,8 +17,8 @@
 #' }
 #'
 #'
-kobo_shiny <- function(app="") {
-  mainDir <- getwd()
+kobo_shiny <- function(app = "") {
+  mainDir <- kobo_getMainDirectory()
 
   validApps <- list.files(system.file("shiny_app", package = "koboloadeR"))
 

@@ -12,8 +12,6 @@
 #'
 #' @author Edouard Legoupil
 #'
-#' @examples
-#' kobo_split_multiple()
 #'
 #' @export kobo_split_multiple
 #'
@@ -65,9 +63,8 @@ kobo_split_multiple <- function(data, dico) {
 
    # nrow(data[data[ , id]=='', id])
 
-  #  data[data[ , id]=='', id] <- "zNotAnswered"
     data[is.na(data[ , id]), id] <- "zNotAnswered"
-
+    data[data[ , id] =='', id] <- "zNotAnswered"
 
     #levels(as.factor(data[ , id]))
     #levels(data[ , id])
@@ -75,9 +72,9 @@ kobo_split_multiple <- function(data, dico) {
 
     ## thanks to: https://stackoverflow.com/questions/44232180/list-to-dataframe
     tosplitlist <- strsplit(as.character(data[ , id]), " ")
-    tosplitlist <- setNames(tosplitlist, seq_along(tosplitlist))
-    tosplitlist2 <- stack(tosplitlist)
-    tosplitframe <- dcast(tosplitlist2, ind ~ values, value.var = "ind", fun.aggregate = length)
+    tosplitlist <- stats::setNames(tosplitlist, seq_along(tosplitlist))
+    tosplitlist2 <- utils::stack(tosplitlist)
+    tosplitframe <- reshape2::dcast(tosplitlist2, ind ~ values, value.var = "ind", fun.aggregate = length)
 
     if (ncol(tosplitframe) == 3 ) {
       cat(paste0("There was only one modality selected for this select_multiple question in the whole dataset. \n"))

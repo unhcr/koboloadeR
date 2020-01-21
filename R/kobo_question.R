@@ -11,8 +11,6 @@
 #'
 #' @author Elliott Messeiller
 #'
-#' @examples
-#' kobo_question("s2.beneficiary_code")
 #'
 #' @export kobo_question
 #' @examples
@@ -33,7 +31,7 @@ kobo_question <- function(question,mainDir='') {
 
   variablename <- as.character(select_question$fullname)
 
-  colour_palette <- brewer.pal(n=9,"PuBu")[9:3]
+  colour_palette <- RColorBrewer::brewer.pal(n=9,"PuBu")[9:3]
   #   select_one, no disaggregation
 
   if(select_question$type=="select_one" && is.na(select_question$disaggregation) ){
@@ -43,7 +41,7 @@ kobo_question <- function(question,mainDir='') {
             check <- as.data.frame(names(data))
             names(check)[1] <- "fullname"
             check$id <- row.names(check)
-            selectdf2 <- join(x=select_question, y=check, by="fullname",  type="left")
+            selectdf2 <- plyr::join(x=select_question, y=check, by="fullname",  type="left")
             selectdf3 <- selectdf2[!is.na(selectdf2$id), ]
             selectone <- as.character(selectdf3[, c("fullname")])
 
@@ -87,7 +85,7 @@ kobo_question <- function(question,mainDir='') {
 
 
                 if (usedweight=="sampling_frame" ){
-                    frequ <- as.data.frame(svytable(as.formula(paste0("~",colnames(data[variablename]))),design))
+                    frequ <- as.data.frame(svytable(stats::as.formula(paste0("~",colnames(data[variablename]))),design))
                     frequ[,1] <- selectchoices_questions$labelchoice[match(frequ[,1], selectchoices_questions$name)]
                     frequ[,1] <- factor(frequ[,1])
 
@@ -149,7 +147,7 @@ kobo_question <- function(question,mainDir='') {
                   check <- as.data.frame(names(data))
                   names(check)[1] <- "fullname"
                   check$id <- row.names(check)
-                  selectdf2 <- join(x=select_question, y=check, by="fullname",  type="left")
+                  selectdf2 <- plyr::join(x=select_question, y=check, by="fullname",  type="left")
                   selectdf3 <- selectdf2[!is.na(selectdf2$id), ]
                   selectone <- as.character(selectdf3[, c("fullname")])
 
@@ -239,7 +237,7 @@ kobo_question <- function(question,mainDir='') {
                             data.singlefacet[,1] <- data.frame(facetchoices[,2][match(data.singlefacet[,1],facetchoices[,1])], stringsAsFactors = FALSE)
 
                             if (usedweight=="sampling_frame"){
-                              frequ <- as.data.frame(svytable(as.formula(paste0("~",colnames(data[variablename]),"+",colnames(data[facetname]))),design))
+                              frequ <- as.data.frame(svytable(stats::as.formula(paste0("~",colnames(data[variablename]),"+",colnames(data[facetname]))),design))
                               frequ[,1] <- selectchoices_questions$labelchoice[match(frequ[,1], selectchoices_questions$name)]
                               frequ[,1] <- factor(frequ[,1])
                               frequ[,2] <- factor(frequ[,2])
@@ -328,7 +326,7 @@ kobo_question <- function(question,mainDir='') {
     check <- as.data.frame(names(data))
     names(check)[1] <- "fullname"
     check$id <- row.names(check)
-    selectdf <- join(x=selectdf, y=check, by="fullname",  type="left")
+    selectdf <- plyr::join(x=selectdf, y=check, by="fullname",  type="left")
     selectdf <- selectdf[!is.na(selectdf$id), ]
 
     if (nrow(select_question)==0){
@@ -344,7 +342,7 @@ kobo_question <- function(question,mainDir='') {
       names(listmulti)[1] <- "listname"
       selectdf1 <- as.data.frame(unique(select_question$listname))
       names(selectdf1)[1] <- "listname"
-      listmulti <- join(x=listmulti, y=selectdf1, by="listname", type="left")
+      listmulti <- plyr::join(x=listmulti, y=selectdf1, by="listname", type="left")
 
       listmultichoice <- dico[dico$type=="select_multiple", c("listname","label","name","fullname","disaggregation","labelchoice")]
 
@@ -359,7 +357,7 @@ kobo_question <- function(question,mainDir='') {
 
         ## Check that those variable are in the dataset
         selectdf <- dico[dico$type=="select_multiple" & dico$listname==listloop & dico$qlevel==listfullname , c("fullname","listname","label","name","disaggregation","labelchoice")]
-        selectdf2 <- join(x=selectdf, y=check, by="fullname",  type="left")
+        selectdf2 <- plyr::join(x=selectdf, y=check, by="fullname",  type="left")
         selectdf2 <- selectdf2[!is.na(selectdf2$id), ]
 
         listlabelchoice <- as.character(selectdf2[,"labelchoice"])
@@ -403,7 +401,7 @@ kobo_question <- function(question,mainDir='') {
 
             if (usedweight=="sampling_frame"){
               data.selectmultilist$weight <- data$weight
-              meltdata <- melt(data.selectmultilist,id="weight")
+              meltdata <- reshape2::melt(data.selectmultilist,id="weight")
               meltdata$value <- as.numeric(meltdata$value)
 
               castdata <- as.data.frame(table(meltdata[,c("value","variable","weight")]))
@@ -413,7 +411,7 @@ kobo_question <- function(question,mainDir='') {
             }
             else{
               data.selectmultilist$id <- rownames(data.selectmultilist)
-              meltdata <- melt(data.selectmultilist,id="id")
+              meltdata <- reshape2::melt(data.selectmultilist,id="id")
 
               castdata <- as.data.frame(table(meltdata[,c("value","variable")]))
               castdata$Freq <- as.numeric(as.character(castdata$Freq))
@@ -475,7 +473,7 @@ kobo_question <- function(question,mainDir='') {
     check <- as.data.frame(names(data))
     names(check)[1] <- "fullname"
     check$id <- row.names(check)
-    selectdf <- join(x=select_question, y=check, by="fullname",  type="left")
+    selectdf <- plyr::join(x=select_question, y=check, by="fullname",  type="left")
     selectdf <- selectdf[!is.na(selectdf$id), ]
 
     allvar<-dico[, c("fullname","listname","label","name","disaggregation"), ]
@@ -513,7 +511,7 @@ kobo_question <- function(question,mainDir='') {
         listmulti <- dico[dico$type=="select_multiple_d", c("listname","label","name","fullname","disaggregation")]
         selectdf1 <- as.data.frame(unique(selectdf$listname))
         names(selectdf1)[1] <- "listname"
-        listmulti <- join(x=listmulti, y=selectdf1, by="listname", type="left")
+        listmulti <- plyr::join(x=listmulti, y=selectdf1, by="listname", type="left")
 
         listmultichoice <- dico[dico$type=="select_multiple_d", c("listname","label","name","fullname","disaggregation","labelchoice")]
 
@@ -526,7 +524,7 @@ kobo_question <- function(question,mainDir='') {
 
           ## Check that those variable are in the dataset
           selectdf <- dico[dico$type=="select_multiple" & dico$listname==listloop & dico$qlevel==variablename , c("fullname","listname","label","name","disaggregation","labelchoice")]
-          selectdf2 <- join(x=selectdf, y=check, by="fullname",  type="left")
+          selectdf2 <- plyr::join(x=selectdf, y=check, by="fullname",  type="left")
           selectdf2 <- selectdf2[!is.na(selectdf2$id), ]
 
           # If no answers to this question, passing to the next select_multiple
@@ -588,7 +586,7 @@ kobo_question <- function(question,mainDir='') {
 
                   if(usedweight=="sampling_frame"){
 
-                    meltdata <- melt(data.selectmultilist,id=c("weight","id","facet"))
+                    meltdata <- reshape2::melt(data.selectmultilist,id=c("weight","id","facet"))
 
                     castdata <- as.data.frame(table(meltdata[,c("value","variable","facet","weight")]))
                     castdata$Freq <- as.numeric(as.character(castdata$Freq))
@@ -601,7 +599,7 @@ kobo_question <- function(question,mainDir='') {
                   }
 
                   else{
-                    meltdata <- melt(data.selectmultilist,id=c("id","facet"))
+                    meltdata <- reshape2::melt(data.selectmultilist,id=c("id","facet"))
 
                     castdata <- as.data.frame(table(meltdata[,c("value","variable","facet")]))
                     freqperfacet <- as.data.frame(table(data.selectmultilist[is.na(data.selectmultilist[,1])==F, c("facet")]))
@@ -663,7 +661,7 @@ kobo_question <- function(question,mainDir='') {
     check <- as.data.frame(names(data))
     names(check)[1] <- "fullname"
     check$id <- row.names(check)
-    select_question <- join(x=select_question, y=check, by="fullname",  type="left")
+    select_question <- plyr::join(x=select_question, y=check, by="fullname",  type="left")
     select_question <- select_question[!is.na(select_question$id), ]
 
     if (nrow(select_question)==0){

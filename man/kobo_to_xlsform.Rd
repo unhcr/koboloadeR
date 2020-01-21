@@ -4,9 +4,14 @@
 \alias{kobo_to_xlsform}
 \title{Generate xlsfrom skeleton from a dataframe}
 \usage{
-kobo_to_xlsform(df, n = 100)
+kobo_to_xlsform(df, form = "form.xls", n = 100)
 }
 \arguments{
+\item{df}{dataset to use}
+
+\item{form}{The full filename of the form to be accessed (xls or xlsx file).
+It is assumed that the form is stored in the data folder.}
+
 \item{n}{number of levels for a factor to be considered as a text}
 }
 \description{
@@ -18,9 +23,12 @@ Note that this function only works with \code{data.frames}. The function
 will throw an error for any other object types.
 }
 \examples{
+\dontrun{
 data(iris)
 str(iris)
 kobo_to_xlsform(iris)
+}
+
 }
 \author{
 Edouard Legoupil

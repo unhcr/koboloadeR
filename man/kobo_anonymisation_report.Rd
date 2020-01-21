@@ -2,14 +2,16 @@
 % Please edit documentation in R/kobo_anonymisation_report.R
 \name{kobo_anonymisation_report}
 \alias{kobo_anonymisation_report}
-\title{Generate anonymised dataset}
+\title{Generate a report displaying disclosure risk for Statistical Disclosure Control}
 \usage{
-kobo_anonymisation_report(frame, dico)
+kobo_anonymisation_report(frame, form = "form.xls", app = "console")
 }
 \arguments{
-\item{dico}{Generated from kobo_dico function}
+\item{frame}{kobo or odk dataset to use}
 
-\item{kobo}{or odk dataset to use}
+\item{form}{The full filename of the form to be accessed (xls or xlsx file).}
+
+\item{app}{The place where the function has been executed, the default is the console and the second option is the shiny app}
 }
 \description{
 Automatically produce a disclosure risk measurement report.
@@ -18,10 +20,8 @@ Automatically produce a disclosure risk measurement report.
   https://cran.r-project.org/web/packages/sdcMicro/sdcMicro.pdf
 }
 \examples{
-kobo_anonymise()
-
 \dontrun{
-kobo_anonymisation_report(frame, dico)
+kobo_anonymisation_report(frame, form = "form.xls")
 }
 
 }

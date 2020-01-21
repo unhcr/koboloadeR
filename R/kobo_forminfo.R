@@ -19,8 +19,7 @@
 #'
 #' @author Edouard Legoupil
 #'
-#' @examples kobo_forminfo()
-#'#' @examples
+#' @examples
 #' \dontrun{
 #' kobo_forminfo("15051")
 #' kobo_forminfo("31511", api = "unhcr")
@@ -38,7 +37,8 @@ kobo_forminfo <- function(formid, user = NULL, api = api) {
 
   x <- get_me(user, URL)
   out <- f_csv(x)
-  assign(locfile, out, envir = .GlobalEnv)
+  assign(locfile, out #, envir = .GlobalEnv
+         )
   out
   formauthor <- as.charater(out[, c("owner")])
   formdescr <- out[, c("id_string")]

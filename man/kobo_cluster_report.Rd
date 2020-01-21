@@ -2,14 +2,16 @@
 % Please edit documentation in R/kobo_cluster_report.R
 \name{kobo_cluster_report}
 \alias{kobo_cluster_report}
-\title{Generate anonymised dataset}
+\title{Generate reports with various clusterisation techniques}
 \usage{
-kobo_cluster_report(frame, dico)
+kobo_cluster_report(frame, form = "form.xls", app = "console")
 }
 \arguments{
-\item{dico}{Generated from kobo_dico function}
+\item{frame}{kobo or odk exported dataset to use}
 
-\item{kobo}{or odk dataset to use}
+\item{form}{The full filename of the form to be accessed (has to be an xls file).}
+
+\item{app}{The place where the function has been executed, the default is the console and the second option is the shiny app}
 }
 \description{
 Automatically produce a report exploring potential clusters within survey records.
@@ -17,10 +19,8 @@ Automatically produce a report exploring potential clusters within survey record
  The report is generated from functions released within FactoMiner & FactoMineR
 }
 \examples{
-kobo_anonymise()
-
 \dontrun{
-kobo_cluster_report(frame, dico)
+kobo_cluster_report(frame =  MainDataFrame , form = "form.xls")
 }
 
 }

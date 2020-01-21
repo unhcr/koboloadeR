@@ -9,8 +9,8 @@
 #' (in the form of \code{"username:password"}), or a character vector or list,
 #' length 2, with the first value being the "username", and the second being
 #' the "password".
-#' @param api The URL at which the API can be accessed. Defaults to "kobo",
-#' which loads the KoBo Toolbox API.
+#' @param api The URL at which the API can be accessed. Defaults to "unhcr",
+#' which loads the UNHCR server KoBo Toolbox API.
 #'
 #' @return A data.table containing details about the datasets available,
 #' including items like the "title", "id", and "url" of the datasets.
@@ -18,7 +18,9 @@
 #' @author Ananda Mahto
 #'
 #' @examples
+#' \dontrun{
 #' kobo_datasets()
+#' }
 #'
 #' @export kobo_datasets
 #'

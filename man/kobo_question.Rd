@@ -15,8 +15,6 @@ kobo_question(question, mainDir = "")
 Automatically generates bar charts, histograms, and basic information of the question based on the question type to generate the report.
 }
 \examples{
-kobo_question("s2.beneficiary_code")
-
 \dontrun{
 kobo_question("s2.beneficiary_code")
 }

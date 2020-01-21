@@ -2,7 +2,7 @@
 % Please edit documentation in R/kobo_weight.R
 \name{kobo_weight}
 \alias{kobo_weight}
-\title{Weight the data}
+\title{Weight a datset}
 \usage{
 kobo_weight(mainDir = "")
 }
@@ -13,8 +13,6 @@ kobo_weight(mainDir = "")
 Automatically weight the data according to the information of 0-config.R
 }
 \examples{
-kobo_weight()
-
 \dontrun{
 kobo_weight()
 }

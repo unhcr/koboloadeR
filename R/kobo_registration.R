@@ -55,19 +55,21 @@
 #' @author Edouard Legoupil
 #'
 #' @examples
+#' \dontrun{
 #' kobo_registration()
+#' }
 #'
 
 
 kobo_registration <- function() {
-require(RODBC)
+
 
 ## Db handle for progres Data to SQL server using ODBC##################################
 odbcname <- rstudioapi::askForPassword("Give the odbc db name")
 user <- rstudioapi::askForPassword("Enter the username that can access the database:")
 passw <- rstudioapi::askForPassword("Database password")
 
-dbhandleprogresv3 <- odbcConnect(odbcname, uid = user, pwd = passw)
+dbhandleprogresv3 <- RODBC::odbcConnect(odbcname, uid = user, pwd = passw)
 rm(user, passw)
 
 
@@ -254,13 +256,13 @@ as CountSpecificNeeds--Pivot table alias
 
 
 cat("Executing the summary table creation within proGres")
-final <- sqlQuery(dbhandleprogresv3,paste(query))
+final <- RODBC::sqlQuery(dbhandleprogresv3,paste(query))
 
 cat("fetching the view containing information")
-progres.case <-  sqlFetch(dbhandleprogresv3, "caseprofile")
+progres.case <-  RODBC::sqlFetch(dbhandleprogresv3, "caseprofile")
 
 ## With general needs
-progres.specificneed <- sqlFetch(dbhandleprogresv3, "caseprofileneeds")
+progres.specificneed <- RODBC::sqlFetch(dbhandleprogresv3, "caseprofileneeds")
 
 
 
@@ -276,22 +278,24 @@ prop.table(table(progres.case$nonnuclear, useNA = "ifany"))
 
 
 progres.case$familyprofile <- ""
-progres.case$familyprofile[progres.case$Num_Inds==1] <- "single"
+progres.case$familyprofile[progres.case$Num_Inds == 1] <- "single"
 prop.table(table(progres.case$familyprofile, useNA = "ifany"))
 
-progres.case$familyprofile[progres.case$Num_Inds==2 & progres.case$couple==1] <- "couple.no.kids"
+progres.case$familyprofile[progres.case$Num_Inds == 2 & progres.case$couple == 1] <- "couple.no.kids"
 prop.table(table(progres.case$familyprofile, useNA = "ifany"))
 
-progres.case$familyprofile[progres.case$Num_Inds>1 & progres.case$nonnuclear==1 & progres.case$couple==0 & progres.case$minordependant > 0 ] <- "uniparental.with.kids"
+progres.case$familyprofile[progres.case$Num_Inds > 1 & progres.case$nonnuclear == 1 &
+                             progres.case$couple == 0 & progres.case$minordependant > 0 ] <- "uniparental.with.kids"
 prop.table(table(progres.case$familyprofile, useNA = "ifany"))
 
-progres.case$familyprofile[ progres.case$minordependant > 0 &  progres.case$nonnuclear ==1 & progres.case$couple==1 ] <- "couple.with.kids.no.dependant"
+progres.case$familyprofile[ progres.case$minordependant > 0 &  progres.case$nonnuclear == 1 &
+                              progres.case$couple == 1 ] <- "couple.with.kids.no.dependant"
 prop.table(table(progres.case$familyprofile, useNA = "ifany"))
 
 progres.case$familyprofile[ progres.case$nonnuclear > 1 ] <- "non.nuclear.or.adult.dependant"
 prop.table(table(progres.case$familyprofile, useNA = "ifany"))
 
-progres.case$familyprofile[progres.case$familyprofile==""] <- "non.nuclear.or.adult.dependant"
+progres.case$familyprofile[progres.case$familyprofile == ""] <- "non.nuclear.or.adult.dependant"
 prop.table(table(progres.case$familyprofile, useNA = "ifany"))
 
 
@@ -301,11 +305,11 @@ cat("Recoding ethnicity & religion \n")
 prop.table(table(progres.case$dem_ethn, useNA = "ifany"))
 
 progres.case$dem_ethnCat <- as.character(progres.case$dem_ethn)
-progres.case$dem_ethnCat[progres.case$dem_ethn=="Armenian"] <- "Other/noData"
-progres.case$dem_ethnCat[progres.case$dem_ethn=="Assyrian"] <- "Other/noData"
-progres.case$dem_ethnCat[progres.case$dem_ethn=="Chaldean"] <- "Other/noData"
-progres.case$dem_ethnCat[progres.case$dem_ethn=="Cirassain"] <- "Other/noData"
-progres.case$dem_ethnCat[progres.case$dem_ethn=="Turkmen"] <- "Other/noData"
+progres.case$dem_ethnCat[progres.case$dem_ethn == "Armenian"] <- "Other/noData"
+progres.case$dem_ethnCat[progres.case$dem_ethn == "Assyrian"] <- "Other/noData"
+progres.case$dem_ethnCat[progres.case$dem_ethn == "Chaldean"] <- "Other/noData"
+progres.case$dem_ethnCat[progres.case$dem_ethn == "Cirassain"] <- "Other/noData"
+progres.case$dem_ethnCat[progres.case$dem_ethn == "Turkmen"] <- "Other/noData"
 progres.case$dem_ethnCat <- as.factor(progres.case$dem_ethnCat)
 prop.table(table(progres.case$dem_ethnCat, useNA = "ifany"))
 
@@ -314,12 +318,12 @@ freq.rel$dem_religion <- freq.rel$Var1
 freq.rel$dem_religionCat <- as.character(freq.rel$dem_religion)
 #str(freq.rel)
 freq.rel[freq.rel$Freq < 0.05, c("dem_religionCat")] <-  "Other.or.noData"
-freq.rel$dem_religionCat[freq.rel$dem_religion=="CHR"] <-  "Christian"
-freq.rel$dem_religionCat[freq.rel$dem_religion=="MUS"] <-  "Muslim"
-freq.rel$dem_religionCat[freq.rel$dem_religion=="SIT"] <-  "Shia"
-freq.rel$dem_religionCat[freq.rel$dem_religion=="SUN"] <-  "Sunni"
+freq.rel$dem_religionCat[freq.rel$dem_religion == "CHR"] <-  "Christian"
+freq.rel$dem_religionCat[freq.rel$dem_religion == "MUS"] <-  "Muslim"
+freq.rel$dem_religionCat[freq.rel$dem_religion == "SIT"] <-  "Shia"
+freq.rel$dem_religionCat[freq.rel$dem_religion == "SUN"] <-  "Sunni"
 
-progres.case <- join(x=progres.case, y=freq.rel, by="dem_religion", type="left")
+progres.case <- join(x=progres.case, y=freq.rel, by = "dem_religion", type="left")
 prop.table(table(progres.case$dem_religionCat, useNA = "ifany"))
 
 
@@ -327,7 +331,7 @@ prop.table(table(progres.case$dem_religionCat, useNA = "ifany"))
 cat("Recoding case size \n")
 
 progres.case$Case.size <- as.factor(progres.case$Num_Inds)
-progres.case$Case.size <- recode(progres.case$Case.size,"'1'='Case.size.1';
+progres.case$Case.size <- dplyr::recode(progres.case$Case.size,"'1'='Case.size.1';
                                  '2'='Case.size.2';
                                  '3'='Case.size.3';
                                  '4'='Case.size.4';
@@ -378,7 +382,7 @@ cat("Coding dependency ratio \n")
 progres.case$dependency <-  cut( (progres.case$Child_0_14+progres.case$Eldern_65) / progres.case$Work_15_64, c(0.0001,0.99,1.1,Inf))
 progres.case$dependency <- as.character(progres.case$dependency)
 progres.case$dependency[is.na(progres.case$dependency)] <- "1.no.dependant"
-progres.case$dependency <- as.factor(recode(progres.case$dependency,"'(0.0001,0.99]'='2.few.dependant';
+progres.case$dependency <- as.factor(dplyr::recode(progres.case$dependency,"'(0.0001,0.99]'='2.few.dependant';
                                             '(0.99,1.1]'='3.half.dependant';
                                             '(1.1,Inf]'='4.majority.dependant'"))
 
@@ -391,7 +395,7 @@ cat("Coding Youth dependency ratio \n")
 progres.case$youthdependency <- cut(progres.case$Child_0_14 / progres.case$Work_15_64, c(0.0001,0.99,1.1,Inf))
 progres.case$youthdependency <- as.character(progres.case$youthdependency)
 progres.case$youthdependency[is.na(progres.case$youthdependency)] <- "1.no.dependant"
-progres.case$youthdependency <- as.factor(recode(progres.case$youthdependency,"'(0.0001,0.99]'='2.few.dependant';
+progres.case$youthdependency <- as.factor(dplyr::recode(progres.case$youthdependency,"'(0.0001,0.99]'='2.few.dependant';
                                                  '(0.99,1.1]'='3.half.dependant';
                                                  '(1.1,Inf]'='4.majority.dependant'"))
 
@@ -404,7 +408,7 @@ cat("Coding Eldern dependency ratio \n")
 progres.case$elederndependency <- cut(progres.case$Eldern_65 / progres.case$Work_15_64, c(0.0001,0.99,1.1,Inf))
 progres.case$elederndependency <- as.character(progres.case$elederndependency)
 progres.case$elederndependency[is.na(progres.case$elederndependency)] <- "1.no.dependant"
-progres.case$elederndependency <- as.factor(recode(progres.case$elederndependency,"'(0.0001,0.99]'='2.few.dependant';
+progres.case$elederndependency <- as.factor(dplyr::recode(progres.case$elederndependency,"'(0.0001,0.99]'='2.few.dependant';
                                                    '(0.99,1.1]'='3.half.dependant';
                                                    '(1.1,Inf]'='4.majority.dependant'"))
 
@@ -417,7 +421,7 @@ progres.case$female.ratio <- cut(progres.case$Female / progres.case$Num_Inds, c(
 prop.table(table(progres.case$female.ratio, useNA = "ifany"))
 progres.case$female.ratio <- as.character(progres.case$female.ratio)
 progres.case$female.ratio[is.na(progres.case$female.ratio)] <- "1.no.female"
-progres.case$female.ratio <- as.factor(recode(progres.case$female.ratio,"'(0.0001,0.45]'='2.few.female'; '(0.45,0.55]'='3.half.female';
+progres.case$female.ratio <- as.factor(dplyr::recode(progres.case$female.ratio,"'(0.0001,0.45]'='2.few.female'; '(0.45,0.55]'='3.half.female';
                                               '(0.55,0.99]'='4.most.female'; '(0.99,1.1]'='5.all.female'"))
 
 prop.table(table(progres.case$female.ratio, useNA = "ifany"))
@@ -485,7 +489,7 @@ progres.case$p.child.grp4 <- as.factor(ifelse(progres.case$Child_0_14/progres.ca
 
 
 # Aggregating arrival year##############################
-progres.case$YearArrivalCategory2 <- as.factor(recode(progres.case$YearArrival,"'1899'='1900-1980';
+progres.case$YearArrivalCategory2 <- as.factor(dplyr::recode(progres.case$YearArrival,"'1899'='1900-1980';
                                                       '1928'='1900-1980';
                                                       '1932'='1900-1980';
                                                       '1935'='1900-1980';
@@ -573,7 +577,7 @@ progres.case$YearArrivalCategory2 <- as.factor(recode(progres.case$YearArrival,"
                                                       ''='noData'"))
 
 
-progres.case$YearArrivalCategory <- as.factor(recode(progres.case$YearArrival,"'1899'='2011.or.before.or.unkown';
+progres.case$YearArrivalCategory <- as.factor(dplyr::recode(progres.case$YearArrival,"'1899'='2011.or.before.or.unkown';
                                                      '1900'='2011.or.before.or.unkown';
                                                      '1902'='2011.or.before.or.unkown';
                                                      '1903'='2011.or.before.or.unkown';
@@ -679,7 +683,7 @@ prop.table(table(progres.case$YearArrivalCategory, useNA = "ifany"))
 
 
 # Aggregating country of Origin##############################
-progres.case$CountryOriginCategory <- recode(progres.case$CountryOrigin,"'SYR'='SYR';
+progres.case$CountryOriginCategory <- dplyr::recode(progres.case$CountryOrigin,"'SYR'='SYR';
                                              'IRQ'='IRQ';
                                              'SOM'='HORN';
                                              'AFG'='AFG';
@@ -854,7 +858,7 @@ progres.case <- join(x=progres.case, y=freq2.coo, by="keycool2", type="left")
 # Aggregating season according to month##############################
 progres.case$season <- as.character(progres.case$Montharrival)
 prop.table(table(progres.case$Montharrival, useNA = "ifany"))
-progres.case$season <- recode(progres.case$season," 'Jan'='Q1';  'Feb'='Q1'; 'Mar'='Q1';
+progres.case$season <- dplyr::recode(progres.case$season," 'Jan'='Q1';  'Feb'='Q1'; 'Mar'='Q1';
                               'Apr'='Q2'; 'May'='Q2'; 'Jun'='Q2';
                               'Jul'='Q3';  'Aug'='Q3';  'Sept'='Q3';
                               'Oct'='Q4'; 'Nov'='Q4';  'Dec'='Q4' ")
@@ -864,7 +868,7 @@ progres.case$season <- factor(progres.case$season, levels = c("Q1", "Q2", "Q3", 
 
 progres.case$season1 <- as.character(progres.case$Montharrival)
 #levels(progres.case$Montharrival)
-progres.case$season1 <- recode(progres.case$season1,"'Mar'='Spring'; 'Apr'='Spring';    'May'='Spring';
+progres.case$season1 <- dplyr::recode(progres.case$season1,"'Mar'='Spring'; 'Apr'='Spring';    'May'='Spring';
                                'Jun'='Summer'; 'Jul'='Summer';  'Aug'='Summer';
                                'Sep'='Autumn'; 'Oct'='Autumn'; 'Nov'='Autumn';
                                'Jan'='Winter';  'Feb'='Winter'; 'Dec'='Winter' ")
@@ -872,7 +876,7 @@ progres.case$season1 <- factor(progres.case$season1, levels = c("Spring", "Summe
 prop.table(table(progres.case$season1, useNA = "ifany"))
 
 #  Month of arrival ordinal ##############################
-progres.case$Montharrival <- recode(progres.case$Montharrival,"'January'='Jan';  'February'='Febr';'March'='Mar';
+progres.case$Montharrival <- dplyr::recode(progres.case$Montharrival,"'January'='Jan';  'February'='Febr';'March'='Mar';
                                     'April'='Apr';  'May'='May'; 'June'='Jun'; 'July'='Jul';  'August'='Aug';
                                     'September'='Sept'; 'October'='Oct'; 'November'='Nov'; 'December'='Dec' ")
 progres.case$Montharrival <- factor(progres.case$Montharrival, levels = c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"))
@@ -882,7 +886,7 @@ progres.case$Montharrival <- factor(progres.case$Montharrival, levels = c("Jan",
 progres.case$edu_highest_t <- progres.case$edu_highest
 prop.table(table(progres.case$edu_highest, useNA = "ifany"))
 #table(progres.case$edu_highest, useNA="always")
-progres.case$edu_highest_t <- recode(progres.case$edu_highest_t,"'01' = 'Grade 1'; '02' = 'Grade 2';
+progres.case$edu_highest_t <- dplyr::recode(progres.case$edu_highest_t,"'01' = 'Grade 1'; '02' = 'Grade 2';
                                      '03' = 'Grade 3';  '04' = 'Grade 4';   '05' = 'Grade 5';
                                      '06' = 'Grade 6';   '07' = 'Grade 7';  '08' = 'Grade 8';
                                      '09' = 'Grade 9';    '10' = 'Grade 10';  '11' = 'Grade 11';
@@ -891,7 +895,7 @@ progres.case$edu_highest_t <- recode(progres.case$edu_highest_t,"'01' = 'Grade 1
                                      'TC' = 'Techn Vocational';     'UG' = 'University level'; 'PG' = 'Post university level';
                                      'KG' = 'Kindergarten'")
 
-#progres.case$edu_highest_t <- recode(progres.case$edu_highest_t,"'1 year (or Grade 1)' = 'Grade 1'; '2 year (or Grade 2)' = 'Grade 2';
+#progres.case$edu_highest_t <- dplyr::recode(progres.case$edu_highest_t,"'1 year (or Grade 1)' = 'Grade 1'; '2 year (or Grade 2)' = 'Grade 2';
 #                                     '3 year (or Grade 3)' = 'Grade 3';  '04' = '4 year (or Grade 4)';
 #                                     '5 year (or Grade 5)' = 'Grade 5';
 #                                     '6 year (or Grade 6)' = 'Grade 6';
@@ -914,7 +918,7 @@ progres.case$edu_highest_t <- factor(progres.case$edu_highest_t, levels = c("Unk
                                                                             "Grade 11", "Grade 12", "Grade 13", "Grade 14",
                                                                             "Techn Vocational", "University level", "Post university level"))
 prop.table(table(progres.case$edu_highest_t, useNA = "ifany"))
-progres.case$edu_highestcat <- recode(progres.case$edu_highest_t,"'Unknown'='Unknown';
+progres.case$edu_highestcat <- dplyr::recode(progres.case$edu_highest_t,"'Unknown'='Unknown';
                                       'Informal Education'='Other';
                                       'Techn Vocational'='Other';
                                       'No education'='No education';
@@ -940,7 +944,7 @@ progres.case$edu_highestcat <- as.character(progres.case$edu_highestcat)
 table(progres.case$edu_highestcat, useNA="always")
 
 
-progres.case$edu_highestcat <- recode(progres.case$edu_highest_t,"'Unknown'='Informal.Voca.or.Unknown';
+progres.case$edu_highestcat <- dplyr::recode(progres.case$edu_highest_t,"'Unknown'='Informal.Voca.or.Unknown';
                                       'Informal Education'='Informal.Voca.or.Unknown';
                                       'Techn Vocational'='Informal.Voca.or.Unknown';
                                       'No education'='No education';
@@ -1033,13 +1037,13 @@ prop.table(table(progres.case$occupationcat, useNA = "ifany"))
 #corrtab88.08 <- read.csv("data/corrtab88-08.csv")
 #names(corrtab88.08)
 #isco <- merge(x=ISCO.08, y=corrtab88.08, by.x="ISCO08Code", by.y="ISCO.08.Code")
-#write.csv(isco, "out/isco.csv")
+#utils::write.csv(isco, "out/isco.csv")
 #names(isco)
 
 
 
 # Marital status##############################
-progres.case$dem_marriagecat <- recode(progres.case$dem_marriage,"'WD'='Widowed';
+progres.case$dem_marriagecat <- dplyr::recode(progres.case$dem_marriage,"'WD'='Widowed';
                                                                   'MA'='Married';
                                                                   'CL'='Married';
                                                                   'SN'='Single-Engaged';
@@ -1066,7 +1070,7 @@ progres.case$bir_syria <- as.factor(ifelse(progres.case$dem_birth_country == "SY
 
 
 # Gender PA##############################
-progres.case$dem_sex <- recode(progres.case$dem_sex,"'M'='Male'; 'F'='Female';'U'='Unknown'")
+progres.case$dem_sex <- dplyr::recode(progres.case$dem_sex,"'M'='Male'; 'F'='Female';'U'='Unknown'")
 progres.case$gender.male <- ifelse(progres.case$dem_sex == "Male", 1, 0)
 progres.case$gender.female <- ifelse(progres.case$dem_sex == "Female", 1, 0)
 # Removing record when no gender.. ##############################
@@ -1075,8 +1079,8 @@ progres.case <- progres.case[progres.case$dem_sex %in% c("Male","Female"), ]
 ### Recoding specific needs at the case level###########################################
 
 ### load re-encoding file for specific needs
-library(readxl)
-SpecificNeedsCodesV2 <- read_excel("/home/edouard/R-project/proGres-analysis/data/SpecificNeedsCodesV2.xlsx",
+
+SpecificNeedsCodesV2 <- readxl::read_excel("/home/edouard/R-project/proGres-analysis/data/SpecificNeedsCodesV2.xlsx",
                                    sheet = "Revised")
 
 
@@ -1086,7 +1090,7 @@ progres.specificneed.case <- merge(x = progres.specificneed, y = SpecificNeedsCo
 #                                   variable.name = "VulnerabilityText",
 #                                   value.name = "value", na.rm = TRUE)
 
-progres.specificneed.case2 <- dcast(progres.specificneed.case, CaseNo ~ newcat)
+progres.specificneed.case2 <- reshape2::dcast(progres.specificneed.case, CaseNo ~ newcat)
 #names(progres.specificneed.case2)
 #str(progres.specificneed.case2)
 rm(progres.specificneed)
@@ -1207,6 +1211,6 @@ prop.table(table(progres.case.sp$Victim.of.Violence, useNA = "ifany"))
 prop.table(table(progres.case.sp$Woman.at.Risk, useNA = "ifany"))
 
 
-write.csv(progres.case.sp, file = "data/progrescase-1.csv", na = "", row.names = FALSE)
+utils::write.csv(progres.case.sp, file = "data/progrescase-1.csv", na = "", row.names = FALSE)
 
 }

@@ -106,6 +106,11 @@ kobo_prepare_form <- function(form = "form.xls") {
       namesOfSur <- c(namesOfSur,"hint")
     }
 
+    if ( "repeat_count" %in% colnames(survey)) {
+      cat(" Good: You have a column `repeat_count` in your survey worksheet.\n");
+      namesOfSur <- c(namesOfSur, "repeat_count")
+    }
+
     if ("required" %in% colnames(survey)) {
       cat(" Good: You have a column `required` in your survey worksheet.\n");
       namesOfSur <- c(namesOfSur,"required")

@@ -102,7 +102,7 @@
       <h1>Getting data from server</h1>
                         <h4 class="author">Edouard Legoupil</h4>
             
-            <h4 class="date">2020-01-12</h4>
+            <h4 class="date">2020-01-28</h4>
       
       
       <div class="hidden name"><code>Getting_data.Rmd</code></div>
@@ -113,6 +113,8 @@
     
 <p>The initial step to start your project is to get your data.</p>
 <p>The package is using only <code>csv</code> files. this is to avoid the limitations linked the number of columns that some version of excel can handle.</p>
+<p>One important point to note is related to the limitation in terms of variable names in R: A syntactically valid name consists of letters, numbers and the dot or underline characters and <strong>starts with a letter or the dot not followed by a number</strong>. Names such as “.2way” or “2.way” are not valid, and neither are the reserved words.</p>
+<p>In case your original variable names within your xlsform were starting with a number, you will <strong>need to rename manually</strong> all variable names both in your xlsform and in the data you downloaded.</p>
 <div id="case-1-you-have-only-the-data-but-not-the-original-xslform" class="section level2">
 <h2 class="hasAnchor">
 <a href="#case-1-you-have-only-the-data-but-not-the-original-xslform" class="anchor"></a>Case 1: You have only the data but not the original xslform</h2>

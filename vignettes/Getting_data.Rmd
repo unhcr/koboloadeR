@@ -16,6 +16,10 @@ The initial step to start your project is to get your data.
 
 The package is using only `csv` files. this is to avoid the limitations linked the number of columns that some version of excel can handle.
 
+One important point to note is related to the limitation in terms of variable names in R: A syntactically valid name consists of letters, numbers and the dot or underline characters and __starts with a letter or the dot not followed by a number__. Names such as ".2way" or "2.way" are not valid, and neither are the reserved words.
+
+In case your original variable names within your xlsform were starting with a number, you will __need to rename manually__ all variable names both in your xlsform and in the data you downloaded.
+
 
 
 ## Case 1: You have only the data but not the original xslform

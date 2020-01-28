@@ -3,8 +3,8 @@
 
 #install.packages("pkgdown")
 
-  library("pkgdown")
-  pkgdown::build_site()
+library("pkgdown")
+pkgdown::build_site()
 
 
 ## a few other exploration of the package

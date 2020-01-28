@@ -73,9 +73,9 @@ If JAVA is not correctly set, you will see an installatin error at a latter stag
 
 Note in some case, you may need to reboot your computer to ensure that this environement variable is properly accounted for.
 
-  2. [Install R](https://cran.rstudio.com/): follow instruction from the installer.
+  2. [Install R](https://cran.r-project.org/): follow instruction from the installer.
 
-  3. __Only for windows user__ [Install RTools](https://cran.r-project.org/bin/windows/Rtools/): This executable is needed to install the package from github. Follow instruction from the installer.
+  3. __Only for windows user__ [Install RTools](https://cran.r-project.org/bin/windows/Rtools): This executable is needed to install the package from github. Follow instruction from the installer.
 
   4. [Install R Studio](https://www.rstudio.com/products/rstudio/download/#download) : follow instruction from the installer
 
@@ -95,7 +95,7 @@ install.packages("devtools")
 
 ```{r}
 library(devtools)
-install_github("unhcr/koboloadeR", ref = "gh-pages") 
+install_github("unhcr/koboloadeR") 
 ```  
 
   *  You are all set! You can know use koboloadeR. If you have a problem consult the common troubleshooting part at the end of this page.

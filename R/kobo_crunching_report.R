@@ -187,6 +187,8 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
       cat("library(rmarkdown)", file = chapter.name , sep = "\n", append = TRUE)
       cat("library(ggpubr)", file = chapter.name , sep = "\n", append = TRUE)
       cat("library(grid)", file = chapter.name , sep = "\n", append = TRUE)
+      cat("library(jtools)", file = chapter.name , sep = "\n", append = TRUE)
+      cat("library(moments)", file = chapter.name , sep = "\n", append = TRUE)
       cat("library(koboloadeR)", file = chapter.name , sep = "\n", append = TRUE)
       cat("options(scipen = 999) # turn-off scientific notation like 1e+48", file = chapter.name , sep = "\n", append = TRUE)
 
@@ -308,6 +310,20 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
       cat(paste("  *  __Classify__: order the level of sensitivity for the information;   \n"),file = chapter.name , sep = "\n", append = TRUE)
 
 
+
+      cat(paste("# Dataset description\n"),file = chapter.name , sep = "\n", append = TRUE)
+      cat(paste("__Title of the study:__ ",configInfo[configInfo$name == "titl", c("value")],", ,\n\n"),file = chapter.name , sep = "\n", append = TRUE)
+      cat(paste("__Abstract:__ ",configInfo[configInfo$name == "abstract", c("value")],"\n"),file = chapter.name , sep = "\n\n", append = TRUE)
+      cat(paste("__Rights & Disclaimer:__ ",configInfo[configInfo$name == "disclaimer", c("value")],"\n\n"),file = chapter.name , sep = "\n", append = TRUE)
+      cat(paste("__Country where the study took place:__ ",configInfo[configInfo$name == "Country", c("value")],"\n\n"),file = chapter.name , sep = "\n", append = TRUE)
+      cat(paste("__Geographic Coverage for the study within the country:__ ",configInfo[configInfo$name == "geogCover", c("value")],"\n\n"),file = chapter.name , sep = "\n", append = TRUE)
+      cat(paste("__Kind of Data:__ ",configInfo[configInfo$name == "dataKind", c("value")],"\n"),file = chapter.name , sep = "\n\n", append = TRUE)
+      cat(paste("__Entity being analyzed in the study or in the variable:__ ",configInfo[configInfo$name == "AnalysisUnit", c("value")],"\n\n"),file = chapter.name , sep = "\n", append = TRUE)
+      cat(paste("__Procedure, technique, or mode of inquiry used to attain the data:__ ",configInfo[configInfo$name == "ModeOfCollection", c("value")],"\n\n"),file = chapter.name , sep = "\n", append = TRUE)
+      cat(paste("__Study Universe: (group of persons or other elements that are the object of research and to which any analytic results refer:__ ",configInfo[configInfo$name == "universe", c("value")],"\n\n"),file = chapter.name , sep = "\n", append = TRUE)
+
+
+
       cat(paste("# Compilation of questions results"),file = chapter.name , sep = "\n", append = TRUE)
       if (app == "shiny") {
         progress$set(message = "Compilation of questions results in progress...")
@@ -315,7 +331,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
       }
       ## Getting chapter questions #######
       #chapterquestions <- dico[which(dico$chapter== chaptersname ), c("chapter", "name", "label", "type", "qrepeatlabel", "fullname","listname") ]
-      chapterquestions <- dico[which(dico$chapter == chaptersname & dico$type %in% c("select_one","integer","select_multiple_d", "text","date", "numeric")),
+      chapterquestions <- dico[which(dico$chapter == chaptersname & dico$type %in% c("select_one","integer","select_multiple_d", "text","date", "numeric", "calculate")),
                                c("chapter", "name", "label", "labelReport","hintReport", "type", "qrepeatlabel", "fullname","listname","variable") ]
       #levels(as.factor(as.character(dico[which(!(is.na(dico$chapter)) & dico$formpart=="questions"), c("type") ])))
       ##Loop.questions####################################################################################################
@@ -350,7 +366,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
         ## Now create para based on question type-------
 
 
-        cat(paste(questions.hint,"\n\n",sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
+        cat(paste(if(is.na(questions.hint)){paste0("")} else{paste0(questions.hint)},"\n\n",sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
 
 
         ###select one###################################################################################################
@@ -363,7 +379,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
           frequ <- as.data.frame(table( get(paste0(questions.frame))[[questions.name]]))
 
           figheight <- as.integer(nrow(frequ))
-          if (figheight == 0) { figheight <- 1} else {figheight <- figheight/1.2}
+          if (figheight == 0) { figheight <- "3"} else {figheight <- figheight/1.2}
 
           ## Check that there are responses to be displayed ####
           if (nrow(frequ) %in% c("0","1") ) {
@@ -377,10 +393,10 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
             #    cat("No responses recorded for this question...\n")
           }      else {
 
-          cat(paste("### Tabulation" ,sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
+       #   cat(paste("### Tabulation" ,sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
           ## Open chunk
           cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight,", size=\"small\"}\n"), file = chapter.name, append = TRUE)
-          cat(paste("### Tabulation" ,sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
+        #  cat(paste("### Tabulation" ,sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
           cat(paste0("##Compute contengency table"),file = chapter.name ,sep = "\n", append = TRUE)
           cat(paste0("frequ <- as.data.frame(table(",questions.variable,"))"),file = chapter.name ,sep = "\n", append = TRUE)
           #cat(paste0("if (nrow(frequ)==0){ cat(\"No response for this question\") } else{"),file = chapter.name ,sep = "\n", append = TRUE)
@@ -496,9 +512,9 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
                 ## Case #1 - categoric*numeric -> box plot
                 if (disag.type == "integer") {
                   # Get number levels to set up chart height
-                  figheight <- nlevels( get(paste0(questions.frame))[[disag.name]])
-                  if ( figheight == 0) { figheight <- 1}
-                  else if ( figheight == 1) {figheight <- "2"}
+                  figheight <- nlevels( as.factor(get(paste0(questions.frame))[[disag.name]]))
+                  if ( figheight == 0) { figheight <- "3"}
+                  else if ( figheight == 1) {figheight <- "3"}
                   else if ( figheight == 2) {figheight <- "3"}
                   else if ( figheight == 3) {figheight <- "3"}
                   else if ( figheight == 4) {figheight <- "4"}
@@ -571,9 +587,9 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
                 } else if (disag.type == "select_one") {
 
                   # Get number levels to set up chart height
-                  figheight <- nlevels( get(paste0(questions.frame))[[disag.name]])
-                  if ( figheight == 0) { figheight <- 1}
-                  else if ( figheight == 1) {figheight <- "2"}
+                  figheight <- nlevels(as.factor( get(paste0(questions.frame))[[disag.name]]))
+                  if ( figheight == 0) { figheight <- "3"}
+                  else if ( figheight == 1) {figheight <- "3"}
                   else if ( figheight == 2) {figheight <- "3"}
                   else if ( figheight == 3) {figheight <- "3"}
                   else if ( figheight == 4) {figheight <- "4"}
@@ -780,14 +796,14 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
 
 
           ##Decimal####################################################################################################
-        } else if (questions.type == "decimal" | questions.type == "integer" | questions.type == "numeric") {
+        } else if (questions.type == "decimal" | questions.type == "integer" | questions.type == "numeric" | questions.type == "calculate") {
           cat(paste("Numeric question  " ,"\n\n",sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
 
           ## Check the lenght of the table to see if we can display it or not...
           frequ <- as.data.frame(table( get(paste0(questions.frame))[[questions.name]]))
 
           ####Decimal.tabulation########################################################################
-          cat(paste("### Tabulation\n" ,sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
+        #  cat(paste("### Tabulation\n" ,sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
 
           ## Open chunk
           cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=4, size=\"small\"}\n", sep = '\n'), file = chapter.name, append = TRUE)
@@ -811,38 +827,71 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
             cat(paste0("cat(\"No responses recorded for this question...\")"),file = chapter.name , sep = "\n", append = TRUE)
             cat("\n")
           } else {
-            cat(paste0("average <- as.data.frame(svymean(~ ",questions.name,", design = ",questions.frame,".survey, na.rm = TRUE))"),file = chapter.name ,sep = "\n", append = TRUE)
+
+            cat(paste0("average <- as.data.frame(survey::svymean(~ ",questions.name,", design = ",questions.frame,".survey, na.rm = TRUE))"),file = chapter.name ,sep = "\n", append = TRUE)
             cat(paste0("cat(paste0(\"Based on the sample design, the average weighted mean response for this question is \", as.numeric(round(average$mean, digits = 2))))"),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("#  regular histogram"),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +"),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("geom_bar(fill = \"#2a87c8\",colour = \"white\", stat = \"identity\", width = .8) +"),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("labs(x = \"\", y = \"Count\") +"),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("ggtitle(\"",questions.label,"\",subtitle = \"Before data capping treatement.\") +"),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("kobo_unhcr_style_histo()"),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = chapter.name ,sep = "\n", append = TRUE)
+          #  cat(paste0("sd <- as.data.frame(jtools::svysd(~ ",questions.name,", design = ",questions.frame,".survey, na.rm = TRUE))"),file = chapter.name ,sep = "\n", append = TRUE)
+           # cat(paste0("cat(paste0(\"Based on the sample design, the average weighted standard deviation for this question is \", as.numeric(round(sd, digits = 2))))"),file = chapter.name ,sep = "\n", append = TRUE)
 
 
             ### Detect outliers and adjust bien numbers #####
             ### To -- check there's outlier or not
             ## Double check that we have a continuous value -- not a factor --
-            cat(paste0("data.outlier <- ",questions.frame,"$",questions.name),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("data.nooutlier <- as.data.frame(",questions.frame,"$",questions.name,")"),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)"),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))"),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("H  <- 1.5 * IQR(data.outlier, na.rm = T)"),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]"),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]"),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("names(data.nooutlier)[1] <- \"variable\""),file = chapter.name ,sep = "\n", append = TRUE)
+
+            data.outlier <- get(paste0(questions.frame))[[questions.name]]
+            data.nooutlier <- as.data.frame(get(paste0(questions.frame))[[questions.name]])
+            qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+            caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+            H  <- stats::IQR(data.outlier, na.rm = T)
 
 
-            ### Now graphs with treated variable #####
-            cat(paste0("plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +"),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("geom_histogram(color = \"white\",fill = \"#2a87c8\", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +"),file = chapter.name ,sep = "\n", append = TRUE)
+
+            cat(paste0("#  regular histogram"),file = chapter.name ,sep = "\n", append = TRUE)
+            cat(paste0("plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +"),file = chapter.name ,sep = "\n", append = TRUE)
+            cat(paste0("geom_bar(fill = \"#2a87c8\",colour = \"white\", stat = \"identity\", width = .8) +"),file = chapter.name ,sep = "\n", append = TRUE)
             cat(paste0("labs(x = \"\", y = \"Count\") +"),file = chapter.name ,sep = "\n", append = TRUE)
             cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("subtitle = \"After data capping treatement.\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+            cat(paste0("subtitle = \"Before data capping treatement:\n\""),file = chapter.name ,sep = "\n", append = TRUE)
+            #cat(paste0("\"Mean: \",round(mean(frequ$Var1),2) ,\n\""),file = chapter.name ,sep = "\n", append = TRUE)
+           # cat(paste0("\"Standard Deviation: \",round(sd(frequ$Var1),2) ,\n\""),file = chapter.name ,sep = "\n", append = TRUE)
+            #cat(paste0("\"Coefficient of Variation: \",round(cv(frequ$Var1),2) ,\n\""),file = chapter.name ,sep = "\n", append = TRUE)
+            #cat(paste0("\"Skewness: \",round(skewness(frequ$Var1),2) ,\n\""),file = chapter.name ,sep = "\n", append = TRUE)
+            #cat(paste0("\"and Kurtosis: \",round(kurtosis(frequ$Var1),2) ,\n\""), file = chapter.name ,sep = "\n", append = TRUE)
+            cat(paste0(") +"),file = chapter.name ,sep = "\n", append = TRUE)
             cat(paste0("kobo_unhcr_style_histo()"),file = chapter.name ,sep = "\n", append = TRUE)
             cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = chapter.name ,sep = "\n", append = TRUE)
+            cat(paste0("\n\n"),file = chapter.name ,sep = "\n", append = TRUE)
+
+            if(H >= 1.349 ) {
+                cat(paste0("cat(\"No outliers detectected...\")"),file = chapter.name , sep = "\n", append = TRUE)
+                cat("\n")
+              } else {
+              cat(paste0("data.outlier <- ",questions.frame,"$",questions.name),file = chapter.name ,sep = "\n", append = TRUE)
+              cat(paste0("data.nooutlier <- as.data.frame(",questions.frame,"$",questions.name,")"),file = chapter.name ,sep = "\n", append = TRUE)
+              cat(paste0("qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)"),file = chapter.name ,sep = "\n", append = TRUE)
+              cat(paste0("caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))"),file = chapter.name ,sep = "\n", append = TRUE)
+              cat(paste0("H  <- 1.5 * stats::IQR(data.outlier, na.rm = T)"),file = chapter.name ,sep = "\n", append = TRUE)
+
+              cat(paste0("data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]"),file = chapter.name ,sep = "\n", append = TRUE)
+              cat(paste0("data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]"),file = chapter.name ,sep = "\n", append = TRUE)
+              cat(paste0("names(data.nooutlier)[1] <- \"variable\""),file = chapter.name ,sep = "\n", append = TRUE)
+
+
+              ### Now graphs with treated variable #####
+              cat(paste0("plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +"),file = chapter.name ,sep = "\n", append = TRUE)
+              cat(paste0("geom_histogram(color = \"white\",fill = \"#2a87c8\", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +"),file = chapter.name ,sep = "\n", append = TRUE)
+              cat(paste0("labs(x = \"\", y = \"Count\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+              cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep = "\n", append = TRUE)
+              cat(paste0("subtitle = \"After data capping treatement:\n\""),file = chapter.name ,sep = "\n", append = TRUE)
+              #cat(paste0("\"Mean: \",round(mean(data.nooutlier$variable),2) ,\n\""),file = chapter.name ,sep = "\n", append = TRUE)
+              #cat(paste0("\"Standard Deviation: \",round(sd(data.nooutlier$variable),2) ,\n\""),file = chapter.name ,sep = "\n", append = TRUE)
+              #cat(paste0("\"Coefficient of Variation: \",round(cv(data.nooutlier$variable),2) ,\n\""),file = chapter.name ,sep = "\n", append = TRUE)
+              #cat(paste0("\"Skewness: \",round(skewness(data.nooutlier$variable),2) ,\n\""),file = chapter.name ,sep = "\n", append = TRUE)
+              #cat(paste0("\"and Kurtosis: \",round(kurtosis(data.nooutlier$variable),2) ,\n\""), file = chapter.name ,sep = "\n", append = TRUE)
+              cat(paste0(") +"),file = chapter.name ,sep = "\n", append = TRUE)
+              cat(paste0("kobo_unhcr_style_histo()"),file = chapter.name ,sep = "\n", append = TRUE)
+              cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = chapter.name ,sep = "\n", append = TRUE)
+            }
           }
           ## Close chunk
           cat(paste0("\n```\n", sep = '\n'), file = chapter.name, append = TRUE)
@@ -885,9 +934,9 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
 
 
                   # Get number levels to set up chart height
-                  figheight <- nlevels( get(paste0(questions.frame))[[disag.name]])
-                  if ( figheight == 0) { figheight <- 1}
-                  else if ( figheight == 1) {figheight <- "2"}
+                  figheight <- nlevels(as.factor( get(paste0(questions.frame))[[disag.name]]))
+                  if ( figheight == 0) { figheight <- "3"}
+                  else if ( figheight == 1) {figheight <- "3"}
                   else if ( figheight == 2) {figheight <- "3"}
                   else if ( figheight == 3) {figheight <- "3"}
                   else if ( figheight == 4) {figheight <- "4"}
@@ -1011,7 +1060,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
 
           ###select.multi.tab######################################################################
 
-          cat(paste("### Tabulation" ,sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
+        #  cat(paste("### Tabulation" ,sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
 
           ##Compute contengency table
           selectmultilist1 <- as.data.frame(dico[dico$type == "select_multiple" & dico$listname == as.character(questions.listname) &
@@ -1054,7 +1103,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
 
               ## Open chunk
               cat(paste0("\n```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=8, size=\"small\"}\n", sep = '\n'), file = chapter.name, append = TRUE)
-              cat(paste0("### Tabulation"),file = chapter.name ,sep = "\n", append = TRUE)
+      #         cat(paste0("### Tabulation"),file = chapter.name ,sep = "\n", append = TRUE)
               cat(paste0("##Compute contengency table"),file = chapter.name ,sep = "\n", append = TRUE)
               cat(paste0("selectmultilist1 <- as.data.frame(dico[dico$type == \"select_multiple\" & dico$listname==\"",questions.listname, "\" & grepl(\"", questions.shortname,"\",dico$fullname)==TRUE , c(\"fullname\")])"),file = chapter.name ,sep = "\n", append = TRUE)
 

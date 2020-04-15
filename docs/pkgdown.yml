@@ -1,5 +1,5 @@
 pandoc: 2.3.1
-pkgdown: 1.4.1
+pkgdown: 1.5.0
 pkgdown_sha: ~
 articles:
   Anonymisation: Anonymisation.html
@@ -12,6 +12,7 @@ articles:
   Sampling: Sampling.html
   Troubleshooting: Troubleshooting.html
   xlsform: xlsform.html
+last_built: 2020-04-14T20:39Z
 urls:
   reference: https://unhcr.github.io/koboloadeR/docs//reference
   article: https://unhcr.github.io/koboloadeR/docs//articles

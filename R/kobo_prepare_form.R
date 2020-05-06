@@ -98,41 +98,61 @@ kobo_prepare_form <- function(form = "form.xls") {
     names(survey)[tolower(names(survey)) == "hint::english (en)"] <- "hint"
 
     if (sum(namesOfSur %in% colnames(survey)) != length(namesOfSur)) {
-      return(structure('Please make sure the survey sheet have the following columns "type", "name" , "label" or "label::English" , "hint" or "hint::English"', class = "try-error"))
+      return(structure('Please make sure the survey sheet haas at minima the following columns: "type", "name" , "label" or "label::English" , "hint" or "hint::English"', class = "try-error"))
     }
 
     if ("hint" %in% colnames(survey)) {
       cat(" Good: You have a column `hint` in your survey worksheet.\n");
-      namesOfSur <- c(namesOfSur,"hint")
+    } else {
+      cat(" No column `hint` in your survey worksheet. Creating a dummy one for the moment ...\n");
+      survey$hint <- ""
     }
-
-    if ( "repeat_count" %in% colnames(survey)) {
-      cat(" Good: You have a column `repeat_count` in your survey worksheet.\n");
-      namesOfSur <- c(namesOfSur, "repeat_count")
-    }
+    namesOfSur <- c(namesOfSur,"hint")
 
     if ("required" %in% colnames(survey)) {
       cat(" Good: You have a column `required` in your survey worksheet.\n");
-      namesOfSur <- c(namesOfSur,"required")
+    } else {
+      cat(" No column `chapter` in your survey worksheet. Creating a dummy one for the moment ...\n");
+      survey$required <- ""
     }
+    namesOfSur <- c(namesOfSur,"required")
+
     if ("relevant" %in% colnames(survey)) {
       cat(" Good: You have a column `relevant` in your survey worksheet.\n");
-      namesOfSur <- c(namesOfSur,"relevant")
+    } else {
+      cat(" No column `relevant` in your survey worksheet. Creating a dummy one for the moment ...\n");
+      survey$relevant <- ""
     }
+    namesOfSur <- c(namesOfSur,"relevant")
+
     if ("constraint" %in% colnames(survey)) {
       cat(" Good: You have a column `constraint` in your survey worksheet.\n");
-      namesOfSur <- c(namesOfSur,"constraint")
+    } else {
+      cat(" No column `constraint` in your survey worksheet. Creating a dummy one for the moment ...\n");
+      survey$constraint <- ""
     }
+    namesOfSur <- c(namesOfSur,"constraint")
+
     if ("calculation" %in% colnames(survey)) {
       cat(" Good: You have a column `calculation` in your survey worksheet.\n");
-      namesOfSur <- c(namesOfSur,"calculation")
+    } else {
+      cat(" No column `calculation` in your survey worksheet. Creating a dummy one for the moment ...\n");
+      survey$calculation <- ""
     }
-    if ("repeat_count" %in% colnames(survey)) {
-      cat(" Good: You have a column `repeat_count` in your survey worksheet.\n");
-      namesOfSur <- c(namesOfSur,"repeat_count")
-    }
+    namesOfSur <- c(namesOfSur,"calculation")
 
-    cat("Checking now for additional information within your xlsform. Note that you can insert them in the xls and re-run the function! \n \n ")
+
+
+    if ( "repeat_count" %in% colnames(survey)) {
+        cat(" Good: You have a column `repeat_count` in your survey worksheet.\n");
+      } else {
+        cat(" No column `repeat_count` in your survey worksheet. Creating a dummy one for the moment ...\n");
+        survey$repeat_count <- ""
+      }
+    namesOfSur <- c(namesOfSur, "repeat_count")
+
+    cat("Checking now for additional information within your xlsform.
+        Note that you can insert them in the xls and re-run the function! \n \n ")
     ### Add column if not present
     if ("labelReport" %in% colnames(survey)) {
       cat(" Good: You have a column `labelReport` in your survey worksheet.\n");
@@ -245,12 +265,14 @@ kobo_prepare_form <- function(form = "form.xls") {
       cat(" No column `structuralequation.risk` in your survey worksheet. Creating a dummy one for the moment...\n");
       survey$structuralequation.risk <- ""
     }
+
     if ("structuralequation.coping" %in% colnames(survey)) {
       cat(" Good: You have a column `structuralequation.coping` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
     } else {
       cat(" No column `structuralequation.coping` in your survey worksheet. Creating a dummy one for the moment...\n");
       survey$structuralequation.coping <- ""
     }
+
     if ("structuralequation.resilience" %in% colnames(survey)) {
       cat(" Good: You have a column `structuralequation.resilience` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
     } else {
@@ -407,7 +429,8 @@ kobo_prepare_form <- function(form = "form.xls") {
     namesOfCho <- c("list_name", "name", "label")
 
     if (sum(namesOfCho %in% colnames(choices)) != length(namesOfCho)) {
-      return(structure('Please make sure the choices sheet have the following columns "list_name", "name" , "label"', class = "try-error"))
+      return(structure('Please make sure the choices sheet has at minima the following columns:
+                        "list_name", "name" , "label"', class = "try-error"))
     }
 
     ### add column if not present

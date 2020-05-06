@@ -185,6 +185,16 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
         cat(paste("Cleaning",dbr,"file in progress...\n"))
         dataFrame <- kobo_clean(dataFrame)
 
+#
+#         if (app == "shiny") {
+#           progress$set(message = paste("Renanming id to links tables ",dbr,"file in progress..."))
+#           updateProgress()
+#         }
+#         cat(paste("Renanming id to links tables ",dbr,"file in progress...\n"))
+#         names(dataFrame)[ X_submission__uuid]
+#         <- kobo_clean(dataFrame)
+
+
 
         if (app == "shiny") {
           progress$set(message = paste("Labeling",dbr,"file in progress..."))

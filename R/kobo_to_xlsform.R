@@ -30,12 +30,14 @@
 
 kobo_to_xlsform <- function(df,form = "form.xls",
                             n=100) {
-
+  #is_labelled <- function(x) inherits(x, c("labelled", "haven_labelled"))
   stopifnot(is.data.frame(df))
-  # df <- data.df
+  # df <- households_all
   ## str(df)
   # n = 10
-  df[sapply(df, is.labelled)] <- lapply(df[sapply(df, is.labelled)], as.factor)
+  #df[sapply(df, is.labelled)] <- lapply(df[sapply(df, is.labelled)], as.factor)
+  #df[sapply(df, sjlabelled::is.labelled)] <- lapply(df[sapply(df, sjlabelled::is.labelled)], as.factor)
+
   ## build survey sheet
   survey <- data.frame( type = rep(as.character(NA), ncol(df)),
                         name = names(df),

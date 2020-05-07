@@ -341,7 +341,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
       }
       for (j in 1:nrow(chapterquestions))
       {
-        # j <-1
+        # j <-7
         ## Now getting level for each questions
         if (app == "shiny") {
           progress$set(message = paste("Render question: ",as.character(chapterquestions[ j , c("labelReport")])))
@@ -393,17 +393,17 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
             #    cat("No responses recorded for this question...\n")
           }      else {
 
-       #   cat(paste("### Tabulation" ,sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
-          ## Open chunk
-          cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight,", size=\"small\"}\n"), file = chapter.name, append = TRUE)
-        #  cat(paste("### Tabulation" ,sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
-          cat(paste0("##Compute contengency table"),file = chapter.name ,sep = "\n", append = TRUE)
-          cat(paste0("frequ <- as.data.frame(table(",questions.variable,"))"),file = chapter.name ,sep = "\n", append = TRUE)
-          #cat(paste0("if (nrow(frequ)==0){ cat(\"No response for this question\") } else{"),file = chapter.name ,sep = "\n", append = TRUE)
+            #cat(paste("### Tabulation" ,sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
+            ## Open chunk
+            cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight,", size=\"small\"}\n"), file = chapter.name, append = TRUE)
+            #  cat(paste("### Tabulation" ,sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
+            cat(paste0("##Compute contengency table"),file = chapter.name ,sep = "\n", append = TRUE)
+            cat(paste0("frequ <- as.data.frame(table(",questions.variable,"))"),file = chapter.name ,sep = "\n", append = TRUE)
+            #cat(paste0("if (nrow(frequ)==0){ cat(\"No response for this question\") } else{"),file = chapter.name ,sep = "\n", append = TRUE)
 
 
-         #   cat(paste0("## display table"),file = chapter.name ,sep = "\n", append = TRUE)
-         #   cat(paste0("## Reorder factor"),file = chapter.name ,sep = "\n", append = TRUE)
+            # cat(paste0("## display table"),file = chapter.name ,sep = "\n", append = TRUE)
+            # cat(paste0("## Reorder factor"),file = chapter.name ,sep = "\n", append = TRUE)
 
 
             ## Check variable type to order the factor ####
@@ -452,7 +452,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
             cat(paste0("\n"),file = chapter.name ,sep = "\n", append = TRUE)
             cat(paste0("## and now the graph"),file = chapter.name ,sep = "\n", append = TRUE)
             cat(paste0("plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +"),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("geom_bar(fill = \"#2a87c8\", colour = \"#2a87c8\", stat = \"identity\", width=.8) +"),file = chapter.name ,sep = "\n", append = TRUE)
+            cat(paste0("geom_bar(fill = \"#2a87c8\", colour = \"#2a87c8\", stat = \"identity\", width = .8) +"),file = chapter.name ,sep = "\n", append = TRUE)
             cat(paste0("guides(fill = FALSE) +"),file = chapter.name ,sep = "\n", append = TRUE)
             cat(paste0("geom_label_repel(aes(y = mean, label = freqper2), fill = \"#2a87c8\", color = 'white') +"),file = chapter.name ,sep = "\n", append = TRUE)
             cat(paste0("ylab(\"Frequency\") +"),file = chapter.name ,sep = "\n", append = TRUE)
@@ -464,204 +464,202 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
             cat(paste0("kobo_unhcr_style_bar()"),file = chapter.name ,sep = "\n", append = TRUE)
 
             cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = chapter.name ,sep = "\n", append = TRUE)
-          }
+            #cat(paste0("}"),file = chapter.name ,sep = "\n", append = TRUE)
+            ## Close chunk
+            cat(paste0("\n```\n", sep = '\n'), file = chapter.name, append = TRUE)
+            cat(paste0("\n\n\n\n", sep = '\n'), file = chapter.name, append = TRUE)
 
 
-          #cat(paste0("}"),file = chapter.name ,sep = "\n", append = TRUE)
-          ## Close chunk
-          cat(paste0("\n```\n", sep = '\n'), file = chapter.name, append = TRUE)
-          cat(paste0("\n\n\n\n", sep = '\n'), file = chapter.name, append = TRUE)
+            ##selectone.crosstabulation #######################################################################
+            if (nrow(disaggregation) == 0) {
+              cat("No disaggregation requested for this question...\n",file = chapter.name , sep = "\n", append = TRUE)
+              cat("No disaggregation requested for this question...\n")
+              cat("\n", file = chapter.name, append = TRUE)
+            } else if (nrow(frequ) %in% c("0","1")) {
+              # cat("No responses recorded for this question. No disaggregation...\n",file = chapter.name , sep = "\n", append = TRUE)
+              cat("No responses or only one modality recorded for this question. No disaggregation...\n")
+              cat("\n", file = chapter.name, append = TRUE)
+            } else {
 
-          ##selectone.crosstabulation #######################################################################
-          if (nrow(disaggregation) == 0) {
-            cat("No disaggregation requested for this question...\n",file = chapter.name , sep = "\n", append = TRUE)
-            cat("No disaggregation requested for this question...\n")
-            cat("\n", file = chapter.name, append = TRUE)
-          } else if (nrow(frequ) %in% c("0","1")) {
-            # cat("No responses recorded for this question. No disaggregation...\n",file = chapter.name , sep = "\n", append = TRUE)
-            cat("No responses or only one modality recorded for this question. No disaggregation...\n")
-            cat("\n", file = chapter.name, append = TRUE)
-          } else {
+              cat(paste("### Cross-tabulations" ,sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
+              cat("\n", file = chapter.name, append = TRUE)
 
-            cat(paste("### Cross-tabulations" ,sep = ""),file = chapter.name ,sep = "\n", append = TRUE)
-            cat("\n", file = chapter.name, append = TRUE)
-
-            for (h in 1:nrow(disaggregation))
-            {
-              #h <-3
-              ## Now getting level for each questions
-              disag.name <- as.character(disaggregation[ h , c("fullname")])
-              disag.shortname <- as.character(disaggregation[ h , c("name")])
-              disag.type <- as.character(disaggregation[ h , c("type")])
-              disag.frame <- as.character(disaggregation[ h , c("qrepeatlabel")])
-              disag.label <- as.character(disaggregation[ h , c("labelReport")])
-              disag.listname <- as.character(disaggregation[ h , c("listname")])
-              disag.ordinal <- as.character(disaggregation[ h  , c("variable")])
-              if (is.na(disag.ordinal) ) {disag.ordinal <- "not.defined"} else {disag.ordinal <- disag.ordinal }
-              disag.variable <- paste0(questions.frame,"$",disag.name)
+              for (h in 1:nrow(disaggregation))
+              {
+                #h <-3
+                ## Now getting level for each questions
+                disag.name <- as.character(disaggregation[ h , c("fullname")])
+                disag.shortname <- as.character(disaggregation[ h , c("name")])
+                disag.type <- as.character(disaggregation[ h , c("type")])
+                disag.frame <- as.character(disaggregation[ h , c("qrepeatlabel")])
+                disag.label <- as.character(disaggregation[ h , c("labelReport")])
+                disag.listname <- as.character(disaggregation[ h , c("listname")])
+                disag.ordinal <- as.character(disaggregation[ h  , c("variable")])
+                if (is.na(disag.ordinal) ) {disag.ordinal <- "not.defined"} else {disag.ordinal <- disag.ordinal }
+                disag.variable <- paste0(questions.frame,"$",disag.name)
 
 
 
-              if (disag.variable == questions.variable) {
-                cat(paste0("\n"),file = chapter.name , sep = "\n", append = TRUE)
-              } else if (nrow(as.data.frame(table( get(paste0(questions.frame))[[disag.name]]))) == 0) {
-                cat(paste0("\n"),file = chapter.name , sep = "\n", append = TRUE)
-              } else {
+                if (disag.variable == questions.variable) {
+                  cat(paste0("\n"),file = chapter.name , sep = "\n", append = TRUE)
+                } else if (nrow(as.data.frame(table( get(paste0(questions.frame))[[disag.name]]))) == 0) {
+                  cat(paste0("\n"),file = chapter.name , sep = "\n", append = TRUE)
+                } else {
 
 
-                ## Case #1 - categoric*numeric -> box plot
-                if (disag.type == "integer") {
-                  # Get number levels to set up chart height
-                  figheight <- nlevels( as.factor(get(paste0(questions.frame))[[disag.name]]))
-                  if ( figheight == 0) { figheight <- "3"}
-                  else if ( figheight == 1) {figheight <- "3"}
-                  else if ( figheight == 2) {figheight <- "3"}
-                  else if ( figheight == 3) {figheight <- "3"}
-                  else if ( figheight == 4) {figheight <- "4"}
-                  else if ( figheight == 5) {figheight <- "4"}
-                  else if ( figheight == 6) {figheight <- "5"}
-                  else if ( figheight == 7) {figheight <- "6"}
-                  else if ( figheight == 8) {figheight <- "7"}
-                  else if ( figheight == 9) {figheight <- "8"}
-                  else if ( figheight == 10) {figheight <- "9"}
-                  else if ( figheight >= 11) {figheight <- "10"}
+                  ## Case #1 - categoric*numeric -> box plot
+                  if (disag.type == "integer") {
+                    # Get number levels to set up chart height
+                    figheight <- nlevels( as.factor(get(paste0(questions.frame))[[disag.name]]))
+                    if ( figheight == 0) { figheight <- "3"}
+                    else if ( figheight == 1) {figheight <- "3"}
+                    else if ( figheight == 2) {figheight <- "3"}
+                    else if ( figheight == 3) {figheight <- "3"}
+                    else if ( figheight == 4) {figheight <- "4"}
+                    else if ( figheight == 5) {figheight <- "4"}
+                    else if ( figheight == 6) {figheight <- "5"}
+                    else if ( figheight == 7) {figheight <- "6"}
+                    else if ( figheight == 8) {figheight <- "7"}
+                    else if ( figheight == 9) {figheight <- "8"}
+                    else if ( figheight == 10) {figheight <- "9"}
+                    else if ( figheight >= 11) {figheight <- "10"}
 
-                  ## Open chunk
-                  cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight*3,", size=\"small\"}\n"), file = chapter.name, append = TRUE)
+                    ## Open chunk
+                    cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight*3,", size=\"small\"}\n"), file = chapter.name, append = TRUE)
 
-                  cat(paste("\n",i,"-", j,"-" , h, " - Render disaggregation : ", disag.label, "for question: ", questions.label,"\n" ))
+                    cat(paste("\n",i,"-", j,"-" , h, " - Render disaggregation : ", disag.label, "for question: ", questions.label,"\n" ))
 
-                  ### Just making sure that the variable is actually a numeric one... in case it was not parsed correctly ####
-                  cat(paste0(questions.frame,"$",disag.name," <- as.numeric(",questions.frame,"$",disag.name,")"),file = chapter.name ,sep = "\n", append = TRUE)
+                    ### Just making sure that the variable is actually a numeric one... in case it was not parsed correctly ####
+                    cat(paste0(questions.frame,"$",disag.name," <- as.numeric(",questions.frame,"$",disag.name,")"),file = chapter.name ,sep = "\n", append = TRUE)
 
-                  ## Boxplot
-                  ## To do test if there's outliers... ###
-                  #if( quantile(questions.frame$disag.name, probs=c(.25, .75), na.rm = T))
+                    ## Boxplot
+                    ## To do test if there's outliers... ###
+                    #if( quantile(questions.frame$disag.name, probs=c(.25, .75), na.rm = T))
 
-                  cat(paste0("data.outlier1 <- ",questions.frame,"$",disag.name),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("data.nooutlier1 <- as.data.frame(",questions.frame,"$",disag.name,")"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("qnt1 <- quantile(data.outlier1, probs=c(.25, .75), na.rm = T)"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("caps.df1 <- as.data.frame(quantile(data.outlier1, probs=c(.05, .95), na.rm = T))"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("H1  <- 1.5 * IQR(data.outlier1, na.rm = T)"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("data.nooutlier1[(data.nooutlier1 < (qnt1[1] - H1)) & !(is.na( data.nooutlier1))  ] <- caps.df1[1,1]"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("data.nooutlier1[ (data.nooutlier1 > (qnt1[2] + H1)) & !(is.na(data.nooutlier1)) ] <- caps.df1[2,1]"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("names(data.nooutlier1)[1] <- \"variable\""),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("data.outlier1 <- ",questions.frame,"$",disag.name),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("data.nooutlier1 <- as.data.frame(",questions.frame,"$",disag.name,")"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("qnt1 <- quantile(data.outlier1, probs=c(.25, .75), na.rm = T)"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("caps.df1 <- as.data.frame(quantile(data.outlier1, probs=c(.05, .95), na.rm = T))"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("H1  <- 1.5 * IQR(data.outlier1, na.rm = T)"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("data.nooutlier1[(data.nooutlier1 < (qnt1[1] - H1)) & !(is.na( data.nooutlier1))  ] <- caps.df1[1,1]"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("data.nooutlier1[ (data.nooutlier1 > (qnt1[2] + H1)) & !(is.na(data.nooutlier1)) ] <- caps.df1[2,1]"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("names(data.nooutlier1)[1] <- \"variable\""),file = chapter.name ,sep = "\n", append = TRUE)
 
-                  if (disag.ordinal == "ordinal" ) {
-                    cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("levels(",questions.frame,"$",disag.name,") <- list.ordinal"),file = chapter.name ,sep = "\n", append = TRUE)
-                  } else {}
+                    if (disag.ordinal == "ordinal" ) {
+                      cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("levels(",questions.frame,"$",disag.name,") <- list.ordinal"),file = chapter.name ,sep = "\n", append = TRUE)
+                    } else {}
 
-                  cat(paste0("plot1 <- ggplot(",questions.frame,", aes(x=",questions.frame,"$",questions.name," , y=",questions.frame,"$",disag.name,")) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour=\"black\" ) + "),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("scale_size_area(max_size = 10) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("guides(fill = FALSE) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("xlab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("ylab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("coord_flip() +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("subtitle = \"Before data capping treatement. By question: ",disag.label,".\") +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("kobo_unhcr_style_histo()"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("plot1 <- ggplot(",questions.frame,", aes(x=",questions.frame,"$",questions.name," , y=",questions.frame,"$",disag.name,")) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour = \"black\" ) + "),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("scale_size_area(max_size = 10) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("guides(fill = FALSE) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("xlab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("ylab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("coord_flip() +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("subtitle = \"Before data capping treatement. By question: ",disag.label,".\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("kobo_unhcr_style_histo()"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = chapter.name ,sep = "\n", append = TRUE)
 
-                  ## Boxplot with capping treatment
-                  cat(paste0("## Boxplot"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("plot1 <- ggplot(",questions.frame,", aes(y=data.nooutlier1$variable, x= ",questions.frame,"$",questions.name,")) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour=\"black\") +  #notch=TRUE"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("scale_size_area(max_size = 10) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("guides(fill = FALSE) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("xlab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("ylab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("coord_flip() +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,".\") +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("kobo_unhcr_style_histo()"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = chapter.name ,sep = "\n", append = TRUE)
+                    ## Boxplot with capping treatment
+                    cat(paste0("## Boxplot"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("plot1 <- ggplot(",questions.frame,", aes(y=data.nooutlier1$variable, x= ",questions.frame,"$",questions.name,")) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour = \"black\") +  #notch=TRUE"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("scale_size_area(max_size = 10) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("guides(fill = FALSE) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("xlab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("ylab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("coord_flip() +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,".\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("kobo_unhcr_style_histo()"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = chapter.name ,sep = "\n", append = TRUE)
 
-                  ## Close chunk
-                  cat(paste0("\n```\n", sep = '\n'), file = chapter.name, append = TRUE)
+                    ## Close chunk
+                    cat(paste0("\n```\n", sep = '\n'), file = chapter.name, append = TRUE)
 
-                  ## Case #2 - categoric*categoric -> stacked bar plot
-                } else if (disag.type == "select_one") {
+                    ## Case #2 - categoric*categoric -> stacked bar plot
+                  } else if (disag.type == "select_one") {
 
-                  # Get number levels to set up chart height
-                  figheight <- nlevels(as.factor( get(paste0(questions.frame))[[disag.name]]))
-                  if ( figheight == 0) { figheight <- "3"}
-                  else if ( figheight == 1) {figheight <- "3"}
-                  else if ( figheight == 2) {figheight <- "3"}
-                  else if ( figheight == 3) {figheight <- "3"}
-                  else if ( figheight == 4) {figheight <- "4"}
-                  else if ( figheight == 5) {figheight <- "4"}
-                  else if ( figheight == 6) {figheight <- "5"}
-                  else if ( figheight == 7) {figheight <- "6"}
-                  else if ( figheight == 8) {figheight <- "7"}
-                  else if ( figheight == 9) {figheight <- "8"}
-                  else if ( figheight == 10) {figheight <- "9"}
-                  else if ( figheight >= 11) {figheight <- "10"}
+                    # Get number levels to set up chart height
+                    figheight <- nlevels(as.factor( get(paste0(questions.frame))[[disag.name]]))
+                    if ( figheight == 0) { figheight <- "3"}
+                    else if ( figheight == 1) {figheight <- "3"}
+                    else if ( figheight == 2) {figheight <- "3"}
+                    else if ( figheight == 3) {figheight <- "3"}
+                    else if ( figheight == 4) {figheight <- "4"}
+                    else if ( figheight == 5) {figheight <- "4"}
+                    else if ( figheight == 6) {figheight <- "5"}
+                    else if ( figheight == 7) {figheight <- "6"}
+                    else if ( figheight == 8) {figheight <- "7"}
+                    else if ( figheight == 9) {figheight <- "8"}
+                    else if ( figheight == 10) {figheight <- "9"}
+                    else if ( figheight >= 11) {figheight <- "10"}
 
-                  ## Open chunk
-                  cat(paste0("\n```{r ", questions.name,h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight,", size=\"small\"}\n"), file = chapter.name, append = TRUE)
-                  cat(paste("\n",i,"-", j,"-" , h, " - Render disaggregation: ", disag.label, "for question: ", questions.label,"\n" ))
+                    ## Open chunk
+                    cat(paste0("\n```{r ", questions.name,h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight,", size=\"small\"}\n"), file = chapter.name, append = TRUE)
+                    cat(paste("\n",i,"-", j,"-" , h, " - Render disaggregation: ", disag.label, "for question: ", questions.label,"\n" ))
 
-                  if (disag.ordinal == "ordinal" & questions.ordinal == "ordinal" ) {
-                    cat(paste0("## Reorder factor"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("crosssfrequ.weight <- as.data.frame(prop.table(survey::svytable(~", questions.name ," + ", disag.name,", design =",questions.frame ,".survey  ), margin = 2))"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("names(crosssfrequ.weight)[1] <- \"quest\""),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("names(crosssfrequ.weight)[2] <- \"disag\""),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("levels(crosssfrequ.weight$disag) <- list.ordinal"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", questions.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("levels(crosssfrequ.weight$quest) <- list.ordinal"),file = chapter.name ,sep = "\n", append = TRUE)
+                    if (disag.ordinal == "ordinal" & questions.ordinal == "ordinal" ) {
+                      cat(paste0("## Reorder factor"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("crosssfrequ.weight <- as.data.frame(prop.table(survey::svytable(~", questions.name ," + ", disag.name,", design = ",questions.frame ,".survey  ), margin = 2))"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("names(crosssfrequ.weight)[1] <- \"quest\""),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("names(crosssfrequ.weight)[2] <- \"disag\""),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("levels(crosssfrequ.weight$disag) <- list.ordinal"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", questions.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("levels(crosssfrequ.weight$quest) <- list.ordinal"),file = chapter.name ,sep = "\n", append = TRUE)
 
-                  } else if (disag.ordinal == "ordinal" ) {
-                    cat(paste0("## Reorder factor"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("crosssfrequ.weight <-as.data.frame(prop.table(survey::svytable(~", questions.name ," + ", disag.name,", design =",questions.frame ,".survey  ), margin = 2))"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("names(crosssfrequ.weight)[1] <- \"quest\""),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("names(crosssfrequ.weight)[2] <- \"disag\""),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("levels(crosssfrequ.weight$disag) <- list.ordinal"),file = chapter.name ,sep = "\n", append = TRUE)
+                    } else if (disag.ordinal == "ordinal" ) {
+                      cat(paste0("## Reorder factor"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("crosssfrequ.weight <-as.data.frame(prop.table(survey::svytable(~", questions.name ," + ", disag.name,", design = ",questions.frame ,".survey  ), margin = 2))"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("names(crosssfrequ.weight)[1] <- \"quest\""),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("names(crosssfrequ.weight)[2] <- \"disag\""),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("levels(crosssfrequ.weight$disag) <- list.ordinal"),file = chapter.name ,sep = "\n", append = TRUE)
 
-                  } else {
-                    cat(paste0("crosssfrequ.weight <-as.data.frame(prop.table(survey::svytable(~", questions.name ," + ", disag.name,", design =",questions.frame ,".survey  ), margin = 2))"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("names(crosssfrequ.weight)[1] <- \"quest\""),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("names(crosssfrequ.weight)[2] <- \"disag\""),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("## Reorder factor"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = \"Freq\")"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("\n"),file = chapter.name ,sep = "\n", append = TRUE)
-                  }
+                    } else {
+                      cat(paste0("crosssfrequ.weight <-as.data.frame(prop.table(survey::svytable(~", questions.name ," + ", disag.name,", design = ",questions.frame ,".survey  ), margin = 2))"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("names(crosssfrequ.weight)[1] <- \"quest\""),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("names(crosssfrequ.weight)[2] <- \"disag\""),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),\"%\")"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("## Reorder factor"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = \"Freq\")"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("\n"),file = chapter.name ,sep = "\n", append = TRUE)
+                    }
 
 
-                  cat(paste0("## and now the graph"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("geom_bar(colour=\"white\", stat =\"identity\", width=.8, aes(fill = quest), position = position_stack(reverse = TRUE)) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  #cat(paste0("geom_label_repel(aes(label = Freq2), fill = \"#2a87c8\", color = 'white') +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("ylab(\"Frequency\") +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  #cat(paste0("facet_wrap(~disag, ncol=3) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("scale_y_continuous(labels = percent) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("scale_fill_viridis(discrete=TRUE) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("xlab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("coord_flip() +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("ggtitle(\"",questions.label," (color)\","),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("subtitle = \" By question: ",disag.label," (bar)\") +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("kobo_unhcr_style_bar() +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  ## setting up the legend
-                  #cat(paste0("guides(fill = FALSE) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("theme(legend.direction = \"horizontal\", legend.position = \"bottom\", legend.box = \"horizontal\",legend.title=element_blank()  )"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("## and now the graph"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("plot1 <- ggplot(crosssfrequ.weight, aes(fill=crosssfrequ.weight$quest, y=crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("geom_bar(colour = \"white\", stat = \"identity\", width = .8, aes(fill = quest), position = position_stack(reverse = TRUE)) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    #cat(paste0("geom_label_repel(aes(label = Freq2), fill = \"#2a87c8\", color = 'white') +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("ylab(\"Frequency\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    #cat(paste0("facet_wrap(~disag, ncol=3) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("scale_y_continuous(labels = percent) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("scale_fill_viridis(discrete = TRUE) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("xlab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("coord_flip() +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("ggtitle(\"",questions.label," (color)\","),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("subtitle = \" By question: ",disag.label," (bar)\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("kobo_unhcr_style_bar() +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    ## setting up the legend
+                    #cat(paste0("guides(fill = FALSE) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("theme(legend.direction = \"horizontal\", legend.position = \"bottom\", legend.box = \"horizontal\",legend.title = element_blank()  )"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = chapter.name ,sep = "\n", append = TRUE)
 
-                  ## Close chunk
-                  cat(paste0("\n```\n", sep = ""), file = chapter.name, append = TRUE)
-                  cat("\n", file = chapter.name, append = TRUE)
+                    ## Close chunk
+                    cat(paste0("\n```\n", sep = ""), file = chapter.name, append = TRUE)
+                    cat("\n", file = chapter.name, append = TRUE)
 
+                   }
                 }
-              }
             }
           }
 
@@ -791,8 +789,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
               }
             }
           }
-
-
+          }
 
 
           ##Decimal####################################################################################################
@@ -967,7 +964,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
                   ## Boxplot
 
                   cat(paste0("plot1 <- ggplot(",questions.frame,", aes(y=",questions.frame,"$",questions.name," , x=",questions.frame,"$",disag.name,")) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour=\"black\") + "),file = chapter.name ,sep = "\n", append = TRUE)
+                  cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour = \"black\") + "),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("scale_size_area(max_size = 10) +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("guides(fill = FALSE) +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("xlab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
@@ -982,7 +979,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
                   ## Boxplot with capping treatment
                   cat(paste0("## Boxplot"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("plot1 <- ggplot(",questions.frame,", aes(y=data.nooutlier$variable, x= ",questions.frame,"$",disag.name,")) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour=\"black\") +  #notch=TRUE"),file = chapter.name ,sep = "\n", append = TRUE)
+                  cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour = \"black\") +  #notch=TRUE"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("scale_size_area(max_size = 10) +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("guides(fill = FALSE) +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("xlab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
@@ -1141,7 +1138,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
               cat(paste0("## and now the graph"),file = chapter.name ,sep = "\n", append = TRUE)
 
               cat(paste0("plot1 <- ggplot(frequ1, aes(x=Var1, y=freqper)) +"),file = chapter.name ,sep = "\n", append = TRUE)
-              cat(paste0("geom_bar(fill = \"#2a87c8\", colour = \"#2a87c8\", stat = \"identity\", width=.8) +"),file = chapter.name ,sep = "\n", append = TRUE)
+              cat(paste0("geom_bar(fill = \"#2a87c8\", colour = \"#2a87c8\", stat = \"identity\", width = .8) +"),file = chapter.name ,sep = "\n", append = TRUE)
               cat(paste0("guides(fill = FALSE) +"),file = chapter.name ,sep = "\n", append = TRUE)
               cat(paste0("geom_label_repel(aes(y = freqper, label = freqper2), fill = \"#2a87c8\", color = 'white') +"),file = chapter.name ,sep = "\n", append = TRUE)
               cat(paste0("ylab(\"Frequency\") +"),file = chapter.name ,sep = "\n", append = TRUE)

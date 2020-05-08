@@ -341,7 +341,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
       }
       for (j in 1:nrow(chapterquestions))
       {
-        # j <-7
+        # j <- 20
         ## Now getting level for each questions
         if (app == "shiny") {
           progress$set(message = paste("Render question: ",as.character(chapterquestions[ j , c("labelReport")])))
@@ -536,14 +536,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
                     ## To do test if there's outliers... ###
                     #if( quantile(questions.frame$disag.name, probs=c(.25, .75), na.rm = T))
 
-                    cat(paste0("data.outlier1 <- ",questions.frame,"$",disag.name),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("data.nooutlier1 <- as.data.frame(",questions.frame,"$",disag.name,")"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("qnt1 <- quantile(data.outlier1, probs=c(.25, .75), na.rm = T)"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("caps.df1 <- as.data.frame(quantile(data.outlier1, probs=c(.05, .95), na.rm = T))"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("H1  <- 1.5 * IQR(data.outlier1, na.rm = T)"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("data.nooutlier1[(data.nooutlier1 < (qnt1[1] - H1)) & !(is.na( data.nooutlier1))  ] <- caps.df1[1,1]"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("data.nooutlier1[ (data.nooutlier1 > (qnt1[2] + H1)) & !(is.na(data.nooutlier1)) ] <- caps.df1[2,1]"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("names(data.nooutlier1)[1] <- \"variable\""),file = chapter.name ,sep = "\n", append = TRUE)
+
 
                     if (disag.ordinal == "ordinal" ) {
                       cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = chapter.name ,sep = "\n", append = TRUE)
@@ -559,25 +552,43 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
                     cat(paste0("coord_flip() +"),file = chapter.name ,sep = "\n", append = TRUE)
                     cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = chapter.name ,sep = "\n", append = TRUE)
                     cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("subtitle = \"Before data capping treatement. By question: ",disag.label,".\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+                    cat(paste0("subtitle = \". By question: ",disag.label,".\") +"),file = chapter.name ,sep = "\n", append = TRUE)
                     cat(paste0("kobo_unhcr_style_histo()"),file = chapter.name ,sep = "\n", append = TRUE)
                     cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = chapter.name ,sep = "\n", append = TRUE)
 
-                    ## Boxplot with capping treatment
-                    cat(paste0("## Boxplot"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("plot1 <- ggplot(",questions.frame,", aes(y=data.nooutlier1$variable, x= ",questions.frame,"$",questions.name,")) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour = \"black\") +  #notch=TRUE"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("scale_size_area(max_size = 10) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("guides(fill = FALSE) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("xlab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("ylab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("coord_flip() +"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,".\") +"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("kobo_unhcr_style_histo()"),file = chapter.name ,sep = "\n", append = TRUE)
-                    cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = chapter.name ,sep = "\n", append = TRUE)
 
+                    data.outlier <- get(paste0(questions.frame))[[disag.name]]
+                    data.nooutlier <- as.data.frame(get(paste0(questions.frame))[[disag.name]])
+                    qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+                    caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+                    H  <- stats::IQR(data.outlier, na.rm = T)
+                    if(H >= 1.349 ) {
+                      cat(paste0("cat(\"No outliers detectected...\")"),file = chapter.name , sep = "\n", append = TRUE)
+                      cat("\n")
+                    } else {
+                            cat(paste0("data.outlier1 <- ",questions.frame,"$",disag.name),file = chapter.name ,sep = "\n", append = TRUE)
+                            cat(paste0("data.nooutlier1 <- as.data.frame(",questions.frame,"$",disag.name,")"),file = chapter.name ,sep = "\n", append = TRUE)
+                            cat(paste0("qnt1 <- quantile(data.outlier1, probs=c(.25, .75), na.rm = T)"),file = chapter.name ,sep = "\n", append = TRUE)
+                            cat(paste0("caps.df1 <- as.data.frame(quantile(data.outlier1, probs=c(.05, .95), na.rm = T))"),file = chapter.name ,sep = "\n", append = TRUE)
+                            cat(paste0("H1  <- 1.5 * IQR(data.outlier1, na.rm = T)"),file = chapter.name ,sep = "\n", append = TRUE)
+                            cat(paste0("data.nooutlier1[(data.nooutlier1 < (qnt1[1] - H1)) & !(is.na( data.nooutlier1))  ] <- caps.df1[1,1]"),file = chapter.name ,sep = "\n", append = TRUE)
+                            cat(paste0("data.nooutlier1[ (data.nooutlier1 > (qnt1[2] + H1)) & !(is.na(data.nooutlier1)) ] <- caps.df1[2,1]"),file = chapter.name ,sep = "\n", append = TRUE)
+                            cat(paste0("names(data.nooutlier1)[1] <- \"variable\""),file = chapter.name ,sep = "\n", append = TRUE)
+                            ## Boxplot with capping treatment
+                            cat(paste0("## Boxplot"),file = chapter.name ,sep = "\n", append = TRUE)
+                            cat(paste0("plot1 <- ggplot(",questions.frame,", aes(y=data.nooutlier1$variable, x= ",questions.frame,"$",questions.name,")) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                            cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour = \"black\") +  #notch=TRUE"),file = chapter.name ,sep = "\n", append = TRUE)
+                            cat(paste0("scale_size_area(max_size = 10) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                            cat(paste0("guides(fill = FALSE) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                            cat(paste0("xlab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+                            cat(paste0("ylab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+                            cat(paste0("coord_flip() +"),file = chapter.name ,sep = "\n", append = TRUE)
+                            cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                            cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep = "\n", append = TRUE)
+                            cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,".\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+                            cat(paste0("kobo_unhcr_style_histo()"),file = chapter.name ,sep = "\n", append = TRUE)
+                            cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = chapter.name ,sep = "\n", append = TRUE)
+                    }
                     ## Close chunk
                     cat(paste0("\n```\n", sep = '\n'), file = chapter.name, append = TRUE)
 
@@ -848,7 +859,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
             cat(paste0("geom_bar(fill = \"#2a87c8\",colour = \"white\", stat = \"identity\", width = .8) +"),file = chapter.name ,sep = "\n", append = TRUE)
             cat(paste0("labs(x = \"\", y = \"Count\") +"),file = chapter.name ,sep = "\n", append = TRUE)
             cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep = "\n", append = TRUE)
-            cat(paste0("subtitle = \"Before data capping treatement:\n\""),file = chapter.name ,sep = "\n", append = TRUE)
+            cat(paste0("subtitle = \":\n\""),file = chapter.name ,sep = "\n", append = TRUE)
             #cat(paste0("\"Mean: \",round(mean(frequ$Var1),2) ,\n\""),file = chapter.name ,sep = "\n", append = TRUE)
            # cat(paste0("\"Standard Deviation: \",round(sd(frequ$Var1),2) ,\n\""),file = chapter.name ,sep = "\n", append = TRUE)
             #cat(paste0("\"Coefficient of Variation: \",round(cv(frequ$Var1),2) ,\n\""),file = chapter.name ,sep = "\n", append = TRUE)
@@ -863,32 +874,32 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
                 cat(paste0("cat(\"No outliers detectected...\")"),file = chapter.name , sep = "\n", append = TRUE)
                 cat("\n")
               } else {
-              cat(paste0("data.outlier <- ",questions.frame,"$",questions.name),file = chapter.name ,sep = "\n", append = TRUE)
-              cat(paste0("data.nooutlier <- as.data.frame(",questions.frame,"$",questions.name,")"),file = chapter.name ,sep = "\n", append = TRUE)
-              cat(paste0("qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)"),file = chapter.name ,sep = "\n", append = TRUE)
-              cat(paste0("caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))"),file = chapter.name ,sep = "\n", append = TRUE)
-              cat(paste0("H  <- 1.5 * stats::IQR(data.outlier, na.rm = T)"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("data.outlier <- ",questions.frame,"$",questions.name),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("data.nooutlier <- as.data.frame(",questions.frame,"$",questions.name,")"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("H  <- 1.5 * stats::IQR(data.outlier, na.rm = T)"),file = chapter.name ,sep = "\n", append = TRUE)
 
-              cat(paste0("data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]"),file = chapter.name ,sep = "\n", append = TRUE)
-              cat(paste0("data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]"),file = chapter.name ,sep = "\n", append = TRUE)
-              cat(paste0("names(data.nooutlier)[1] <- \"variable\""),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("names(data.nooutlier)[1] <- \"variable\""),file = chapter.name ,sep = "\n", append = TRUE)
 
 
-              ### Now graphs with treated variable #####
-              cat(paste0("plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +"),file = chapter.name ,sep = "\n", append = TRUE)
-              cat(paste0("geom_histogram(color = \"white\",fill = \"#2a87c8\", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +"),file = chapter.name ,sep = "\n", append = TRUE)
-              cat(paste0("labs(x = \"\", y = \"Count\") +"),file = chapter.name ,sep = "\n", append = TRUE)
-              cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep = "\n", append = TRUE)
-              cat(paste0("subtitle = \"After data capping treatement:\n\""),file = chapter.name ,sep = "\n", append = TRUE)
-              #cat(paste0("\"Mean: \",round(mean(data.nooutlier$variable),2) ,\n\""),file = chapter.name ,sep = "\n", append = TRUE)
-              #cat(paste0("\"Standard Deviation: \",round(sd(data.nooutlier$variable),2) ,\n\""),file = chapter.name ,sep = "\n", append = TRUE)
-              #cat(paste0("\"Coefficient of Variation: \",round(cv(data.nooutlier$variable),2) ,\n\""),file = chapter.name ,sep = "\n", append = TRUE)
-              #cat(paste0("\"Skewness: \",round(skewness(data.nooutlier$variable),2) ,\n\""),file = chapter.name ,sep = "\n", append = TRUE)
-              #cat(paste0("\"and Kurtosis: \",round(kurtosis(data.nooutlier$variable),2) ,\n\""), file = chapter.name ,sep = "\n", append = TRUE)
-              cat(paste0(") +"),file = chapter.name ,sep = "\n", append = TRUE)
-              cat(paste0("kobo_unhcr_style_histo()"),file = chapter.name ,sep = "\n", append = TRUE)
-              cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = chapter.name ,sep = "\n", append = TRUE)
-            }
+                      ### Now graphs with treated variable #####
+                      cat(paste0("plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("geom_histogram(color = \"white\",fill = \"#2a87c8\", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("labs(x = \"\", y = \"Count\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("subtitle = \"After data capping treatement:\n\""),file = chapter.name ,sep = "\n", append = TRUE)
+                      #cat(paste0("\"Mean: \",round(mean(data.nooutlier$variable),2) ,\n\""),file = chapter.name ,sep = "\n", append = TRUE)
+                      #cat(paste0("\"Standard Deviation: \",round(sd(data.nooutlier$variable),2) ,\n\""),file = chapter.name ,sep = "\n", append = TRUE)
+                      #cat(paste0("\"Coefficient of Variation: \",round(cv(data.nooutlier$variable),2) ,\n\""),file = chapter.name ,sep = "\n", append = TRUE)
+                      #cat(paste0("\"Skewness: \",round(skewness(data.nooutlier$variable),2) ,\n\""),file = chapter.name ,sep = "\n", append = TRUE)
+                      #cat(paste0("\"and Kurtosis: \",round(kurtosis(data.nooutlier$variable),2) ,\n\""), file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0(") +"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("kobo_unhcr_style_histo()"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = chapter.name ,sep = "\n", append = TRUE)
+                    }
           }
           ## Close chunk
           cat(paste0("\n```\n", sep = '\n'), file = chapter.name, append = TRUE)
@@ -972,25 +983,29 @@ kobo_crunching_report <- function(form = "form.xls", app = "console") {
                   cat(paste0("coord_flip() +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("scale_y_continuous(breaks= pretty_breaks()) +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("subtitle = \"Before data capping treatement, by question: ",disag.label,"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+                  cat(paste0("subtitle = \", by question: ",disag.label,"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("kobo_unhcr_style_bar()"),file = chapter.name ,sep = "\n", append = TRUE)
                   cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = chapter.name ,sep = "\n", append = TRUE)
 
-                  ## Boxplot with capping treatment
-                  cat(paste0("## Boxplot"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("plot1 <- ggplot(",questions.frame,", aes(y=data.nooutlier$variable, x= ",questions.frame,"$",disag.name,")) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour = \"black\") +  #notch=TRUE"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("scale_size_area(max_size = 10) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("guides(fill = FALSE) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("xlab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("ylab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("coord_flip() +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("scale_y_continuous(breaks= pretty_breaks()) +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("kobo_unhcr_style_bar()"),file = chapter.name ,sep = "\n", append = TRUE)
-                  cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = chapter.name ,sep = "\n", append = TRUE)
-
+                  if(H >= 1.349 ) {
+                    cat(paste0("cat(\"No outliers detectected...\")"),file = chapter.name , sep = "\n", append = TRUE)
+                    cat("\n")
+                  } else {
+                      ## Boxplot with capping treatment
+                      cat(paste0("## Boxplot"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("plot1 <- ggplot(",questions.frame,", aes(y=data.nooutlier$variable, x= ",questions.frame,"$",disag.name,")) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour = \"black\") +  #notch=TRUE"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("scale_size_area(max_size = 10) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("guides(fill = FALSE) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("xlab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("ylab(\"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("coord_flip() +"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("scale_y_continuous(breaks= pretty_breaks()) +"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("ggtitle(\"",questions.label,"\","),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,"\") +"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("kobo_unhcr_style_bar()"),file = chapter.name ,sep = "\n", append = TRUE)
+                      cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = chapter.name ,sep = "\n", append = TRUE)
+                      }
                   ## Close chunk
                   cat(paste0("\n```\n", sep = '\n'), file = chapter.name, append = TRUE)
 

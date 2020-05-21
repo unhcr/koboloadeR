@@ -150,7 +150,16 @@ kobo_projectinit() # Creates folders necessary and transfer files needed
 
 It might take a while as a few other packages have to be installed or loaded. Once the see the " >" again at the beginning of the line, you are ready to start
 
-#### Graphical user interface (GUI) 
+
+#### Console mode
+
+The __console mode__ is recommended - You can run the file `run-analysis.R` that is automatically copied in the `code` folder after you run the `kobo_projectinit()` function . 
+
+This will be likely the quickest options, once your are used to the package.
+
+Note however that this implies that you configure correctly on your own the full configuration within the xlform file. 
+
+#### NOT MAINTAINED - Support would be wellcome - Graphical user interface (GUI) 
 
 All instructions and options for the project configuration and analysis plan settings can be done through a dedicated GUI.
 
@@ -159,15 +168,6 @@ kobo_shiny("app_main_koboloadeR.R")
 ```  
 
 For better performances, select "Open in Browser" on the top of the window.
-
-#### Console mode
-
-Alternatively, you can use the __console mode__ by running the file `run-analysis.R` that is automatically copied in the `code` folder after you run the `kobo_projectinit()` function . 
-
-This will be likely the quickest options, once your are used to the package.
-
-Note however that this implies that you configure correctly on your own the full configuration within the xlform file. 
-
 
 #### Presentation of features 
 

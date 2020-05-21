@@ -65,6 +65,7 @@ kobo_prepare_form <- function(form = "form.xls") {
         default = character(),
 
         ## Additionnal variable
+        report = character(),
         chapter = character(),
         variable = character(),
         disaggregation = character(),
@@ -173,6 +174,15 @@ kobo_prepare_form <- function(form = "form.xls") {
 
 
 
+    if ("report" %in% colnames(survey)) {
+      cat(" Good: You have a column `report` in your survey worksheet. This will be used to breakdown the generated report\n");
+    } else {
+      cat(" No column `report` in your survey worksheet. Creating a dummy one for the moment ...\n");
+      # survey$report <- character()
+      survey$report <- ""
+    }
+    namesOfSur <- c(namesOfSur,"report")
+
     if ("chapter" %in% colnames(survey)) {
       cat(" Good: You have a column `chapter` in your survey worksheet. This will be used to breakdown the generated report\n");
     } else {
@@ -259,34 +269,13 @@ kobo_prepare_form <- function(form = "form.xls") {
     }
     namesOfSur <- c(namesOfSur,"mappoly")
 
-    if ("structuralequation.risk" %in% colnames(survey)) {
-      cat(" Good: You have a column `structuralequation.risk` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
-    } else {
-      cat(" No column `structuralequation.risk` in your survey worksheet. Creating a dummy one for the moment...\n");
-      survey$structuralequation.risk <- ""
-    }
-
-    if ("structuralequation.coping" %in% colnames(survey)) {
-      cat(" Good: You have a column `structuralequation.coping` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
-    } else {
-      cat(" No column `structuralequation.coping` in your survey worksheet. Creating a dummy one for the moment...\n");
-      survey$structuralequation.coping <- ""
-    }
-
-    if ("structuralequation.resilience" %in% colnames(survey)) {
-      cat(" Good: You have a column `structuralequation.resilience` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
-    } else {
-      cat(" No column `structuralequation.resilience` in your survey worksheet. Creating a dummy one for the moment...\n");
-      survey$structuralequation.resilience <- ""
-    }
-    namesOfSur <- c(namesOfSur,"structuralequation.risk","structuralequation.coping","structuralequation.resilience")
-
     ### order in user friendly    way
 
     namesOfSur <- c( "type",
      "name",
      "labelReport",
      "hintReport",
+     "report",
      "chapter",
      "anonymise",
      "disaggregation",
@@ -297,9 +286,6 @@ kobo_prepare_form <- function(form = "form.xls") {
      "predict" ,
      "mappoint",
      "mappoly",
-     "structuralequation.risk",
-     "structuralequation.coping",
-     "structuralequation.resilience",
      "label",
       "hint",
       "required",

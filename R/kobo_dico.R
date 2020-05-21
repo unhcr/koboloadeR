@@ -98,33 +98,19 @@ kobo_dico <- function(form = "form.xls") {
   {cat("  No column `correlate` in your survey worksheet. Creating a dummy one for the moment...\n");
     survey$correlate <- ""}
 
+  if ("report" %in% colnames(survey))
+  {
+    cat("  Good: You have a column `report` in your survey worksheet. This will be used to breakdown the generated report\n");
+  } else
+  {cat("  No column `report` in your survey worksheet. Creating a dummy one for the moment ...\n");
+    survey$report <- ""}
+
   if ("chapter" %in% colnames(survey))
   {
     cat("  Good: You have a column `chapter` in your survey worksheet. This will be used to breakdown the generated report\n");
   } else
   {cat("  No column `chapter` in your survey worksheet. Creating a dummy one for the moment ...\n");
     survey$chapter <- ""}
-
-  if ("structuralequation.risk" %in% colnames(survey))
-  {
-    cat("  Good: You have a column `structuralequation.risk` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
-  } else
-  {cat("  No column `structuralequation.risk` in your survey worksheet. Creating a dummy one for the moment...\n");
-    survey$structuralequation.risk <- ""}
-
-  if ("structuralequation.coping" %in% colnames(survey))
-  {
-    cat("  Good: You have a column `structuralequation.coping` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
-  } else
-  {cat("4- No column `structuralequation.coping` in your survey worksheet. Creating a dummy one for the moment...\n");
-    survey$structuralequation.coping <- ""}
-
-  if ("structuralequation.resilience" %in% colnames(survey))
-  {
-    cat("  Good: You have a column `structuralequation.resilience` in your survey worksheet. This will be used to configure the vulnerability structural equation model\n");
-  } else
-  {cat("  No column `structuralequation.resilience` in your survey worksheet. Creating a dummy one for the moment...\n");
-    survey$structuralequation.resilience <- ""}
 
 
   if ("anonymise" %in% colnames(survey))
@@ -208,7 +194,8 @@ kobo_dico <- function(form = "form.xls") {
   ## Avoid columns without names
   survey <- survey[ ,c("type",   "name" ,  "label", "labelReport", "hintReport",
                        #"repeatsummarize",
-                       "variable","disaggregation",  "chapter", "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
+                       "variable","disaggregation",  "report", "chapter",
+
                        "anonymise","correlate","clean","cluster","predict","mappoint","mappoly",
                       # "indicator","indicatorgroup","indicatortype",
                       # "indicatorlevel","dataexternal","indicatorcalculation","indicatornormalisation"
@@ -492,8 +479,7 @@ kobo_dico <- function(form = "form.xls") {
 
   ## merge with related questions -
   names(survey)
-  surveychoice <- survey[ ,c("type" ,    "name" , "label" ,    "labelReport" , "hintReport","chapter",  "variable", "disaggregation" ,
-                             "structuralequation.risk" ,      "structuralequation.coping" ,   "structuralequation.resilience",
+  surveychoice <- survey[ ,c("type" ,    "name" , "label" ,    "labelReport" , "hintReport","report","chapter",  "variable", "disaggregation" ,
                              "anonymise",  "correlate", "clean", "cluster" ,  "predict",
                               "mappoint",  "mappoly" , "relevant",  "required",  "constraint","repeat_count",
                              "listname",  "qrepeat",   "qrepeatlabel",    "qlevel",    "type2",     "qgroup",   "fullname" )]
@@ -531,9 +517,8 @@ kobo_dico <- function(form = "form.xls") {
     #names(choices) -"type", "name", "namefull",  "labelfull", "listname", "qrepeat", "qlevel", "qgroup"
     ## not kept: "nameq"     "labelq"   ,"fullname", "label",
     #names(survey) - "type" "name",  "fullname", "label",  "listname", "qrepeat"m  "qlevel",   "qgroup"
-  choices2 <- choices[ ,c("type", "name", "fullname", "label", "labelReport","hintReport","chapter",
+  choices2 <- choices[ ,c("type", "name", "fullname", "label", "labelReport","hintReport","report","chapter",
                           "disaggregation","correlate",
-                          "structuralequation.risk","structuralequation.coping", "structuralequation.resilience",
                           "anonymise",  "clean","cluster","predict","mappoint","mappoly",
                           "relevant",  "required", "constraint", "repeat_count",
                           "listname", "qrepeat","qrepeatlabel",  "qlevel", "qgroup",
@@ -549,9 +534,9 @@ kobo_dico <- function(form = "form.xls") {
 
 
 
-  survey2 <-    survey[,c("type", "name",  "fullname", "label", "labelReport","hintReport", "chapter",
+  survey2 <-    survey[,c("type", "name",  "fullname", "label", "labelReport","hintReport","report", "chapter",
                           "disaggregation","correlate",
-                          "structuralequation.risk","structuralequation.coping","structuralequation.resilience","anonymise",
+                          "anonymise",
                           "clean","cluster","predict","mappoint","mappoly",
                           "relevant",  "required", "constraint", "repeat_count",
                           "listname", "qrepeat","qrepeatlabel",  "qlevel",   "qgroup", "labelchoice",

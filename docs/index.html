@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">koboloadeR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
       </span>
     </div>
 
@@ -126,10 +126,23 @@
 <a href="#approach" class="anchor"></a>Approach</h2>
 <p>The main concept behind the package is to implement a survey data analysis plan and configuration directly within the same <a href="http://xlsform.org">xlsform</a> excel file that has been used to develop the questionnaire. A few additional column are created in this excel document, the package read those column to generate a series of predefined report.</p>
 <p><img src="https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow.png" alt="alt text"></p>
+<p>The data crunching allows to generated quickly initial reports through a series of semi-automated processes:</p>
+<ol>
+<li><p>Have all the configuration used to generate the reports (details of tabulation and crosstabulation plans, weighting approach) documented within the xlsform allow to track easily all changes to the data and to facilitate ( <a href="%22reference/kobo_dico.html%22">koboloadeR::kobo_dico</a>)</p></li>
+<li><p>Have a clear and consistent folder structure and naming conventions for all the files coming in and out of the crunching workflow ( <a href="%22reference/kobo_projectinit.html%22">koboloadeR::kobo_projectinit</a>)</p></li>
+<li><p>Ensures that files containing questions and respondents have been all considered: form &amp; data to be checked to each other ( <a href="%22reference/kobo_analysis_plan.html%22">koboloadeR::kobo_check_analysis_plan</a>)</p></li>
+<li><p>Make question and choices labels readable within charts by adjusting them where needed (for instance question labels to be less than 80 char and choices labels less than 40), resolve typos if any… ( <a href="%22reference/kobo_label.html%22">koboloadeR::kobo_label</a> and <a href="%22reference/kobo_encode.html%22">koboloadeR::kobo_encode</a></p></li>
+<li><p>Merge household data with individual-level data – when using repeat components. There’s a file of data at the household-level and another file containing data on the individuals that constitute those households. There should be unique identifying codes that match households and individuals ( <a href="%22reference/kobo_load_data.html%22">koboloadeR::kobo_load_data</a></p></li>
+<li><p>Review and potentially re-categorize open-ended answers when “or other” option was offered ( <a href="%22reference/kobo_clean.html%22">koboloadeR::kobo_clean</a> )</p></li>
+<li><p>Measure statistical disclosure risk in order to remove sensitive data and indirect identifiers <a href="%22reference/kobo_anonymise.html%22">koboloadeR::kobo_anonymise</a> and <a href="%22reference/kobo_anonymisation_report.html%22">koboloadeR::kobo_anonymisation_report</a> )</p></li>
+<li><p>Create new variables out of existing variables (also called feature engineering). For instance Group distinct answers into categories or ranges, Split up or extract components from an answer, aggregate variable collected at individual level to the household level ( <a href="%22reference/kobo_indicator.html%22">koboloadeR::kobo_indicator</a> )</p></li>
+<li><p>Generate easy to read visualization for all tabulations, cross-tabulations and correlation ( <a href="%22reference/kobo_luster_report.html%22">koboloadeR::kobo_cluster_report</a> )</p></li>
+<li><p>Identify population segments, i.e. statistical clusters, based on similar characteristics ( <a href="%22reference/kobo_crunching_report.html%22">koboloadeR::kobo_crunching_report</a>)</p></li>
+</ol>
 <p>You can have a look at <a href="https://github.com/unhcr/koboloadeR/tree/gh-pages/out">some examples of output reports here</a>.</p>
 <p>The approach offered through the package has the following advantages:</p>
 <ul>
-<li><p>End users <strong>do not need to code</strong> in R and to master the language in order to use the package;</p></li>
+<li><p>End users <strong>do not need to code</strong> in R and to master the language in order to use the package as the configuration is done in excel;</p></li>
 <li><p>The data <strong>analysis plan</strong> is de facto fully documented and described;</p></li>
 <li><p>The resulting data crunching reports are fully <strong>reproducible</strong>;</p></li>
 <li><p>Analysis <strong>iterations</strong> are facilitated;</p></li>

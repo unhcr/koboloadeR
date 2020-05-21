@@ -161,8 +161,9 @@ Note however that this implies that you configure correctly on your own the full
 
 #### NOT MAINTAINED - Support would be wellcome - Graphical user interface (GUI) 
 
-All instructions and options for the project configuration and analysis plan settings can be done through a dedicated GUI.
+A shinyApp to guide user through all those steps has been prototyped - unfortunately - it's not maintained with the last dev and might be buggy...
 
+All instructions and options for the project configuration and analysis plan settings shall be do-able through a dedicated GUI.
 ```{r}
 kobo_shiny("app_main_koboloadeR.R")
 ```  

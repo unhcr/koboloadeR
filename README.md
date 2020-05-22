@@ -35,11 +35,37 @@ The main concept behind the package is to implement a survey data analysis plan 
 
 ![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow.png)
 
+
+
+The data crunching allows to generated quickly initial reports through a series of semi-automated processes: 
+
+1. Have all the configuration used to generate the reports (details of tabulation and crosstabulation plans, weighting approach) documented within the xlsform allow to track easily all changes to the data and to facilitate ( [koboloadeR::kobo_dico]("reference/kobo_dico.html"))
+
+2. Have a clear and consistent folder structure and naming conventions for all the files coming in and out of the crunching workflow ( [koboloadeR::kobo_projectinit]("reference/kobo_projectinit.html"))
+
+3. Ensures that files containing questions and respondents have been all considered: form & data to be checked to each other ( [koboloadeR::kobo_check_analysis_plan]("reference/kobo_analysis_plan.html"))
+
+4. Make question and choices labels readable within charts by adjusting them where needed (for instance question labels to be less than 80 char and choices labels less than 40), resolve typos if any... ( [koboloadeR::kobo_label]("reference/kobo_label.html") and [koboloadeR::kobo_encode]("reference/kobo_encode.html") 
+
+5. Merge household data with individual-level data – when using repeat components. There’s a file of data at the household-level and another file containing data on the individuals that constitute those households. There should be unique identifying codes that match households and individuals ( [koboloadeR::kobo_load_data]("reference/kobo_load_data.html")
+
+6. Review and potentially re-categorize open-ended answers when “or other” option was offered ( [koboloadeR::kobo_clean]("reference/kobo_clean.html") )
+
+7. Measure statistical disclosure risk in order to remove sensitive data and indirect identifiers [koboloadeR::kobo_anonymise]("reference/kobo_anonymise.html") and [koboloadeR::kobo_anonymisation_report]("reference/kobo_anonymisation_report.html") )
+
+8. Create new variables out of existing variables (also called feature engineering). For instance Group distinct answers into categories or ranges, Split up or extract components from an answer, aggregate variable collected at individual level to the household level ( [koboloadeR::kobo_indicator]("reference/kobo_indicator.html") )
+
+9. Generate easy to read visualization  for all tabulations, cross-tabulations and correlation ( [koboloadeR::kobo_cluster_report]("reference/kobo_luster_report.html") ) 
+
+10. Identify population segments, i.e. statistical clusters,  based on similar characteristics ( [koboloadeR::kobo_crunching_report]("reference/kobo_crunching_report.html")) 
+
+
+
 You can have a look at [some examples of output reports here](https://github.com/unhcr/koboloadeR/tree/gh-pages/out).
 
 The approach offered through the package has the following advantages: 
 
-  *  End users __do not need to code__ in R and to master the language in order to use the package;  
+  *  End users __do not need to code__ in R and to master the language in order to use the package as the configuration is done in excel;  
  
   *  The data __analysis plan__ is de facto fully documented and described;  
  
@@ -124,24 +150,25 @@ kobo_projectinit() # Creates folders necessary and transfer files needed
 
 It might take a while as a few other packages have to be installed or loaded. Once the see the " >" again at the beginning of the line, you are ready to start
 
-#### Graphical user interface (GUI) 
-
-All instructions and options for the project configuration and analysis plan settings can be done through a dedicated GUI.
-
-```{r}
-kobo_shiny("app_main_koboloadeR.R")
-```  
-
-For better performances, select "Open in Browser" on the top of the window.
 
 #### Console mode
 
-Alternatively, you can use the __console mode__ by running the file `run-analysis.R` that is automatically copied in the `code` folder after you run the `kobo_projectinit()` function . 
+The __console mode__ is recommended - You can run the file `run-analysis.R` that is automatically copied in the `code` folder after you run the `kobo_projectinit()` function . 
 
 This will be likely the quickest options, once your are used to the package.
 
 Note however that this implies that you configure correctly on your own the full configuration within the xlform file. 
 
+#### NOT MAINTAINED - Support would be wellcome - Graphical user interface (GUI) 
+
+A shinyApp to guide user through all those steps has been prototyped - unfortunately - it's not maintained with the last dev and might be buggy...
+
+All instructions and options for the project configuration and analysis plan settings shall be do-able through a dedicated GUI.
+```{r}
+kobo_shiny("app_main_koboloadeR.R")
+```  
+
+For better performances, select "Open in Browser" on the top of the window.
 
 #### Presentation of features 
 

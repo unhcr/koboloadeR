@@ -1,3 +1,12 @@
+## koboloadeR 0.1.7
+
+  *  Added different output for the crunching report - docx, pptx, html, aspx
+  
+  *  Added an additional column in the dico to group questions in chapters within reports
+  
+  *  Added more explanation on the crunching report
+
+
 ## koboloadeR 0.1.6
 
   *  Added functions to generate dummy dataset

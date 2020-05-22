@@ -148,6 +148,12 @@ kobo_projectinit <- function() {
     #   file.copy(paste(path_correct,"/koboloadeR/script/report.Rmd", sep = ""), destfile)
     # }
 
+    destfile = paste0(mainDir,"/code/templateUNHCR.pptx")
+    if (!file.exists(destfile)) {
+      file.copy(paste(path_correct,"/koboloadeR/script/templateUNHCR.pptx", sep = ""), destfile)
+    }
+
+
     destfile = paste0(mainDir,"/code/style-unhcr-portrait.docx")
     if (!file.exists(destfile)) {
       file.copy(paste(path_correct,"/koboloadeR/script/style-unhcr-portrait.docx", sep = ""), destfile)

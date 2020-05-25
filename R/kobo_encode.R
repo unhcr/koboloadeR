@@ -24,6 +24,8 @@
 kobo_encode <- function(data, dico) {
   ### First we provide attribute label to variable name
   #data1 <- data
+  # MainDataFrame <- read.csv("data/MainDataFrame_edited.csv")
+  # dico <- read.csv("data/dico_form.xls.csv", comment.char="#")
   # data <- MainDataFrame
   data.label <- as.data.frame(names(data))
   names(data.label)[1] <- "fullname"
@@ -171,6 +173,10 @@ kobo_encode <- function(data, dico) {
       variablelistname <- as.character(selectdf3[ i,3])
 
       variablelevel <- dico[ dico$listname == variablelistname & dico$type == "select_one_d", c("name","labelchoice")]
+
+      # Need to account for the case where allow_choice_duplicates =   yes
+
+
       variablelevel <- unique(variablelevel[ c("name","labelchoice")])
 
       if (nrow(variablelevel) > 0) {

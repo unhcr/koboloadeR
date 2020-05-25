@@ -361,11 +361,9 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                   The crunching process produces a lot of visuals. Therefore it is key to carefully select the
                   most relevant visual that will be presented for potential interpretation in the next step.
                   A typical data interpretation session shall not include more than 60 visuals (60 slides…)
-                  to look at in order to keep participants with a good focus level.
-
-                  In order to guide this selection phase, the data crunching expert and report designer,
-                  in collaboration with the data analysis group, can use the following elements:
-                 \n "),file = report.name , sep = "\n", append = TRUE)
+                  to look at in order to keep participants with a good focus level.\n "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("In order to guide this selection phase, the data crunching expert and report designer,
+                  in collaboration with the data analysis group, can use the following elements:\n "),file = report.name , sep = "\n", append = TRUE)
         cat(paste("  *  For numeric value, check the frequency distributions of each variable to average, deviation, including outliers and oddities\n "),file = report.name , sep = "\n", append = TRUE)
         cat(paste("  *  For categorical variables, check for unexpected values: any weird results based on common sense expectations\n "),file = report.name , sep = "\n", append = TRUE)
         cat(paste("  *  Use correlation analysis to check for potential contradictions in respondents’ answers to different questions for identified associations (chi-square)\n "),file = report.name , sep = "\n", append = TRUE)
@@ -379,11 +377,11 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
         cat(paste("  *  __Recommend__: suggest recommendations in terms of programmatic adjustment;    \n"),file = report.name , sep = "\n", append = TRUE)
         cat(paste("  *  __Classify__: define level of sensitivity for certain topics if required;     \n"),file = report.name , sep = "\n", append = TRUE)
 
-        cat(paste("The report can be regenerated as needed by:"),file = report.name , sep = "\n", append = TRUE)
-        cat(paste("  *  adjust the report configuration in the xlsform to break it into report and chapter;   \n"),file = report.name , sep = "\n", append = TRUE)
-        cat(paste("  *  configure disaggregation & correlation for each questions;   \n"),file = report.name , sep = "\n", append = TRUE)
-        cat(paste("  *  revise the data cleansing based on the cleaning log;   \n "),file = report.name , sep = "\n", append = TRUE)
-        cat(paste("  *  append calculated indicators to your data frame to reshape variable - also called feature engineering. \n\n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("The report can be regenerated as needed by:  "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  adjusting the report configuration in the xlsform to break it into report and chapter;   \n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  configuring disaggregation & correlation for each questions;   \n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  revising the data cleansing based on the cleaning log;   \n "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  appending calculated indicators to your data frame to reshape variable - also called feature engineering. \n\n"),file = report.name , sep = "\n", append = TRUE)
 
 
 
@@ -396,14 +394,15 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
       cat(paste("__Kind of Data:__ ",configInfo[configInfo$name == "dataKind", c("value")],"\n"),file = report.name , sep = "\n\n", append = TRUE)
       cat(paste("__Number of records in the main data frame__: `r nrow(MainDataFrame)`\n"),file = report.name , sep = "\n\n", append = TRUE)
       cat(paste("__Period of data collection__: between `r min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\"))` and `r max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\"))`\n"),file = report.name , sep = "\n\n", append = TRUE)
+      cat(paste("__Documented cleaning__: ",configInfo[configInfo$name == "cleanOps", c("value")],"\n\n"),file = report.name , sep = "\n\n", append = TRUE)
       cat(paste("__Entity being analyzed in the study:__ ",configInfo[configInfo$name == "AnalysisUnit", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
       cat(paste("__Procedure, technique, or mode of inquiry used to attain the data:__ ",configInfo[configInfo$name == "ModeOfCollection", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
       cat(paste("__Study Universe:__  (i.e. group of persons or other elements that are the object of research and to which any analytic results refer:",configInfo[configInfo$name == "universe", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
 
       ## get list of chapters
-      chapters <- as.data.frame(unique(dico[ , c("report","chapter")]))
-      names(chapters)[1] <- "Report"
-      names(chapters)[2] <- "Chapter"
+      chapters <- as.data.frame(unique(dico[ , c("chapter","report")]))
+      names(chapters)[2] <- "Report"
+      names(chapters)[1] <- "Chapter"
 
       ## Default behavior if no chapter was defined in xlsform
       if ((nrow(chapters) == 1) & is.na(chapters$Chapter)) {
@@ -1082,7 +1081,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                     cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("scale_y_continuous(breaks= pretty_breaks()) +"),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("ggtitle(\"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("subtitle = \", by question: ",disag.label,"\") +"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("subtitle = \"by question: ",disag.label,"\") +"),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("kobo_unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
 
@@ -1328,7 +1327,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
     reports <- utils::read.csv(paste(mainDir,"/data/reports.csv",sep = ""), encoding = "UTF-8", na.strings = "")
     ### Render now all reports
     cat(" Render now reports... \n")
-    for (i in 1:nrow(repors)) {
+    for (i in 1:nrow(reports)) {
       reportsname <- as.character(reports[ i , 1])
       if (app == "shiny") {
         progress$set(message = paste("Rendering word output report for ",reportsname, " chapter in progress..."))

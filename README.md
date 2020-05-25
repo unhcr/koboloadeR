@@ -120,8 +120,7 @@ install.packages("devtools")
   *  Install koboloadeR: 
 
 ```{r}
-library(devtools)
-install_github("unhcr/koboloadeR") 
+devtools::install_github("unhcr/koboloadeR") 
 ```  
 
   *  You are all set! You can know use koboloadeR. If you have a problem consult the common troubleshooting part at the end of this page.

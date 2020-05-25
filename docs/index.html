@@ -185,8 +185,7 @@
 <ul>
 <li>Install koboloadeR:</li>
 </ul>
-<pre class="{r}"><code><a href="https://devtools.r-lib.org//reference">library(devtools)
-install_github("unhcr/koboloadeR") </a></code></pre>
+<pre class="{r}"><code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github("unhcr/koboloadeR") </a></code></pre>
 <ul>
 <li>You are all set! You can know use koboloadeR. If you have a problem consult the common troubleshooting part at the end of this page.</li>
 </ul>
@@ -206,19 +205,20 @@ install_github("unhcr/koboloadeR") </a></code></pre>
 
 kobo_projectinit() # Creates folders necessary and transfer files needed</a></code></pre>
 <p>It might take a while as a few other packages have to be installed or loaded. Once the see the " &gt;" again at the beginning of the line, you are ready to start</p>
-<div id="graphical-user-interface-gui" class="section level4">
-<h4 class="hasAnchor">
-<a href="#graphical-user-interface-gui" class="anchor"></a>Graphical user interface (GUI)</h4>
-<p>All instructions and options for the project configuration and analysis plan settings can be done through a dedicated GUI.</p>
-<pre class="{r}"><code><a href="reference/kobo_shiny.html">kobo_shiny("app_main_koboloadeR.R")</a></code></pre>
-<p>For better performances, select “Open in Browser” on the top of the window.</p>
-</div>
 <div id="console-mode" class="section level4">
 <h4 class="hasAnchor">
 <a href="#console-mode" class="anchor"></a>Console mode</h4>
-<p>Alternatively, you can use the <strong>console mode</strong> by running the file <code>run-analysis.R</code> that is automatically copied in the <code>code</code> folder after you run the <code><a href="reference/kobo_projectinit.html">kobo_projectinit()</a></code> function .</p>
+<p>The <strong>console mode</strong> is recommended - You can run the file <code>run-analysis.R</code> that is automatically copied in the <code>code</code> folder after you run the <code><a href="reference/kobo_projectinit.html">kobo_projectinit()</a></code> function .</p>
 <p>This will be likely the quickest options, once your are used to the package.</p>
 <p>Note however that this implies that you configure correctly on your own the full configuration within the xlform file.</p>
+</div>
+<div id="not-maintained---support-would-be-wellcome---graphical-user-interface-gui" class="section level4">
+<h4 class="hasAnchor">
+<a href="#not-maintained---support-would-be-wellcome---graphical-user-interface-gui" class="anchor"></a>NOT MAINTAINED - Support would be wellcome - Graphical user interface (GUI)</h4>
+<p>A shinyApp to guide user through all those steps has been prototyped - unfortunately - it’s not maintained with the last dev and might be buggy…</p>
+<p>All instructions and options for the project configuration and analysis plan settings shall be do-able through a dedicated GUI.</p>
+<pre class="{r}"><code><a href="reference/kobo_shiny.html">kobo_shiny("app_main_koboloadeR.R")</a></code></pre>
+<p>For better performances, select “Open in Browser” on the top of the window.</p>
 </div>
 <div id="presentation-of-features" class="section level4">
 <h4 class="hasAnchor">

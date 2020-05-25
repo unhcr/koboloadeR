@@ -216,8 +216,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
         cat("    fig_caption: yes", file = report.name , sep = "\n", append = TRUE)
         cat("    fig_height: 9", file = report.name , sep = "\n", append = TRUE)
         cat("    fig_width: 18", file = report.name , sep = "\n", append = TRUE)
-        cat("    dpi = 300", file = report.name , sep = "\n", append = TRUE)
-        cat("    reference_docx: templateUNHCR.pptx", file = report.name , sep = "\n", append = TRUE)
+        cat("    reference_doc: templateUNHCR.pptx", file = report.name , sep = "\n", append = TRUE)
         cat("    slide_level: 2", file = report.name , sep = "\n", append = TRUE)
         cat("---", file = report.name , sep = "\n", append = TRUE)
       }

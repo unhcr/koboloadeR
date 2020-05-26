@@ -4,10 +4,10 @@
 \alias{kobo_host}
 \title{Select server}
 \usage{
-kobo_host(instring)
+kobo_host(api)
 }
 \arguments{
-\item{instring}{Either "kobo", "kobohr", "ona", or a custom (full) URL.}
+\item{api}{Either "kobo", "kobohr", "ona", or a custom (full) URL.}
 }
 \value{
 A single string with the URL to use.

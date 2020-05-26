@@ -171,6 +171,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
         cat("    toc_depth: 2", file = report.name , sep = "\n", append = TRUE)
         cat("    reference_docx: style-unhcr-portrait.docx", file = report.name , sep = "\n", append = TRUE)
         cat("---", file = report.name , sep = "\n", append = TRUE)
+        cat("\n\n", file = report.name , sep = "\n", append = TRUE)
 
       } else if (output == "html") {
 
@@ -186,9 +187,11 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
         cat("    includes:", file = report.name , sep = "\n", append = TRUE)
         cat("       in_header: css/header.html", file = report.name , sep = "\n", append = TRUE)
         cat("---", file = report.name , sep = "\n", append = TRUE)
+        cat("\n\n", file = report.name , sep = "\n", append = TRUE)
         cat("<link rel=\"stylesheet\" href=\"css/unhcr-bootstrap.css\">", file = report.name , sep = "\n", append = TRUE)
         cat("<link rel=\"stylesheet\" href=\"css/style.css\">", file = report.name , sep = "\n", append = TRUE)
         cat("<link rel=\"stylesheet\" href=\"css/unhcr-header.css\">", file = report.name , sep = "\n", append = TRUE)
+        cat("\n\n", file = report.name , sep = "\n", append = TRUE)
 
       }else if (output == "aspx") {
 
@@ -204,9 +207,11 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
         cat("    includes:", file = report.name , sep = "\n", append = TRUE)
         cat("       in_header: css/header.html", file = report.name , sep = "\n", append = TRUE)
         cat("---", file = report.name , sep = "\n", append = TRUE)
+        cat("\n\n", file = report.name , sep = "\n", append = TRUE)
         cat("<link rel=\"stylesheet\" href=\"css/unhcr-bootstrap.css\">", file = report.name , sep = "\n", append = TRUE)
         cat("<link rel=\"stylesheet\" href=\"css/style.css\">", file = report.name , sep = "\n", append = TRUE)
         cat("<link rel=\"stylesheet\" href=\"css/unhcr-header.css\">", file = report.name , sep = "\n", append = TRUE)
+        cat("\n\n", file = report.name , sep = "\n", append = TRUE)
 
       } else if (output == "pptx") {
 
@@ -219,11 +224,10 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
         cat("    reference_doc: templateUNHCR.pptx", file = report.name , sep = "\n", append = TRUE)
         cat("    slide_level: 2", file = report.name , sep = "\n", append = TRUE)
         cat("---", file = report.name , sep = "\n", append = TRUE)
+        cat("\n\n", file = report.name , sep = "\n", append = TRUE)
       }
 
 
-
-      cat("---", file = report.name , sep = "\n", append = TRUE)
 
 
       ## First chunk to get the data in the report
@@ -302,7 +306,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
       cat("\n", file = report.name , sep = "\n", append = TRUE)
       cat("## Create weighted survey object", file = report.name , sep = "\n", append = TRUE)
 
-        ## If no weight, the weighted object is unweigthted
+      ## If no weight, the weighted object is unweigthted
 
       if (configInfo[configInfo$name == "sample_type","value"] == "No sampling (type 1)") {
         ## If no weight, the weighted object is unweigthted
@@ -347,45 +351,45 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
       # cat("br2.survey <- (ids = ~ 1 ,  data = br2 )", file = report.name , sep = "\n", append = TRUE)
 
 
-        cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
+      cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
 
 
-        ### To DO : Offer option to insert in the report skeleton interpretation questions
-        ### Intro text####################################################################
-        cat(paste("# Crunching step\n"),file = report.name , sep = "\n", append = TRUE)
-        cat(paste("This data crunching report allows to quickly explore the results of the survey that can be regenerated as needed."),file = report.name , sep = "\n", append = TRUE)
+      ### To DO : Offer option to insert in the report skeleton interpretation questions
+      ### Intro text####################################################################
+      cat(paste("# Crunching step\n"),file = report.name , sep = "\n", append = TRUE)
+      cat(paste("\n"),file = report.name , sep = "\n", append = TRUE)
 
-        cat(paste("The objective of this report is to allow to quickly identify potential patterns in your dataset.
-                  A quick screening of this initial report should allow to select the most meaningful graphs.
-                  The crunching process produces a lot of visuals. Therefore it is key to carefully select the
-                  most relevant visual that will be presented for potential interpretation in the next step.
-                  A typical data interpretation session shall not include more than 60 visuals (60 slides…)
-                  to look at in order to keep participants with a good focus level.\n "),file = report.name , sep = "\n", append = TRUE)
-        cat(paste("In order to guide this selection phase, the data crunching expert and report designer,
-                  in collaboration with the data analysis group, can use the following elements:\n "),file = report.name , sep = "\n", append = TRUE)
-        cat(paste("  *  For numeric value, check the frequency distributions of each variable to average, deviation, including outliers and oddities\n "),file = report.name , sep = "\n", append = TRUE)
-        cat(paste("  *  For categorical variables, check for unexpected values: any weird results based on common sense expectations\n "),file = report.name , sep = "\n", append = TRUE)
-        cat(paste("  *  Use correlation analysis to check for potential contradictions in respondents’ answers to different questions for identified associations (chi-square)\n "),file = report.name , sep = "\n", append = TRUE)
-        cat(paste("  *  Always, Check for missing data (NA) or \"%of respondent who answered\" that you cannot confidently explain\n "),file = report.name , sep = "\n", append = TRUE)
-        cat(paste("  *  Check unanswered questions, that corresponds to unused skip logic in the questionnaire: For instance, did a person who was never displaced answer displacement-related questions? Were employment-related answers provided for a toddler?\n "),file = report.name , sep = "\n", append = TRUE)
+      cat(paste("This data crunching report allows to quickly explore the results of the survey that can be regenerated as needed.\n"),file = report.name , sep = "\n", append = TRUE)
+
+      cat(paste("The objective of this report is to allow to quickly identify potential patterns in your dataset.\n"),file = report.name , sep = "\n", append = TRUE)
+      cat(paste("A quick screening of this initial report should allow to select the most meaningful graphs.\n"),file = report.name , sep = "\n", append = TRUE)
+
+      cat(paste("The crunching process produces a lot of visuals. Therefore it is key to carefully select the most relevant visual that will be presented for potential interpretation in the next step. A typical data interpretation session shall not last more than 2hours and include more than 60 visuals to look at in order to keep participants with a good focus level.\n "),file = report.name , sep = "\n", append = TRUE)
+
+      cat(paste("In order to guide this selection phase, the data crunching expert and report designer, in collaboration with the data analysis group, can use the following elements:\n "),file = report.name , sep = "\n", append = TRUE)
+      cat(paste("  *  For numeric value, check the frequency distributions of each variable to average, deviation, including outliers and oddities\n "),file = report.name , sep = "\n", append = TRUE)
+      cat(paste("  *  For categorical variables, check for unexpected values: any weird results based on common sense expectations\n "),file = report.name , sep = "\n", append = TRUE)
+      cat(paste("  *  Use correlation analysis to check for potential contradictions in respondents answers to different questions for identified associations (chi-square)\n "),file = report.name , sep = "\n", append = TRUE)
+      cat(paste("  *  Always, Check for missing data (NA) or \"%of respondent who answered\" that you cannot confidently explain\n "),file = report.name , sep = "\n", append = TRUE)
+      cat(paste("  *  Check unanswered questions, that corresponds to unused skip logic in the questionnaire: For instance, did a person who was never displaced answer displacement-related questions? Were employment-related answers provided for a toddler?\n "),file = report.name , sep = "\n", append = TRUE)
 
 
-        cat(paste("when analyzing those representations in a collective setting during data interpretation sessions, you may:  \n "),file = report.name , sep = "\n", append = TRUE)
-        cat(paste("  *  __Reflect__: question data quality and/or make suggestions to adjust questions, identify additional cleaning steps;   \n"),file = report.name , sep = "\n", append = TRUE)
-        cat(paste("  *  __Interpret__: develop qualitative interpretations of data patterns;     \n"),file = report.name , sep = "\n", append = TRUE)
-        cat(paste("  *  __Recommend__: suggest recommendations in terms of programmatic adjustment;    \n"),file = report.name , sep = "\n", append = TRUE)
-        cat(paste("  *  __Classify__: define level of sensitivity for certain topics if required;     \n"),file = report.name , sep = "\n", append = TRUE)
+      cat(paste("when analyzing those representations in a collective setting during data interpretation sessions, you may:  \n "),file = report.name , sep = "\n", append = TRUE)
+      cat(paste("  *  __Reflect__: question data quality and/or make suggestions to adjust questions, identify additional cleaning steps;   \n"),file = report.name , sep = "\n", append = TRUE)
+      cat(paste("  *  __Interpret__: develop qualitative interpretations of data patterns;     \n"),file = report.name , sep = "\n", append = TRUE)
+      cat(paste("  *  __Recommend__: suggest recommendations in terms of programmatic adjustment;    \n"),file = report.name , sep = "\n", append = TRUE)
+      cat(paste("  *  __Classify__: define level of sensitivity for certain topics if required;     \n"),file = report.name , sep = "\n", append = TRUE)
 
-        cat(paste("The report can be regenerated as needed by:  "),file = report.name , sep = "\n", append = TRUE)
-        cat(paste("  *  adjusting the report configuration in the xlsform to break it into report and chapter;   \n"),file = report.name , sep = "\n", append = TRUE)
-        cat(paste("  *  configuring disaggregation & correlation for each questions;   \n"),file = report.name , sep = "\n", append = TRUE)
-        cat(paste("  *  revising the data cleansing based on the cleaning log;   \n "),file = report.name , sep = "\n", append = TRUE)
-        cat(paste("  *  appending calculated indicators to your data frame to reshape variable - also called feature engineering. \n\n"),file = report.name , sep = "\n", append = TRUE)
+      cat(paste("The report can be regenerated as needed by:  "),file = report.name , sep = "\n", append = TRUE)
+      cat(paste("  *  adjusting the report configuration in the xlsform to break it into report and chapter;   \n"),file = report.name , sep = "\n", append = TRUE)
+      cat(paste("  *  configuring disaggregation & correlation for each questions;   \n"),file = report.name , sep = "\n", append = TRUE)
+      cat(paste("  *  revising the data cleansing based on the cleaning log;   \n "),file = report.name , sep = "\n", append = TRUE)
+      cat(paste("  *  appending calculated indicators to your data frame to reshape variable - also called feature engineering. \n\n"),file = report.name , sep = "\n", append = TRUE)
 
 
 
       cat(paste("# Dataset description\n"),file = report.name , sep = "\n", append = TRUE)
-      cat(paste("__Title of the study:__ ",configInfo[configInfo$name == "titl", c("value")],", ,\n\n"),file = report.name , sep = "\n", append = TRUE)
+      cat(paste("__Title of the study:__ ",configInfo[configInfo$name == "titl", c("value")]," \n\n"),file = report.name , sep = "\n", append = TRUE)
       cat(paste("__Abstract:__ ",configInfo[configInfo$name == "abstract", c("value")],"\n"),file = report.name , sep = "\n\n", append = TRUE)
       cat(paste("__Rights & Disclaimer:__ ",configInfo[configInfo$name == "disclaimer", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
       cat(paste("__Country where the study took place:__ ",configInfo[configInfo$name == "Country", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
@@ -480,7 +484,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
 
             ## Check that there are responses to be displayed ####
             if (nrow(frequ) %in% c("0","1") ) {
-              cat(paste0("cat(\"No responses or only one modality recorded for this question...\")"),file = report.name , sep = "\n", append = TRUE)
+              cat(paste0("\"No responses or the same answer was given (only one modality) recorded for this question...\"\n"),file = report.name , sep = "\n", append = TRUE)
               cat("No responses recorded for this question...\n")
 
               #  names(frequ)[2] <- "ccheck"
@@ -497,7 +501,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
               cat(paste0("##Compute contengency table"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("frequ <- as.data.frame(table(",questions.variable,"))"),file = report.name ,sep = "\n", append = TRUE)
               #cat(paste0("if (nrow(frequ)==0){ cat(\"No response for this question\") } else{"),file = report.name ,sep = "\n", append = TRUE)
-
+              cat(paste0("nresp <- sum(frequ$Freq)"),file = report.name ,sep = "\n", append = TRUE)
 
               # cat(paste0("## display table"),file = report.name ,sep = "\n", append = TRUE)
               # cat(paste0("## Reorder factor"),file = report.name ,sep = "\n", append = TRUE)
@@ -516,7 +520,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
 
 
               cat(paste0("names(frequ)[1] <- \"", questions.shortname,"\""),file = report.name ,sep = "\n", append = TRUE)
-             # cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = report.name ,sep = "\n", append = TRUE)
+              # cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("## Frequency table with NA in order to get non response rate"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("frequ1 <- as.data.frame(prop.table(table(", questions.variable,", useNA = \"ifany\")))"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]"),file = report.name ,sep = "\n", append = TRUE)
@@ -557,7 +561,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
               cat(paste0("xlab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("ggtitle(\"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("subtitle = paste0(\" Question response rate: \",percentreponse,\" .\")) +"),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("subtitle = paste0(\" Question response rate: \",percentreponse,\"  - respondents: \", nresp)) +"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("kobo_unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
 
               cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
@@ -569,7 +573,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
 
               ##selectone.crosstabulation #######################################################################
               if (nrow(disaggregation) == 0) {
-                cat("No disaggregation requested for this question...\n",file = report.name , sep = "\n", append = TRUE)
+                #cat("No disaggregation requested for this question...\n",file = report.name , sep = "\n", append = TRUE)
                 cat("No disaggregation requested for this question...\n")
                 cat("\n", file = report.name, append = TRUE)
               } else if (nrow(frequ) %in% c("0","1")) {
@@ -631,7 +635,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
 
                       ## Boxplot
                       ## To do test if there's outliers... ###
-                      #if( quantile(questions.frame$disag.name, probs=c(.25, .75), na.rm = T))
+                      #if( stats::quantile(questions.frame$disag.name, probs=c(.25, .75), na.rm = T))
 
 
 
@@ -656,35 +660,35 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
 
                       data.outlier <- get(paste0(questions.frame))[[disag.name]]
                       data.nooutlier <- as.data.frame(get(paste0(questions.frame))[[disag.name]])
-                      qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
-                      caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+                      qnt <- stats::quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+                      caps.df <- as.data.frame(stats::quantile(data.outlier, probs = c(.05, .95), na.rm = T))
                       H  <- stats::IQR(data.outlier, na.rm = T)
-                      if(H >= 1.349 ) {
+                      if (H >= 1.349 ) {
                         cat(paste0("cat(\"No outliers detectected...\")"),file = report.name , sep = "\n", append = TRUE)
                         cat("\n")
                       } else {
-                              cat(paste0("data.outlier1 <- ",questions.frame,"$",disag.name),file = report.name ,sep = "\n", append = TRUE)
-                              cat(paste0("data.nooutlier1 <- as.data.frame(",questions.frame,"$",disag.name,")"),file = report.name ,sep = "\n", append = TRUE)
-                              cat(paste0("qnt1 <- quantile(data.outlier1, probs=c(.25, .75), na.rm = T)"),file = report.name ,sep = "\n", append = TRUE)
-                              cat(paste0("caps.df1 <- as.data.frame(quantile(data.outlier1, probs=c(.05, .95), na.rm = T))"),file = report.name ,sep = "\n", append = TRUE)
-                              cat(paste0("H1  <- 1.5 * IQR(data.outlier1, na.rm = T)"),file = report.name ,sep = "\n", append = TRUE)
-                              cat(paste0("data.nooutlier1[(data.nooutlier1 < (qnt1[1] - H1)) & !(is.na( data.nooutlier1))  ] <- caps.df1[1,1]"),file = report.name ,sep = "\n", append = TRUE)
-                              cat(paste0("data.nooutlier1[ (data.nooutlier1 > (qnt1[2] + H1)) & !(is.na(data.nooutlier1)) ] <- caps.df1[2,1]"),file = report.name ,sep = "\n", append = TRUE)
-                              cat(paste0("names(data.nooutlier1)[1] <- \"variable\""),file = report.name ,sep = "\n", append = TRUE)
-                              ## Boxplot with capping treatment
-                              cat(paste0("## Boxplot"),file = report.name ,sep = "\n", append = TRUE)
-                              cat(paste0("plot1 <- ggplot(",questions.frame,", aes(y=data.nooutlier1$variable, x= ",questions.frame,"$",questions.name,")) +"),file = report.name ,sep = "\n", append = TRUE)
-                              cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour = \"black\") +  #notch=TRUE"),file = report.name ,sep = "\n", append = TRUE)
-                              cat(paste0("scale_size_area(max_size = 10) +"),file = report.name ,sep = "\n", append = TRUE)
-                              cat(paste0("guides(fill = FALSE) +"),file = report.name ,sep = "\n", append = TRUE)
-                              cat(paste0("xlab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
-                              cat(paste0("ylab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
-                              cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
-                              cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = report.name ,sep = "\n", append = TRUE)
-                              cat(paste0("ggtitle(\"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-                              cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,".\") +"),file = report.name ,sep = "\n", append = TRUE)
-                              cat(paste0("kobo_unhcr_style_histo()"),file = report.name ,sep = "\n", append = TRUE)
-                              cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("data.outlier1 <- ",questions.frame,"$",disag.name),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("data.nooutlier1 <- as.data.frame(",questions.frame,"$",disag.name,")"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("qnt1 <- stats::quantile(data.outlier1, probs=c(.25, .75), na.rm = T)"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("caps.df1 <- as.data.frame(stats::quantile(data.outlier1, probs=c(.05, .95), na.rm = T))"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("H1  <- 1.5 * IQR(data.outlier1, na.rm = T)"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("data.nooutlier1[(data.nooutlier1 < (qnt1[1] - H1)) & !(is.na( data.nooutlier1))  ] <- caps.df1[1,1]"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("data.nooutlier1[ (data.nooutlier1 > (qnt1[2] + H1)) & !(is.na(data.nooutlier1)) ] <- caps.df1[2,1]"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("names(data.nooutlier1)[1] <- \"variable\""),file = report.name ,sep = "\n", append = TRUE)
+                        ## Boxplot with capping treatment
+                        cat(paste0("## Boxplot"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("plot1 <- ggplot(",questions.frame,", aes(y=data.nooutlier1$variable, x= ",questions.frame,"$",questions.name,")) +"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour = \"black\") +  #notch=TRUE"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("scale_size_area(max_size = 10) +"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("guides(fill = FALSE) +"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("xlab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("ylab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("ggtitle(\"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,".\") +"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("kobo_unhcr_style_histo()"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
                       }
                       ## Close chunk
                       cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
@@ -766,137 +770,137 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                       cat(paste0("\n```\n", sep = ""), file = report.name, append = TRUE)
                       cat("\n", file = report.name, append = TRUE)
 
-                     }
+                    }
                   }
-              }
-            }
-
-
-            ## Selectone.correlations   #######################################################################
-            ### We can test all correlation before and keep in the report only the multiple plots
-            ## First check that variables are in the frame
-            correlation1 <- correlation[correlation$qrepeatlabel %in% questions.frame, ]
-            check <- as.data.frame(names(get(paste0(questions.frame))))
-            names(check)[1] <- "fullname"
-            check$id <- row.names(check)
-            correlationdf <- plyr::join(x = correlation1, y = check, by = "fullname", type = "left")
-            correlationdf <- correlationdf[!is.na(correlationdf$id), ]
-
-
-            if (nrow(correlationdf) == 0 ) {
-              cat("No correlation requested for this question...\n",file = report.name , sep = "\n", append = TRUE)
-              cat("No correlation requested for this question...\n")
-              cat("\n", file = report.name, append = TRUE)
-            } else if (nrow(frequ) %in% c("0","1")) {
-              #cat("No responses recorded for this question. No analysis of correlation...\n",file = report.name , sep = "\n", append = TRUE)
-              cat("No responses recorded for this question. No analysis of correlation...\n")
-              cat("\n", file = report.name, append = TRUE)
-            } else {
-
-              cat("\n", file = report.name, append = TRUE)
-              cat(paste("### Significant Associations (chi-square with p value < 5%)" ,sep = ""),file = report.name ,sep = "\n", append = TRUE)
-              cat("\n", file = report.name, append = TRUE)
-
-              rm(chiquare.resultall)
-              chiquare.resultall <- data.frame(c(1))
-              names(chiquare.resultall)[1] <- "id"
-              chiquare.resultall$target <- "target"
-              chiquare.resultall$tested <- "result"
-              chiquare.resultall$frame <- "frame"
-              chiquare.resultall$target.n <- 1
-              chiquare.resultall$tested.n <- 2
-              chiquare.resultall$target.label <- "target.label"
-              chiquare.resultall$tested.label <- "tested.label"
-              chiquare.resultall$p.value <- 0.999
-
-
-              for (l in 1:nrow(correlationdf)) {
-                #l <- 1
-                chiquare.result <- data.frame(c(1))
-                names(chiquare.result)[1] <- "id"
-                chiquare.result$id <- l
-                chiquare.result[1, c("target")] <- questions.name
-                chiquare.result[1, c("tested")] <-  as.character(correlationdf[l, c("fullname")])
-                chiquare.result[1, c("frame")]  <- questions.frame
-                ## getting labels
-                chiquare.result[1, c("target.n")] <-   which(colnames(get(paste0(chiquare.result$frame))) == chiquare.result[1, c("target")])
-                chiquare.result[1, c("tested.n")] <-   which(colnames(get(paste0(chiquare.result$frame))) == chiquare.result[1, c("tested")])
-                chiquare.result[1, c("target.label")]  <- attributes(get(paste0(chiquare.result$frame)))$variable.labels[chiquare.result[1, c("target.n")]]
-                chiquare.result[1, c("tested.label")]  <- attributes(get(paste0(chiquare.result$frame)))$variable.labels[chiquare.result[1, c("tested.n")]]
-
-                cat(paste0(i,"-", j,"-" , "-" ,l," correlation between -- ",chiquare.result[1, c("target.label")]," -- and -- ",chiquare.result[1, c("tested.label")]," --.\n"))
-                formula <- cbind(as.data.frame(get(paste0(chiquare.result$frame))[[chiquare.result$target]]), as.data.frame(get(paste0(chiquare.result$frame))[[chiquare.result$tested]]))
-                names(formula)[1] <- "target"
-                names(formula)[2] <- "tested"
-                formula <- formula[!(is.na(formula$target)),]
-                formula <- formula[!(is.na(formula$tested)),]
-
-                ## Check that each class is represented
-                check.class <- as.data.frame(table(formula$target,formula$tested))
-                n.class <- nrow(check.class)
-                n.class.notnull <- nrow(check.class[check.class$Freq > 0, ])
-
-                ### Testing number of levels for the 2 variables as 'x' and 'y' must have at least 2 levels
-                if ( (chiquare.result[1, c("target")] != chiquare.result[1, c("tested")] ) &
-                     (nlevels(as.factor(as.character(formula$target))) > 1 ) &
-                     (nlevels(as.factor(as.character(formula$tested))) > 1 ) &
-
-                     ## If too many levels, the corrogram is not legible...
-                     (nlevels(as.factor(as.character(formula$target))) < 8 ) &
-                     (nlevels(as.factor(as.character(formula$tested))) < 8 ) &
-                     ## May have class with zero value...
-                     n.class == n.class.notnull
-
-                )
-                { chiquare.result[1, c("p.value")]  <- round(stats::chisq.test(formula$target,formula$tested)$p.value,4)
-                } else {chiquare.result[1, c("p.value")] <- 1  }
-                chiquare.resultall <- rbind(chiquare.resultall, chiquare.result)
-                rm(chiquare.result)
-              }
-
-              ## Subsetting results on test where p-value is below 0.05
-              chiquare.true <- chiquare.resultall[ chiquare.resultall$p.value <= 0.05, ]
-
-              ### Case there not any positive test
-              if (nrow(chiquare.true) == 0 ) {
-                cat("No significant association found for this question...\n",file = report.name , sep = "\n", append = TRUE)
-                cat("No significant association found for this question...\n")
-
-              } else {
-                ## now generating correlation plot for each of the dependent.
-                for (m in 1:nrow(chiquare.true)) {
-                  frame <- as.character(chiquare.true[m,4 ])
-                  target <- as.character(chiquare.true[m,2 ])
-                  target.label <- as.character(chiquare.true[m,7])
-
-                  tested <- as.character(chiquare.true[m,3 ])
-                  tested.label <- as.character(chiquare.true[m,8 ])
-
-                  #formula.target  <- get(paste0(frame))[[target]]
-                  #formula.tested  <- get(paste0(frame))[[tested]]
-
-                  formula.target1 <- paste0(frame, "$", target)
-                  formula.tested1 <- paste0(frame, "$", tested)
-
-                  ## Open chunk
-                  cat(paste0("\n```{r ", questions.name,"ccc",m, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=6, size=\"small\"}\n"), file = report.name, append = TRUE)
-
-                  cat(paste0("corrplot(stats::chisq.test(",formula.target1,",", formula.tested1,")$residuals,"), file = report.name , sep = "\n", append = TRUE)
-                  cat(paste0("is.cor = FALSE, # use for general matrix to convert to Sq form"), file = report.name , sep = "\n", append = TRUE)
-                  cat(paste0("cl.pos = \"n\", ## Do not display the color legend"), file = report.name , sep = "\n", append = TRUE)
-                  cat(paste0("cl.cex = 0.7, # Size of all label"), file = report.name , sep = "\n", append = TRUE)
-                  cat(paste0("tl.cex = 0.7, # Size of axis label"), file = report.name , sep = "\n", append = TRUE)
-                  cat(paste0("tl.srt = 45, # string rotation in degrees"), file = report.name , sep = "\n", append = TRUE)
-                  cat(paste0("tl.col = \"black\", # color of text label."), file = report.name , sep = "\n", append = TRUE)
-                  cat(paste0("addCoef.col = \"grey\", # add coeff in the chart"), file = report.name , sep = "\n", append = TRUE)
-                  cat(paste0("number.cex= 3/ncol(stats::chisq.test(",formula.target1,",", formula.tested1,")), # size of coeff"), file = report.name , sep = "\n", append = TRUE)
-                  cat(paste0("mar = c(0.5,0.5,4, 0.5), ## margin of plots"), file = report.name , sep = "\n", append = TRUE)
-                  cat(paste0("title= paste0(\"Correlation between", "\n",target.label," (row)\n", " & ",tested.label," (col)\")) "), file = report.name , sep = "\n", append = TRUE)
-                  ## Close chunk
-                  cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
                 }
               }
-            }
+
+
+              ## Selectone.correlations   #######################################################################
+              ### We can test all correlation before and keep in the report only the multiple plots
+              ## First check that variables are in the frame
+              correlation1 <- correlation[correlation$qrepeatlabel %in% questions.frame, ]
+              check <- as.data.frame(names(get(paste0(questions.frame))))
+              names(check)[1] <- "fullname"
+              check$id <- row.names(check)
+              correlationdf <- plyr::join(x = correlation1, y = check, by = "fullname", type = "left")
+              correlationdf <- correlationdf[!is.na(correlationdf$id), ]
+
+
+              if (nrow(correlationdf) == 0 ) {
+                cat("No correlation requested for this question...\n",file = report.name , sep = "\n", append = TRUE)
+                cat("No correlation requested for this question...\n")
+                cat("\n", file = report.name, append = TRUE)
+              } else if (nrow(frequ) %in% c("0","1")) {
+                #cat("No responses recorded for this question. No analysis of correlation...\n",file = report.name , sep = "\n", append = TRUE)
+                cat("No responses recorded for this question. No analysis of correlation...\n")
+                cat("\n", file = report.name, append = TRUE)
+              } else {
+
+                cat("\n", file = report.name, append = TRUE)
+                cat(paste("### Significant Associations (chi-square with p value < 5%)" ,sep = ""),file = report.name ,sep = "\n", append = TRUE)
+                cat("\n", file = report.name, append = TRUE)
+
+                rm(chiquare.resultall)
+                chiquare.resultall <- data.frame(c(1))
+                names(chiquare.resultall)[1] <- "id"
+                chiquare.resultall$target <- "target"
+                chiquare.resultall$tested <- "result"
+                chiquare.resultall$frame <- "frame"
+                chiquare.resultall$target.n <- 1
+                chiquare.resultall$tested.n <- 2
+                chiquare.resultall$target.label <- "target.label"
+                chiquare.resultall$tested.label <- "tested.label"
+                chiquare.resultall$p.value <- 0.999
+
+
+                for (l in 1:nrow(correlationdf)) {
+                  #l <- 1
+                  chiquare.result <- data.frame(c(1))
+                  names(chiquare.result)[1] <- "id"
+                  chiquare.result$id <- l
+                  chiquare.result[1, c("target")] <- questions.name
+                  chiquare.result[1, c("tested")] <-  as.character(correlationdf[l, c("fullname")])
+                  chiquare.result[1, c("frame")]  <- questions.frame
+                  ## getting labels
+                  chiquare.result[1, c("target.n")] <-   which(colnames(get(paste0(chiquare.result$frame))) == chiquare.result[1, c("target")])
+                  chiquare.result[1, c("tested.n")] <-   which(colnames(get(paste0(chiquare.result$frame))) == chiquare.result[1, c("tested")])
+                  chiquare.result[1, c("target.label")]  <- attributes(get(paste0(chiquare.result$frame)))$variable.labels[chiquare.result[1, c("target.n")]]
+                  chiquare.result[1, c("tested.label")]  <- attributes(get(paste0(chiquare.result$frame)))$variable.labels[chiquare.result[1, c("tested.n")]]
+
+                  cat(paste0(i,"-", j,"-" , "-" ,l," correlation between -- ",chiquare.result[1, c("target.label")]," -- and -- ",chiquare.result[1, c("tested.label")]," --.\n"))
+                  formula <- cbind(as.data.frame(get(paste0(chiquare.result$frame))[[chiquare.result$target]]), as.data.frame(get(paste0(chiquare.result$frame))[[chiquare.result$tested]]))
+                  names(formula)[1] <- "target"
+                  names(formula)[2] <- "tested"
+                  formula <- formula[!(is.na(formula$target)),]
+                  formula <- formula[!(is.na(formula$tested)),]
+
+                  ## Check that each class is represented
+                  check.class <- as.data.frame(table(formula$target,formula$tested))
+                  n.class <- nrow(check.class)
+                  n.class.notnull <- nrow(check.class[check.class$Freq > 0, ])
+
+                  ### Testing number of levels for the 2 variables as 'x' and 'y' must have at least 2 levels
+                  if ( (chiquare.result[1, c("target")] != chiquare.result[1, c("tested")] ) &
+                       (nlevels(as.factor(as.character(formula$target))) > 1 ) &
+                       (nlevels(as.factor(as.character(formula$tested))) > 1 ) &
+
+                       ## If too many levels, the corrogram is not legible...
+                       (nlevels(as.factor(as.character(formula$target))) < 8 ) &
+                       (nlevels(as.factor(as.character(formula$tested))) < 8 ) &
+                       ## May have class with zero value...
+                       n.class == n.class.notnull
+
+                  )
+                  { chiquare.result[1, c("p.value")]  <- round(stats::chisq.test(formula$target,formula$tested)$p.value,4)
+                  } else {chiquare.result[1, c("p.value")] <- 1  }
+                  chiquare.resultall <- rbind(chiquare.resultall, chiquare.result)
+                  rm(chiquare.result)
+                }
+
+                ## Subsetting results on test where p-value is below 0.05
+                chiquare.true <- chiquare.resultall[ chiquare.resultall$p.value <= 0.05, ]
+
+                ### Case there not any positive test
+                if (nrow(chiquare.true) == 0 ) {
+                  cat("No significant association found for this question...\n",file = report.name , sep = "\n", append = TRUE)
+                  cat("No significant association found for this question...\n")
+
+                } else {
+                  ## now generating correlation plot for each of the dependent.
+                  for (m in 1:nrow(chiquare.true)) {
+                    frame <- as.character(chiquare.true[m,4 ])
+                    target <- as.character(chiquare.true[m,2 ])
+                    target.label <- as.character(chiquare.true[m,7])
+
+                    tested <- as.character(chiquare.true[m,3 ])
+                    tested.label <- as.character(chiquare.true[m,8 ])
+
+                    #formula.target  <- get(paste0(frame))[[target]]
+                    #formula.tested  <- get(paste0(frame))[[tested]]
+
+                    formula.target1 <- paste0(frame, "$", target)
+                    formula.tested1 <- paste0(frame, "$", tested)
+
+                    ## Open chunk
+                    cat(paste0("\n```{r ", questions.name,"ccc",m, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=6, size=\"small\"}\n"), file = report.name, append = TRUE)
+
+                    cat(paste0("corrplot(stats::chisq.test(",formula.target1,",", formula.tested1,")$residuals,"), file = report.name , sep = "\n", append = TRUE)
+                    cat(paste0("is.cor = FALSE, # use for general matrix to convert to Sq form"), file = report.name , sep = "\n", append = TRUE)
+                    cat(paste0("cl.pos = \"n\", ## Do not display the color legend"), file = report.name , sep = "\n", append = TRUE)
+                    cat(paste0("cl.cex = 0.7, # Size of all label"), file = report.name , sep = "\n", append = TRUE)
+                    cat(paste0("tl.cex = 0.7, # Size of axis label"), file = report.name , sep = "\n", append = TRUE)
+                    cat(paste0("tl.srt = 45, # string rotation in degrees"), file = report.name , sep = "\n", append = TRUE)
+                    cat(paste0("tl.col = \"black\", # color of text label."), file = report.name , sep = "\n", append = TRUE)
+                    cat(paste0("addCoef.col = \"grey\", # add coeff in the chart"), file = report.name , sep = "\n", append = TRUE)
+                    cat(paste0("number.cex= 3/ncol(stats::chisq.test(",formula.target1,",", formula.tested1,")), # size of coeff"), file = report.name , sep = "\n", append = TRUE)
+                    cat(paste0("mar = c(0.5,0.5,4, 0.5), ## margin of plots"), file = report.name , sep = "\n", append = TRUE)
+                    cat(paste0("title= paste0(\"Correlation between", "\n",target.label," (row)\n", " & ",tested.label," (col)\")) "), file = report.name , sep = "\n", append = TRUE)
+                    ## Close chunk
+                    cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
+                  }
+                }
+              }
             }
 
 
@@ -908,7 +912,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
             frequ <- as.data.frame(table( get(paste0(questions.frame))[[questions.name]]))
 
             ####Decimal.tabulation########################################################################
-          #  cat(paste("### Tabulation\n" ,sep = ""),file = report.name ,sep = "\n", append = TRUE)
+            #  cat(paste("### Tabulation\n" ,sep = ""),file = report.name ,sep = "\n", append = TRUE)
 
             ## Open chunk
             cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=4, size=\"small\"}\n", sep = '\n'), file = report.name, append = TRUE)
@@ -918,25 +922,25 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
 
             ### Check if we have records or if we have too many records
             if (nrow(frequ) %in% c("0","1")) {
-              cat(paste0("cat(\"No responses recorded for this question...\")"),file = report.name , sep = "\n", append = TRUE)
+              #cat(paste0("cat(\"No responses recorded for this question...\")"),file = report.name , sep = "\n", append = TRUE)
               cat("No responses recorded for this question...\n")
             } else if (nrow(frequ) > 10) {
-            #   cat(paste0("cat(\"There's too many potential values to display. We will only show the histogram. \n \")"),file = report.name ,sep = "\n", append = TRUE)
+              #   cat(paste0("cat(\"There's too many potential values to display. We will only show the histogram. \n \")"),file = report.name ,sep = "\n", append = TRUE)
             } else{
-           #   cat(paste0("## display table"),file = report.name ,sep = "\n", append = TRUE)
-           #   cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = report.name ,sep = "\n", append = TRUE)
+              #   cat(paste0("## display table"),file = report.name ,sep = "\n", append = TRUE)
+              #   cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = report.name ,sep = "\n", append = TRUE)
             }
 
             ## To do implement FD number of bin: https://www.r-bloggers.com/friday-function-nclass/
             if (nrow(frequ) %in% c("0","1")) {
-              cat(paste0("cat(\"No responses recorded for this question...\")"),file = report.name , sep = "\n", append = TRUE)
+              #cat(paste0("cat(\"No responses recorded for this question...\")"),file = report.name , sep = "\n", append = TRUE)
               cat("\n")
             } else {
 
               cat(paste0("average <- as.data.frame(survey::svymean(~ ",questions.name,", design = ",questions.frame,".survey, na.rm = TRUE))"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("cat(paste0(\"Based on the sample design, the average weighted mean response for this question is \", as.numeric(round(average$mean, digits = 2))))"),file = report.name ,sep = "\n", append = TRUE)
-            #  cat(paste0("sd <- as.data.frame(jtools::svysd(~ ",questions.name,", design = ",questions.frame,".survey, na.rm = TRUE))"),file = report.name ,sep = "\n", append = TRUE)
-             # cat(paste0("cat(paste0(\"Based on the sample design, the average weighted standard deviation for this question is \", as.numeric(round(sd, digits = 2))))"),file = report.name ,sep = "\n", append = TRUE)
+              #  cat(paste0("sd <- as.data.frame(jtools::svysd(~ ",questions.name,", design = ",questions.frame,".survey, na.rm = TRUE))"),file = report.name ,sep = "\n", append = TRUE)
+              # cat(paste0("cat(paste0(\"Based on the sample design, the average weighted standard deviation for this question is \", as.numeric(round(sd, digits = 2))))"),file = report.name ,sep = "\n", append = TRUE)
 
 
               ### Detect outliers and adjust bien numbers #####
@@ -945,8 +949,8 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
 
               data.outlier <- get(paste0(questions.frame))[[questions.name]]
               data.nooutlier <- as.data.frame(get(paste0(questions.frame))[[questions.name]])
-              qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)
-              caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))
+              qnt <- stats::quantile(data.outlier, probs = c(.25, .75), na.rm = T)
+              caps.df <- as.data.frame(stats::quantile(data.outlier, probs = c(.05, .95), na.rm = T))
               H  <- stats::IQR(data.outlier, na.rm = T)
 
 
@@ -958,7 +962,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
               cat(paste0("ggtitle(\"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("subtitle = \":\n\""),file = report.name ,sep = "\n", append = TRUE)
               #cat(paste0("\"Mean: \",round(mean(frequ$Var1),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
-             # cat(paste0("\"Standard Deviation: \",round(sd(frequ$Var1),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
+              # cat(paste0("\"Standard Deviation: \",round(sd(frequ$Var1),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
               #cat(paste0("\"Coefficient of Variation: \",round(cv(frequ$Var1),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
               #cat(paste0("\"Skewness: \",round(skewness(frequ$Var1),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
               #cat(paste0("\"and Kurtosis: \",round(kurtosis(frequ$Var1),2) ,\n\""), file = report.name ,sep = "\n", append = TRUE)
@@ -968,35 +972,35 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
               cat(paste0("\n\n"),file = report.name ,sep = "\n", append = TRUE)
 
               if (H >= 1.349 ) {
-                  cat(paste0("cat(\"No outliers detectected...\")"),file = report.name , sep = "\n", append = TRUE)
-                  cat("\n")
-                } else {
-                        cat(paste0("data.outlier <- ",questions.frame,"$",questions.name),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("data.nooutlier <- as.data.frame(",questions.frame,"$",questions.name,")"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("qnt <- quantile(data.outlier, probs = c(.25, .75), na.rm = T)"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("caps.df <- as.data.frame(quantile(data.outlier, probs = c(.05, .95), na.rm = T))"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("H  <- 1.5 * stats::IQR(data.outlier, na.rm = T)"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("cat(\"No outliers detectected...\")"),file = report.name , sep = "\n", append = TRUE)
+                cat("\n")
+              } else {
+                cat(paste0("data.outlier <- ",questions.frame,"$",questions.name),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("data.nooutlier <- as.data.frame(",questions.frame,"$",questions.name,")"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("qnt <- stats::quantile(data.outlier, probs = c(.25, .75), na.rm = T)"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("caps.df <- as.data.frame(stats::quantile(data.outlier, probs = c(.05, .95), na.rm = T))"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("H  <- 1.5 * stats::IQR(data.outlier, na.rm = T)"),file = report.name ,sep = "\n", append = TRUE)
 
-                        cat(paste0("data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("names(data.nooutlier)[1] <- \"variable\""),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("names(data.nooutlier)[1] <- \"variable\""),file = report.name ,sep = "\n", append = TRUE)
 
 
-                        ### Now graphs with treated variable #####
-                        cat(paste0("plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("geom_histogram(color = \"white\",fill = \"#2a87c8\", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("labs(x = \"\", y = \"Count\") +"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("ggtitle(\"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("subtitle = \"After data capping treatement:\n\""),file = report.name ,sep = "\n", append = TRUE)
-                        #cat(paste0("\"Mean: \",round(mean(data.nooutlier$variable),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
-                        #cat(paste0("\"Standard Deviation: \",round(sd(data.nooutlier$variable),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
-                        #cat(paste0("\"Coefficient of Variation: \",round(cv(data.nooutlier$variable),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
-                        #cat(paste0("\"Skewness: \",round(skewness(data.nooutlier$variable),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
-                        #cat(paste0("\"and Kurtosis: \",round(kurtosis(data.nooutlier$variable),2) ,\n\""), file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0(") +"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("kobo_unhcr_style_histo()"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
-                      }
+                ### Now graphs with treated variable #####
+                cat(paste0("plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("geom_histogram(color = \"white\",fill = \"#2a87c8\", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("labs(x = \"\", y = \"Count\") +"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("ggtitle(\"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("subtitle = \"After data capping treatement:\n\""),file = report.name ,sep = "\n", append = TRUE)
+                #cat(paste0("\"Mean: \",round(mean(data.nooutlier$variable),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
+                #cat(paste0("\"Standard Deviation: \",round(sd(data.nooutlier$variable),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
+                #cat(paste0("\"Coefficient of Variation: \",round(cv(data.nooutlier$variable),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
+                #cat(paste0("\"Skewness: \",round(skewness(data.nooutlier$variable),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
+                #cat(paste0("\"and Kurtosis: \",round(kurtosis(data.nooutlier$variable),2) ,\n\""), file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0(") +"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("kobo_unhcr_style_histo()"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+              }
             }
             ## Close chunk
             cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
@@ -1088,21 +1092,21 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                       cat(paste0("cat(\"No outliers detectected...\")"),file = report.name , sep = "\n", append = TRUE)
                       cat("\n")
                     } else {
-                        ## Boxplot with capping treatment
-                        cat(paste0("## Boxplot"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("plot1 <- ggplot(",questions.frame,", aes(y=data.nooutlier$variable, x= ",questions.frame,"$",disag.name,")) +"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour = \"black\") +  #notch=TRUE"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("scale_size_area(max_size = 10) +"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("guides(fill = FALSE) +"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("xlab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("ylab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("scale_y_continuous(breaks= pretty_breaks()) +"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("ggtitle(\"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,"\") +"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("kobo_unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
-                        }
+                      ## Boxplot with capping treatment
+                      cat(paste0("## Boxplot"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("plot1 <- ggplot(",questions.frame,", aes(y=data.nooutlier$variable, x= ",questions.frame,"$",disag.name,")) +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("geom_boxplot(fill=\"#2a87c8\",colour = \"black\") +  #notch=TRUE"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("scale_size_area(max_size = 10) +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("guides(fill = FALSE) +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("xlab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("ylab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("scale_y_continuous(breaks= pretty_breaks()) +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("ggtitle(\"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,"\") +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("kobo_unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                    }
                     ## Close chunk
                     cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
 
@@ -1117,8 +1121,8 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
 
                     cat(paste0("data.outlier1 <- ",questions.frame,"$",disag.name),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("data.nooutlier1 <- as.data.frame(",questions.frame,"$",disag.name,")"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("qnt1 <- quantile(data.outlier1, probs=c(.25, .75), na.rm = T)"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("caps.df1 <- as.data.frame(quantile(data.outlier1, probs=c(.05, .95), na.rm = T))"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("qnt1 <- stats::quantile(data.outlier1, probs=c(.25, .75), na.rm = T)"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("caps.df1 <- as.data.frame(stats::quantile(data.outlier1, probs=c(.05, .95), na.rm = T))"),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("H1  <- 1.5 * IQR(data.outlier1, na.rm = T)"),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("data.nooutlier1[(data.nooutlier1 < (qnt1[1] - H)) & !(is.na( data.nooutlier1))  ] <- caps.df1[1,1]"),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("data.nooutlier1[ (data.nooutlier1 > (qnt1[2] + H)) & !(is.na(data.nooutlier1)) ] <- caps.df1[2,1]"),file = report.name ,sep = "\n", append = TRUE)
@@ -1169,7 +1173,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
 
             ###select.multi.tab######################################################################
 
-          #  cat(paste("### Tabulation" ,sep = ""),file = report.name ,sep = "\n", append = TRUE)
+            #  cat(paste("### Tabulation" ,sep = ""),file = report.name ,sep = "\n", append = TRUE)
 
             ##Compute contengency table
             selectmultilist1 <- as.data.frame(dico[dico$type == "select_multiple" & dico$listname == as.character(questions.listname) &
@@ -1188,7 +1192,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
 
             ### Account for the case where there no answer to given the questions
             if (ncol(data.selectmultilist) %in% c("0","1")) {
-              cat("No responses recorded for this question...\n",file = report.name , sep = "\n", append = TRUE)
+              #cat("No responses recorded for this question...\n",file = report.name , sep = "\n", append = TRUE)
               cat("No responses recorded for this question...\n")
             } else{
 
@@ -1206,13 +1210,13 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
               frequ <- castdata[castdata$Var1 != "", ]
 
               if (nrow(frequ) %in% c("0","1")) {
-                cat("No responses recorded for this question...\n",file = report.name , sep = "\n", append = TRUE)
+                #cat("No responses recorded for this question...\n",file = report.name , sep = "\n", append = TRUE)
                 cat("No responses recorded for this question...\n")
               } else{
 
                 ## Open chunk
                 cat(paste0("\n```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=8, size=\"small\"}\n", sep = '\n'), file = report.name, append = TRUE)
-        #         cat(paste0("### Tabulation"),file = report.name ,sep = "\n", append = TRUE)
+                #         cat(paste0("### Tabulation"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("##Compute contengency table"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("selectmultilist1 <- as.data.frame(dico[dico$type == \"select_multiple\" & dico$listname==\"",questions.listname, "\" & grepl(\"", questions.shortname,"\",dico$fullname)==TRUE , c(\"fullname\")])"),file = report.name ,sep = "\n", append = TRUE)
 
@@ -1240,7 +1244,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                 cat(paste0("names(frequ)[1] <- \"", questions.shortname,"\""),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("frequ[ ,3] <- paste0(round(frequ[ ,3]*100,digits = 1),\"%\")"),file = report.name ,sep = "\n", append = TRUE)
 
-            #    cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = report.name ,sep = "\n", append = TRUE)
+                #    cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = report.name ,sep = "\n", append = TRUE)
 
                 cat(paste0("frequ1 <- castdata[castdata$Var1!=\"\", ]"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("frequ1[ ,4] <- paste0(round(frequ1[ ,3]*100,digits = 1),\"%\")"),file = report.name ,sep = "\n", append = TRUE)
@@ -1286,7 +1290,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
             frequ <- as.data.frame(table( get(paste0(questions.frame))[[questions.name]]))
 
             if (nrow(frequ) %in% c("0","1")) {
-              cat(paste0("cat(\"No responses recorded for this question...\")"),file = report.name , sep = "\n", append = TRUE)
+              #cat(paste0("cat(\"No responses recorded for this question...\")"),file = report.name , sep = "\n", append = TRUE)
               cat("No responses recorded for this question...\n")
             } else{
 

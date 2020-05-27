@@ -4,7 +4,12 @@
 \alias{kobo_crunching_report}
 \title{Generate Data Crunching Report}
 \usage{
-kobo_crunching_report(form = "form.xls", app = "console", output = "html")
+kobo_crunching_report(
+  form = "form.xls",
+  app = "console",
+  output = "html",
+  render = "TRUE"
+)
 }
 \arguments{
 \item{form}{The full filename of the form to be accessed (xls or xlsx file).
@@ -12,7 +17,9 @@ It is assumed that the form is stored in the data folder.}
 
 \item{app}{The place where the function has been executed, the default is the console and the second option is the shiny app}
 
-\item{output}{The output format html or aspx if you need to upload on sharepoint), docx (to quickly cut non interesting vz and take note during data interpretation session), pptx (to quickly cut non interesting vz and persent during data interpretation session)}
+\item{output}{The output format html or aspx if you need to upload on sharepoint), docx (to quickly cut non interesting vz and take note during data interpretation session), pptx (to quickly cut non interesting vz and persent during data interpretation session), Default is html}
+
+\item{render}{TRUE or FALSE - Tells wheter to only produce Rmd or to also knit it in the required output format. Default is TRUE. Usefull for testing as rending takes time.}
 }
 \value{
 No return, All results will be saved on RMD files and Word files

@@ -160,7 +160,12 @@
     <p>Generate crunching Report that contains all descriptive statistics, correlation analysis, tabulation and data visualization for variables and indicators.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>kobo_crunching_report</span>(<span class='kw'>form</span> <span class='kw'>=</span> <span class='st'>"form.xls"</span>, <span class='kw'>app</span> <span class='kw'>=</span> <span class='st'>"console"</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"html"</span>)</pre>
+    <pre class="usage"><span class='fu'>kobo_crunching_report</span>(
+  <span class='kw'>form</span> <span class='kw'>=</span> <span class='st'>"form.xls"</span>,
+  <span class='kw'>app</span> <span class='kw'>=</span> <span class='st'>"console"</span>,
+  <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"html"</span>,
+  <span class='kw'>render</span> <span class='kw'>=</span> <span class='st'>"TRUE"</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -176,7 +181,11 @@ It is assumed that the form is stored in the data folder.</p></td>
     </tr>
     <tr>
       <th>output</th>
-      <td><p>The output format html or aspx if you need to upload on sharepoint), docx (to quickly cut non interesting vz and take note during data interpretation session), pptx (to quickly cut non interesting vz and persent during data interpretation session)</p></td>
+      <td><p>The output format html or aspx if you need to upload on sharepoint), docx (to quickly cut non interesting vz and take note during data interpretation session), pptx (to quickly cut non interesting vz and persent during data interpretation session), Default is html</p></td>
+    </tr>
+    <tr>
+      <th>render</th>
+      <td><p>TRUE or FALSE - Tells wheter to only produce Rmd or to also knit it in the required output format. Default is TRUE. Usefull for testing as rending takes time.</p></td>
     </tr>
     </table>
 

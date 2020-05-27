@@ -163,13 +163,22 @@
     <loc>https://unhcr.github.io/koboloadeR/docs//reference/kobo_unhcr_style_bar.html</loc>
   </url>
   <url>
+    <loc>https://unhcr.github.io/koboloadeR/docs//reference/kobo_unhcr_style_bar_big.html</loc>
+  </url>
+  <url>
     <loc>https://unhcr.github.io/koboloadeR/docs//reference/kobo_unhcr_style_histo.html</loc>
+  </url>
+  <url>
+    <loc>https://unhcr.github.io/koboloadeR/docs//reference/kobo_unhcr_style_histo_big.html</loc>
   </url>
   <url>
     <loc>https://unhcr.github.io/koboloadeR/docs//reference/kobo_unhcr_style_map.html</loc>
   </url>
   <url>
     <loc>https://unhcr.github.io/koboloadeR/docs//reference/kobo_unhcr_style_scatter.html</loc>
+  </url>
+  <url>
+    <loc>https://unhcr.github.io/koboloadeR/docs//reference/kobo_unhcr_style_scatter_big.html</loc>
   </url>
   <url>
     <loc>https://unhcr.github.io/koboloadeR/docs//reference/kobo_weight.html</loc>

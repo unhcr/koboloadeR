@@ -913,6 +913,7 @@ kobo_prepare_form <- function(form = "form.xls") {
         frame = character(),
         listname = character(),
         calculation = character(),
+        report = character(),
         chapter = character(),
         disaggregation = character(),
         correlate = character(),
@@ -922,9 +923,6 @@ kobo_prepare_form <- function(form = "form.xls") {
         variable = character(),
         mappoint = character(),
         mappoly = character(),
-        structuralequation.risk = character(),
-        structuralequation.coping = character(),
-        structuralequation.resilience = character(),
         stringsAsFactors = FALSE
       )
      }
@@ -970,6 +968,12 @@ kobo_prepare_form <- function(form = "form.xls") {
     } else {
       cat(" No column `calculation` in your indicator worksheet. Creating a dummy one for the moment...\n");
       indicator$calculation <- ""
+    }
+    if ("report" %in% colnames(indicator)) {
+      cat(" Good: You have a column `report` in your indicator worksheet.\n");
+    } else {
+      cat(" No column `report` in your indicator worksheet. Creating a dummy one for the moment...\n");
+      indicator$report <- ""
     }
     if ("chapter" %in% colnames(indicator)) {
       cat(" Good: You have a column `chapter` in your indicator worksheet.\n");
@@ -1025,30 +1029,11 @@ kobo_prepare_form <- function(form = "form.xls") {
       cat(" No column `mappoly` in your indicator worksheet. Creating a dummy one for the moment...\n");
       indicator$mappoly <- ""
     }
-    if ("structuralequation.risk" %in% colnames(indicator)) {
-      cat(" Good: You have a column `structuralequation.risk` in your indicator worksheet. This will be used to configure the vulnerability structural equation model\n");
-    } else {
-      cat(" No column `structuralequation.risk` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$structuralequation.risk <- ""
-    }
-    if ("structuralequation.coping" %in% colnames(indicator)) {
-      cat(" Good: You have a column `structuralequation.coping` in your indicator worksheet. This will be used to configure the vulnerability structural equation model\n");
-    } else {
-      cat(" No column `structuralequation.coping` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$structuralequation.coping <- ""
-    }
-    if ("structuralequation.resilience" %in% colnames(indicator)) {
-      cat(" Good: You have a column `structuralequation.resilience` in your indicator worksheet. This will be used to configure the vulnerability structural equation model\n");
-    } else {
-      cat(" No column `structuralequation.resilience` in your indicator worksheet. Creating a dummy one for the moment...\n");
-      indicator$structuralequation.resilience <- ""
-    }
 
     indicator <- indicator[ ,c("type","fullname","labelReport", "hintReport",
                                "frame", "listname","calculation",
-                               "chapter", "disaggregation", "correlate",
-                               "anonymise", "cluster", "predict", "variable", "mappoint", "mappoly",
-                               "structuralequation.risk","structuralequation.coping","structuralequation.resilience")]
+                               "report","chapter", "disaggregation", "correlate",
+                               "anonymise", "cluster", "predict", "variable", "mappoint", "mappoly")]
 
     sheetname <- "indicator"
     if (!is.null(xlsx::getSheets(wb)[[sheetname]]))

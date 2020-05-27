@@ -96,8 +96,11 @@ reference:
       - kobo_left_align
       - kobo_unhcr_style_bar
       - kobo_unhcr_style_histo
-      - kobo_unhcr_style_map
       - kobo_unhcr_style_scatter
+      - kobo_unhcr_style_bar_big
+      - kobo_unhcr_style_histo_big
+      - kobo_unhcr_style_scatter_big
+      - kobo_unhcr_style_map
   - title: Creating output
     contents:
       - kobo_ddi

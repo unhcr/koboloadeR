@@ -150,3 +150,6 @@ devtools::check(document = FALSE, args = c('--as-cran', '--no-examples', '--no-t
 
 
 #build_vignettes()
+
+tools::showNonASCIIfile("R/kobo_crunching_report.R")
+

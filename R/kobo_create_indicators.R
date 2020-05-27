@@ -67,14 +67,12 @@ kobo_create_indicators <- function(form = "form.xls") {
         dicotemp$label <- "trigger"
         dicotemp$labelReport <- "trigger"
         dicotemp$hintReport <- "trigger"
+        dicotemp$report <- "trigger"
         dicotemp$chapter <- "trigger"
         dicotemp$disaggregation <- "trigger"
         dicotemp$correlate <- "trigger"
         dicotemp$anonymise <- "trigger"
 
-        dicotemp$structuralequation.risk <- "trigger"
-        dicotemp$structuralequation.coping <- "trigger"
-        dicotemp$structuralequation.resilience <- "trigger"
 
         dicotemp$clean <- "trigger"
         dicotemp$cluster <- "trigger"
@@ -119,6 +117,7 @@ kobo_create_indicators <- function(form = "form.xls") {
           indicator.label	<- as.character(indicator[ i, c("label")])
           indicator.labelReport	<- as.character(indicator[ i, c("labelReport")])
           indicator.hintReport	<- as.character(indicator[ i, c("hintReport")])
+          indicator.report	<- as.character(indicator[ i, c("report")])
           indicator.chapter	<- as.character(indicator[ i, c("chapter")])
           indicator.disaggregation	<- as.character(indicator[ i, c("disaggregation")])
           indicator.correlate	<- as.character(indicator[ i, c("correlate")])
@@ -128,9 +127,6 @@ kobo_create_indicators <- function(form = "form.xls") {
           indicator.calculation	<- as.character(indicator[ i, c("calculation")])
 
 
-          indicator.structuralequation.risk 	<- as.character(indicator[ i, c("structuralequation.risk")])
-          indicator.structuralequation.coping 	<- as.character(indicator[ i, c("structuralequation.coping")])
-          indicator.structuralequation.resilience 	<- as.character(indicator[ i, c("structuralequation.resilience")])
           indicator.cluster 	<- as.character(indicator[ i, c("cluster")])
           indicator.predict	<- as.character(indicator[ i, c("predict")])
           indicator.variable	<- as.character(indicator[ i, c("variable")])
@@ -194,14 +190,12 @@ kobo_create_indicators <- function(form = "form.xls") {
           dicotemp1$label <- indicator.label
           dicotemp1$labelReport <- indicator.labelReport
           dicotemp1$hintReport <- indicator.hintReport
+          dicotemp1$report <- indicator.report
           dicotemp1$chapter <- indicator.chapter
           dicotemp1$disaggregation <- indicator.disaggregation
           dicotemp1$correlate <- indicator.correlate
           dicotemp1$anonymise <- indicator.anonymise
 
-          dicotemp1$structuralequation.risk <- indicator.structuralequation.risk
-          dicotemp1$structuralequation.coping <- indicator.structuralequation.coping
-          dicotemp1$structuralequation.resilience <- indicator.structuralequation.resilience
           dicotemp1$clean <- " "
           dicotemp1$cluster <- indicator.cluster
           dicotemp1$predict <- indicator.predict
@@ -245,6 +239,7 @@ kobo_create_indicators <- function(form = "form.xls") {
           #names(choices)[names(choices) == "labelReport"] <- "label"
           names(choices)[names(choices) == "label::english"] <- "label"
           names(choices)[names(choices) == "label::English"] <- "label"
+          names(choices)[names(choices) == "label::English (en)"] <- "label"
           names(choices)[names(choices) == "list name"] <- "listname"
           names(choices)[names(choices) == "list_name"] <- "listname"
 
@@ -290,9 +285,9 @@ kobo_create_indicators <- function(form = "form.xls") {
           #rm(choices)
 
         dicotemp.choice <- dicotemp[ !(is.na(dicotemp$listname)), c( "type", "name",
-                                                                  "fullname","labelReport","hintReport","chapter",
+                                                                  "fullname","labelReport","hintReport","report","chapter",
                                                                   "disaggregation","correlate","anonymise",
-                                                                  "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
+                                                                 # "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
                                                                   "clean","cluster","predict","variable","mappoint","mappoly",
                                                                   "listname","qrepeat","qrepeatlabel","qlevel","qgroup",
                                                                  # "order","weight","score","recategorise",
@@ -323,8 +318,8 @@ kobo_create_indicators <- function(form = "form.xls") {
 
         #### Now Row bind questions & choices########################################################################################################
         choices3 <- choices2[ ,c("type", "name", "namefull",  "labelfull","hintReport",
-                                 "chapter",  "disaggregation","correlate", "anonymise",
-                                 "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
+                                 "report", "chapter",  "disaggregation","correlate", "anonymise",
+                               #  "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
                                  "clean", "cluster", "predict",
                                  "variable", "mappoint", "mappoly",  "listname",
                                  "qrepeat",  "qrepeatlabel","qlevel","qgroup",
@@ -340,8 +335,8 @@ kobo_create_indicators <- function(form = "form.xls") {
 
         dicotemp <-    dicotemp[,c( "type", "name", "fullname", #"label",
                                     "labelReport","hintReport",
-                                    "chapter",  "disaggregation","correlate", "anonymise",
-                                    "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
+                                    "report", "chapter",  "disaggregation","correlate", "anonymise",
+                                    #"structuralequation.risk","structuralequation.coping","structuralequation.resilience",
                                     "clean", "cluster", "predict",
                                     "variable", "mappoint", "mappoly",  "listname",
                                     "qrepeat",  "qrepeatlabel","qlevel","qgroup",
@@ -375,8 +370,8 @@ kobo_create_indicators <- function(form = "form.xls") {
         #names(dico)
         #names(dicotemp)
         dico <- dico[ , c( "type", "name", "fullname", "label", "labelReport","hintReport",
-                           "chapter",  "disaggregation","correlate", "anonymise",
-                           "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
+                           "report","chapter",  "disaggregation","correlate", "anonymise",
+                           #"structuralequation.risk","structuralequation.coping","structuralequation.resilience",
                            "anonymise", "clean", "cluster", "predict", "variable", "mappoint", "mappoly",
 
                            "relevant",  "required", "constraint", "repeat_count",
@@ -387,8 +382,8 @@ kobo_create_indicators <- function(form = "form.xls") {
 
 
         dicotemp <- dicotemp[ , c("type", "name", "fullname", "label", "labelReport","hintReport",
-                                  "chapter",  "disaggregation","correlate", "anonymise",
-                                  "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
+                                  "report", "chapter",  "disaggregation","correlate", "anonymise",
+                                 # "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
                                   "anonymise", "clean", "cluster", "predict", "variable", "mappoint", "mappoly",
 
                                   "relevant",  "required", "constraint", "repeat_count",

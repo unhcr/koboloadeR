@@ -13,7 +13,9 @@ No return
 Load all necessary packages for koboloadeR
 }
 \examples{
+\dontrun{
 kobo_load_packages()
+}
 
 
 }

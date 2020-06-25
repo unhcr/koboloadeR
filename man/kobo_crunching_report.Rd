@@ -8,7 +8,8 @@ kobo_crunching_report(
   form = "form.xls",
   app = "console",
   output = "html",
-  render = "TRUE"
+  render = "TRUE",
+  lang = "en"
 )
 }
 \arguments{
@@ -20,6 +21,8 @@ It is assumed that the form is stored in the data folder.}
 \item{output}{The output format html or aspx if you need to upload on sharepoint), docx (to quickly cut non interesting vz and take note during data interpretation session), pptx (to quickly cut non interesting vz and persent during data interpretation session), Default is html}
 
 \item{render}{TRUE or FALSE - Tells wheter to only produce Rmd or to also knit it in the required output format. Default is TRUE. Usefull for testing as rending takes time.}
+
+\item{lang}{eng or esp - Change the langauge of the intro to the report - default is english}
 }
 \value{
 No return, All results will be saved on RMD files and Word files

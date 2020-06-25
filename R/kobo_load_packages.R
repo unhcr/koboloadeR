@@ -154,7 +154,7 @@ kobo_load_packages <- function() {
 
     ###  Machine Learning ########
     "e1071", #SVM (Support Vector Machine)
-    "knncat", # KNN (K- Nearest Neighbors)
+   ## "knncat", # KNN (K- Nearest Neighbors)
     "randomForest", # randomForest
     "quantreg", #Quantile regression
     "quantregForest", #Regression quantile forest

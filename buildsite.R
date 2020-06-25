@@ -52,7 +52,7 @@ unlink(".RData")
 #
 # BiocManager::install("graph")
 # BiocManager::install("Rgraphviz")
-library("CodeDepends")
+#library("CodeDepends")
 
 ##f = system.file( package = "koboloadeR")
 #gg = makeCallGraph("package:koboloadeR")

@@ -8,7 +8,7 @@
 #' @param output The output format html or aspx if you need to upload on sharepoint), docx (to quickly cut non interesting vz and take note during data interpretation session), pptx (to quickly cut non interesting vz and persent during data interpretation session), Default is html
 #' @param app The place where the function has been executed, the default is the console and the second option is the shiny app
 #' @param render TRUE or FALSE - Tells wheter to only produce Rmd or to also knit it in the required output format. Default is TRUE. Usefull for testing as rending takes time.
-#' @param lang eng or esp - Change the langauge of the intro to the report - default is english
+#' @param lang eng, fre or esp - Change the langauge of the intro to the report - default is english
 #'
 #' @return No return, All results will be saved on RMD files and Word files
 #'
@@ -136,9 +136,9 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
     utils::write.csv(reports, paste(mainDir,"/data/reports.csv",sep = ""), row.names = FALSE, na = "")
 
 
-    ## for each chapter: create a Rmd file -------
+    ## For each Report: create a Rmd file -------
 
-    ##Loop.chapter ------------
+    ##Loop through defined reports ------------
 
     for (i in 1:nrow(reports) )
     {
@@ -303,7 +303,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
         }
       } else {}
 
-      ## To do use configuration file to weight the data #######
+
       cat("\n", file = report.name , sep = "\n", append = TRUE)
       cat("## Create weighted survey object", file = report.name , sep = "\n", append = TRUE)
 
@@ -355,6 +355,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
       cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
 
       if (output == "pptx") {
+        
         if (lang == "eng") { 
 
           ### To DO : Offer option to insert in the report skeleton interpretation questions
@@ -407,52 +408,98 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
           
   
       } else if (lang == "esp") {
-          cat(paste("# Paso de Crujido\n"),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("\n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("# Etapa de Crunching\n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("\n"),file = report.name , sep = "\n", append = TRUE)
+        
+        cat(paste("El data crunching es el paso donde se procesan y estructuran los datos de la encuesta, y se generan visuales de los resultados de una manera automatizada y rápida.\n"),file = report.name , sep = "\n", append = TRUE)
+        
+        cat(paste(" Este informe de análisis y crunching de datos permite explorar rápidamente los resultados de la encuesta. El informe puede ser regenerado según sea necesario. El objetivo de este informe es poder identificar rápidamente posibles tendencias y patrones  en el conjunto de datos.\n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("Un repaso rápido de este informe inicial deberá permitir la selección de  los gráficos más significativos.\n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("El proceso de crunching produce una gran cantidad de imágenes. Por lo tanto, es importante seleccionar cuidadosamente los visuales y gráficos más relevantes que podrán ser presentados para su interpretación en la siguiente etapa. Usualmente una sesión de interpretación de datos no debe durar más de 2 horas y no debe incluir más de 60 visuales a examinar con el fin de mantener a los participantes con un buen nivel de enfoque. \n "),file = report.name , sep = "\n", append = TRUE)
+        
+        cat(paste("## Selección  "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("El experto en análisis de datos (DIMA del Bureau / IMs de la Operación) y el diseñador de reportes (de la operación, e.g. Oficial de reportes, PI), en colaboración con el grupo de análisis de datos, pueden utilizar los siguientes elementos para guiar esta fase de selección:\n "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  •	Para el valor numérico, compruebe las distribuciones de frecuencia de cada variable a la media, la desviación, incluidos los valores atípicos y las rarezas\n "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  Para variables categóricas, compruebe si hay valores inesperados: cualquier resultado extraño basado en las expectativas de sentido común\n "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  Utilice el análisis de correlación para comprobar posibles contradicciones en las respuestas de los encuestados a diferentes preguntas para asociaciones identificadas (chi-cuadrado)\n "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  Siempre, Compruebe si faltan datos (NA) o \"%del encuestado que respondió\" que no puede explicar con confianza\n "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  Compruebe las preguntas sin respuesta, que corresponde a la lógica de omisión no utilizada en el cuestionario: Por ejemplo, ¿respondió una persona que nunca fue desplazada a las preguntas relacionadas con el desplazamiento? ¿Se proporcionaron respuestas relacionadas con el empleo para un niño pequeño?\n "),file = report.name , sep = "\n", append = TRUE)
+        
+        cat(paste("## Interpretatcion sessions  "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("Al analizar los visuales y gráficos en conjunto durante las sesiones de interpretación de datos, se puede:  \n "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  __Reflejar__: cuestionar la calidad de los datos y / o hacer sugerencias para ajustar las preguntas, identificar pasos de limpieza adicionales;   \n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  __Interpretar__: desarrollar interpretaciones cualitativas de los patrones en los datos;     \n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  __Recomendar__: sugerir recomendaciones en términos de ajuste programático;    \n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  __Clasificar__: se define el nivel de sensibilidad para ciertos temas si es necesario;     \n"),file = report.name , sep = "\n", append = TRUE)
+        
+        cat(paste("## Este informe se puede regenerar según sea necesario:    "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  ajustando la configuración del informe en el  xlsform  para dividirlo en informe y capítulo;   \n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  configurar la desagregación y correlación para cada pregunta;;   \n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  revisar la limpieza de datos basada en el registro de limpieza;   \n "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  anexar indicadores calculados a su trama de datos para cambiar la forma de la variable - también llamada ingeniería de características. \n\n"),file = report.name , sep = "\n", append = TRUE)
+        
           
-          cat(paste("Este informe de análisis de datos permite explorar rápidamente los resultados de la encuesta que se pueden regenerar según sea necesario.\n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("## Descripción del conjunto de datos\n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("__Título del estudio:__ ",configInfo[configInfo$name == "titl", c("value")]," \n\n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("__Resumen:__ ",configInfo[configInfo$name == "abstract", c("value")],"\n"),file = report.name , sep = "\n\n", append = TRUE)
+        # cat(paste("__Derechos y Descargo de Responsabilidad::__ ",configInfo[configInfo$name == "disclaimer", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("__País donde tuvo lugar el estudio:__ ",configInfo[configInfo$name == "Country", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("__Cobertura geográfica para el estudio dentro del país:__ ",configInfo[configInfo$name == "geogCover", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("__Tipo de datos:__ ",configInfo[configInfo$name == "dataKind", c("value")],"\n"),file = report.name , sep = "\n\n", append = TRUE)
+        cat(paste("__Número de registros en el marco de datos principal__: `r nrow(MainDataFrame)`\n"),file = report.name , sep = "\n\n", append = TRUE)
+        cat(paste("__Período de recopilación de datos__: between `r min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\"))` and `r max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\"))`\n"),file = report.name , sep = "\n\n", append = TRUE)
+        cat(paste("__Documented cleaning__: ",configInfo[configInfo$name == "cleanOps", c("value")],"\n\n"),file = report.name , sep = "\n\n", append = TRUE)
+        #cat(paste("__Entity being analyzed in the study:__ ",configInfo[configInfo$name == "AnalysisUnit", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
+        #cat(paste("__Procedure, technique, or mode of inquiry used to attain the data:__ ",configInfo[configInfo$name == "ModeOfCollection", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
+        #cat(paste("__Study Universe:__  (i.e. group of persons or other elements that are the object of research and to which any analytic results refer:",configInfo[configInfo$name == "universe", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
           
-          cat(paste("El objetivo de este informe es permitir identificar rápidamente patrones potenciales en el conjunto de datos.\n"),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("Una revisión rápida de este informe inicial debería permitir seleccionar los gráficos más significativos.\n"),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("El proceso de crujido produce una gran cantidad de imágenes. Por lo tanto, es clave seleccionar cuidadosamente el objeto visual más relevante que se presentará para su posible interpretación en el siguiente paso. Una sesión típica de interpretación de datos no durará más de 2 horas e incluirá más de 60 objetos visuales para examinar con el fin de mantener a los participantes con un buen nivel de enfoque.\n "),file = report.name , sep = "\n", append = TRUE)
-          
-          cat(paste("## Selecting contents  "),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("Para guiar esta fase de selección, el experto en análisis de datos y el diseñador de informes, en colaboración con el grupo de análisis de datos, pueden utilizar los siguientes elementos:\n "),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("  *  Para el valor numérico, compruebe las distribuciones de frecuencia de cada variable a la media, la desviación, incluidos los valores atípicos y las rarezas\n "),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("  *  Para variables categóricas, compruebe si hay valores inesperados: cualquier resultado extraño basado en las expectativas de sentido común\n "),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("  *  Utilice el análisis de correlación para comprobar posibles contradicciones en las respuestas de los encuestados a diferentes preguntas para asociaciones identificadas (chi-cuadrado)\n "),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("  *  Siempre, Compruebe si faltan datos (NA) o \"%del encuestado que respondió\" que no puede explicar con confianza\n "),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("  *  Compruebe las preguntas sin respuesta, que corresponde a la lógica de omisión no utilizada en el cuestionario: Por ejemplo, ¿respondió una persona que nunca fue desplazada a las preguntas relacionadas con el desplazamiento? ¿Se proporcionaron respuestas relacionadas con el empleo para un niño pequeño?\n "),file = report.name , sep = "\n", append = TRUE)
-          
-          cat(paste("## Interpretation sessions  "),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("Al analizar esas representaciones en una configuración colectiva durante las sesiones de interpretación de datos, puede:  \n "),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("  *  __Reflejar__: calidad de los datos de la pregunta y / o hacer sugerencias para ajustar las preguntas, identificar pasos de limpieza adicionales;   \n"),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("  *  __Interpretar__: desarrollar interpretaciones cualitativas de los patrones de datos;;     \n"),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("  *  __Recomendar__: sugerir recomendaciones en términos de ajuste programático;;    \n"),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("  *  __Clasificar__: define el nivel de sensibilidad para ciertos temas si es necesario;;     \n"),file = report.name , sep = "\n", append = TRUE)
-          
-          cat(paste("## El informe se puede regenerar según sea necesario:  "),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("  *  ajustando la configuración del informe en el  xlsform  para dividirlo en informe y capítulo;   \n"),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("  *  configurar la desagregación y correlación para cada pregunta;;   \n"),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("  *  revisar la limpieza de datos basada en el registro de limpieza;   \n "),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("  *  anexar indicadores calculados a su trama de datos para cambiar la forma de la variable - también llamada ingeniería de características. \n\n"),file = report.name , sep = "\n", append = TRUE)
-          
-          
-          
-          cat(paste("## Descripción del conjunto de datos\n"),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("__Título del estudio:__ ",configInfo[configInfo$name == "titl", c("value")]," \n\n"),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("__Resumen:__ ",configInfo[configInfo$name == "abstract", c("value")],"\n"),file = report.name , sep = "\n\n", append = TRUE)
-          # cat(paste("__Derechos y Descargo de Responsabilidad::__ ",configInfo[configInfo$name == "disclaimer", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("__País donde tuvo lugar el estudio:__ ",configInfo[configInfo$name == "Country", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("__Cobertura geográfica para el estudio dentro del país:__ ",configInfo[configInfo$name == "geogCover", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("__Tipo de datos:__ ",configInfo[configInfo$name == "dataKind", c("value")],"\n"),file = report.name , sep = "\n\n", append = TRUE)
-          cat(paste("__Número de registros en el marco de datos principal__: `r nrow(MainDataFrame)`\n"),file = report.name , sep = "\n\n", append = TRUE)
-          cat(paste("__Período de recopilación de datos__: between `r min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\"))` and `r max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\"))`\n"),file = report.name , sep = "\n\n", append = TRUE)
-          cat(paste("__Documented cleaning__: ",configInfo[configInfo$name == "cleanOps", c("value")],"\n\n"),file = report.name , sep = "\n\n", append = TRUE)
-          #cat(paste("__Entity being analyzed in the study:__ ",configInfo[configInfo$name == "AnalysisUnit", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
-          #cat(paste("__Procedure, technique, or mode of inquiry used to attain the data:__ ",configInfo[configInfo$name == "ModeOfCollection", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
-          #cat(paste("__Study Universe:__  (i.e. group of persons or other elements that are the object of research and to which any analytic results refer:",configInfo[configInfo$name == "universe", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
-          
+      } else if (lang == "fre") {
+        cat(paste("# Paso de Crujido\n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("\n"),file = report.name , sep = "\n", append = TRUE)
+        
+        cat(paste("Este informe de análisis de datos permite explorar rápidamente los resultados de la encuesta que se pueden regenerar según sea necesario.\n"),file = report.name , sep = "\n", append = TRUE)
+        
+        cat(paste("El objetivo de este informe es permitir identificar rápidamente patrones potenciales en el conjunto de datos.\n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("Una revisión rápida de este informe inicial debería permitir seleccionar los gráficos más significativos.\n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("El proceso de crujido produce una gran cantidad de imágenes. Por lo tanto, es clave seleccionar cuidadosamente el objeto visual más relevante que se presentará para su posible interpretación en el siguiente paso. Una sesión típica de interpretación de datos no durará más de 2 horas e incluirá más de 60 objetos visuales para examinar con el fin de mantener a los participantes con un buen nivel de enfoque.\n "),file = report.name , sep = "\n", append = TRUE)
+        
+        cat(paste("## Selecting contents  "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("Para guiar esta fase de selección, el experto en análisis de datos y el diseñador de informes, en colaboración con el grupo de análisis de datos, pueden utilizar los siguientes elementos:\n "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  Para el valor numérico, compruebe las distribuciones de frecuencia de cada variable a la media, la desviación, incluidos los valores atípicos y las rarezas\n "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  Para variables categóricas, compruebe si hay valores inesperados: cualquier resultado extraño basado en las expectativas de sentido común\n "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  Utilice el análisis de correlación para comprobar posibles contradicciones en las respuestas de los encuestados a diferentes preguntas para asociaciones identificadas (chi-cuadrado)\n "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  Siempre, Compruebe si faltan datos (NA) o \"%del encuestado que respondió\" que no puede explicar con confianza\n "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  Compruebe las preguntas sin respuesta, que corresponde a la lógica de omisión no utilizada en el cuestionario: Por ejemplo, ¿respondió una persona que nunca fue desplazada a las preguntas relacionadas con el desplazamiento? ¿Se proporcionaron respuestas relacionadas con el empleo para un niño pequeño?\n "),file = report.name , sep = "\n", append = TRUE)
+        
+        cat(paste("## Interpretation sessions  "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("Al analizar esas representaciones en una configuración colectiva durante las sesiones de interpretación de datos, puede:  \n "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  __Reflejar__: calidad de los datos de la pregunta y / o hacer sugerencias para ajustar las preguntas, identificar pasos de limpieza adicionales;   \n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  __Interpretar__: desarrollar interpretaciones cualitativas de los patrones de datos;;     \n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  __Recomendar__: sugerir recomendaciones en términos de ajuste programático;;    \n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  __Clasificar__: define el nivel de sensibilidad para ciertos temas si es necesario;;     \n"),file = report.name , sep = "\n", append = TRUE)
+        
+        cat(paste("## El informe se puede regenerar según sea necesario:  "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  ajustando la configuración del informe en el  xlsform  para dividirlo en informe y capítulo;   \n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  configurar la desagregación y correlación para cada pregunta;;   \n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  revisar la limpieza de datos basada en el registro de limpieza;   \n "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  anexar indicadores calculados a su trama de datos para cambiar la forma de la variable - también llamada ingeniería de características. \n\n"),file = report.name , sep = "\n", append = TRUE)
+        
+        
+        
+        cat(paste("## Descripción del conjunto de datos\n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("__Título del estudio:__ ",configInfo[configInfo$name == "titl", c("value")]," \n\n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("__Resumen:__ ",configInfo[configInfo$name == "abstract", c("value")],"\n"),file = report.name , sep = "\n\n", append = TRUE)
+        # cat(paste("__Derechos y Descargo de Responsabilidad::__ ",configInfo[configInfo$name == "disclaimer", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("__País donde tuvo lugar el estudio:__ ",configInfo[configInfo$name == "Country", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("__Cobertura geográfica para el estudio dentro del país:__ ",configInfo[configInfo$name == "geogCover", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("__Tipo de datos:__ ",configInfo[configInfo$name == "dataKind", c("value")],"\n"),file = report.name , sep = "\n\n", append = TRUE)
+        cat(paste("__Número de registros en el marco de datos principal__: `r nrow(MainDataFrame)`\n"),file = report.name , sep = "\n\n", append = TRUE)
+        cat(paste("__Período de recopilación de datos__: between `r min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\"))` and `r max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\"))`\n"),file = report.name , sep = "\n\n", append = TRUE)
+        cat(paste("__Documented cleaning__: ",configInfo[configInfo$name == "cleanOps", c("value")],"\n\n"),file = report.name , sep = "\n\n", append = TRUE)
+        #cat(paste("__Entity being analyzed in the study:__ ",configInfo[configInfo$name == "AnalysisUnit", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
+        #cat(paste("__Procedure, technique, or mode of inquiry used to attain the data:__ ",configInfo[configInfo$name == "ModeOfCollection", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
+        #cat(paste("__Study Universe:__  (i.e. group of persons or other elements that are the object of research and to which any analytic results refer:",configInfo[configInfo$name == "universe", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
+        
           
           
         }
@@ -461,27 +508,18 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
 
         
         if (lang == "eng") { 
-
-
-          ### To DO : Offer option to insert in the report skeleton interpretation questions
-          ### Intro text####################################################################
           cat(paste("# Crunching step\n"),file = report.name , sep = "\n", append = TRUE)
           cat(paste("\n"),file = report.name , sep = "\n", append = TRUE)
-    
           cat(paste("This data crunching report allows to quickly explore the results of the survey that can be regenerated as needed.\n"),file = report.name , sep = "\n", append = TRUE)
-    
           cat(paste("The objective of this report is to allow to quickly identify potential patterns in your dataset.\n"),file = report.name , sep = "\n", append = TRUE)
           cat(paste("A quick screening of this initial report should allow to select the most meaningful graphs.\n"),file = report.name , sep = "\n", append = TRUE)
-    
           cat(paste("The crunching process produces a lot of visuals. Therefore it is key to carefully select the most relevant visual that will be presented for potential interpretation in the next step. A typical data interpretation session shall not last more than 2hours and include more than 60 visuals to look at in order to keep participants with a good focus level.\n "),file = report.name , sep = "\n", append = TRUE)
-    
           cat(paste("In order to guide this selection phase, the data crunching expert and report designer, in collaboration with the data analysis group, can use the following elements:\n "),file = report.name , sep = "\n", append = TRUE)
           cat(paste("  *  For numeric value, check the frequency distributions of each variable to average, deviation, including outliers and oddities\n "),file = report.name , sep = "\n", append = TRUE)
           cat(paste("  *  For categorical variables, check for unexpected values: any weird results based on common sense expectations\n "),file = report.name , sep = "\n", append = TRUE)
           cat(paste("  *  Use correlation analysis to check for potential contradictions in respondents answers to different questions for identified associations (chi-square)\n "),file = report.name , sep = "\n", append = TRUE)
           cat(paste("  *  Always, Check for missing data (NA) or \"%of respondent who answered\" that you cannot confidently explain\n "),file = report.name , sep = "\n", append = TRUE)
           cat(paste("  *  Check unanswered questions, that corresponds to unused skip logic in the questionnaire: For instance, did a person who was never displaced answer displacement-related questions? Were employment-related answers provided for a toddler?\n "),file = report.name , sep = "\n", append = TRUE)
-    
     
           cat(paste("When analyzing those representations in a collective setting during data interpretation sessions, you may:  \n "),file = report.name , sep = "\n", append = TRUE)
           cat(paste("  *  __Reflect__: question data quality and/or make suggestions to adjust questions, identify additional cleaning steps;   \n"),file = report.name , sep = "\n", append = TRUE)
@@ -494,9 +532,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
           cat(paste("  *  configuring disaggregation & correlation for each question;   \n"),file = report.name , sep = "\n", append = TRUE)
           cat(paste("  *  revising the data cleansing based on the cleaning log;   \n "),file = report.name , sep = "\n", append = TRUE)
           cat(paste("  *  appending calculated indicators to your data frame to reshape variable - also called feature engineering. \n\n"),file = report.name , sep = "\n", append = TRUE)
-    
-    
-    
+
           cat(paste("# Dataset description\n"),file = report.name , sep = "\n", append = TRUE)
           cat(paste("__Title of the study:__ ",configInfo[configInfo$name == "titl", c("value")]," \n\n"),file = report.name , sep = "\n", append = TRUE)
           cat(paste("__Abstract:__ ",configInfo[configInfo$name == "abstract", c("value")],"\n"),file = report.name , sep = "\n\n", append = TRUE)
@@ -512,31 +548,74 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
           cat(paste("__Study Universe:__  (i.e. group of persons or other elements that are the object of research and to which any analytic results refer:",configInfo[configInfo$name == "universe", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
       
        } else if (lang == "esp") {
-              ### To DO : Offer option to insert in the report skeleton interpretation questions
-              ### Intro text####################################################################
-         cat(paste("# Paso de Crujido\n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("# Etapa de Crunching\n"),file = report.name , sep = "\n", append = TRUE)
          cat(paste("\n"),file = report.name , sep = "\n", append = TRUE)
          
-         cat(paste("Este informe de análisis de datos permite explorar rápidamente los resultados de la encuesta que se pueden regenerar según sea necesario.\n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("El data crunching es el paso donde se procesan y estructuran los datos de la encuesta, y se generan visuales de los resultados de una manera automatizada y rápida.\n"),file = report.name , sep = "\n", append = TRUE)
          
-         cat(paste("El objetivo de este informe es permitir identificar rápidamente patrones potenciales en el conjunto de datos.\n"),file = report.name , sep = "\n", append = TRUE)
-         cat(paste("Una revisión rápida de este informe inicial debería permitir seleccionar los gráficos más significativos.\n"),file = report.name , sep = "\n", append = TRUE)
-         cat(paste("El proceso de crujido produce una gran cantidad de imágenes. Por lo tanto, es clave seleccionar cuidadosamente el objeto visual más relevante que se presentará para su posible interpretación en el siguiente paso. Una sesión típica de interpretación de datos no durará más de 2 horas e incluirá más de 60 objetos visuales para examinar con el fin de mantener a los participantes con un buen nivel de enfoque.\n "),file = report.name , sep = "\n", append = TRUE)
+         cat(paste(" Este informe de análisis y crunching de datos permite explorar rápidamente los resultados de la encuesta. El informe puede ser regenerado según sea necesario. El objetivo de este informe es poder identificar rápidamente posibles tendencias y patrones  en el conjunto de datos.\n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("Un repaso rápido de este informe inicial deberá permitir la selección de  los gráficos más significativos.\n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("El proceso de crunching produce una gran cantidad de imágenes. Por lo tanto, es importante seleccionar cuidadosamente los visuales y gráficos más relevantes que podrán ser presentados para su interpretación en la siguiente etapa. Usualmente una sesión de interpretación de datos no debe durar más de 2 horas y no debe incluir más de 60 visuales a examinar con el fin de mantener a los participantes con un buen nivel de enfoque. \n "),file = report.name , sep = "\n", append = TRUE)
          
-         cat(paste("Para guiar esta fase de selección, el experto en análisis de datos y el diseñador de informes, en colaboración con el grupo de análisis de datos, pueden utilizar los siguientes elementos:\n "),file = report.name , sep = "\n", append = TRUE)
-         cat(paste("  *  Para el valor numérico, compruebe las distribuciones de frecuencia de cada variable a la media, la desviación, incluidos los valores atípicos y las rarezas\n "),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("El experto en análisis de datos (DIMA del Bureau / IMs de la Operación) y el diseñador de reportes (de la operación, e.g. Oficial de reportes, PI), en colaboración con el grupo de análisis de datos, pueden utilizar los siguientes elementos para guiar esta fase de selección:\n "),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("  *  •	Para el valor numérico, compruebe las distribuciones de frecuencia de cada variable a la media, la desviación, incluidos los valores atípicos y las rarezas\n "),file = report.name , sep = "\n", append = TRUE)
          cat(paste("  *  Para variables categóricas, compruebe si hay valores inesperados: cualquier resultado extraño basado en las expectativas de sentido común\n "),file = report.name , sep = "\n", append = TRUE)
          cat(paste("  *  Utilice el análisis de correlación para comprobar posibles contradicciones en las respuestas de los encuestados a diferentes preguntas para asociaciones identificadas (chi-cuadrado)\n "),file = report.name , sep = "\n", append = TRUE)
          cat(paste("  *  Siempre, Compruebe si faltan datos (NA) o \"%del encuestado que respondió\" que no puede explicar con confianza\n "),file = report.name , sep = "\n", append = TRUE)
          cat(paste("  *  Compruebe las preguntas sin respuesta, que corresponde a la lógica de omisión no utilizada en el cuestionario: Por ejemplo, ¿respondió una persona que nunca fue desplazada a las preguntas relacionadas con el desplazamiento? ¿Se proporcionaron respuestas relacionadas con el empleo para un niño pequeño?\n "),file = report.name , sep = "\n", append = TRUE)
          
-         cat(paste("Al analizar esas representaciones en una configuración colectiva durante las sesiones de interpretación de datos, puede:  \n "),file = report.name , sep = "\n", append = TRUE)
-         cat(paste("  *  __Reflejar__: calidad de los datos de la pregunta y / o hacer sugerencias para ajustar las preguntas, identificar pasos de limpieza adicionales;   \n"),file = report.name , sep = "\n", append = TRUE)
-         cat(paste("  *  __Interpretar__: desarrollar interpretaciones cualitativas de los patrones de datos;;     \n"),file = report.name , sep = "\n", append = TRUE)
-         cat(paste("  *  __Recomendar__: sugerir recomendaciones en términos de ajuste programático;;    \n"),file = report.name , sep = "\n", append = TRUE)
-         cat(paste("  *  __Clasificar__: define el nivel de sensibilidad para ciertos temas si es necesario;;     \n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("Al analizar los visuales y gráficos en conjunto durante las sesiones de interpretación de datos, se puede:  \n "),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("  *  __Reflejar__: cuestionar la calidad de los datos y / o hacer sugerencias para ajustar las preguntas, identificar pasos de limpieza adicionales;   \n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("  *  __Interpretar__: desarrollar interpretaciones cualitativas de los patrones en los datos;     \n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("  *  __Recomendar__: sugerir recomendaciones en términos de ajuste programático;    \n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("  *  __Clasificar__: se define el nivel de sensibilidad para ciertos temas si es necesario;     \n"),file = report.name , sep = "\n", append = TRUE)
          
-         cat(paste("El informe se puede regenerar según sea necesario:  "),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("Este informe se puede regenerar según sea necesario:    "),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("  *  ajustando la configuración del informe en el  xlsform  para dividirlo en informe y capítulo;   \n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("  *  configurar la desagregación y correlación para cada pregunta;;   \n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("  *  revisar la limpieza de datos basada en el registro de limpieza;   \n "),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("  *  anexar indicadores calculados a su trama de datos para cambiar la forma de la variable - también llamada ingeniería de características. \n\n"),file = report.name , sep = "\n", append = TRUE)
+         
+         
+         
+         cat(paste("## Descripción del conjunto de datos\n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("__Título del estudio:__ ",configInfo[configInfo$name == "titl", c("value")]," \n\n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("__Resumen:__ ",configInfo[configInfo$name == "abstract", c("value")],"\n"),file = report.name , sep = "\n\n", append = TRUE)
+         cat(paste("__Derechos y Descargo de Responsabilidad::__ ",configInfo[configInfo$name == "disclaimer", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("__País donde tuvo lugar el estudio:__ ",configInfo[configInfo$name == "Country", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("__Cobertura geográfica para el estudio dentro del país:__ ",configInfo[configInfo$name == "geogCover", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("__Tipo de datos:__ ",configInfo[configInfo$name == "dataKind", c("value")],"\n"),file = report.name , sep = "\n\n", append = TRUE)
+         cat(paste("__Número de registros en el marco de datos principal__: `r nrow(MainDataFrame)`\n"),file = report.name , sep = "\n\n", append = TRUE)
+         cat(paste("__Período de recopilación de datos__: entre `r min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\"))` y `r max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\"))`\n"),file = report.name , sep = "\n\n", append = TRUE)
+         cat(paste("__Limpieza documentada__: ",configInfo[configInfo$name == "cleanOps", c("value")],"\n\n"),file = report.name , sep = "\n\n", append = TRUE)
+         cat(paste("__Entidad analizada en el estudio:__ ",configInfo[configInfo$name == "AnalysisUnit", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("__Procedimiento, técnica o modo de investigación utilizado para lograr los datos:__ ",configInfo[configInfo$name == "ModeOfCollection", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("__Universo de estudio__ : (es decir, grupo de personas u otros elementos que son objeto de investigación y a los que se refieren los resultados analíticos: ",configInfo[configInfo$name == "universe", c("value")],"\n\n"),file = report.name , sep = "\n", append = TRUE)
+         
+       } else if (lang == "fre") {
+         cat(paste("# Etape de Crunching\n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("\n"),file = report.name , sep = "\n", append = TRUE)
+         
+         cat(paste("El ‘data crunching’ es el paso donde se procesan y estructuran los datos de la encuesta, y se generan visuales de los resultados de una manera automatizada y rápida.\n"),file = report.name , sep = "\n", append = TRUE)
+         
+         cat(paste(" Este informe de análisis y crunching de datos permite explorar rápidamente los resultados de la encuesta. El informe puede ser regenerado según sea necesario. El objetivo de este informe es poder identificar rápidamente posibles tendencias y patrones  en el conjunto de datos.\n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("Un repaso rápido de este informe inicial deberá permitir la selección de  los gráficos más significativos.\n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("El proceso de crunching produce una gran cantidad de imágenes. Por lo tanto, es importante seleccionar cuidadosamente los visuales y gráficos más relevantes que podrán ser presentados para su interpretación en la siguiente etapa. Usualmente una sesión de interpretación de datos no debe durar más de 2 horas y no debe incluir más de 60 visuales a examinar con el fin de mantener a los participantes con un buen nivel de enfoque. \n "),file = report.name , sep = "\n", append = TRUE)
+         
+         cat(paste("El experto en análisis de datos (DIMA del Bureau / IMs de la Operación) y el diseñador de reportes (de la operación, e.g. Oficial de reportes, PI), en colaboración con el grupo de análisis de datos, pueden utilizar los siguientes elementos para guiar esta fase de selección:\n "),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("  *  •	Para el valor numérico, compruebe las distribuciones de frecuencia de cada variable a la media, la desviación, incluidos los valores atípicos y las rarezas\n "),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("  *  Para variables categóricas, compruebe si hay valores inesperados: cualquier resultado extraño basado en las expectativas de sentido común\n "),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("  *  Utilice el análisis de correlación para comprobar posibles contradicciones en las respuestas de los encuestados a diferentes preguntas para asociaciones identificadas (chi-cuadrado)\n "),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("  *  Siempre, Compruebe si faltan datos (NA) o \"%del encuestado que respondió\" que no puede explicar con confianza\n "),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("  *  Compruebe las preguntas sin respuesta, que corresponde a la lógica de omisión no utilizada en el cuestionario: Por ejemplo, ¿respondió una persona que nunca fue desplazada a las preguntas relacionadas con el desplazamiento? ¿Se proporcionaron respuestas relacionadas con el empleo para un niño pequeño?\n "),file = report.name , sep = "\n", append = TRUE)
+         
+         cat(paste("Al analizar los visuales y gráficos en conjunto durante las sesiones de interpretación de datos, se puede:  \n "),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("  *  __Reflejar__: cuestionar la calidad de los datos y / o hacer sugerencias para ajustar las preguntas, identificar pasos de limpieza adicionales;   \n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("  *  __Interpretar__: desarrollar interpretaciones cualitativas de los patrones en los datos;     \n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("  *  __Recomendar__: sugerir recomendaciones en términos de ajuste programático;    \n"),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("  *  __Clasificar__: se define el nivel de sensibilidad para ciertos temas si es necesario;     \n"),file = report.name , sep = "\n", append = TRUE)
+         
+         cat(paste("Este informe se puede regenerar según sea necesario:    "),file = report.name , sep = "\n", append = TRUE)
          cat(paste("  *  ajustando la configuración del informe en el  xlsform  para dividirlo en informe y capítulo;   \n"),file = report.name , sep = "\n", append = TRUE)
          cat(paste("  *  configurar la desagregación y correlación para cada pregunta;;   \n"),file = report.name , sep = "\n", append = TRUE)
          cat(paste("  *  revisar la limpieza de datos basada en el registro de limpieza;   \n "),file = report.name , sep = "\n", append = TRUE)
@@ -594,25 +673,18 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
 
         ## add better slides separator
         if (output == "pptx") {
-
           cat(paste("---"),file = report.name , sep = "\n", append = TRUE)
           cat(paste("# ", chaptersname),file = report.name , sep = "\n", append = TRUE)
-
-
          # cat(paste0("Linked questions: ", as.character(chapterquestions$labelReport) ),file = report.name , sep = "\n", append = TRUE)
           cat(paste("---"),file = report.name , sep = "\n", append = TRUE)
-
         } else  {
           cat(paste("# ", chaptersname),file = report.name , sep = "\n", append = TRUE)
          # cat(paste("Linked questions: ", as.character(chapterquestions$labelReport) ),file = report.name , sep = "\n", append = TRUE)
-
         }
-
         if (app == "shiny") {
           progress$set(message = "Compilation of questions results in progress...")
           updateProgress()
         }
-
 
         ## Loop.questions ####################################################################################################
         if (app == "shiny") {
@@ -659,7 +731,9 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
             if (lang == "eng") { 
               cat(paste("Single choice question ","\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
             } else if (lang == "esp") {
-              cat(paste("Pregunta de opción única ","\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste("Pregunta de selección única ","\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
+            } else if (lang == "fre") {
+              cat(paste("Question a choix unique ","\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
             }
             
 
@@ -676,7 +750,9 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
               if (lang == "eng") { 
                 cat(paste0("No responses or the same answer was given (only one modality) recorded for this question.\n"),file = report.name , sep = "\n", append = TRUE)
               } else if (lang == "esp") {
-                cat(paste0("No se registraron respuestas ni la misma respuesta (sólo una modalidad) para esta pregunta.\n"),file = report.name , sep = "\n", append = TRUE)
+                cat(paste0("No se registraron respuestas o se da la misma respuesta (sólo una modalidad) para esta pregunta.\n"),file = report.name , sep = "\n", append = TRUE)
+              } else if (lang == "fr") {
+                cat(paste0("Pas de reponses - ou alors la meme reponse a toujours ete donne a cette question.\n"),file = report.name , sep = "\n", append = TRUE)
               }
               
               cat("No responses recorded for this question...\n")
@@ -1023,6 +1099,8 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                   cat("No correlation requested for this question.\n",file = report.name , sep = "\n", append = TRUE)
                 } else if (lang == "esp") {
                   cat(paste0("No se solicita correlación para esta pregunta.\n"),file = report.name , sep = "\n", append = TRUE)
+                } else if (lang == "esp") {
+                  cat(paste0("Pas de recherche de correlation configuree pour cette question.\n"),file = report.name , sep = "\n", append = TRUE)
                 }
                 
                 cat("No correlation requested for this question...\n")
@@ -1039,6 +1117,8 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                   cat(paste("### Significant Associations (chi-square with p value < 5%)" ,sep = ""),file = report.name ,sep = "\n", append = TRUE)
                 } else if (lang == "esp") {
                   cat(paste0("### Asociaciones significativas (chi-cuadrado con valor p <5%)"),file = report.name , sep = "\n", append = TRUE)
+                } else if (lang == "fre") {
+                  cat(paste0("### Asociation significatives (test chi-deux p <5%)"),file = report.name , sep = "\n", append = TRUE)
                 }
                 
                 
@@ -1465,7 +1545,9 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
             if (lang == "eng") { 
               cat(paste("Multiple choice question ","\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
             } else if (lang == "esp") {
-              cat(paste("Pregunta de opción múltiple ","\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste("Pregunta de selección múltiple ","\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
+            } else if (lang == "fre") {
+              cat(paste("Question a choix multiple ","\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
             }
             
 
@@ -1576,21 +1658,127 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
 
                 cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
+                
+                
+                
                 ###select.multi.rel######################################################################
 
 
-                #cat(paste("### Analysis of relationship" ,sep = ""),file = report.name ,sep = "\n", append = TRUE)
-                ## Open chunk
-                if (output == "pptx") {
-                  cat(paste0("\n```{r ", questions.name, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name, append = TRUE)
+                ###select.multi.rel######################################################################
+                
+                if (nrow(disaggregation) == 0) {
+                  #cat("No disaggregation requested for this question...\n",file = report.name , sep = "\n", append = TRUE)
+                  cat("No disaggregation requested for this question...\n")
+                  cat("\n", file = report.name, append = TRUE)
+                } else if (nrow(frequ) %in% c("0","1")) {
+                  # cat("No responses recorded for this question. No disaggregation...\n",file = report.name , sep = "\n", append = TRUE)
+                  cat("No responses or only one modality recorded for this question. No disaggregation...\n")
+                  cat("\n", file = report.name, append = TRUE)
                 } else {
-                  cat(paste0("\n```{r ", questions.name, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=4, size=\"small\"}\n", sep = '\n'), file = report.name, append = TRUE)
-                }
-                  ## Close chunk
-                cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
+                  cat(paste("### Analysis of relationship" ,sep = ""),file = report.name ,sep = "\n", append = TRUE)
+                  for (h in 1:nrow(disaggregation))
+                  {
+                    #h <-3
+                    ## Now getting level for each questions
+                    disag.name <- as.character(disaggregation[ h , c("fullname")])
+                    disag.shortname <- as.character(disaggregation[ h , c("name")])
+                    disag.type <- as.character(disaggregation[ h , c("type")])
+                    disag.frame <- as.character(disaggregation[ h , c("qrepeatlabel")])
+                    disag.label <- as.character(disaggregation[ h , c("labelReport")])
+                    disag.listname <- as.character(disaggregation[ h , c("listname")])
+                    disag.ordinal <- as.character(disaggregation[ h  , c("variable")])
+                    if (is.na(disag.ordinal) ) {disag.ordinal <- "not.defined"} else {disag.ordinal <- disag.ordinal }
+                    disag.variable <- paste0(questions.frame,"$",disag.name)
+                    
+                    
+                    
+                    if (disag.variable == questions.variable) {
+                      cat(paste0("\n"),file = report.name , sep = "\n", append = TRUE)
+                    } else if (nrow(as.data.frame(table( get(paste0(questions.frame))[[disag.name]]))) == 0) {
+                      cat(paste0("\n"),file = report.name , sep = "\n", append = TRUE)
+                    } else {
+                      
+                      ## Open chunk
+                      if (output == "pptx") {
+                        cat(paste0("\n```{r ", questions.name, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name, append = TRUE)
+                      } else {
+                        cat(paste0("\n```{r ", questions.name, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=8, size=\"small\"}\n", sep = '\n'), file = report.name, append = TRUE)
+                      }
+                      
+                      # cat(paste0("### Tabulation"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("##Compute contengency table"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("selectmultilist1 <- as.data.frame(dico[dico$type == \"select_multiple\" & dico$listname==\"",questions.listname, "\" & grepl(\"", questions.shortname,"\",dico$fullname)==TRUE , c(\"fullname\")])"),file = report.name ,sep = "\n", append = TRUE)
+                      
+                      cat(paste0("names(selectmultilist1)[1] <- \"check\""),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("check <- as.data.frame(names(",questions.frame ,"))"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("names(check)[1] <- \"check\""),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("check$id <- row.names(check)"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("check <- merge(x = check, y = selectmultilist1, by = \"check\")"),file = report.name ,sep = "\n", append = TRUE)
+                      
+                      
+                      cat(paste0("selectmultilist <- c(as.character(check[ ,1]), \"",disag.name,"\")" ),file = report.name ,sep = "\n", append = TRUE)
+                      
+                      cat(paste0("## Reshape answers"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("data.selectmultilist <- ",questions.frame ,"[ selectmultilist ]"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("data.selectmultilist$id <- rownames(data.selectmultilist)"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("totalanswer <- nrow(data.selectmultilist)"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!=\"Not replied\", ]"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),\"%\")"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("meltdata <- reshape2::melt(data.selectmultilist,id=c\"id\",\"",disag.name,"\"))"),file = report.name ,sep = "\n", append = TRUE)
+                      
+                      
+                      cat(paste0("castdata2 <- as.data.frame(table(data.selectmultilist[c(\"",disag.name,"\")]))"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("names(castdata2)[1] <-\"",disag.name,"\"" ),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("names(castdata2)[2] <- \"nobs\""),file = report.name ,sep = "\n", append = TRUE)
+                      
+                      cat(paste0("castdata3 <- as.data.frame(table(meltdata[c(\"value\",\"",disag.name,"\")]))"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("castdata3 <- dplyr::left_join( x = castdata3, y = castdata2, by =\"",disag.name,"\")"),file = report.name ,sep = "\n", append = TRUE)
+                      
+                      
+                      
+                      cat(paste0("castdata3$freqper <- castdata3$Freq/castdata3$nobs"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("castdata3 <- castdata3[castdata3$value!=\"Not selected\", ]"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("castdata3$value <- factor(castdata$Var1, levels=castdata[order(castdata$freqper), \"Var1\"])"),file = report.name ,sep = "\n", append = TRUE)
+                      
+                      cat(paste0("frequ1 <- castdata3[castdata3$value!=\"\", ]"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("frequ1[ ,6] <- paste0(round(frequ1[ ,5]*100,digits = 1),\"%\")"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("names(frequ1)[2] <- \"faceting\""),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("names(frequ1)[6] <- \"freqper2\""),file = report.name ,sep = "\n", append = TRUE)
+                      
+                      cat(paste0("\n"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("## and now the graph"),file = report.name ,sep = "\n", append = TRUE)
+                      
+                      cat(paste0("plot1 <- ggplot(frequ1, aes(x=value, y=freqper)) +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("geom_bar(fill = \"#2a87c8\", colour = \"#2a87c8\", stat = \"identity\", width = .8) +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("guides(fill = FALSE) +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("geom_label_repel(aes(y = freqper, label = freqper2), fill = \"#2a87c8\", color = 'white') +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("ylab(\"Frequency\") +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("scale_y_continuous(labels = percent) +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("xlab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("facet_wrap(~ faceting, ncol=3) +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("ggtitle(\"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("subtitle = \". By question: ",disag.label,".\") +"),file = report.name ,sep = "\n", append = TRUE)
+                      
+                      
+                      if (output == "pptx") {
+                        cat(paste0("kobo_unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
+                        
+                      } else {
+                        cat(paste0("kobo_unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
+                      }
+                      
+                      
+                      cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                      ## Close chunk
+                      cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
+                      
+                    } ## end test on check if there's something 
+                  } ## end loop on disaggregation variable       
+                } ## end test to check if required disaggregation  
 
-              }
-            }
+              } # end test No different modality recorded for this question
+            } # end test on case where there no answer to given the questions
 
 
 

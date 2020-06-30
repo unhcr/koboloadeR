@@ -23,7 +23,11 @@
 #' @export kobo_crunching_report
 #'
 
-kobo_crunching_report <- function(form = "form.xls", app = "console", output ="html", render = "TRUE", lang = "en") {
+kobo_crunching_report <- function(form = "form.xls", 
+                                  app = "console", 
+                                  output ="html", 
+                                  render = "TRUE", 
+                                  lang = "en") {
   tryCatch({
     if (app == "shiny") {
       progress <- shiny::Progress$new()
@@ -53,7 +57,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
     MainDataFrame <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_encoded.csv",sep = ""), encoding = "UTF-8", na.strings = "")
 
 
-    ###Form##########################################
+    # Form ##########################################
     ## Load form
     cat("\n\n Building dictionnary from the xlsform \n")
 
@@ -390,7 +394,8 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
           cat(paste("  *  revising the data cleansing based on the cleaning log;   \n "),file = report.name , sep = "\n", append = TRUE)
           cat(paste("  *  appending calculated indicators to your data frame to reshape variable - also called feature engineering. \n\n"),file = report.name , sep = "\n", append = TRUE)
   
-  
+          
+
   
           cat(paste("## Dataset description\n"),file = report.name , sep = "\n", append = TRUE)
           cat(paste("__Title of the study:__ ",configInfo[configInfo$name == "titl", c("value")]," \n\n"),file = report.name , sep = "\n", append = TRUE)
@@ -665,6 +670,9 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
       {
         # i <-v
         chaptersname <- as.character(chapters[ v , 1])
+        
+        
+        
         ## Getting chapter questions ####################################################################################################
         #chapterquestions <- dico[which(dico$chapter== chaptersname ), c("chapter", "name", "label", "type", "qrepeatlabel", "fullname","listname") ]
         chapterquestions <- dico[which(dico$chapter == chaptersname & dico$type %in% c("select_one","integer","select_multiple_d", "text","date", "numeric", "calculate")),
@@ -686,9 +694,9 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
           updateProgress()
         }
 
-        ## Loop.questions ####################################################################################################
+        ## Loop.questions 
         if (app == "shiny") {
-          progress$set(message = "Getting level for each questions in progress...")
+          progress$set(message = "Getting levels for each questions in progress...")
           updateProgress()
         }
         for (j in 1:nrow(chapterquestions))
@@ -714,18 +722,18 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
           cat(paste("\n", i, "-", j, " - Render question: ", questions.variable, " -",questions.type, "\n" ))
 
 
-          ## write question name-------
+          ## write question name 
           cat("\n ",file = report.name , sep = "\n", append = TRUE)
           cat(paste("## ", questions.label ,sep = ""),file = report.name , sep = "\n", append = TRUE)
 
 
-          ## Now create para based on question type-------
+          ## Now create para based on question type
 
 
           cat(paste(if (is.na(questions.hint)){paste0("")} else {paste0("__Interpretation Hint__: ", questions.hint)},"\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
 
 
-          ###select one###################################################################################################
+          #### Question Type = select_one ###################################################################################################
           if (questions.type == "select_one" ) {
             
             if (lang == "eng") { 
@@ -737,14 +745,14 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
             }
             
 
-            ## selectone.tabulation######################################################################
+            ## select_one.tabulation 
             ## compute frequency to see if it's not empty
             frequ <- as.data.frame(table( get(paste0(questions.frame))[[questions.name]]))
 
             figheight <- as.integer(nrow(frequ))
             if (figheight == 0) { figheight <- "3"} else {figheight <- figheight/1.2}
 
-            ## Check that there are responses to be displayed ####
+            ## Check that there are responses to be displayed  
             if (nrow(frequ) %in% c("0","1") ) {
               
               if (lang == "eng") { 
@@ -774,7 +782,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
               }
 
               #  cat(paste("### Tabulation" ,sep = ""),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("##Compute contengency table"),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("##Compute contingency table"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("frequ <- as.data.frame(table(",questions.variable,"))"),file = report.name ,sep = "\n", append = TRUE)
               #cat(paste0("if (nrow(frequ)==0){ cat(\"No response for this question\") } else{"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("nresp <- sum(frequ$Freq)"),file = report.name ,sep = "\n", append = TRUE)
@@ -783,7 +791,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
               # cat(paste0("## Reorder factor"),file = report.name ,sep = "\n", append = TRUE)
 
 
-              ## Check variable type to order the factor ####
+              ## Check variable type to order the factor  
               ## - if not ordinal order according to frequency - if ordinal order according to order in the dico
               if (questions.ordinal == "ordinal" ) {
                 ### get the list of options in the right order
@@ -836,8 +844,16 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
               cat(paste0("scale_y_continuous(labels = percent) +"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("xlab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("ggtitle(\"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("subtitle = paste0(\" Question response rate: \",percentreponse,\"  - respondents: \", nresp)) +"),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("subtitle = paste0(\" Question response rate: \",percentreponse,\"  - respondents: \", nresp),"),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
+                            nrow(MainDataFrame), \" total records colllected between \",
+                            min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
+                            max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
+                            configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+              
+              
+              
               if (output == "pptx") {
                 cat(paste0("kobo_unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
 
@@ -846,14 +862,14 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
               }
 
 
-              cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
               #cat(paste0("}"),file = report.name ,sep = "\n", append = TRUE)
               ## Close chunk
               cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
               cat(paste0("\n\n\n\n", sep = '\n'), file = report.name, append = TRUE)
 
 
-              ##selectone.crosstabulation #######################################################################
+              ##selectone.crosstabulation 
               if (nrow(disaggregation) == 0) {
                 #cat("No disaggregation requested for this question...\n",file = report.name , sep = "\n", append = TRUE)
                 cat("No disaggregation requested for this question...\n")
@@ -915,7 +931,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                       }
                       cat(paste("\n",i,"-", j,"-" , h, " - Render disaggregation : ", disag.label, "for question: ", questions.label,"\n" ))
 
-                      ### Just making sure that the variable is actually a numeric one... in case it was not parsed correctly ####
+                      ### Just making sure that the variable is actually a numeric one... in case it was not parsed correctly 
                       cat(paste0(questions.frame,"$",disag.name," <- as.numeric(",questions.frame,"$",disag.name,")"),file = report.name ,sep = "\n", append = TRUE)
 
                       ## Boxplot
@@ -937,15 +953,21 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                       cat(paste0("ylab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("ggtitle(\"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("subtitle = \". By question: ",disag.label,".\") +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("subtitle = \". By question: ",disag.label,".\","),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
+                                    nrow(MainDataFrame), \" total records colllected between \",
+                                    min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
+                                    max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
+                                    configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                      
                       if (output == "pptx") {
                         cat(paste0("kobo_unhcr_style_histo_big()"),file = report.name ,sep = "\n", append = TRUE)
 
                       } else {
                         cat(paste0("kobo_unhcr_histo_bar()"),file = report.name ,sep = "\n", append = TRUE)
                       }
-                      cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
 
 
                       data.outlier <- get(paste0(questions.frame))[[disag.name]]
@@ -975,8 +997,14 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                         cat(paste0("ylab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
                         cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
                         cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("ggtitle(\"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,".\") +"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,".\","),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
+                                            nrow(MainDataFrame), \" total records colllected between \",
+                                            min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
+                                            max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
+                                            configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                        
                         if (output == "pptx") {
                           cat(paste0("kobo_unhcr_style_histo_big()"),file = report.name ,sep = "\n", append = TRUE)
 
@@ -984,7 +1012,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                           cat(paste0("kobo_unhcr_style_histo()"),file = report.name ,sep = "\n", append = TRUE)
                         }
 
-                        cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
                       }
                       ## Close chunk
                       cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
@@ -1059,8 +1087,14 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                       cat(paste0("scale_fill_viridis(discrete = TRUE) +"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("xlab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("ggtitle(\"",questions.label," (color)\","),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("subtitle = \" By question: ",disag.label," (bar)\") +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("labs(title = \"",questions.label," (color)\","),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("subtitle = \" By question: ",disag.label," (bar)\","),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
+                                  nrow(MainDataFrame), \" total records colllected between \",
+                                  min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
+                                  max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
+                                           configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                      
                       if (output == "pptx") {
                         cat(paste0("kobo_unhcr_style_bar_big() +"),file = report.name ,sep = "\n", append = TRUE)
 
@@ -1071,7 +1105,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                       ## setting up the legend
                       #cat(paste0("guides(fill = FALSE) +"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("theme(legend.direction = \"horizontal\", legend.position = \"bottom\", legend.box = \"horizontal\",legend.title = element_blank()  )"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
 
                       ## Close chunk
                       cat(paste0("\n```\n", sep = ""), file = report.name, append = TRUE)
@@ -1082,8 +1116,8 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                 }
               }
 
-
-              ## Selectone.correlations   #######################################################################
+              ## Select_one.correlations 
+     
               ### We can test all correlation before and keep in the report only the multiple plots
               ## First check that variables are in the frame
               correlation1 <- correlation[correlation$qrepeatlabel %in% questions.frame, ]
@@ -1230,14 +1264,14 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
             }
 
 
-            ##Decimal####################################################################################################
+        ### Question Type = numeric ####################################################################################################
           } else if (questions.type == "decimal" | questions.type == "integer" | questions.type == "numeric" | questions.type == "calculate") {
             cat(paste("Numeric question  " ,"\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
 
             ## Check the lenght of the table to see if we can display it or not...
             frequ <- as.data.frame(table( get(paste0(questions.frame))[[questions.name]]))
 
-            ####Decimal.tabulation########################################################################
+            ####Decimal.tabulation 
             #  cat(paste("### Tabulation\n" ,sep = ""),file = report.name ,sep = "\n", append = TRUE)
 
             ## Open chunk
@@ -1246,7 +1280,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
             } else {
               cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=4, size=\"small\"}\n", sep = '\n'), file = report.name, append = TRUE)
             }
-            ### Just making sure that the variable is actually a numeric one... in case it was not parsed correctly ####
+            ### Just making sure that the variable is actually a numeric one... in case it was not parsed correctly 
             cat(paste0(questions.frame,"$",questions.name," <- as.numeric(",questions.frame,"$",questions.name,")"),file = report.name ,sep = "\n", append = TRUE)
             cat(paste0("frequ <- as.data.frame(table(",questions.variable,"))"),file = report.name ,sep = "\n", append = TRUE)
 
@@ -1273,7 +1307,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
               # cat(paste0("cat(paste0(\"Based on the sample design, the average weighted standard deviation for this question is \", as.numeric(round(sd, digits = 2))))"),file = report.name ,sep = "\n", append = TRUE)
 
 
-              ### Detect outliers and adjust bien numbers #####
+              ### Detect outliers and adjust bien numbers
               ### To -- check there's outlier or not
               ## Double check that we have a continuous value -- not a factor --
 
@@ -1291,14 +1325,21 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
               cat(paste0("plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("geom_bar(fill = \"#2a87c8\",colour = \"white\", stat = \"identity\", width = .8) +"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("labs(x = \"\", y = \"Count\") +"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("ggtitle(\"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("subtitle = paste0(\"No obvious outliers detected, based on the sample design, the average weighted mean response for this question is \", as.numeric(round(average$mean, digits = 2)))\n"),file = report.name ,sep = "\n", append = TRUE)
               # cat(paste0("\"Mean: \",round(mean(frequ$Var1),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
               # cat(paste0("\"Standard Deviation: \",round(sd(frequ$Var1),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
               #cat(paste0("\"Coefficient of Variation: \",round(cv(frequ$Var1),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
               #cat(paste0("\"Skewness: \",round(skewness(frequ$Var1),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
               #cat(paste0("\"and Kurtosis: \",round(kurtosis(frequ$Var1),2) ,\n\""), file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0(") +"),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0(","),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
+                        nrow(MainDataFrame), \" total records colllected between \",
+                        min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
+                        max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
+                         configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+              
+              
               if (output == "pptx") {
                 cat(paste0("kobo_unhcr_style_histo_big()"),file = report.name ,sep = "\n", append = TRUE)
 
@@ -1306,7 +1347,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                 cat(paste0("kobo_unhcr_style_histo()"),file = report.name ,sep = "\n", append = TRUE)
               }
 
-              cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("\n\n"),file = report.name ,sep = "\n", append = TRUE)
               cat("\n")
               } else {
@@ -1322,18 +1363,24 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                 cat(paste0("names(data.nooutlier)[1] <- \"variable\""),file = report.name ,sep = "\n", append = TRUE)
 
 
-                ### Now graphs with treated variable #####
+                ### Now graphs with treated variable
                 cat(paste0("plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("geom_histogram(color = \"white\",fill = \"#2a87c8\", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("labs(x = \"\", y = \"Count\") +"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("ggtitle(\"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("subtitle = \"After data capping treatement:\n\""),file = report.name ,sep = "\n", append = TRUE)
                 #cat(paste0("\"Mean: \",round(mean(data.nooutlier$variable),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
                 #cat(paste0("\"Standard Deviation: \",round(sd(data.nooutlier$variable),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
                 #cat(paste0("\"Coefficient of Variation: \",round(cv(data.nooutlier$variable),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
                 #cat(paste0("\"Skewness: \",round(skewness(data.nooutlier$variable),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
                 #cat(paste0("\"and Kurtosis: \",round(kurtosis(data.nooutlier$variable),2) ,\n\""), file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0(") +"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0(","),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
+                            nrow(MainDataFrame), \" total records colllected between \",
+                            min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
+                            max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
+                            configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                
                 if (output == "pptx") {
                   cat(paste0("kobo_unhcr_style_histo_big()"),file = report.name ,sep = "\n", append = TRUE)
 
@@ -1341,13 +1388,13 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                   cat(paste0("kobo_unhcr_style_histo()"),file = report.name ,sep = "\n", append = TRUE)
                 }
 
-                cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
               }
             }
             ## Close chunk
             cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
 
-            ###Decimal.crosstabulation###########################################################################
+            ###Decimal.crosstabulation
             if (nrow(disaggregation) == 0) {
               cat("No disaggregation requested for this question...\n",file = report.name , sep = "\n", append = TRUE)
               cat("No disaggregation requested for this question...\n")
@@ -1428,8 +1475,14 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                     cat(paste0("ylab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("scale_y_continuous(breaks = pretty_breaks()) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("ggtitle(\"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("subtitle = \"by question: ",disag.label,"\") +"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("subtitle = \"by question: ",disag.label,"\","),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
+                                 nrow(MainDataFrame), \" total records colllected between \",
+                                 min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
+                                 max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
+                                 configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                    
                     if (output == "pptx") {
                       cat(paste0("kobo_unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
 
@@ -1437,7 +1490,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                       cat(paste0("kobo_unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
                     }
 
-                    cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
 
                     if (H >= 1.349) {
                       cat(paste0("cat(\"No outliers detected...\")"),file = report.name , sep = "\n", append = TRUE)
@@ -1453,8 +1506,14 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                       cat(paste0("ylab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("scale_y_continuous(breaks = pretty_breaks()) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("ggtitle(\"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,"\") +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,"\","),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
+                                      nrow(MainDataFrame), \" total records colllected between \",
+                                      min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
+                                      max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
+                                      configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                      
                       if (output == "pptx") {
                         cat(paste0("kobo_unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
 
@@ -1462,7 +1521,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                         cat(paste0("kobo_unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
                       }
 
-                      cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
                     }
                     ## Close chunk
                     cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
@@ -1499,7 +1558,12 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                     cat(paste0("# xlab(correllabel) +"),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("# ylab(variablelabel) +"),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("geom_smooth(method=lm) +  # Add a loess smoothed fit curve with confidence region"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("ggtitle(\"Scatterplot before data capping treatment\") +"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("labs(title = \"Scatterplot before data capping treatment\","),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
+                                nrow(MainDataFrame), \" total records colllected between \",
+                                min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
+                                max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
+                                configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
 
                     if (output == "pptx") {
                       cat(paste0("kobo_unhcr_style_scatter_big()"),file = report.name ,sep = "\n", append = TRUE)
@@ -1508,7 +1572,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                       cat(paste0("kobo_unhcr_style_scatter()"),file = report.name ,sep = "\n", append = TRUE)
                     }
 
-                    cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
 
 
 
@@ -1522,7 +1586,12 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                     cat(paste0("# xlab(correllabel) +"),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("#ylab(variablelabel) +"),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("geom_smooth(method=lm) +  # Add a loess smoothed fit curve with confidence region"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("ggtitle(\"Scatterplot after data capping treatment\") +"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("labs(title = \"Scatterplot after data capping treatment\") ,"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
+                                nrow(MainDataFrame), \" total records colllected between \",
+                                min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
+                                max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
+                                configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
                     if (output == "pptx") {
                       cat(paste0("kobo_unhcr_style_scatter_big() +"),file = report.name ,sep = "\n", append = TRUE)
 
@@ -1530,7 +1599,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                       cat(paste0("kobo_unhcr_style_scatter() +"),file = report.name ,sep = "\n", append = TRUE)
                     }
 
-                    cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
 
                     ## Close chunk
                     cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
@@ -1540,7 +1609,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
             }
 
 
-            ##select.multi####################################################################################################
+            #### Question Type = select_multiple ####################################################################################################
           } else if ( questions.type == "select_multiple_d" ) {
             if (lang == "eng") { 
               cat(paste("Multiple choice question ","\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
@@ -1552,11 +1621,11 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
             
 
 
-            ###select.multi.tab######################################################################
+            ###select.multi.tab
 
             #  cat(paste("### Tabulation" ,sep = ""),file = report.name ,sep = "\n", append = TRUE)
 
-            ##Compute contengency table
+            ##Compute contingency table
             selectmultilist1 <- as.data.frame(dico[dico$type == "select_multiple" & dico$listname == as.character(questions.listname) &
                                                      grepl(as.character(questions.shortname),dico$fullname) == TRUE , c("fullname")])
             names(selectmultilist1)[1] <- "check"
@@ -1603,7 +1672,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                 }
 
                 # cat(paste0("### Tabulation"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("##Compute contengency table"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("##Compute contingency table"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("selectmultilist1 <- as.data.frame(dico[dico$type == \"select_multiple\" & dico$listname==\"",questions.listname, "\" & grepl(\"", questions.shortname,"\",dico$fullname)==TRUE , c(\"fullname\")])"),file = report.name ,sep = "\n", append = TRUE)
 
                 cat(paste0("names(selectmultilist1)[1] <- \"check\""),file = report.name ,sep = "\n", append = TRUE)
@@ -1647,8 +1716,13 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                 cat(paste0("scale_y_continuous(labels = percent) +"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("xlab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("ggtitle(\"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("subtitle = paste0(\"Question response rate: \",percentreponse,\" .\")) +"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("subtitle = paste0(\"Question response rate: \",percentreponse,\" .\"),"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
+                            nrow(MainDataFrame), \" total records colllected between \",
+                            min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
+                            max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
+                            configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
                 if (output == "pptx") {
                   cat(paste0("kobo_unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
 
@@ -1656,15 +1730,12 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                   cat(paste0("kobo_unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
                 }
 
-                cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
                 
                 
                 
-                ###select.multi.rel######################################################################
-
-
-                ###select.multi.rel######################################################################
+                ## select.multi.rel
                 
                 if (nrow(disaggregation) == 0) {
                   #cat("No disaggregation requested for this question...\n",file = report.name , sep = "\n", append = TRUE)
@@ -1698,15 +1769,15 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                       cat(paste0("\n"),file = report.name , sep = "\n", append = TRUE)
                     } else {
                       
-                      ## Open chunk
+                      ## Open chunk  
                       if (output == "pptx") {
-                        cat(paste0("\n```{r ", questions.name, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name, append = TRUE)
+                        cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name, append = TRUE)
                       } else {
-                        cat(paste0("\n```{r ", questions.name, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=8, size=\"small\"}\n", sep = '\n'), file = report.name, append = TRUE)
+                        cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=8, size=\"small\"}\n", sep = '\n'), file = report.name, append = TRUE)
                       }
                       
                       # cat(paste0("### Tabulation"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("##Compute contengency table"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("##Compute contingency table"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("selectmultilist1 <- as.data.frame(dico[dico$type == \"select_multiple\" & dico$listname==\"",questions.listname, "\" & grepl(\"", questions.shortname,"\",dico$fullname)==TRUE , c(\"fullname\")])"),file = report.name ,sep = "\n", append = TRUE)
                       
                       cat(paste0("names(selectmultilist1)[1] <- \"check\""),file = report.name ,sep = "\n", append = TRUE)
@@ -1724,7 +1795,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                       cat(paste0("totalanswer <- nrow(data.selectmultilist)"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!=\"Not replied\", ]"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),\"%\")"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("meltdata <- reshape2::melt(data.selectmultilist,id=c\"id\",\"",disag.name,"\"))"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("meltdata <- reshape2::melt(data.selectmultilist,id=c(\"id\",\"",disag.name,"\"))"),file = report.name ,sep = "\n", append = TRUE)
                       
                       
                       cat(paste0("castdata2 <- as.data.frame(table(data.selectmultilist[c(\"",disag.name,"\")]))"),file = report.name ,sep = "\n", append = TRUE)
@@ -1751,14 +1822,19 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                       cat(paste0("plot1 <- ggplot(frequ1, aes(x=value, y=freqper)) +"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("geom_bar(fill = \"#2a87c8\", colour = \"#2a87c8\", stat = \"identity\", width = .8) +"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("guides(fill = FALSE) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("geom_label_repel(aes(y = freqper, label = freqper2), fill = \"#2a87c8\", color = 'white') +"),file = report.name ,sep = "\n", append = TRUE)
+                     # cat(paste0("geom_label_repel(aes(y = freqper, label = freqper2), fill = \"#2a87c8\", color = 'white') +"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("ylab(\"Frequency\") +"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("scale_y_continuous(labels = percent) +"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("xlab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("facet_wrap(~ faceting, ncol=3) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("ggtitle(\"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("subtitle = \". By question: ",disag.label,".\") +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("subtitle = \"By question: ",disag.label,".\","),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
+                                    nrow(MainDataFrame), \" total records colllected between \",
+                                    min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
+                                    max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
+                                    configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
                       
                       
                       if (output == "pptx") {
@@ -1769,9 +1845,11 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                       }
                       
                       
-                      cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
                       ## Close chunk
                       cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
+                      
+                      
                       
                     } ## end test on check if there's something 
                   } ## end loop on disaggregation variable       
@@ -1785,7 +1863,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
 
 
 
-            ####date###############################################################################################
+            #### Question Type =  date ###############################################################################################
           } else if (questions.type == "date") {
             cat(paste("Date question  in data frame: ",questions.frame,"\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
 
@@ -1807,14 +1885,20 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                 cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=4, size=\"small\"}\n", sep = '\n'), file = report.name, append = TRUE)
               }
 
-                 ### Just making sure that the variable is actually a date one... in case it was not parsed correctly ####
+                 ### Just making sure that the variable is actually a date one... in case it was not parsed correctly 
                 cat(paste0(questions.frame,"$",questions.name," <- as.Date(",questions.frame,"$",questions.name,", format = \"%Y-%m-%d\")"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("#  date histogram"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("plot1 <- ggplot(data = ", questions.frame, ", aes(x = ", questions.name ," , ..count..)) +"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("geom_histogram(fill = \"#2a87c8\",colour = \"white\", binwidth = 60) +"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("labs(x = \"\", y = \"Count\") +"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("ggtitle(\"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("subtitle = \"\" ) + \n"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("subtitle = \"\" ,"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
+                              nrow(MainDataFrame), \" total records colllected between \",
+                              min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
+                              max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
+                              configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                
                 if (output == "pptx") {
                   cat(paste0("kobo_unhcr_style_histo_big() +"),file = report.name ,sep = "\n", append = TRUE)
 
@@ -1823,7 +1907,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
                 }
 
                 cat(paste0("theme(axis.text.x = element_text(angle = 60, hjust = 1,  vjust = 1 ))"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("\n\n"),file = report.name ,sep = "\n", append = TRUE)
 
 
@@ -1833,7 +1917,7 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
             }
 
 
-            ####text#############################################################################################
+        #### Question Type = text #############################################################################################
           } else if ( questions.type == "text" ) {
             cat(paste("Open ended question  in data frame: ",questions.frame,"\n\n", sep = ""),file = report.name ,sep = "\n", append = TRUE)
 
@@ -1878,12 +1962,16 @@ kobo_crunching_report <- function(form = "form.xls", app = "console", output ="h
 
     }
 
-      ## Open chunk
+    
+    
+    #### Last Step Rendering reports ###################
+    
+    
+    
       if (render == "FALSE") {
 
         cat(" Rmd files are ready and available in the code folder... \n")
       } else {
-        #### Render things... ###################
         if (app == "shiny") {
           progress$set(message = "Render now all reports...")
           updateProgress()

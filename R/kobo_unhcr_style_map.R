@@ -24,10 +24,23 @@ kobo_unhcr_style_map <- function() {
           ## Plot
           # plot.background = element_rect(fill = "transparent",colour = NA),
           # plot.background = element_rect(fill = "#f5f5f2", color = NA),
-          plot.title = element_text(face = "bold", size = 12, hjust = 0, color = "#4e4d47"),
-          plot.subtitle = element_text(size = 8, hjust = 0, color = "#4e4d47", margin = margin(b = -0.1, t = -0.1, l = 2, unit = "cm"), debug = F),
+          plot.title = ggplot2::element_text(family = font, 
+                                             face = "bold", 
+                                             size = 12, 
+                                             hjust = 0, 
+                                             color = "#4e4d47"),
+          plot.subtitle = ggplot2::element_text(family = font, 
+                                                size = 8, 
+                                                hjust = 0, 
+                                                color = "#4e4d47", 
+                                                margin = gplot2::margin(b = -0.1, t = -0.1, l = 2, unit = "cm"), 
+                                                ebug = F),
+          plot.caption = ggplot2::element_text(family = font, 
+                                               size = 6, 
+                                               hjust = 0.92, 
+                                               margin = mgplot2::argin(t = 0.2, b = 0, unit = "cm"), 
+                                               color = "#939184"),
           plot.margin = unit(c(.5,.5,.2,.5), "cm"),
-          plot.caption = element_text(size = 6, hjust = 0.92, margin = margin(t = 0.2, b = 0, unit = "cm"), color = "#939184"),
 
           #------------
           ## Panel

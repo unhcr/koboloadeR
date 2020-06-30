@@ -19,11 +19,21 @@ kobo_unhcr_style_histo <- function() {
     ggplot2::theme(
 
       #This sets the font, size, type and colour of text for the chart's title
-      plot.title = ggplot2::element_text(family = font, size = 12, face = "bold", color = "#222222"),
+      plot.title = ggplot2::element_text(family = font, 
+                                         size = 12, 
+                                         face = "bold", 
+                                         color = "#222222"),
 
       #This sets the font, size, type and colour of text for the chart's subtitle,  as well as setting a margin between the title and the subtitle
-      plot.subtitle = ggplot2::element_text(family = font, size = 11, margin = ggplot2::margin(9,0,9,0)),
-      plot.caption = ggplot2::element_blank(),
+      plot.subtitle = ggplot2::element_text(family = font, 
+                                            size = 11, 
+                                            margin = ggplot2::margin(9,0,9,0)),
+      #plot.caption = ggplot2::element_blank(),
+      plot.caption = ggplot2::element_text(family = font, 
+                                           size = 6, 
+                                           hjust = 0.92, 
+                                           margin = ggplot2::margin(t = 0.2, b = 0, unit = "cm"), 
+                                           color = "#939184"),
 
       #This sets the position and alignment of the legend, removes a title and backround for it and sets the requirements for any text within the legend. The legend may often need some more manual tweaking when it comes to its exact position based on the plot coordinates.
       legend.position = "top",

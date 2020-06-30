@@ -906,7 +906,7 @@ kobo_crunching_report <- function(form = "form.xls",
                   } else {
 
 
-                    ## Case #1 - categoric*numeric -> box plot
+                    ## Case #1 - categoric * numeric -> box plot
                     if (disag.type == "integer") {
                       # Get number levels to set up chart height
                       figheight <- nlevels( as.factor(get(paste0(questions.frame))[[disag.name]]))
@@ -937,8 +937,6 @@ kobo_crunching_report <- function(form = "form.xls",
                       ## Boxplot
                       ## To do test if there's outliers... ###
                       #if( stats::quantile(questions.frame$disag.name, probs=c(.25, .75), na.rm = T))
-
-
 
                       if (disag.ordinal == "ordinal" ) {
                         cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name ,sep = "\n", append = TRUE)
@@ -1017,7 +1015,7 @@ kobo_crunching_report <- function(form = "form.xls",
                       ## Close chunk
                       cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
 
-                      ## Case #2 - categoric*categoric -> stacked bar plot
+                      ## Case #2 - categoric * categoric -> stacked bar plot
                     } else if (disag.type == "select_one") {
 
                       # Get number levels to set up chart height
@@ -1761,11 +1759,14 @@ kobo_crunching_report <- function(form = "form.xls",
                     if (is.na(disag.ordinal) ) {disag.ordinal <- "not.defined"} else {disag.ordinal <- disag.ordinal }
                     disag.variable <- paste0(questions.frame,"$",disag.name)
                     
-                    
+
                     
                     if (disag.variable == questions.variable) {
                       cat(paste0("\n"),file = report.name , sep = "\n", append = TRUE)
                     } else if (nrow(as.data.frame(table( get(paste0(questions.frame))[[disag.name]]))) == 0) {
+                      cat(paste0("\n"),file = report.name , sep = "\n", append = TRUE)
+                    } else if (disag.type != "select_one") {
+                      ## Only faceting with a select_one is adressed now
                       cat(paste0("\n"),file = report.name , sep = "\n", append = TRUE)
                     } else {
                       

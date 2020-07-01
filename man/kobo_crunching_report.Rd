@@ -22,7 +22,7 @@ It is assumed that the form is stored in the data folder.}
 
 \item{render}{TRUE or FALSE - Tells wheter to only produce Rmd or to also knit it in the required output format. Default is TRUE. Usefull for testing as rending takes time.}
 
-\item{lang}{eng or esp - Change the langauge of the intro to the report - default is english}
+\item{lang}{eng, fre or esp - Change the langauge of the intro to the report - default is english}
 }
 \value{
 No return, All results will be saved on RMD files and Word files

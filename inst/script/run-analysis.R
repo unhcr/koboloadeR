@@ -34,7 +34,13 @@ kobo_load_data(form)
 ##  Generate Crunching Report --> Describe
 ## For disaggregation of variable indicate "facet","stak", "fill" or "dodge"
 ## for test of correlation on select_one variable use correlation = TRUE
-kobo_crunching_report(form)
+kobo_crunching_report(form, output = "docx", lang = "eng")
+#kobo_crunching_report(form, output = "html", lang = "eng")
+
+## In case you want to upload to sharepoint folder set to serve aspx
+## Need before to edit file header and add manually - <meta http-equiv="Content-type" content="text/html; charset=utf-8" /> 
+#kobo_crunching_report(form, output = "aspx", lang = "eng")
+#kobo_crunching_report(form, output = "pptx", lang = "eng")
 
 ## Generate Cluster Report  --> Discover
 ## Report will based on variable cluster == "TRUE" - you need to set one variable as "id"

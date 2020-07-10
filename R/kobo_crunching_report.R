@@ -837,7 +837,7 @@ kobo_crunching_report <- function(form = "form.xls",
               cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("subtitle = paste0(\" Question response rate: \",percentreponse,\"  - respondents: \", nresp),"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                            nrow(MainDataFrame), \" total records colllected between \",
+                            nrow(MainDataFrame), \" total records collected between \",
                             min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                             max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                             configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -944,7 +944,7 @@ kobo_crunching_report <- function(form = "form.xls",
                       cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("subtitle = \". By question: ",disag.label,".\","),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                                    nrow(MainDataFrame), \" total records colllected between \",
+                                    nrow(MainDataFrame), \" total records collected between \",
                                     min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                     max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                                     configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -988,7 +988,7 @@ kobo_crunching_report <- function(form = "form.xls",
                         cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
                         cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,".\","),file = report.name ,sep = "\n", append = TRUE)
                         cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                                            nrow(MainDataFrame), \" total records colllected between \",
+                                            nrow(MainDataFrame), \" total records collected between \",
                                             min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                             max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                                             configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -1078,7 +1078,7 @@ kobo_crunching_report <- function(form = "form.xls",
                       cat(paste0("labs(title = \"",questions.label," (color)\","),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("subtitle = \" By question: ",disag.label," (bar)\","),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                                  nrow(MainDataFrame), \" total records colllected between \",
+                                  nrow(MainDataFrame), \" total records collected between \",
                                   min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                   max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                                            configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -1322,7 +1322,7 @@ kobo_crunching_report <- function(form = "form.xls",
               #cat(paste0("\"and Kurtosis: \",round(kurtosis(frequ$Var1),2) ,\n\""), file = report.name ,sep = "\n", append = TRUE)
               cat(paste0(","),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                        nrow(MainDataFrame), \" total records colllected between \",
+                        nrow(MainDataFrame), \" total records collected between \",
                         min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                         max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                          configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -1364,7 +1364,7 @@ kobo_crunching_report <- function(form = "form.xls",
                 #cat(paste0("\"and Kurtosis: \",round(kurtosis(data.nooutlier$variable),2) ,\n\""), file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0(","),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                            nrow(MainDataFrame), \" total records colllected between \",
+                            nrow(MainDataFrame), \" total records collected between \",
                             min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                             max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                             configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -1466,7 +1466,7 @@ kobo_crunching_report <- function(form = "form.xls",
                     cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("subtitle = \"by question: ",disag.label,"\","),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                                 nrow(MainDataFrame), \" total records colllected between \",
+                                 nrow(MainDataFrame), \" total records collected between \",
                                  min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                  max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                                  configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -1497,7 +1497,7 @@ kobo_crunching_report <- function(form = "form.xls",
                       cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,"\","),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                                      nrow(MainDataFrame), \" total records colllected between \",
+                                      nrow(MainDataFrame), \" total records collected between \",
                                       min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                       max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                                       configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -1548,7 +1548,7 @@ kobo_crunching_report <- function(form = "form.xls",
                     cat(paste0("geom_smooth(method=lm) +  # Add a loess smoothed fit curve with confidence region"),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("labs(title = \"Scatterplot before data capping treatment\","),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                                nrow(MainDataFrame), \" total records colllected between \",
+                                nrow(MainDataFrame), \" total records collected between \",
                                 min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                 max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                                 configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -1576,7 +1576,7 @@ kobo_crunching_report <- function(form = "form.xls",
                     cat(paste0("geom_smooth(method=lm) +  # Add a loess smoothed fit curve with confidence region"),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("labs(title = \"Scatterplot after data capping treatment\") ,"),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                                nrow(MainDataFrame), \" total records colllected between \",
+                                nrow(MainDataFrame), \" total records collected between \",
                                 min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                 max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                                 configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -1732,7 +1732,7 @@ kobo_crunching_report <- function(form = "form.xls",
                 cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("subtitle = paste0(\"Question response rate: \",percentreponse,\" .\"),"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                            nrow(MainDataFrame), \" total records colllected between \",
+                            nrow(MainDataFrame), \" total records collected between \",
                             min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                             max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                             configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -1847,7 +1847,7 @@ kobo_crunching_report <- function(form = "form.xls",
                       cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("subtitle = \"Faceted by question: ",disag.label,".\","),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                                    nrow(MainDataFrame), \" total records colllected between \",
+                                    nrow(MainDataFrame), \" total records collected between \",
                                     min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                     max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                                     configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -1910,7 +1910,7 @@ kobo_crunching_report <- function(form = "form.xls",
                 cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("subtitle = \"\" ,"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                              nrow(MainDataFrame), \" total records colllected between \",
+                              nrow(MainDataFrame), \" total records collected between \",
                               min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                               max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                               configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)

@@ -864,6 +864,42 @@ kobo_prepare_form <- function(form = "form.xls") {
           )
         }
 
+        ## Geographic file for maps
+        
+        
+        if (!"geofile" %in% analysisSettings$name) {
+          analysisSettings <- rbind(analysisSettings,
+                                    data.frame(name = "universefile",
+                                               label = "Name of the geojson file with geo data",
+                                               options = "",
+                                               value = "geofile.geojson",
+                                               path = NA,
+                                               stringsAsFactors = FALSE)
+          )
+        }
+        
+        if (!"geofileid" %in% analysisSettings$name) {
+          analysisSettings <- rbind(analysisSettings,
+                                    data.frame(name = "geofileid",
+                                               label = "Name of the variable within geofile to do the join with the survey",
+                                               options = "",
+                                               value = "geoid",
+                                               path = NA,
+                                               stringsAsFactors = FALSE)
+          )
+        }
+        
+        if (!"geosurveyid" %in% analysisSettings$name) {
+          analysisSettings <- rbind(analysisSettings,
+                                    data.frame(name = "geosurveyid",
+                                               label = "Name of the variable within survey to do the join with the geofile",
+                                               options = "",
+                                               value = "geoid",
+                                               path = NA,
+                                               stringsAsFactors = FALSE)
+          )
+        }        
+        
 
       }
     }

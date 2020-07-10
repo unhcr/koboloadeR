@@ -160,29 +160,47 @@
     <p>Generate report with data aggregated by location &amp; spatial visualisation / cartography</p>
     </div>
 
-    <pre class="usage"><span class='fu'>kobo_atlas_report</span>(<span class='no'>frame</span>, <span class='no'>dico</span>, <span class='no'>mappoly</span>)</pre>
+    <pre class="usage"><span class='fu'>kobo_atlas_report</span>(
+  <span class='kw'>form</span> <span class='kw'>=</span> <span class='st'>"form.xls"</span>,
+  <span class='kw'>app</span> <span class='kw'>=</span> <span class='st'>"console"</span>,
+  <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"html"</span>,
+  <span class='kw'>render</span> <span class='kw'>=</span> <span class='st'>"TRUE"</span>,
+  <span class='kw'>lang</span> <span class='kw'>=</span> <span class='st'>"eng"</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>frame</th>
-      <td><p>odk dataset to use</p></td>
+      <th>form</th>
+      <td><p>The full filename of the form to be accessed (xls or xlsx file).
+It is assumed that the form is stored in the data folder.</p></td>
     </tr>
     <tr>
-      <th>dico</th>
-      <td><p>Generated from kobo_dico function</p></td>
+      <th>app</th>
+      <td><p>The place where the function has been executed, the default is the console and the second option is the shiny app</p></td>
     </tr>
     <tr>
-      <th>mappoly</th>
-      <td><p>or mappoint depending on the type of visualisation expected - polygons or points</p></td>
+      <th>output</th>
+      <td><p>The output format html or aspx if you need to upload on sharepoint), docx (to quickly cut non interesting vz and take note during data interpretation session), pptx (to quickly cut non interesting vz and persent during data interpretation session), Default is html</p></td>
+    </tr>
+    <tr>
+      <th>render</th>
+      <td><p>TRUE or FALSE - Tells wheter to only produce Rmd or to also knit it in the required output format. Default is TRUE. Usefull for testing as rending takes time.</p></td>
+    </tr>
+    <tr>
+      <th>lang</th>
+      <td><p>eng, fre or esp - Change the langauge of the intro to the report - default is english</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>No return, All results will be saved on RMD files and Word files</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'>kobo_atlas_report</span>(<span class='no'>frame</span>, <span class='no'>dico</span>, <span class='no'>mappoly</span>)
+<span class='fu'>kobo_atlas_report</span>(<span class='no'>form</span>, <span class='no'>mapfile</span>)
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

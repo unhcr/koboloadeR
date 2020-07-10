@@ -10,6 +10,9 @@
     <loc>https://unhcr.github.io/koboloadeR/docs//reference/get_me.html</loc>
   </url>
   <url>
+    <loc>https://unhcr.github.io/koboloadeR/docs//reference/kobo_aggregate.html</loc>
+  </url>
+  <url>
     <loc>https://unhcr.github.io/koboloadeR/docs//reference/kobo_anonymisation_report.html</loc>
   </url>
   <url>
@@ -173,6 +176,9 @@
   </url>
   <url>
     <loc>https://unhcr.github.io/koboloadeR/docs//reference/kobo_unhcr_style_map.html</loc>
+  </url>
+  <url>
+    <loc>https://unhcr.github.io/koboloadeR/docs//reference/kobo_unhcr_style_map_big.html</loc>
   </url>
   <url>
     <loc>https://unhcr.github.io/koboloadeR/docs//reference/kobo_unhcr_style_scatter.html</loc>

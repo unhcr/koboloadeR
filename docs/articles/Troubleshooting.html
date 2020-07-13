@@ -109,7 +109,7 @@
       <h1 data-toc-skip>Common Troubleshooting</h1>
                         <h4 class="author">Edouard Legoupil</h4>
             
-            <h4 class="date">2020-07-09</h4>
+            <h4 class="date">2020-07-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/unhcr/koboloadeR/blob/master/vignettes/Troubleshooting.Rmd"><code>vignettes/Troubleshooting.Rmd</code></a></small>
       <div class="hidden name"><code>Troubleshooting.Rmd</code></div>
@@ -174,6 +174,15 @@ Sys.getenv("TZ")
 <p>If you get this error:</p>
 <pre><code>Error: package or namespace load failed for 'rJava'</code></pre>
 <p>It could be because you have a 64bit version of R, but have a 32bit version of Java. Check this thread for guidance: <a href="https://stackoverflow.com/questions/37735108/r-error-onload-failed-in-loadnamespace-for-rjava" class="uri">https://stackoverflow.com/questions/37735108/r-error-onload-failed-in-loadnamespace-for-rjava</a></p>
+</div>
+<div id="installing-pacckage-library-on-a-one-drive-folder" class="section level3">
+<h3 class="hasAnchor">
+<a href="#installing-pacckage-library-on-a-one-drive-folder" class="anchor"></a>Installing pacckage library on a one-drive folder</h3>
+<p>as explained here: <a href="https://www.accelebrate.com/library/how-to-articles/r-rstudio-library">https://www.accelebrate.com/library/how-to-articles/r-rstudio-library</a>, Go and edit to your Rprofile file by adding</p>
+<blockquote>
+<h1 id="my-custom-path">my custom path</h1>
+<p>myPaths &lt;- .libPaths() myPaths &lt;- c(myPaths[2], myPaths[1]) # switch them myPaths &lt;- c(myPaths, ‘C:’) # add new path .libPaths(myPaths) # reassign path</p>
+</blockquote>
 </div>
 </div>
   </div>

@@ -4,12 +4,19 @@
 \alias{kobo_cluster_report}
 \title{Generate reports with various clusterisation techniques}
 \usage{
-kobo_cluster_report(frame, form = "form.xls", app = "console")
+kobo_cluster_report(
+  frame = MainDataFrame,
+  form = "form.xls",
+  output = "html",
+  app = "console"
+)
 }
 \arguments{
 \item{frame}{kobo or odk exported dataset to use}
 
 \item{form}{The full filename of the form to be accessed (has to be an xls file).}
+
+\item{output}{The output format html or aspx if you need to upload on sharepoint), docx (to quickly cut non interesting vz and take note during data interpretation session), pptx (to quickly cut non interesting vz and persent during data interpretation session), Default is html}
 
 \item{app}{The place where the function has been executed, the default is the console and the second option is the shiny app}
 }

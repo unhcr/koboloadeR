@@ -61,7 +61,7 @@ kobo_atlas_report <- function(form = "form.xls",
     
     # Form ##########################################
     ## Load form
-    cat("\n\n Building dictionnary from the xlsform \n")
+   # cat("\n\n Building dictionnary from the xlsform \n")
     
     #form <- "form.xls"
     ## Generate dico to test here - in normal process - it has been done just before in kobo_load_data()
@@ -85,6 +85,8 @@ kobo_atlas_report <- function(form = "form.xls",
     
     kobo_aggregate(form,
                    aggregVar = mapref)
+    
+    MainDataFrameMap <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_edited_map.csv",sep = ""), encoding = "UTF-8", na.strings = "")
     
     ##get list of report
     reports <- as.data.frame(unique(dico$report))
@@ -575,9 +577,14 @@ kobo_atlas_report <- function(form = "form.xls",
       
       
       ## get list of chapters
-      chapters <- as.data.frame(unique(dico[ , c("chapter","report")]))
+      #  
+      #  !(is.na(dico$mappoly)) &
+      chapters <- as.data.frame(unique(dico[ , c("chapter","report", "mappoly")]))
       names(chapters)[2] <- "Report"
       names(chapters)[1] <- "Chapter"
+      names(chapters)[3] <- "mappoly"
+      
+      chapters <- chapters[ !(is.na(chapters$mappoly)), ]
       
       ## Default behavior if no chapter was defined in xlsform
       if ((nrow(chapters) == 1) & is.na(chapters$Chapter)) {
@@ -593,18 +600,22 @@ kobo_atlas_report <- function(form = "form.xls",
       
       for (v in 1:nrow(chapters) )
       {
-        # v <- 3
+        # v <- 1
         chaptersname <- as.character(chapters[ v , 1])
         
         
         
         ## Getting chapter questions ####################################################################################################
         #chapterquestions <- dico[which(dico$chapter== chaptersname ), c("chapter", "name", "label", "type", "qrepeatlabel", "fullname","listname") ]
-        chapterquestions <- dico[which(dico$chapter == chaptersname & 
+        chapterquestions <- dico[which(dico$chapter == chaptersname &
                                          !(is.na(dico$mappoly)) &
-                                         dico$type %in% c("select_one","integer","select_multiple_d", "text","date", "numeric", "calculate")),
-                                 c("chapter", "name", "label", "labelReport","hintReport", "type", "qrepeatlabel", "fullname","listname","variable") ]
+                                         dico$type %in% c("select_one_d","integer","select_multiple" , "numeric")),
+                                 c("chapter", "name", "label", "labelReport","hintReport", "type", "qrepeatlabel", "fullname","listname","variable", "mappoly") ]
         # levels(as.factor(as.character(dico[which(!(is.na(dico$chapter)) & dico$formpart=="questions"), c("type") ])))
+        
+        ## Ensure selected variable are in the aggregated frame
+        check <- names(MainDataFrameMap)
+        chapterquestions <- chapterquestions[chapterquestions$fullname %in% check, ]
         
         ## add better slides separator
         if (output == "pptx") {
@@ -626,109 +637,97 @@ kobo_atlas_report <- function(form = "form.xls",
           progress$set(message = "Getting levels for each questions in progress...")
           updateProgress()
         }
-        for (j in 1:nrow(chapterquestions))
-        {
-          # j <- 9
-          ## Now getting level for each questions
-          if (app == "shiny") {
-            progress$set(message = paste("Render question: ",as.character(chapterquestions[ j , c("labelReport")])))
-            updateProgress()
-          }
-          questions.name <- as.character(chapterquestions[ j , c("fullname")])
-          questions.shortname <- as.character(chapterquestions[ j , c("name")])
-          questions.type <- as.character(chapterquestions[ j , c("type")])
-          questions.frame <- as.character(chapterquestions[ j , c("qrepeatlabel")])
-          questions.label <- as.character(chapterquestions[ j , c("labelReport")])
-          questions.hint <- as.character(chapterquestions[ j , c("hintReport")])
-          questions.listname <- as.character(chapterquestions[ j , c("listname")])
-          questions.ordinal <- as.character(chapterquestions[ j , c("variable")])
-          if (is.na(questions.ordinal) ) {questions.ordinal <- "not.defined"} else {questions.ordinal <- questions.ordinal }
-          questions.variable <- paste0(questions.frame,"$",questions.name)
-          
-          
-          cat(paste("\n", i, "-", j, " - Render question: ", questions.variable, " -",questions.type, "\n" ))
-          
-          
-          ## write question name 
-          cat("\n ",file = report.name , sep = "\n", append = TRUE)
-          cat(paste("## ", questions.label ,sep = ""),file = report.name , sep = "\n", append = TRUE)
-          
-          
-          ## Now create para based on question type
-          
-          
-          cat(paste(if (is.na(questions.hint)){paste0("")} else {paste0("__Interpretation Hint__: ", questions.hint)},"\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
-          
-          
-          if (questions.type == "integer") {
-            cat(paste("This question was of type ", questions.type,". The graphs below present means value for this question.\n" ,sep = ""),file = report.name , sep = "\n", append = TRUE) }
-          else if (questions.type == "select_one_d") {
-            cat(paste("This question was of a modality in a unique choice question. The graphs below present the proportion for that modality aggregated at different geographic level.\n" ,sep = ""),file = report.name , sep = "\n", append = TRUE) }
-          else if (questions.type == "select_multiple") {
-            cat(paste("This question was of a modality in a multiple choice question. The graphs below present the proportion for that modality aggregated at different geographic level.\n" ,sep = ""),file = report.name , sep = "\n", append = TRUE) }
-          
-          
-          ## Open chunk
-          cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=4, size=\"small\"}\n", sep = '\n'), file = report.name, append = TRUE)
-          cat("\n", file = report.name  , sep = "\n", append = TRUE)
-          
-          cat("ggmap(map) +", file = report.name  , sep = "\n", append = TRUE)          
-          #cat("autoplot(mapLatLon) +", file = report.name  , sep = "\n", append = TRUE)
-          cat("  geom_polygon(data = geofile.map.fort,", file = report.name  , sep = "\n", append = TRUE)
-          
-          if (questions.type == "integer") {
-            cat( paste0("               aes(x = long, y = lat, fill = ",questions.name,", group = group),"), file = report.name  , sep = "\n", append = TRUE) } else {
-              cat( paste0("               aes(x = long, y = lat, fill = ",questions.name," *100, group = group),"), file = report.name  , sep = "\n", append = TRUE)}
-          
-          cat("               colour = \"white\", alpha = 0.7 ) +", file = report.name  , sep = "\n", append = TRUE)
-          cat("  coord_equal() +", file = report.name  , sep = "\n", append = TRUE)
-          cat("  theme_map() +", file = report.name  , sep = "\n", append = TRUE)
-          # cat("  scale_fill_gradient(low = \"#ffffcc\", high = \"#ff4444\",", file = report.name  , sep = "\n", append = TRUE)
-          cat("  scale_fill_viridis(", file = report.name  , sep = "\n", append = TRUE)
-          
-          if (questions.type == "integer") {
-            cat("                      name = \"Average value\",", file = report.name  , sep = "\n", append = TRUE) } else {
-              cat("                      name = \"Percentage for that modality\",", file = report.name  , sep = "\n", append = TRUE)}
-          
-          
-          cat("                      guide = guide_legend( direction = \"horizontal\", label.position = \"bottom\",", file = report.name  , sep = "\n", append = TRUE)
-          cat("                                            keyheight = unit(2, units = \"mm\"),  keywidth = unit(length(labels)*10, units = \"mm\"),", file = report.name  , sep = "\n", append = TRUE)
-          cat("                                            title.position = 'top',  title.hjust = 0.5, label.hjust = 1, nrow = 1, byrow = T, reverse = T )) +", file = report.name  , sep = "\n", append = TRUE)
-          cat( paste0("  labs(title = \"",questions.label ,"\" , subtitle = \"\",  x = NULL, y = NULL,"),file = report.name ,sep = "\n", append = TRUE)
-          cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                            nrow(MainDataFrame), \" total records collected between \",
-                            min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
-                            max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
-                     configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE) 
-          
-          if (output == "pptx") {
-            cat(paste0("kobo_unhcr_style_map_big()"),file = report.name ,sep = "\n", append = TRUE)
-            
-          } else {
-            cat(paste0("kobo_unhcr_style_map()"),file = report.name ,sep = "\n", append = TRUE)
-          }
-          
-          cat(paste0("\n", sep = '\n'), file = report.name, append = TRUE)
-          cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
-          
-          
-          cat(paste("##### Page Break"),file = report.name ,sep = "\n", append = TRUE)
-          
-
-          
-          cat(paste0("\n", sep = '\n'), file = report.name, append = TRUE)
-          cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
-          
-          cat(paste0("\n", sep = '\n'), file = report.name, append = TRUE)
-          
-          
-          
-          cat(paste("##### Page Break"),file = report.name ,sep = "\n", append = TRUE)
-          
-          
-          ## End loop on questions
-        }
         
+        if( nrow(chapterquestions) > 0 ) {
+          for (j in 1:nrow(chapterquestions))
+          {
+            # j <- 1
+            ## Now getting level for each questions
+            if (app == "shiny") {
+              progress$set(message = paste("Render question: ",as.character(chapterquestions[ j , c("labelReport")])))
+              updateProgress()
+            }
+            questions.name <- as.character(chapterquestions[ j , c("fullname")])
+            questions.shortname <- as.character(chapterquestions[ j , c("name")])
+            questions.type <- as.character(chapterquestions[ j , c("type")])
+            questions.frame <- as.character(chapterquestions[ j , c("qrepeatlabel")])
+            questions.label <- as.character(chapterquestions[ j , c("labelReport")])
+            questions.hint <- as.character(chapterquestions[ j , c("hintReport")])
+            questions.listname <- as.character(chapterquestions[ j , c("listname")])
+            questions.ordinal <- as.character(chapterquestions[ j , c("variable")])
+            if (is.na(questions.ordinal) ) {questions.ordinal <- "not.defined"} else {questions.ordinal <- questions.ordinal }
+            questions.variable <- paste0(questions.frame,"$",questions.name)
+            
+            
+            cat(paste("\n", i, "-", j, " - Render question: ", questions.variable, " -",questions.type, "\n" ))
+            
+            
+            ## write question name 
+            cat("\n ",file = report.name , sep = "\n", append = TRUE)
+            cat(paste("## ", questions.label ,sep = ""),file = report.name , sep = "\n", append = TRUE)
+            
+            
+            ## Now create para based on question type
+            
+            
+            cat(paste(if (is.na(questions.hint)){paste0("")} else {paste0("__Interpretation Hint__: ", questions.hint)},"\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
+            
+               
+            
+            ## Open chunk
+            cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=10, size=\"small\"}\n", sep = '\n'), file = report.name, append = TRUE)
+           cat("plot1 <- ggmap(map) +", file = report.name  , sep = "\n", append = TRUE)          
+            #cat("autoplot(mapLatLon) +", file = report.name  , sep = "\n", append = TRUE)
+            cat("  geom_polygon(data = geofile.map.fort,", file = report.name  , sep = "\n", append = TRUE)
+            
+            if (questions.type == "integer") {
+              cat( paste0("               aes(x = long, y = lat, fill = ",questions.name,", group = group),"), file = report.name  , sep = "\n", append = TRUE) } else {
+                cat( paste0("               aes(x = long, y = lat, fill = ",questions.name," *100, group = group),"), file = report.name  , sep = "\n", append = TRUE)}
+            
+            cat("               colour = \"white\", alpha = 0.7 ) +", file = report.name  , sep = "\n", append = TRUE)
+            cat("  coord_equal() +", file = report.name  , sep = "\n", append = TRUE)
+            cat("  theme_map() +", file = report.name  , sep = "\n", append = TRUE)
+            # cat("  scale_fill_gradient(low = \"#ffffcc\", high = \"#ff4444\",", file = report.name  , sep = "\n", append = TRUE)
+            cat("  scale_fill_viridis(", file = report.name  , sep = "\n", append = TRUE)
+            
+            if (questions.type == "integer") {
+              cat("                      name = \"Average value\",", file = report.name  , sep = "\n", append = TRUE) } else {
+                cat("                      name = \"Percentage for that modality\",", file = report.name  , sep = "\n", append = TRUE)}
+            
+            
+            cat("                      guide = guide_legend( direction = \"horizontal\", label.position = \"bottom\",", file = report.name  , sep = "\n", append = TRUE)
+            cat("                                            keyheight = unit(2, units = \"mm\"),  keywidth = unit(length(labels)*10, units = \"mm\"),", file = report.name  , sep = "\n", append = TRUE)
+            cat("                                            title.position = 'top',  title.hjust = 0.5, label.hjust = 1, nrow = 1, byrow = T, reverse = T )) +", file = report.name  , sep = "\n", append = TRUE)
+            cat( paste0("  labs(title = \"",questions.label ,"\" ,  x = NULL, y = NULL,"),file = report.name ,sep = "\n", append = TRUE)
+           
+            ## subtitle = \"\", 
+            if (questions.type == "integer") {
+              cat(paste0("subtitle = \"Aggregated numeric questions. The means value is displayed in this map.\","  ),file = report.name , sep = "\n", append = TRUE) }
+            else if (questions.type == "select_one_d") {
+              cat(paste0("subtitle = \"Aggregated  unique choice question. The proportion for one specific modality is displayed in this map.\"," ),file = report.name , sep = "\n", append = TRUE) }
+            else if (questions.type == "select_multiple") {
+              cat(paste0("subtitle = \"Aggregated multiple choice question. The proportion for one specific modality is displayed in this map.\"," ),file = report.name , sep = "\n", append = TRUE) }
+            
+            ## caption
+            cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
+                              nrow(MainDataFrame), \" total records collected between \",
+                              min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
+                              max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" \n in \", \" ",
+                       configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE) 
+            
+            if (output == "pptx") {
+              cat(paste0("kobo_unhcr_style_map_big()"),file = report.name ,sep = "\n", append = TRUE)
+              
+            } else {
+              cat(paste0("kobo_unhcr_style_map()"),file = report.name ,sep = "\n", append = TRUE)
+            }
+            cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+            
+            cat(paste0("\n", sep = '\n'), file = report.name, append = TRUE)
+            cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
+  
+          }
+        }
       }
       
     }
@@ -765,10 +764,10 @@ kobo_atlas_report <- function(form = "form.xls",
           
           cat(paste(i, " - Render word output report for ",reportsname))
           mainDir <- kobo_getMainDirectory()
-          rmarkdown::render(paste(mainDir,"/code/",i,"-", reportsname, "-report.Rmd", sep = ""))
+          rmarkdown::render(paste(mainDir,"/code/",i,"-", reportsname, "-atlas.Rmd", sep = ""))
           ## Put the report in the out folder
           mainDir <- kobo_getMainDirectory()
-          file.rename(paste(mainDir,"/code/",i,"-", reportsname, "-report.docx", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", reportsname,"-",Sys.Date(), "-report.docx"))
+          file.rename(paste(mainDir,"/code/",i,"-", reportsname, "-atlas.docx", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-",i,"-", reportsname,"-",Sys.Date(), "-atlas.docx"))
           ## Clean  memory
           gc()
           
@@ -776,10 +775,10 @@ kobo_atlas_report <- function(form = "form.xls",
           
           cat(paste(i, " - Render html output report for ",reportsname))
           mainDir <- kobo_getMainDirectory()
-          rmarkdown::render(paste(mainDir,"/code/",i,"-", reportsname, "-report.Rmd", sep = ""))
+          rmarkdown::render(paste(mainDir,"/code/",i,"-", reportsname, "-atlas.Rmd", sep = ""))
           ## Put the report in the out folder
           mainDir <- kobo_getMainDirectory()
-          file.rename(paste(mainDir,"/code/",i,"-", reportsname, "-report.html", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", reportsname,"-",Sys.Date(), "-report.html"))
+          file.rename(paste(mainDir,"/code/",i,"-", reportsname, "-atlas.html", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-",i,"-", reportsname,"-",Sys.Date(), "-atlas.html"))
           ## Clean  memory
           gc()
           
@@ -787,10 +786,10 @@ kobo_atlas_report <- function(form = "form.xls",
           
           cat(paste(i, " - Render aspx output - for sharepoint hosting - report for ",reportsname))
           mainDir <- kobo_getMainDirectory()
-          rmarkdown::render(paste(mainDir,"/code/",i,"-", reportsname, "-report.Rmd", sep = ""))
+          rmarkdown::render(paste(mainDir,"/code/",i,"-", reportsname, "-atlas.Rmd", sep = ""))
           ## Put the report in the out folder
           mainDir <- kobo_getMainDirectory()
-          file.rename(paste(mainDir,"/code/",i,"-", reportsname, "-report.html", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", reportsname,"-",Sys.Date(), "-report.aspx"))
+          file.rename(paste(mainDir,"/code/",i,"-", reportsname, "-atlas.html", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-",i,"-", reportsname,"-",Sys.Date(), "-atlas.aspx"))
           ## Clean  memory
           gc()
           
@@ -798,10 +797,10 @@ kobo_atlas_report <- function(form = "form.xls",
           
           cat(paste(i, " - Render PowerPoint output report for ",reportsname))
           mainDir <- kobo_getMainDirectory()
-          rmarkdown::render(paste(mainDir,"/code/",i,"-", reportsname, "-report.Rmd", sep = ""))
+          rmarkdown::render(paste(mainDir,"/code/",i,"-", reportsname, "-atlas.Rmd", sep = ""))
           ## Put the report in the out folder
           mainDir <- kobo_getMainDirectory()
-          file.rename(paste(mainDir,"/code/",i,"-", reportsname, "-report.pptx", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", reportsname,"-",Sys.Date(), "-report.pptx"))
+          file.rename(paste(mainDir,"/code/",i,"-", reportsname, "-atlas.pptx", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-",i,"-", reportsname,"-",Sys.Date(), "-atlas.pptx"))
           ## Clean  memory
           gc()
         }

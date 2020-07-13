@@ -1646,8 +1646,8 @@ kobo_crunching_report <- function(form = "form.xls",
 
               totalanswer <- nrow(data.selectmultilist)
               
-              ## Not sure why I did that before... sigh... 
-              #data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1] != "Not replied", ]
+              ## Remove the not replied as it will beyond 100% !! 
+              data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1] != "Not replied", ]
               
               percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),"%")
               meltdata <- reshape2::melt(data.selectmultilist,id = "id")
@@ -1697,8 +1697,8 @@ kobo_crunching_report <- function(form = "form.xls",
                 cat(paste0("data.selectmultilist$id <- rownames(data.selectmultilist)"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("totalanswer <- nrow(data.selectmultilist)"),file = report.name ,sep = "\n", append = TRUE)
                 
-                ## not sure why this was set up before
-                #cat(paste0("data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!=\"Not replied\", ]"),file = report.name ,sep = "\n", append = TRUE)
+                ## Remove the not replied to avoid going beyond 100%
+                cat(paste0("data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!=\"Not replied\", ]"),file = report.name ,sep = "\n", append = TRUE)
                 
                 cat(paste0("percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),\"%\")"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("meltdata <- reshape2::melt(data.selectmultilist,id=\"id\")"),file = report.name ,sep = "\n", append = TRUE)
@@ -1809,7 +1809,8 @@ kobo_crunching_report <- function(form = "form.xls",
                       cat(paste0("data.selectmultilist <- ",questions.frame ,"[ selectmultilist ]"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("data.selectmultilist$id <- rownames(data.selectmultilist)"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("totalanswer <- nrow(data.selectmultilist)"),file = report.name ,sep = "\n", append = TRUE)
-                     # cat(paste0("data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!=\"Not replied\", ]"),file = report.name ,sep = "\n", append = TRUE)
+                      ## Remove not replied to avoid going beyond 100%
+                      cat(paste0("data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!=\"Not replied\", ]"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),\"%\")"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("meltdata <- reshape2::melt(data.selectmultilist,id=c(\"id\",\"",disag.name,"\"))"),file = report.name ,sep = "\n", append = TRUE)
                       

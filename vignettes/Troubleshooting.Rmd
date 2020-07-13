@@ -105,3 +105,12 @@ Error: package or namespace load failed for 'rJava'
 
 It could be because you have a 64bit version of R, but have a 32bit version of Java. Check this thread for guidance: https://stackoverflow.com/questions/37735108/r-error-onload-failed-in-loadnamespace-for-rjava
 
+### Installing pacckage library on a one-drive folder
+
+as explained here: [https://www.accelebrate.com/library/how-to-articles/r-rstudio-library](https://www.accelebrate.com/library/how-to-articles/r-rstudio-library), Go and edit to your Rprofile file by adding
+
+> # my custom path
+> myPaths <- .libPaths()
+> myPaths <- c(myPaths[2], myPaths[1]) # switch them
+> myPaths <- c(myPaths, 'C:\RPROJECTS') # add new path
+> .libPaths(myPaths) # reassign path

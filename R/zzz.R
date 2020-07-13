@@ -5,7 +5,7 @@
   if (getRversion() >= "2.15.1")
     utils::globalVariables(
       # used to remove note when doing devtools::check(document = FALSE, args = c('--as-cran'))
-      c("..density..", "CellStyle", "Var1", "addDataFrame", "aes", "alpha", "analysis_plan",
+      c("..density..", "CellStyle", "Var1", "addDataFrame", "aes", "alpha", "analysis_plan", "aggregVar1",
         "as.charater", "as.formula", "brewer.pal", "chisq.test", "complete.cases",
         "coord_equal", "coord_flip", "createSheet", "createWorkbook", "data", "design", "dico",
         "element_blank", "element_line", "element_rect", "element_text", "exportDDI", "facet",

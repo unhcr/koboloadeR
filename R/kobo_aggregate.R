@@ -24,6 +24,8 @@
 kobo_aggregate <- function( form = "form.xls", 
                             aggregVar = "admin1") {
   
+  # aggregVar = mapref
+  require(tidyverse)
   ## Load all required packages ####
   kobo_load_packages()
   configInfo <- kobo_get_config(form)
@@ -64,13 +66,13 @@ kobo_aggregate <- function( form = "form.xls",
   
   ## Let's do some top coding to eliminate data errors... in numeric variable
   # outlier values based on boxplot.stats with coef 3 are set to NA
-  for (i in 1:length(selected.mappoly.numVars)) {
-    MainDataFrame[ , selected.mappoly.numVars[i]][ MainDataFrame[ , selected.mappoly.numVars[i]] > min(boxplot.stats(MainDataFrame[ , selected.mappoly.numVars[i]], coef = 3)$out)] <- NA
-    #cat(min(boxplot.stats(MainDataFrame[ , selected.mappoly.numVars[i]], coef = 3)$out))
-  }
+  # for (i in 1:length(selected.mappoly.numVars)) {
+  #   MainDataFrame[ , selected.mappoly.numVars[i]][ MainDataFrame[ , selected.mappoly.numVars[i]] > min(grDevices::boxplot.stats(MainDataFrame[ , selected.mappoly.numVars[i]], coef = 3)$out)] <- NA
+  #   #cat(min(grDevices::boxplot.stats(MainDataFrame[ , selected.mappoly.numVars[i]], coef = 3)$out))
+  # }
   
-  #boxplot.stats(MainDataFrame$MainDataFrame_information.Family_Size, coef = 3)$out
-  #boxplot.stats(MainDataFrame$Housing.rooms_at_the_residence, coef = 3)$out
+  #grDevices::boxplot.stats(MainDataFrame$MainDataFrame_information.Family_Size, coef = 3)$out
+  #grDevices::boxplot.stats(MainDataFrame$Housing.rooms_at_the_residence, coef = 3)$out
 
   ##### Sub setting numeric frame
   # Create subset of file with observation and selected variables & remove duplicated rows based on IDH
@@ -81,9 +83,9 @@ kobo_aggregate <- function( form = "form.xls",
   
   ## Aggregate numeric value  based on mean ####
   datamappoly1.num2 <- datamappoly1.num %>%
-    group_by(aggregVar1) %>%
-    summarise_all(funs(mean(., na.rm = TRUE))) %>%
-    mutate_if(is.numeric, funs(round(., 2)))
+    dplyr::group_by(aggregVar1) %>%
+    dplyr::summarise_all(dplyr::funs(mean(., na.rm = TRUE))) %>%
+    dplyr::mutate_if(is.numeric, dplyr::funs(round(., 2)))
   
   datamappoly1.num2 <- as.data.frame(datamappoly1.num2)
   
@@ -91,11 +93,12 @@ kobo_aggregate <- function( form = "form.xls",
   
   
   ## 2. Counting observation per aggregation variable ####
-  datamappoly1.n <-  MainDataFrame %>% 
-                      group_by(aggregVar1) %>% 
-                      mutate(count = n())
+  # datamappoly1.n <-  MainDataFrame %>% 
+  #                     dplyr::group_by(aggregVar1) %>% 
+  #                     dplyr::tally()
+  #                     #plyr::mutate(., count = n())
   
-  datamappoly1.n <-  aggregate( . ~ aggregVar1, MainDataFrame, length)
+  datamappoly1.n <-  stats::aggregate( . ~ aggregVar1, MainDataFrame, length)
   #datamappoly1.n <- count(MainDataFrame, c("aggregVar1"))
   names(datamappoly1.n)[1] <- "aggregVar1"
   names(datamappoly1.n)[2] <- "count"
@@ -123,9 +126,9 @@ kobo_aggregate <- function( form = "form.xls",
   
   ### Aggregate categoric value  based on sum ####
   datamappoly1.cat2 <- datamappoly1.cat %>%
-    group_by( aggregVar1 ) %>%
-    summarise_all(funs(sum)) %>%
-    mutate_if(is.numeric, funs(round(., 2)))
+    dplyr::group_by( aggregVar1 ) %>%
+    dplyr::summarise_all(dplyr::funs(sum)) %>%
+    dplyr::mutate_if(is.numeric, dplyr::funs(round(., 2)))
   
   
   

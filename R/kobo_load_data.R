@@ -83,7 +83,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
 
 
     cat("\n\n\n Clean variable if any \n\n\n\n")
-    MainDataFrame <- kobo_clean(MainDataFrame)
+    MainDataFrame <- kobo_clean(MainDataFrame, form)
 
 
 

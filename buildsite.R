@@ -145,11 +145,9 @@ devtools::install_github("dracodoc/mischelper")
 devtools::check(document = FALSE, args = c('--as-cran', '--no-examples', '--no-tests'))
 
 
-  ## Create documentation for the package!
-
-
+## Create documentation for the package!
 
 #build_vignettes()
 
 tools::showNonASCIIfile("R/kobo_crunching_report.R")
-
+tools::showNonASCIIfile("R/kobo_atlas_report.R")

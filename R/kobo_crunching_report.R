@@ -81,19 +81,20 @@ kobo_crunching_report <- function(form = "form.xls",
 
 
     cat("\n\nload all required data files..\n")
-    dataBeginRepeat <- kobo_get_begin_repeat()
+    dataBeginRepeat <- kobo_get_begin_repeat(form)
     dataBeginRepeat <- dataBeginRepeat$names
-    for (dbr in dataBeginRepeat) {
-
-      dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_encoded.csv",sep = ""),stringsAsFactors = F)
-
-      assign(dbr, kobo_label(dataFrame, dico))
-      if (app == "shiny") {
-        progress$set(message = paste("Labelling variables in",dbr,"File in progress..."))
-        updateProgress()
+    
+    ## Check if there's a repeat - aka hierarchical structure in the dataset
+    if  (length(dataBeginRepeat) > 0) {
+      for (dbr in dataBeginRepeat) {
+        dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_encoded.csv",sep = ""),stringsAsFactors = F)
+        assign(dbr, kobo_label(dataFrame, dico))
+        if (app == "shiny") {
+          progress$set(message = paste("Labelling variables in",dbr,"File in progress..."))
+          updateProgress()
+        }
       }
     }
-
 
     ## Get a list of variables to be used for disaggregation #######
     disaggregation <- dico[ which(dico$disaggregation %in% c("facet", "stak", "fill", "dodge") & dico$formpart == "questions"),
@@ -273,10 +274,12 @@ kobo_crunching_report <- function(form = "form.xls",
 
       cat("MainDataFrame <- utils::read.csv(paste0(mainDirroot,\"/data/MainDataFrame_encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = report.name , sep = "\n", append = TRUE)
 
-
-      for (dbr in dataBeginRepeat) {
-        cat(paste(dbr, " <- utils::read.csv(paste0(mainDirroot,\"/data/",dbr,"_encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", sep = ""), file = report.name , sep = "\n", append = TRUE)
-
+      
+      ## Check if there's a repeat - aka hierarchical structure in the dataset
+      if  (length(dataBeginRepeat) > 0) {
+        for (dbr in dataBeginRepeat) {
+          cat(paste(dbr, " <- utils::read.csv(paste0(mainDirroot,\"/data/",dbr,"_encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", sep = ""), file = report.name , sep = "\n", append = TRUE)
+        }
       }
 
 
@@ -284,10 +287,14 @@ kobo_crunching_report <- function(form = "form.xls",
       cat("## label Variables", file = report.name , sep = "\n", append = TRUE)
 
       cat("MainDataFrame <- kobo_label(MainDataFrame , dico)", file = report.name , sep = "\n", append = TRUE)
-
+      
+      
+      ## Check if there's a repeat - aka hierarchical structure in the dataset
+      if  (length(dataBeginRepeat) > 0) {
       for (dbr in dataBeginRepeat) {
         cat(paste(dbr, " <- kobo_label(",dbr ," , dico)", sep = ""), file = report.name , sep = "\n", append = TRUE)
-      }
+        }
+      }  
 
       #### Convert to ordinal variable
 
@@ -316,28 +323,40 @@ kobo_crunching_report <- function(form = "form.xls",
       if (configInfo[configInfo$name == "sample_type","value"] == "No sampling (type 1)") {
         ## If no weight, the weighted object is unweigthted
         cat("MainDataFrame.survey <- survey::svydesign(ids = ~ 1 ,  data = MainDataFrame )", file = report.name , sep = "\n", append = TRUE)
-
-        for (dbr in dataBeginRepeat) {
-          cat(paste(dbr,".survey <- survey::svydesign(ids = ~ 1 ,  data = ",dbr," )", sep = ""), file = report.name , sep = "\n", append = TRUE)
-        }
+        
+        
+        ## Check if there's a repeat - aka hierarchical structure in the dataset
+        if  (length(dataBeginRepeat) > 0) {
+          for (dbr in dataBeginRepeat) {
+            cat(paste(dbr,".survey <- survey::svydesign(ids = ~ 1 ,  data = ",dbr," )", sep = ""), file = report.name , sep = "\n", append = TRUE)
+            }
+        }  
         ## with clusters
 
       }else if (configInfo[configInfo$name == "sample_type","value"] == "Cluster sample (type 2)") {
         ## with clusters
         cat(paste("MainDataFrame.survey <- survey::svydesign(ids = ~ ", configInfo[configInfo$name == "variable_name","value"],",  data = MainDataFrame,  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"]," ,  fpc = ~ fpc )", sep = ""), file = report.name , sep = "\n", append = TRUE)
-
-        for (dbr in dataBeginRepeat) {
-          cat(paste(dbr,".survey <- survey::svydesign(ids = ~ ", configInfo[configInfo$name == "variable_name","value"],",  data = ",dbr,",  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"]," ,  fpc = ~ fpc )", sep = ""), file = report.name , sep = "\n", append = TRUE)
+        
+        
+        ## Check if there's a repeat - aka hierarchical structure in the dataset
+        if  (length(dataBeginRepeat) > 0) {
+          for (dbr in dataBeginRepeat) {
+            cat(paste(dbr,".survey <- survey::svydesign(ids = ~ ", configInfo[configInfo$name == "variable_name","value"],",  data = ",dbr,",  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"]," ,  fpc = ~ fpc )", sep = ""), file = report.name , sep = "\n", append = TRUE)
+          }
         }
         ## with strata
 
       }else if (configInfo[configInfo$name == "sample_type","value"] == "Stratified sample (type 3)") {
         ## with strata
         cat(paste("MainDataFrame.survey <- survey::svydesign(id=~1, strata= ~ ", configInfo[configInfo$name == "variable_name","value"]," ,check.strata = TRUE,  data = MainDataFrame,  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"],"  )", sep = ""), file = report.name , sep = "\n", append = TRUE)
-
-        for (dbr in dataBeginRepeat) {
-          cat(paste(dbr,".survey <- survey::svydesign(id=~1, strata= ~ ", configInfo[configInfo$name == "variable_name","value"]," ,check.strata = TRUE,  data = ",dbr,",  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"],"  )", sep = ""), file = report.name , sep = "\n", append = TRUE)
-        }
+        
+        
+        ## Check if there's a repeat - aka hierarchical structure in the dataset
+        if  (length(dataBeginRepeat) > 0) {
+          for (dbr in dataBeginRepeat) {
+            cat(paste(dbr,".survey <- survey::svydesign(id=~1, strata= ~ ", configInfo[configInfo$name == "variable_name","value"]," ,check.strata = TRUE,  data = ",dbr,",  weights = ~ ", configInfo[configInfo$name == "weightsVariable","value"],"  )", sep = ""), file = report.name , sep = "\n", append = TRUE)
+          }
+        }  
       }
 
 
@@ -424,7 +443,7 @@ kobo_crunching_report <- function(form = "form.xls",
         
         cat(paste("## Selección  "),file = report.name , sep = "\n", append = TRUE)
         cat(paste("El experto en análisis de datos (DIMA del Bureau / IMs de la Operación) y el diseñador de reportes (de la operación, e.g. Oficial de reportes, PI), en colaboración con el grupo de análisis de datos, pueden utilizar los siguientes elementos para guiar esta fase de selección:\n "),file = report.name , sep = "\n", append = TRUE)
-        cat(paste("  *  •	Para el valor numérico, compruebe las distribuciones de frecuencia de cada variable a la media, la desviación, incluidos los valores atípicos y las rarezas\n "),file = report.name , sep = "\n", append = TRUE)
+        cat(paste("  *  Para el valor numérico, compruebe las distribuciones de frecuencia de cada variable a la media, la desviación, incluidos los valores atípicos y las rarezas\n "),file = report.name , sep = "\n", append = TRUE)
         cat(paste("  *  Para variables categóricas, compruebe si hay valores inesperados: cualquier resultado extraño basado en las expectativas de sentido común\n "),file = report.name , sep = "\n", append = TRUE)
         cat(paste("  *  Utilice el análisis de correlación para comprobar posibles contradicciones en las respuestas de los encuestados a diferentes preguntas para asociaciones identificadas (chi-cuadrado)\n "),file = report.name , sep = "\n", append = TRUE)
         cat(paste("  *  Siempre, Compruebe si faltan datos (NA) o \"%del encuestado que respondió\" que no puede explicar con confianza\n "),file = report.name , sep = "\n", append = TRUE)
@@ -560,7 +579,7 @@ kobo_crunching_report <- function(form = "form.xls",
          cat(paste("El proceso de crunching produce una gran cantidad de imágenes. Por lo tanto, es importante seleccionar cuidadosamente los visuales y gráficos más relevantes que podrán ser presentados para su interpretación en la siguiente etapa. Usualmente una sesión de interpretación de datos no debe durar más de 2 horas y no debe incluir más de 60 visuales a examinar con el fin de mantener a los participantes con un buen nivel de enfoque. \n "),file = report.name , sep = "\n", append = TRUE)
          
          cat(paste("El experto en análisis de datos (DIMA del Bureau / IMs de la Operación) y el diseñador de reportes (de la operación, e.g. Oficial de reportes, PI), en colaboración con el grupo de análisis de datos, pueden utilizar los siguientes elementos para guiar esta fase de selección:\n "),file = report.name , sep = "\n", append = TRUE)
-         cat(paste("  *  •	Para el valor numérico, compruebe las distribuciones de frecuencia de cada variable a la media, la desviación, incluidos los valores atípicos y las rarezas\n "),file = report.name , sep = "\n", append = TRUE)
+         cat(paste("  *  Para el valor numérico, compruebe las distribuciones de frecuencia de cada variable a la media, la desviación, incluidos los valores atípicos y las rarezas\n "),file = report.name , sep = "\n", append = TRUE)
          cat(paste("  *  Para variables categóricas, compruebe si hay valores inesperados: cualquier resultado extraño basado en las expectativas de sentido común\n "),file = report.name , sep = "\n", append = TRUE)
          cat(paste("  *  Utilice el análisis de correlación para comprobar posibles contradicciones en las respuestas de los encuestados a diferentes preguntas para asociaciones identificadas (chi-cuadrado)\n "),file = report.name , sep = "\n", append = TRUE)
          cat(paste("  *  Siempre, Compruebe si faltan datos (NA) o \"%del encuestado que respondió\" que no puede explicar con confianza\n "),file = report.name , sep = "\n", append = TRUE)
@@ -837,7 +856,7 @@ kobo_crunching_report <- function(form = "form.xls",
               cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("subtitle = paste0(\" Question response rate: \",percentreponse,\"  - respondents: \", nresp),"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                            nrow(MainDataFrame), \" total records colllected between \",
+                            nrow(MainDataFrame), \" total records collected between \",
                             min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                             max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                             configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -944,7 +963,7 @@ kobo_crunching_report <- function(form = "form.xls",
                       cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("subtitle = \". By question: ",disag.label,".\","),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                                    nrow(MainDataFrame), \" total records colllected between \",
+                                    nrow(MainDataFrame), \" total records collected between \",
                                     min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                     max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                                     configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -988,7 +1007,7 @@ kobo_crunching_report <- function(form = "form.xls",
                         cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
                         cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,".\","),file = report.name ,sep = "\n", append = TRUE)
                         cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                                            nrow(MainDataFrame), \" total records colllected between \",
+                                            nrow(MainDataFrame), \" total records collected between \",
                                             min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                             max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                                             configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -1078,7 +1097,7 @@ kobo_crunching_report <- function(form = "form.xls",
                       cat(paste0("labs(title = \"",questions.label," (color)\","),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("subtitle = \" By question: ",disag.label," (bar)\","),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                                  nrow(MainDataFrame), \" total records colllected between \",
+                                  nrow(MainDataFrame), \" total records collected between \",
                                   min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                   max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                                            configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -1322,7 +1341,7 @@ kobo_crunching_report <- function(form = "form.xls",
               #cat(paste0("\"and Kurtosis: \",round(kurtosis(frequ$Var1),2) ,\n\""), file = report.name ,sep = "\n", append = TRUE)
               cat(paste0(","),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                        nrow(MainDataFrame), \" total records colllected between \",
+                        nrow(MainDataFrame), \" total records collected between \",
                         min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                         max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                          configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -1364,7 +1383,7 @@ kobo_crunching_report <- function(form = "form.xls",
                 #cat(paste0("\"and Kurtosis: \",round(kurtosis(data.nooutlier$variable),2) ,\n\""), file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0(","),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                            nrow(MainDataFrame), \" total records colllected between \",
+                            nrow(MainDataFrame), \" total records collected between \",
                             min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                             max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                             configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -1466,7 +1485,7 @@ kobo_crunching_report <- function(form = "form.xls",
                     cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("subtitle = \"by question: ",disag.label,"\","),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                                 nrow(MainDataFrame), \" total records colllected between \",
+                                 nrow(MainDataFrame), \" total records collected between \",
                                  min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                  max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                                  configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -1497,7 +1516,7 @@ kobo_crunching_report <- function(form = "form.xls",
                       cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,"\","),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                                      nrow(MainDataFrame), \" total records colllected between \",
+                                      nrow(MainDataFrame), \" total records collected between \",
                                       min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                       max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                                       configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -1548,7 +1567,7 @@ kobo_crunching_report <- function(form = "form.xls",
                     cat(paste0("geom_smooth(method=lm) +  # Add a loess smoothed fit curve with confidence region"),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("labs(title = \"Scatterplot before data capping treatment\","),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                                nrow(MainDataFrame), \" total records colllected between \",
+                                nrow(MainDataFrame), \" total records collected between \",
                                 min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                 max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                                 configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -1576,7 +1595,7 @@ kobo_crunching_report <- function(form = "form.xls",
                     cat(paste0("geom_smooth(method=lm) +  # Add a loess smoothed fit curve with confidence region"),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("labs(title = \"Scatterplot after data capping treatment\") ,"),file = report.name ,sep = "\n", append = TRUE)
                     cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                                nrow(MainDataFrame), \" total records colllected between \",
+                                nrow(MainDataFrame), \" total records collected between \",
                                 min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                 max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                                 configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -1646,8 +1665,8 @@ kobo_crunching_report <- function(form = "form.xls",
 
               totalanswer <- nrow(data.selectmultilist)
               
-              ## Not sure why I did that before... sigh... 
-              #data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1] != "Not replied", ]
+              ## Remove the not replied as it will beyond 100% !! 
+              data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1] != "Not replied", ]
               
               percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),"%")
               meltdata <- reshape2::melt(data.selectmultilist,id = "id")
@@ -1697,8 +1716,8 @@ kobo_crunching_report <- function(form = "form.xls",
                 cat(paste0("data.selectmultilist$id <- rownames(data.selectmultilist)"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("totalanswer <- nrow(data.selectmultilist)"),file = report.name ,sep = "\n", append = TRUE)
                 
-                ## not sure why this was set up before
-                #cat(paste0("data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!=\"Not replied\", ]"),file = report.name ,sep = "\n", append = TRUE)
+                ## Remove the not replied to avoid going beyond 100%
+                cat(paste0("data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!=\"Not replied\", ]"),file = report.name ,sep = "\n", append = TRUE)
                 
                 cat(paste0("percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),\"%\")"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("meltdata <- reshape2::melt(data.selectmultilist,id=\"id\")"),file = report.name ,sep = "\n", append = TRUE)
@@ -1732,7 +1751,7 @@ kobo_crunching_report <- function(form = "form.xls",
                 cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("subtitle = paste0(\"Question response rate: \",percentreponse,\" .\"),"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                            nrow(MainDataFrame), \" total records colllected between \",
+                            nrow(MainDataFrame), \" total records collected between \",
                             min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                             max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                             configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -1809,7 +1828,8 @@ kobo_crunching_report <- function(form = "form.xls",
                       cat(paste0("data.selectmultilist <- ",questions.frame ,"[ selectmultilist ]"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("data.selectmultilist$id <- rownames(data.selectmultilist)"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("totalanswer <- nrow(data.selectmultilist)"),file = report.name ,sep = "\n", append = TRUE)
-                     # cat(paste0("data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!=\"Not replied\", ]"),file = report.name ,sep = "\n", append = TRUE)
+                      ## Remove not replied to avoid going beyond 100%
+                      cat(paste0("data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!=\"Not replied\", ]"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),\"%\")"),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("meltdata <- reshape2::melt(data.selectmultilist,id=c(\"id\",\"",disag.name,"\"))"),file = report.name ,sep = "\n", append = TRUE)
                       
@@ -1847,7 +1867,7 @@ kobo_crunching_report <- function(form = "form.xls",
                       cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("subtitle = \"Faceted by question: ",disag.label,".\","),file = report.name ,sep = "\n", append = TRUE)
                       cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                                    nrow(MainDataFrame), \" total records colllected between \",
+                                    nrow(MainDataFrame), \" total records collected between \",
                                     min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                     max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                                     configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -1910,7 +1930,7 @@ kobo_crunching_report <- function(form = "form.xls",
                 cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("subtitle = \"\" ,"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \", 
-                              nrow(MainDataFrame), \" total records colllected between \",
+                              nrow(MainDataFrame), \" total records collected between \",
                               min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                               max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                               configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
@@ -2003,7 +2023,7 @@ kobo_crunching_report <- function(form = "form.xls",
         for (i in 1:nrow(reports)) {
           reportsname <- as.character(reports[ i , 1])
           if (app == "shiny") {
-            progress$set(message = paste("Rendering word output report for ",reportsname, " chapter in progress..."))
+            progress$set(message = paste("Rendering output report for ",reportsname, " chapter in progress..."))
             updateProgress()
           }
           if (output == "docx") {

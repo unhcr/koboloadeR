@@ -9,7 +9,7 @@ kobo_crunching_report(
   app = "console",
   output = "html",
   render = "TRUE",
-  lang = "en"
+  lang = "eng"
 )
 }
 \arguments{

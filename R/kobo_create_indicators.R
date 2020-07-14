@@ -39,13 +39,17 @@ kobo_create_indicators <- function(form = "form.xls") {
 
       ## load all required data files #########################################
       cat("\n\nload all required data files..\n")
-      dataBeginRepeat <- kobo_get_begin_repeat()
+      dataBeginRepeat <- kobo_get_begin_repeat(form)
       dataBeginRepeat <- dataBeginRepeat$names
-      for (dbr in dataBeginRepeat) {
-        dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
-        assign(dbr, dataFrame)
+      
+      
+      ## Check if there's a repeat - aka hierarchical structure in the dataset
+      if  (length(dataBeginRepeat) > 0) {
+        for (dbr in dataBeginRepeat) {
+          dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
+          assign(dbr, dataFrame)
+        }
       }
-
 
       indicator <- readxl::read_excel(form_tmp, sheet = "indicator")
       if (nrow(indicator) == 0) {
@@ -145,17 +149,21 @@ kobo_create_indicators <- function(form = "form.xls") {
           cat(paste('form <- "',form,'"',sep = ""), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           cat("mainDir <- kobo_getMainDirectory()", file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           cat('form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-          cat('dataBeginRepeat <- kobo_get_begin_repeat()', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+         
+          
+          cat('dataBeginRepeat <- kobo_get_begin_repeat(form)', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           cat('dataBeginRepeat <- dataBeginRepeat$names', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
 
           cat('MainDataFrame <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-
+          
+          ## Check if there's a repeat - aka hierarchical structure in the dataset
+          if  (length(dataBeginRepeat) > 0) {
           cat('for (dbr in dataBeginRepeat) {
             dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
 
-            assign(paste0(dbr,"_edited"), dataFrame)
-          }', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-
+            assign(paste0(dbr,"_edited"), dataFrame)  }', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+          }
+          
           cat(indic.formula, file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           cat("####", file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
 
@@ -402,11 +410,15 @@ kobo_create_indicators <- function(form = "form.xls") {
         ## label Variables
         cat("\n\n quick check on labeling\n")
         MainDataFrame <- kobo_label(MainDataFrame , dico)
-        for (dbr in dataBeginRepeat) {
-          dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
-
-          dataFrame <- kobo_label(dataFrame, dico)
-          utils::write.csv(dataFrame,paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""), row.names = FALSE, na = "")
+        
+        ## Check if there's a repeat - aka hierarchical structure in the dataset
+        if  (length(dataBeginRepeat) > 0) {
+          for (dbr in dataBeginRepeat) {
+            dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
+  
+            dataFrame <- kobo_label(dataFrame, dico)
+            utils::write.csv(dataFrame,paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""), row.names = FALSE, na = "")
+          }
         }
         cat("\n\nWrite dico\n")
         utils::write.csv(dico, paste0(mainDir,"/data/dico_",form,".csv"), row.names = FALSE, na = "")

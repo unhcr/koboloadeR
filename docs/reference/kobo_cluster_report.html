@@ -162,7 +162,12 @@ The report is generated from functions released within FactoMiner &amp;amp; Fact
 <p>The report is generated from functions released within FactoMiner &amp; FactoMineR</p>
     </div>
 
-    <pre class="usage"><span class='fu'>kobo_cluster_report</span>(<span class='no'>frame</span>, <span class='kw'>form</span> <span class='kw'>=</span> <span class='st'>"form.xls"</span>, <span class='kw'>app</span> <span class='kw'>=</span> <span class='st'>"console"</span>)</pre>
+    <pre class="usage"><span class='fu'>kobo_cluster_report</span>(
+  <span class='kw'>frame</span> <span class='kw'>=</span> <span class='no'>MainDataFrame</span>,
+  <span class='kw'>form</span> <span class='kw'>=</span> <span class='st'>"form.xls"</span>,
+  <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"html"</span>,
+  <span class='kw'>app</span> <span class='kw'>=</span> <span class='st'>"console"</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -174,6 +179,10 @@ The report is generated from functions released within FactoMiner &amp;amp; Fact
     <tr>
       <th>form</th>
       <td><p>The full filename of the form to be accessed (has to be an xls file).</p></td>
+    </tr>
+    <tr>
+      <th>output</th>
+      <td><p>The output format html or aspx if you need to upload on sharepoint), docx (to quickly cut non interesting vz and take note during data interpretation session), pptx (to quickly cut non interesting vz and persent during data interpretation session), Default is html</p></td>
     </tr>
     <tr>
       <th>app</th>

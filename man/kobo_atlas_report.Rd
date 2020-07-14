@@ -4,24 +4,38 @@
 \alias{kobo_atlas_report}
 \title{Generate an atlas out of the dataset}
 \usage{
-kobo_atlas_report(frame, dico, mappoly)
+kobo_atlas_report(
+  form = "form.xls",
+  app = "console",
+  output = "html",
+  render = "TRUE",
+  lang = "eng"
+)
 }
 \arguments{
-\item{frame}{odk dataset to use}
+\item{form}{The full filename of the form to be accessed (xls or xlsx file).
+It is assumed that the form is stored in the data folder.}
 
-\item{dico}{Generated from kobo_dico function}
+\item{app}{The place where the function has been executed, the default is the console and the second option is the shiny app}
 
-\item{mappoly}{or mappoint depending on the type of visualisation expected - polygons or points}
+\item{output}{The output format html or aspx if you need to upload on sharepoint), docx (to quickly cut non interesting vz and take note during data interpretation session), pptx (to quickly cut non interesting vz and persent during data interpretation session), Default is html}
+
+\item{render}{TRUE or FALSE - Tells wheter to only produce Rmd or to also knit it in the required output format. Default is TRUE. Usefull for testing as rending takes time.}
+
+\item{lang}{eng, fre or esp - Change the langauge of the intro to the report - default is english}
+}
+\value{
+No return, All results will be saved on RMD files and Word files
 }
 \description{
 Generate report with data aggregated by location & spatial visualisation / cartography
 }
 \examples{
 \dontrun{
-kobo_atlas_report(frame, dico, mappoly)
+kobo_atlas_report(form, mapfile)
 }
 
 }
 \author{
-Edouard Legoupil
+Edouard Legoupil#'
 }

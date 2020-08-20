@@ -239,7 +239,9 @@ kobo_create_indicators <- function(form = "form.xls") {
         ## removing first line
           dicotemp <- dicotemp[ 2:nrow(dicotemp), ]
 
-          ### merging choices from the newly created indicators #################################################################
+       
+        
+        ### Merging choices from the newly created indicators #################################################################
 
           cat("\n\n\n It's assumed that the modalities for newly calculated categoric indicators are in the same xlsform - choices worksheet  \n\n\n\n")
           choices <- readxl::read_excel(form_tmp, sheet = "choices")
@@ -288,9 +290,9 @@ kobo_create_indicators <- function(form = "form.xls") {
             choices$score <- ""
             }
 
-          choices <- choices[,c("listname",  "name",  "label",  "order", "weight","score","recategorise")]
-
-          names(choices)[names(choices) == "label"] <- "labelchoice"
+          choices <- choices[,c("listname",  "name",  "labelReport",  "order", "weight","score","recategorise")]
+          names(choices)[names(choices) == "labelReport"] <- "labelchoice"
+         # names(choices)[names(choices) == "label"] <- "labelchoice"
           #rm(choices)
 
         dicotemp.choice <- dicotemp[ !(is.na(dicotemp$listname)), c( "type", "name",

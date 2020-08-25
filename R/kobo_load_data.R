@@ -306,7 +306,6 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
     ## Re-encoding data now based on the dictionnary -- ##############################
     ## the xlsform dictionnary can be adjusted this script re-runned till satisfaction
     cat("\n\n\n Now  re-encode data  \n\n\n\n")
-    cat("\n\nCompute indicators if defined..\n")
     if (app == "shiny") {
       progress$set(message = "Re-encoding data now based on the dictionnary in progress...")
       updateProgress()

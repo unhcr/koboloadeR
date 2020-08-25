@@ -88,15 +88,15 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
     }
    
     
-    frame1 <- frame[ , c( selected.idVars)]
-    frame2 <- frame[ , c( selected.clusterVars)]
+    #frame1 <- frame[ , c( selected.idVars)]
+    #frame2 <- frame[ , c( selected.clusterVars)]
     
     frame <- frame[ , c( selected.idVars, selected.clusterVars)]
     
     framecluster <- paste0(mainDir,"/data/clustering-report-",framename,".csv")
     if (file.exists(framecluster)) file.remove(framecluster)
     
-    utils::write.csv(frame, framecluster, append = FALSE)
+    utils::write.csv(frame, framecluster,  row.names = FALSE)
 
     if (nrow(selected.cluster) == 0) {
       cat("You have not selected variables to cluster for your dataset! \n")
@@ -236,8 +236,7 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
 
           cat(paste0("datacluster <-  utils::read.csv(paste0(mainDirroot,\"/data/clustering-report-",framename,".csv\"), sep = \",\", encoding = \"UTF-8\", na.strings = \"\")"), file = reportcluster , sep = "\n", append = TRUE)
-          cat("if(nrow(datacluster) > 10000) { samplesize <- 10000 } else { samplesize <- nrow(datacluster)} ", file = reportcluster , sep = "\n", append = TRUE)
-
+         
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("```", file = reportcluster , sep = "\n", append = TRUE)
           #cat("# Executive Summary", file = reportcluster , sep = "\n", append = TRUE)
@@ -328,7 +327,9 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("names(datacluster2) <- check2[, c(\"name2\")]", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-          cat("datacluster3 <- datacluster2", file = reportcluster , sep = "\n", append = TRUE)
+          cat("datacluster3 <- datacluster2[complete.cases(datacluster2), ]", file = reportcluster , sep = "\n", append = TRUE)
+          cat("if(nrow(datacluster3) > 10000) { samplesize <- 10000 } else { samplesize <- nrow(datacluster3)} ", file = reportcluster , sep = "\n", append = TRUE)
+          
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           
           cat("data.sample <- datacluster2[sample(1:nrow(datacluster2), samplesize, replace = FALSE), ]", file = reportcluster , sep = "\n", append = TRUE)
@@ -336,9 +337,11 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
           cat("selected <- dico[ dico$fullname %in% selected.clusterVars, c(\"fullname\", \"labelReport\") ]", file = reportcluster , sep = "\n", append = TRUE)
           cat("row.names(selected) <- NULL", file = reportcluster , sep = "\n", append = TRUE)
           cat("knitr::kable (selected , caption = \"Selected variable for the analysis\")", file = reportcluster , sep = "\n", append = TRUE)
-          cat(" ```", file = reportcluster , sep = "\n", append = TRUE)
+          cat("```", file = reportcluster , sep = "\n", append = TRUE)
+          
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("The algorithm is then used on those variable in order to assemble them within 2 dimensions. \n", file = reportcluster , sep = "\n", append = TRUE)
+          
           cat("```{r, echo=FALSE, warning=FALSE}", file = reportcluster , sep = "\n", append = TRUE)
           
           
@@ -487,16 +490,10 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
           cat("```{r, echo=FALSE, warning=FALSE}", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("kable(data.mca.hcpc$desc.var$category$`1`, digits = 2, caption = \"Description of modalities contribution to Profile 1\")", file = reportcluster , sep = "\n", append = TRUE)
-          cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-          cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("kable(data.mca.hcpc$desc.var$category$`2`, digits = 2, caption = \"Description of modalities contribution to Profile 2\")", file = reportcluster , sep = "\n", append = TRUE)
-          cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-          cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("kable(data.mca.hcpc$desc.var$category$`3`, digits = 2, caption = \"Description of modalities contribution to Profile 3\")", file = reportcluster , sep = "\n", append = TRUE)
-          cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-          cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("kable(data.mca.hcpc$desc.var$category$`4`, digits = 2, caption = \"Description of modalities contribution to Profile 4\")", file = reportcluster , sep = "\n", append = TRUE)
-          cat("\n", file = reportcluster , sep = "\n", append = TRUE)
+          cat("kable(data.mca.hcpc$desc.var$category$`5`, digits = 2, caption = \"Description of modalities contribution to Profile 5\")", file = reportcluster , sep = "\n", append = TRUE)
           cat("```", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("__Reference__: [hierarchical-clustering-on-principal-components](http://www.sthda.com/english/wiki/hcpc-hierarchical-clustering-on-principal-components-hybrid-approach-2-2-unsupervised-machine-learning).", file = reportcluster , sep = "\n", append = TRUE)

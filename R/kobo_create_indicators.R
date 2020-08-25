@@ -118,7 +118,8 @@ kobo_create_indicators <- function(form = "form.xls") {
           # i <- 1
           indicator.type	<- as.character(indicator[ i, c("type")])
           indicator.fullname	<- as.character(indicator[ i, c("fullname")])
-          indicator.label	<- as.character(indicator[ i, c("label")])
+         # indicator.label	<- as.character(indicator[ i, c("label")])
+          indicator.label	<- as.character("")
           indicator.labelReport	<- as.character(indicator[ i, c("labelReport")])
           indicator.hintReport	<- as.character(indicator[ i, c("hintReport")])
           indicator.report	<- as.character(indicator[ i, c("report")])
@@ -175,13 +176,13 @@ kobo_create_indicators <- function(form = "form.xls") {
           cat(paste0(indicator.frame,"$",indicator.fullname," <- as.",indicator.type2,"(",indicator.frame,"$",indicator.fullname,")"), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           cat(paste0("str(",indicator.frame,"$",indicator.fullname,")"), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
           cat(paste0("summary(",indicator.frame,"$",indicator.fullname,")"), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+          cat('utils::write.csv(MainDataFrame, paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
 
-           if (indicator.frame == "MainDataFrame_edited") {
-             cat('utils::write.csv(MainDataFrame, paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-           }else{
-             cat(paste('dbr<-"',indicator.frame,'"',sep = ""))
-             cat('utils::write.csv(eval(as.name(dbr)),paste(mainDir,"/data/",dbr,".csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-           }
+           # if (indicator.frame == "MainDataFrame_edited") {
+           # }else{
+           #   cat(paste('dbr<-"',indicator.frame,'"',sep = ""))
+           #   cat('utils::write.csv(eval(as.name(dbr)),paste(mainDir,"/data/",dbr,".csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+           # }
 
 
           source(paste0(mainDir,"/code/temp.R"))
@@ -238,7 +239,9 @@ kobo_create_indicators <- function(form = "form.xls") {
         ## removing first line
           dicotemp <- dicotemp[ 2:nrow(dicotemp), ]
 
-          ### mergin choices from the newly created indicators #################################################################
+       
+        
+        ### Merging choices from the newly created indicators #################################################################
 
           cat("\n\n\n It's assumed that the modalities for newly calculated categoric indicators are in the same xlsform - choices worksheet  \n\n\n\n")
           choices <- readxl::read_excel(form_tmp, sheet = "choices")
@@ -252,8 +255,8 @@ kobo_create_indicators <- function(form = "form.xls") {
           names(choices)[names(choices) == "list_name"] <- "listname"
 
           ## Remove trailing space
-          choices$listname <- trim(choices$listname)
-          choices$label <- trim(choices$label)
+          choices$listname <- trimws(choices$listname)
+          choices$label <- trimws(choices$label)
 
 
 
@@ -287,9 +290,9 @@ kobo_create_indicators <- function(form = "form.xls") {
             choices$score <- ""
             }
 
-          choices <- choices[,c("listname",  "name",  "label",  "order", "weight","score","recategorise")]
-
-          names(choices)[names(choices) == "label"] <- "labelchoice"
+          choices <- choices[,c("listname",  "name",  "labelReport",  "order", "weight","score","recategorise")]
+          names(choices)[names(choices) == "labelReport"] <- "labelchoice"
+         # names(choices)[names(choices) == "label"] <- "labelchoice"
           #rm(choices)
 
         dicotemp.choice <- dicotemp[ !(is.na(dicotemp$listname)), c( "type", "name",

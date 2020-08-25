@@ -759,17 +759,31 @@ kobo_crunching_report <- function(form = "form.xls",
             frequ <- as.data.frame(table( get(paste0(questions.frame))[[questions.name]]))
 
             figheight <- as.integer(nrow(frequ))
-            if (figheight == 0) { figheight <- "3"} else {figheight <- figheight/1.2}
+            
+            ## Getting the figure height for the charts in Rmd
+            if ( figheight == 0) { figheight <- "3"}
+            else if ( figheight == 1) {figheight <- "3"}
+            else if ( figheight == 2) {figheight <- "3"}
+            else if ( figheight == 3) {figheight <- "3"}
+            else if ( figheight == 4) {figheight <- "4"}
+            else if ( figheight == 5) {figheight <- "4"}
+            else if ( figheight == 6) {figheight <- "5"}
+            else if ( figheight == 7) {figheight <- "6"}
+            else if ( figheight == 8) {figheight <- "7"}
+            else if ( figheight == 9) {figheight <- "8"}
+            else if ( figheight == 10) {figheight <- "9"}
+            else if ( figheight >= 11) {figheight <- "10"}
 
             ## Check that there are responses to be displayed  
-            if (nrow(frequ) %in% c("0","1") ) {
+            if (nrow(frequ) %in% c("0") ) {
               
               if (lang == "eng") { 
-                cat(paste0("No responses or the same answer was given (only one modality) recorded for this question.\n"),file = report.name , sep = "\n", append = TRUE)
-              } else if (lang == "esp") {
-                cat(paste0("No se registraron respuestas o se da la misma respuesta (sólo una modalidad) para esta pregunta.\n"),file = report.name , sep = "\n", append = TRUE)
+                cat(paste0("No responses  recorded for this question.\n"),file = report.name , sep = "\n", append = TRUE)
+             
+               } else if (lang == "esp") {
+                cat(paste0("No se registraron respuestas  para esta pregunta.\n"),file = report.name , sep = "\n", append = TRUE)
               } else if (lang == "fr") {
-                cat(paste0("Pas de reponses - ou alors la meme reponse a toujours ete donne a cette question.\n"),file = report.name , sep = "\n", append = TRUE)
+                cat(paste0("Pas de reponses  donne a cette question.\n"),file = report.name , sep = "\n", append = TRUE)
               }
               
               cat("No responses recorded for this question...\n")
@@ -779,7 +793,26 @@ kobo_crunching_report <- function(form = "form.xls",
               #  } else if (sum(try) == 0) {
               #   cat(paste0("cat(\"No responses recorded for this question...\")"),file = report.name , sep = "\n", append = TRUE)
               #    cat("No responses recorded for this question...\n")
-            }      else {
+            }   else  if (nrow(frequ) %in% c("1") ) {
+              ## Case we a unique modality
+              if (lang == "eng") { 
+                cat(paste0("The same answer was given (only one modality) recorded for this question.\n"),file = report.name , sep = "\n", append = TRUE)
+                
+              } else if (lang == "esp") {
+                cat(paste0("La misma respuesta (sólo una modalidad) se registraron para esta pregunta.\n"),file = report.name , sep = "\n", append = TRUE)
+              } else if (lang == "fr") {
+                cat(paste0("La meme reponse a toujours ete donne a cette question.\n"),file = report.name , sep = "\n", append = TRUE)
+              }
+              if (output == "pptx") {
+                cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name, append = TRUE)
+              } else {
+                cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight,", size=\"small\"}\n"), file = report.name, append = TRUE)
+              }
+              cat(paste0("table(",questions.variable,")"),file = report.name ,sep = "\n", append = TRUE)
+              
+              cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
+              
+            }    else      {
 
               #cat(paste("### Tabulation" ,sep = ""),file = report.name ,sep = "\n", append = TRUE)
               ## Open chunk

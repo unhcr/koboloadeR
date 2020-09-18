@@ -3,8 +3,11 @@
 #' @title Generate Data Crunching Report
 #'
 #' @description Generate crunching Report that contains all descriptive statistics, correlation analysis, tabulation and data visualization for variables and indicators.
+#'  For disaggregation of variable indicate "facet","stak", "fill" or "dodge". for test of correlation on select_one variable use correlation = TRUE
+#' 
 #' @param form The full filename of the form to be accessed (xls or xlsx file).
-#' It is assumed that the form is stored in the data folder.
+#' 
+#' It is assumed that the form is stored in the data-raw folder.
 #' @param output The output format html or aspx if you need to upload on sharepoint), docx (to quickly cut non interesting vz and take note during data interpretation session), pptx (to quickly cut non interesting vz and persent during data interpretation session), Default is html
 #' @param app The place where the function has been executed, the default is the console and the second option is the shiny app
 #' @param render TRUE or FALSE - Tells wheter to only produce Rmd or to also knit it in the required output format. Default is TRUE. Usefull for testing as rending takes time.
@@ -48,14 +51,15 @@ kobo_crunching_report <- function(form = "form.xls",
     configInfo <- kobo_get_config(form)
     configInfo <- configInfo[!is.na(configInfo$name),]
     mainDir <- kobo_getMainDirectory()
-    form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
+    #form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
     #library(koboloadeR)
 
     ### Load the data
     cat("\n\n Loading data. It is assumed that the cleaning, weighting & re-encoding has been done previously \n")
 
-    MainDataFrame <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_encoded.csv",sep = ""), encoding = "UTF-8", na.strings = "")
-
+    #MainDataFrame <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_encoded.csv",sep = ""), encoding = "UTF-8", na.strings = "")
+    load(paste(mainDir,"/data/MainDataFrame_encoded.rda",sep = ""))
+    
 
     # Form ##########################################
     ## Load form
@@ -65,8 +69,9 @@ kobo_crunching_report <- function(form = "form.xls",
     ## Generate dico to test here - in normal process - it has been done just before in kobo_load_data()
     #kobo_dico(form)
 
-    ## Load dictionnary
-    dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+    ## Load dictionary
+    #dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+    load(paste0(mainDir,"/data/dico_",form,".rda"))
     #rm(form)
 
 
@@ -87,7 +92,8 @@ kobo_crunching_report <- function(form = "form.xls",
     ## Check if there's a repeat - aka hierarchical structure in the dataset
     if  (length(dataBeginRepeat) > 0) {
       for (dbr in dataBeginRepeat) {
-        dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_encoded.csv",sep = ""),stringsAsFactors = F)
+        #dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_encoded.csv",sep = ""),stringsAsFactors = F)
+        load(paste(mainDir,"/data/",dbr,"_encoded.rda",sep = ""))
         assign(dbr, kobo_label(dataFrame, dico))
         if (app == "shiny") {
           progress$set(message = paste("Labelling variables in",dbr,"File in progress..."))
@@ -138,8 +144,9 @@ kobo_crunching_report <- function(form = "form.xls",
 
     names(reports)[1] <- "Report"
 
-    utils::write.csv(reports, paste(mainDir,"/data/reports.csv",sep = ""), row.names = FALSE, na = "")
-
+    #utils::write.csv(reports, paste(mainDir,"/data/reports.csv",sep = ""), row.names = FALSE, na = "")
+    save(reports, file =   paste(mainDir,"/data/reports.rda",sep = ""))
+    
 
     ## For each Report: create a Rmd file -------
 
@@ -154,7 +161,7 @@ kobo_crunching_report <- function(form = "form.xls",
         updateProgress()
       }
       cat(paste(i, " - Write chapter for ",as.character(reports[ i , 1]),"\n" ))
-      report.name <- paste(mainDir, "/code/",i,"-", reportsname, "-report.Rmd", sep = "")
+      report.name <- paste(mainDir, "/vignettes/",i,"-", reportsname, "-report.Rmd", sep = "")
 
       ## TO DO : CHECK IF FILE EXIST - AND REQUEST USER TO DELETE BEFORE REGENERATING - SUGGESTING TO SAVE PREVIOUS UNDER NEW NAME
       if (file.exists(report.name)) file.remove(report.name)
@@ -246,7 +253,7 @@ kobo_crunching_report <- function(form = "form.xls",
       }
 
       cat("mainDir <- getwd()", file = report.name , sep = "\n", append = TRUE)
-      cat("mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 5)", file = report.name , sep = "\n", append = TRUE)
+      cat("mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 10)", file = report.name , sep = "\n", append = TRUE)
 
       cat("using <- function(...) {", file = report.name , sep = "\n", append = TRUE)
       cat("libs <- unlist(list(...))", file = report.name , sep = "\n", append = TRUE)
@@ -266,19 +273,23 @@ kobo_crunching_report <- function(form = "form.xls",
 
       cat("## Provide below the name of the form in xsl form - format should be xls not xlsx", file = report.name , sep = "\n", append = TRUE)
       cat(paste0("form <- \"",form,"\""), file = report.name , sep = "\n", append = TRUE)
-      cat("dico <- utils::read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = report.name , sep = "\n", append = TRUE)
-
+      #cat("dico <- utils::read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = report.name , sep = "\n", append = TRUE)
+      cat("load(paste0(mainDirroot,\"/data/dico_\",form,\".rda\"))", file = report.name , sep = "\n", append = TRUE)
+      
 
       ## TO DO: Use config file to load the different frame
 
 
-      cat("MainDataFrame <- utils::read.csv(paste0(mainDirroot,\"/data/MainDataFrame_encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = report.name , sep = "\n", append = TRUE)
-
+      #cat("MainDataFrame <- utils::read.csv(paste0(mainDirroot,\"/data/MainDataFrame_encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = report.name , sep = "\n", append = TRUE)
+      cat("load(paste0(mainDirroot,\"/data/MainDataFrame_encoded.rda\"))", file = report.name , sep = "\n", append = TRUE)
+      
       
       ## Check if there's a repeat - aka hierarchical structure in the dataset
       if  (length(dataBeginRepeat) > 0) {
         for (dbr in dataBeginRepeat) {
-          cat(paste(dbr, " <- utils::read.csv(paste0(mainDirroot,\"/data/",dbr,"_encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", sep = ""), file = report.name , sep = "\n", append = TRUE)
+          #cat(paste(dbr, " <- utils::read.csv(paste0(mainDirroot,\"/data/",dbr,"_encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", sep = ""), file = report.name , sep = "\n", append = TRUE)
+          
+          cat(paste("load(paste0(mainDirroot,\"/data/",dbr,"_encoded.rda\"))", sep = ""), file = report.name , sep = "\n", append = TRUE)
         }
       }
 
@@ -2036,6 +2047,7 @@ kobo_crunching_report <- function(form = "form.xls",
     #### Last Step Rendering reports ###################
     
     
+    cat(" Done!! Rmd are in the folder vignettes")
     
       if (render == "FALSE") {
 
@@ -2050,7 +2062,8 @@ kobo_crunching_report <- function(form = "form.xls",
         #rm(list = ls())
         kobo_load_packages()
         mainDir <- kobo_getMainDirectory()
-        reports <- utils::read.csv(paste(mainDir,"/data/reports.csv",sep = ""), encoding = "UTF-8", na.strings = "")
+        #reports <- utils::read.csv(paste(mainDir,"/data/reports.csv",sep = ""), encoding = "UTF-8", na.strings = "")
+        load(paste(mainDir,"/data/reports.rda",sep = ""))
         ### Render now all reports
         cat(" Render now reports... \n")
         for (i in 1:nrow(reports)) {
@@ -2063,10 +2076,10 @@ kobo_crunching_report <- function(form = "form.xls",
 
             cat(paste(i, " - Render word output report for ",reportsname))
             mainDir <- kobo_getMainDirectory()
-            rmarkdown::render(paste(mainDir,"/code/",i,"-", reportsname, "-report.Rmd", sep = ""))
+            rmarkdown::render(paste(mainDir,"/vignettes/",i,"-", reportsname, "-report.Rmd", sep = ""))
             ## Put the report in the out folder
             mainDir <- kobo_getMainDirectory()
-            file.rename(paste(mainDir,"/code/",i,"-", reportsname, "-report.docx", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", reportsname,"-",Sys.Date(), "-report.docx"))
+            file.rename(paste(mainDir,"/vignettes/",i,"-", reportsname, "-report.docx", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", reportsname,"-",Sys.Date(), "-report.docx"))
             ## Clean  memory
             gc()
 
@@ -2074,10 +2087,10 @@ kobo_crunching_report <- function(form = "form.xls",
 
             cat(paste(i, " - Render html output report for ",reportsname))
             mainDir <- kobo_getMainDirectory()
-            rmarkdown::render(paste(mainDir,"/code/",i,"-", reportsname, "-report.Rmd", sep = ""))
+            rmarkdown::render(paste(mainDir,"/vignettes/",i,"-", reportsname, "-report.Rmd", sep = ""))
             ## Put the report in the out folder
             mainDir <- kobo_getMainDirectory()
-            file.rename(paste(mainDir,"/code/",i,"-", reportsname, "-report.html", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", reportsname,"-",Sys.Date(), "-report.html"))
+            file.rename(paste(mainDir,"/vignettes/",i,"-", reportsname, "-report.html", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", reportsname,"-",Sys.Date(), "-report.html"))
             ## Clean  memory
             gc()
 
@@ -2085,10 +2098,10 @@ kobo_crunching_report <- function(form = "form.xls",
 
             cat(paste(i, " - Render aspx output - for sharepoint hosting - report for ",reportsname))
             mainDir <- kobo_getMainDirectory()
-            rmarkdown::render(paste(mainDir,"/code/",i,"-", reportsname, "-report.Rmd", sep = ""))
+            rmarkdown::render(paste(mainDir,"/vignettes/",i,"-", reportsname, "-report.Rmd", sep = ""))
             ## Put the report in the out folder
             mainDir <- kobo_getMainDirectory()
-            file.rename(paste(mainDir,"/code/",i,"-", reportsname, "-report.html", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", reportsname,"-",Sys.Date(), "-report.aspx"))
+            file.rename(paste(mainDir,"/vignettes/",i,"-", reportsname, "-report.html", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", reportsname,"-",Sys.Date(), "-report.aspx"))
             ## Clean  memory
             gc()
 
@@ -2096,10 +2109,10 @@ kobo_crunching_report <- function(form = "form.xls",
 
             cat(paste(i, " - Render PowerPoint output report for ",reportsname))
             mainDir <- kobo_getMainDirectory()
-            rmarkdown::render(paste(mainDir,"/code/",i,"-", reportsname, "-report.Rmd", sep = ""))
+            rmarkdown::render(paste(mainDir,"/vignettes/",i,"-", reportsname, "-report.Rmd", sep = ""))
             ## Put the report in the out folder
             mainDir <- kobo_getMainDirectory()
-            file.rename(paste(mainDir,"/code/",i,"-", reportsname, "-report.pptx", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", reportsname,"-",Sys.Date(), "-report.pptx"))
+            file.rename(paste(mainDir,"/vignettes/",i,"-", reportsname, "-report.pptx", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", reportsname,"-",Sys.Date(), "-report.pptx"))
             ## Clean  memory
             gc()
           }

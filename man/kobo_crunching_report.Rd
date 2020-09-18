@@ -14,7 +14,8 @@ kobo_crunching_report(
 }
 \arguments{
 \item{form}{The full filename of the form to be accessed (xls or xlsx file).
-It is assumed that the form is stored in the data folder.}
+
+It is assumed that the form is stored in the data-raw folder.}
 
 \item{app}{The place where the function has been executed, the default is the console and the second option is the shiny app}
 
@@ -29,6 +30,7 @@ No return, All results will be saved on RMD files and Word files
 }
 \description{
 Generate crunching Report that contains all descriptive statistics, correlation analysis, tabulation and data visualization for variables and indicators.
+ For disaggregation of variable indicate "facet","stak", "fill" or "dodge". for test of correlation on select_one variable use correlation = TRUE
 }
 \examples{
 \dontrun{

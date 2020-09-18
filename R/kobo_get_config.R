@@ -20,7 +20,7 @@
 
 kobo_get_config <- function(form = "form.xls") {
   mainDir <- kobo_getMainDirectory()
-  form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
+  form_tmp <- paste(mainDir, "data-raw", form, sep = "/", collapse = "/")
   settings <- tryCatch({
     as.data.frame(readxl::read_excel(form_tmp, sheet = "analysisSettings"), stringsAsFactors = FALSE)
   }, error = function(err) {

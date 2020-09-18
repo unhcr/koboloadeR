@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">koboloadeR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.8</span>
       </span>
     </div>
 
@@ -161,11 +161,11 @@
     </div>
 
     <pre class="usage"><span class='fu'>kobo_atlas_report</span>(
-  <span class='kw'>form</span> <span class='kw'>=</span> <span class='st'>"form.xls"</span>,
-  <span class='kw'>app</span> <span class='kw'>=</span> <span class='st'>"console"</span>,
-  <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"html"</span>,
-  <span class='kw'>render</span> <span class='kw'>=</span> <span class='st'>"TRUE"</span>,
-  <span class='kw'>lang</span> <span class='kw'>=</span> <span class='st'>"eng"</span>
+  form = <span class='st'>"form.xls"</span>,
+  app = <span class='st'>"console"</span>,
+  output = <span class='st'>"html"</span>,
+  render = <span class='st'>"TRUE"</span>,
+  lang = <span class='st'>"eng"</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -197,11 +197,16 @@ It is assumed that the form is stored in the data folder.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>No return, All results will be saved on RMD files and Word files</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Edouard Legoupil#'</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'>kobo_atlas_report</span>(<span class='no'>form</span>, <span class='no'>mapfile</span>)
-}</div></pre>
+    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'>kobo_atlas_report</span>(<span class='kw'>form</span>, <span class='kw'>mapfile</span>)
+}
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -217,7 +222,7 @@ It is assumed that the form is stored in the data folder.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

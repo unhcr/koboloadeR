@@ -1,3 +1,10 @@
+## koboloadeR 0.1.8
+
+  *  Refactored the koboloadeR project structure so that it looks like a data package - R, data-raw, data - applying suggestions made here: https://raw.githubusercontent.com/statnmap/prez/master/2019-07_useR_Toulouse.pdf 
+  
+  *  Saving now all intermediary file as binary rda
+
+
 ## koboloadeR 0.1.7
 
   *  Added different output for the crunching report - docx, pptx, html, aspx

@@ -7,7 +7,7 @@
 #' Specifies the Host URL of the API to Use
 #'
 #'
-#' @param instring Either "kobo", "kobohr", "ona", or a custom (full) URL.
+#' @param api Either "kobo", "kobohr", "ona", or a custom (full) URL.
 #' @return A single string with the URL to use.
 #' @note API URLs are made available for KoBo Toolbox ("kobo",
 #' \url{https://kc.kobotoolbox.org/api/v1/}), KoBo Humanitarian Response
@@ -18,23 +18,23 @@
 #' @author Ananda Mahto
 #' @note This function is not intended to be called directly.
 #' It is used in other functions.
-#' @examples
 #'
+#' @examples#'
 #' \dontrun{
 #' kobo_host("unhcr")
 #' kobo_host("ttps://kobocat.unhcr.org/api/v1/")
 #' }
 #'
 
-kobo_host <- function(instring) {
-  if (instring %in% c("kobo", "kobohr", "ona","unhcr")) {
-    switch(instring,
+kobo_host <- function(api) {
+  if (api %in% c("kobo", "kobohr", "ona","unhcr")) {
+    switch(api,
            kobo = "https://kc.kobotoolbox.org/api/v1/",
            kobohr = "https://kc.humanitarianresponse.info/api/v1/",
            ona = "https://ona.io/api/v1/",
            unhcr = "https://kobocat.unhcr.org/api/v1/")
   } else {
-    instring
+    api
   }
 }
 NULL

@@ -1,30 +1,100 @@
-Package: koboloadeR
 Type: Package
-Title: Retrieve Data Using the KoBo Toolbox API & Automatise data exploration
-Version: 0.1.4
-Authors@R: person("Edouard", "Legoupil", email = "edouard.legoupil@gmail.com",
-  role = c("aut", "cre"))
-Description: KoBo Toolbox offers a convenient way to collect data using web and
-    mobile forms. This package facilitates the retrieval & analysis of data entered using these
-    tools using the KoBo Toolbox API (v1).
+Package: koboloadeR
+Title: A Metapackage for Survey Data Crunching
+Version: 0.1.7
+Authors@R: 
+    c(person(given = "Edouard",
+             family = "Legoupil",
+             role = c("aut", "cre"),
+             email = "legoupil@unhcr.org"),
+      person(given = "Maher",
+             family = "Daoud",
+             role = "aut",
+             email = "daoudma@unhcr.org"),
+      person(given = "Elliott",
+             family = "Messeiller",
+             role = "ctb",
+             email = "elliott.messeiller@acted.org"),
+      person(given = "Damien",
+             family = "Seite",
+             role = "ctb",
+             email = "damien.seite@eleve.ensai.fr"))
+Maintainer: Edouard Legoupil <legoupil@unhcr.org>
+Description: An organized workflow generating 'Rmd' files from an extended 'xlsform' questionnaire structure to facilitate survey data crunching.
 License: GPL-3
-LazyData: TRUE
+URL: https://unhcr.github.io/koboloadeR/docs/
+BugReports: https://github.com/unhcr/koboloadeR/issues
 Depends:
-    data.table (>= 1.9.4),
-    RCurl,
-    httr,
-    bit64,
-    readr,
-    DT,
-    plyr,
+    utils
+Imports:
+    ade4,
+    caret,
+    classInt,
+    corrplot,
+    data.table,
+    DDIwR,
     dplyr,
-    tidyr,
-    readxl,
+    dummies,
+    e1071,
+    effects,
+    extrafont,
+    factoextra,
+    FactoMineR,
     ggplot2,
+    ggpubr,
+    ggrepel,
+    ggthemes,
+    glmnet,
+    glmulti,
+    glue,
+    grid,
+    haven,
+    httr,
+    knitr,
+    MASS,
+    memisc,
+    nnet,
+    OpenRepGrid,
+    pander,
+    pls,
+    plyr,
+    randomForest,
+    rattle,
+    RColorBrewer,
+    RCurl,
+    readxl,
     reshape2,
-    gdata
+    RGtk2,
+    rJava,
+    rmarkdown,
+    ROCR,
+    RODBC,
+    rpart,
+    rpart.plot,
+    rstudioapi,
+    sampling,
+    scales,
+    sdcMicro,
+    shiny,
+    simFrame,
+    sp,
+    stats,
+    stringi,
+    stringr,
+    survey,
+    tidyverse,
+    tools,
+    truncnorm,
+    tidyverse,
+    VIM,
+    viridis,
+    xgboost,
+    xlsx
 Suggests:
-    shiny
-URL: https://github.com/Edouard-Legoupil/koboloadeR
-BugReports: https://github.com/Edouard-Legoupil/koboloadeR/issues
-RoxygenNote: 6.0.1
+    testthat (>= 2.1.0)
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+LazyData: TRUE
+RoxygenNote: 7.1.1
+SystemRequirements: Java (>= 8)

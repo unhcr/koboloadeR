@@ -8,8 +8,6 @@
 #'
 #' @author Edouard Legoupil
 #'
-#' @examples
-#' kobo_arrange_variablename()
 #'
 #' @export kobo_arrange_variablename
 #'

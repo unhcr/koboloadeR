@@ -1,0 +1,105 @@
+---
+title: "Using console script"
+author: "Edouard Legoupil"
+date: '`r Sys.Date()`'
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{Using console script}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+## Introduction
+
+KoboloadeR is designed to facilitate the analysis workflow of a survey collected through any xlsform compatible platform.
+
+The package is designed to support 2 user flow:
+
+ * __Graphical User Interface - GUI__: A dedicated shinyApp `kobo_shiny("app_main_koboloadeR.R")` includes all instructions and options to run your project.
+
+ * __Console mode__ gives you way to run your analysis without GUI
+
+In this tutorial, we will focus on the using the package using the console mode.
+
+## Start the project
+
+First you will need to install all the required software described in the package readme file (JAVA, R, Rtools-if on windows - and Rstudio). 
+
+You can now create a project, enable the library with 
+
+Loads KoboloadeR package  
+
+> library (koboloadeR)  
+
+Creates folders necessary and transfer files needed. This function implement good practise for analysis reproducibility with dedicated sub-folder for the `code`, the `data` and the `output` from the analysis.  
+
+> kobo_projectinit()
+
+
+This will also push on your data folder a demo project with a form template that you can adapt according to your needs. Note that in the development of your form, in addition of this template, you can use the [Integrated Framework for Household survey knowledge base](https://unhcr.github.io/Integrated-framework-household-survey)
+
+
+## Extend your xlsform 
+
+The very first step is to extend your exisitng xlsform to include new column for your project configuration and analysis plan.
+
+koboloader concept is that all the configuration shall exclusively be done in the orginial excel file. This is done for various reasons:
+
+ * No need to create any R scripts which allow user with minimum R knowldege to use the package
+ * Reproducibility * Documentation: this approach ensure that the analysis workflow is _de facto_ fully documented within that excel file
+ 
+Define the path to your form file (note that we use `.xls` file only) 
+
+> form <- "form.xls"
+
+
+Now we will automatically add the required additional structure for the analysis plan and project configuration with that same file 
+
+> kobo_prepare_form(form)
+
+## Generate dummy data
+
+**You can skip this step in case you already have your own questionnaire and dataset.**
+
+In order to run this tutorial, we will first generate a dummy dataset using the structure of the form. 
+
+This can be performed with 
+
+Define the path to your form file (note that we use `.xls` file only)  
+
+> form <- "form.xls"
+
+Now use the function to generate your dummy file.   
+
+> kobo_dummy_data(form)
+
+This function will generate multiple csv files as the template form includes `begin_group` elements corresponding to a hierarchical data structure.  A  hierarchical structure  is created  when  a  series of questions is repeated say for each member in the household, and combined with a household questionnaire. 
+
+All csv files will be saved per default in the `data` folder.
+
+## Set up your project configuration
+
+## Set up your analysis plan
+
+## Generate report
+
+> kobo_check_analysis_plan(form)
+
+kobo_load_data(form)
+
+> kobo_rename_xlsform_dataframes(form) 
+
+
+kobo_crunching_report(form)
+
+## Iterate
+
+You have now set up all your project and you got your initial reports.
+
+Analysis is an **iterative** process. you will need to 
+
+> `run-analysis.R`

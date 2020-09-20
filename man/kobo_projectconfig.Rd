@@ -2,7 +2,7 @@
 % Please edit documentation in R/kobo_projectconfig.R
 \name{kobo_projectconfig}
 \alias{kobo_projectconfig}
-\title{Project configuration file}
+\title{Data download configuration file}
 \usage{
 kobo_projectconfig()
 }
@@ -13,7 +13,9 @@ A file with all elements to get your data & form.
 Write all necessary configuration files for your project
 }
 \examples{
+\dontrun{
 kobo_projectconfig()
+}
 
 }
 \author{

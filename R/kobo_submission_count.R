@@ -15,8 +15,10 @@
 #' @author Ananda Mahto
 #'
 #' @examples
+#' \dontrun{
 #' kobo_submission_count("15051")
 #' kobo_submission_count("31511", api = "kobohr")
+#' }
 #'
 #' @export kobo_submission_count
 #'

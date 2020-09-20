@@ -1,4 +1,4 @@
 library(testthat)
+library(koboloadeR)
 
-test_check("ahp")
-#devtools::test()
+# test_check("koboloadeR")

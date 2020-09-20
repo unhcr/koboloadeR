@@ -8,6 +8,8 @@ psum(..., na.rm = FALSE)
 }
 \arguments{
 \item{\dots}{List of integer or numeric}
+
+\item{na.rm}{Bolean indicating if NA shall be removed}
 }
 \value{
 Integer or numeric.
@@ -16,7 +18,9 @@ Integer or numeric.
 Helper function that will sum values even if we have NA
 }
 \examples{
+\dontrun{
 psum()
+}
 
 }
 \author{

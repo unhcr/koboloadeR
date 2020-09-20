@@ -5,6 +5,7 @@
 #'   SI prefix notation
 #'
 #'
+#'
 #' Format a vector of numeric values according
 #' to the International System of Units.
 #' http://en.wikipedia.org/wiki/SI_prefix
@@ -41,10 +42,10 @@ format_si <- function(...) {
     i <- findInterval(abs(x), limits)
 
     # Set prefix to " " for very small values < 1e-24
-    i <- ifelse(i==0, which(limits == 1e0), i)
+    i <- ifelse(i == 0, which(limits == 1e0), i)
 
     paste(format(round(x/limits[i], 1),
-                 trim=TRUE, scientific=FALSE, ...),
+                 trim = TRUE, scientific = FALSE, ...),
           prefix[i])
   }
 }

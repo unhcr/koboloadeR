@@ -9,13 +9,13 @@ kobo_form(formid, userpwd, api)
 \arguments{
 \item{formid}{The ID of the form to be accessed (as a character string).}
 
-\item{api}{The URL at which the API can be accessed.
-Defaults to "unhcr", which loads the UNHCR KoBo Toolbox API.}
-
-\item{user}{Optional. A single string indicating the username and password
+\item{userpwd}{Optional. A single string indicating the username and password
 (in the form of \code{"username:password"}), or a character vector or list,
 length 2, with the first value being the "username", and the second being
 the "password".}
+
+\item{api}{The URL at which the API can be accessed.
+Defaults to "unhcr", which loads the UNHCR KoBo Toolbox API.}
 }
 \value{
 Downloaded form path.
@@ -24,8 +24,6 @@ Downloaded form path.
 Download form from the platform
 }
 \examples{
-kobo_form()
-
 \dontrun{
 kobo_form("15051")
 kobo_form("31511", user = userpwd, api = "unhcr")

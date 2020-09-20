@@ -4,10 +4,10 @@
 \alias{kobo_host}
 \title{Select server}
 \usage{
-kobo_host(instring)
+kobo_host(api)
 }
 \arguments{
-\item{instring}{Either "kobo", "kobohr", "ona", or a custom (full) URL.}
+\item{api}{Either "kobo", "kobohr", "ona", or a custom (full) URL.}
 }
 \value{
 A single string with the URL to use.
@@ -29,7 +29,7 @@ This function is not intended to be called directly.
 It is used in other functions.
 }
 \examples{
-
+#'
 \dontrun{
 kobo_host("unhcr")
 kobo_host("ttps://kobocat.unhcr.org/api/v1/")

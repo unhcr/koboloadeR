@@ -14,10 +14,10 @@
 #'
 get_me <- function(user, URL) {
   if (is.null(user)) {
-    GET(URL, progress())
+    get(URL, progress())
   } else {
     u <- pwd_parse(user)
-    GET(URL, authenticate(u$username, u$password), progress())
+    get(URL, httr::authenticate(u$username, u$password), progress())
   }
 }
 NULL
@@ -73,15 +73,17 @@ NULL
 #' process these date/times into more usable formats.
 #'
 #' @param instring A date/time format coming from KoBo.
-#' @param timezone A valid timezone, available in the list available
-#' from \code{\link[base:OlsonNames]{OlsonNames}}.
+#'
 #' @return The \code{kobo_time_parser_UTC} function returns a POSIXct object,
 #' while the \code{kobo_time_parser} function returns a formatted character
 #' string that can be easily parsed as a date/time object.
+#'
 #' @author Ananda Mahto
 #' @examples
+#' \dontrun{
 #' TIME <- "2015-08-27T13:28:29.000+06:30"
 #' kobo_time_parser_UTC(TIME)
+#' }
 #'
 #' @export kobo_time_parser_UTC
 #' @aliases kobo_time_parser_UTC
@@ -92,25 +94,3 @@ kobo_time_parser_UTC <- function(instring) {
 }
 NULL
 
-#' @name kobo_time_parser
-#' @rdname kobo_time_parser
-#' @title Parses Dates from KoBo Into a More Usable Format
-#'
-#' @description The date/time values in KoBo usually get stored in a format
-#' like the following: "2015-08-27T13:28:29.000+06:30". These functions
-#' process these date/times into more usable formats.
-#'
-#' @return The \code{kobo_time_parser} function returns a formatted character
-#' string that can be easily parsed as a date/time object.
-#' @author Ananda Mahto
-#' @examples
-#' kobo_time_parser(TIME)
-#' kobo_time_parser(TIME, timezone = "Asia/Rangoon")
-#' kobo_time_parser(TIME, timezone = "America/Los_Angeles")
-#'
-#' @aliases kobo_time_parser
-#' @export kobo_time_parser
-kobo_time_parser <- function(instring, timezone = Sys.timezone()) {
-  format(kobo_time_parser_UTC(instring), tz = timezone, usetz = TRUE)
-}
-NULL

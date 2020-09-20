@@ -1,270 +1,202 @@
-# koboloadeR
+# koboloadeR: Survey Data Crunching <img src="man/figures/koboloadeR.png" width="200" align="right" /> 
 
-## Introduction
+<!-- badges: start -->
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![license](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
-### Challenges with Household Survey analysis
+[![packageversion](https://img.shields.io/badge/package%20version-0.0.1-orange.svg)](https://github.com/unhcr/koboloadeR/blob/master/DESCRIPTION)
 
-Household survey often results in dataset with over 300 variables to process & explore. In Humanitarian Environment, deadlines to get insights from those dataset are often tight. Manual processing is very lengthy and can be done only for a limited part of the dataset. Often, because of those challenges, a lot of potential insights are not discovered. This package is developped to support this challenge around data crunching. It's part of the initiative around an [Integrated Framework for Household Survey (IFHS): A toolkit to facilitate design, collection & analysis](https://unhcr.github.io/Integrated-framework-household-survey/).
+[![CRAN status](https://www.r-pkg.org/badges/version/koboloadeR)](https://cran.r-project.org/package=koboloadeR)
+[![CRAN](https://img.shields.io/cran/v/koboloadeR.svg)](https://cran.r-project.org/package=koboloadeR)
+[![CRAN](https://img.shields.io/cran/l/koboloadeR.svg)](https://CRAN.R-project.org/package=koboloadeR)
 
-### Data Crunching
+[![CRAN](http://cranlogs.r-pkg.org/badges/koboloadeR)](https://CRAN.R-project.org/package=koboloadeR)
+[![CRAN](http://cranlogs.r-pkg.org/badges/grand-total/koboloadeR)](https://CRAN.R-project.org/package=koboloadeR)
 
-KoboloadeR packages aims at separating “_input_”, “_processing_” and “_output_” within the data crunching phase of the data analysis worklfow.
+[![Travis build status](https://travis-ci.org/unhcr/koboloadeR.svg?branch=gh-pages)](https://travis-ci.org/unhcr/koboloadeR)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/unhcr/koboloadeR?branch=gh-pages&svg=true)](https://ci.appveyor.com/project/unhcr/koboloadeR)
+[![codecov](https://codecov.io/gh/unhcr/koboloadeR/branch/gh-pages/graph/badge.svg)](https://codecov.io/gh/unhcr/koboloadeR)
 
-The “output” will be one or multiple Rmd (Rmarkdown) file(s) than will generate word, pdf or html reports and the configuration file includes references to all “input”:  
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2adb516e959b4c1599ca4367b8480196)](https://www.codacy.com/app/Edouard-Legoupil/koboloadeR?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=unhcr/koboloadeR&amp;utm_campaign=Badge_Grade)
+[![Last-changedate](https://img.shields.io/github/last-commit/unhcr/koboloader.svg)](https://github.com/unhcr/koboloadeR/commits/master)
+
+<!-- badges: end -->
+
+koboloadeR is a metapackage, that brings together a series of specialised packages in an organised data analysis workflow, to conduct data discovery and analysis for data collected through  [KoboToolbox](https://www.kobotoolbox.org/), [ODK](https://opendatakit.org/), [ONA](https://ona.io/home/) or any __[xlsform](http://xlsform.org)__ compliant data collection platform.
+
+This package first builds on the capacity of [UNHCR Kobo server](http://kobo.unhcr.org) but it can also be used from any structured dataset. It comes as a companion tool to the [Integrated Framework for Household Survey](https://unhcr.github.io/Integrated-framework-household-survey).
+
+koboloadeR aims at helping [humanitarian data analysts](https://humanitarian-user-group.github.io/) to focus in data interpretation by saving the time needed to quickly generate the graphs and charts required to discover insights from a dataset. It also ensure analysis __reproducibility__ through a separation of the analysis configuration and the analysis process. The package allows to account for sample weights and hierachical dataset structure (both capacities that are not available through the default [reporting engine](http://support.kobotoolbox.org/articles/2847676-viewing-and-creating-custom-reports) or the [excel-analyzer](http://support.kobotoolbox.org/articles/592387-using-the-excel-analyzer)). 
+
+## Approach
  
- * Path to __raw data__ files collected using [OpenDataKit](https://opendatakit.org/), [Kobotoolbox](http://www.kobotoolbox.org/) or [ONA](https://ona.io)  
- * Path to form (defined using the standard format [xlsform](http://xlsform.org)) in order to build a __data dictionary__  
- * Path to the __sample weight__ for each observation (based on cluster or strata...)   
- * Path to the data __cleaning log__  
- * Path to the __indicator calculation__ sheet  
+The main concept behind the package is to implement a survey data analysis plan and configuration directly within the same [xlsform](http://xlsform.org) excel file that has been used to develop the questionnaire. A few additional column are created in this excel document, the package read those column to generate a series of predefined report.
 
-### Advantage of KoboLoadeR 
+![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow.png)
 
 
- * __Productivity__: Once the configuration file is written, run the script in Rstudio to get the output
- * __Training__: No need to write R instruction – limited knowledge of R is required
- * __Iteration__: Check the output, adjust the various input files & re-run the script till you get a satisfying report
- * __Reproducibility__: all analysis input are de facto documented  
 
-KoboLoadeR takes care of the processing component so that the technical team can focus on the interpretation.
+The data crunching allows to generated quickly initial reports through a series of semi-automated processes: 
 
-### Output of koboloadeR  
+1. Have all the configuration used to generate the reports (details of tabulation and crosstabulation plans, weighting approach) documented within the xlsform allow to track easily all changes to the data and to facilitate ( [koboloadeR::kobo_dico]("reference/kobo_dico.html"))
 
- * Frequency tables & Bar chart for select type questions
- * Frequency tables & Histogram for numeric questions
- * Frequency table for text questions
- * Cross-tab & graph (if 2 categorical: bar chart, if 1 categoric + 1 numeric: boxplot & if 2 numeric: scatterplot)
- * Chi-squared test & corrplot presentation
- * Mapping if geographic field are configured (still in development)
- * and more to come...
+2. Have a clear and consistent folder structure and naming conventions for all the files coming in and out of the crunching workflow ( [koboloadeR::kobo_projectinit]("reference/kobo_projectinit.html"))
+
+3. Ensures that files containing questions and respondents have been all considered: form & data to be checked to each other ( [koboloadeR::kobo_check_analysis_plan]("reference/kobo_analysis_plan.html"))
+
+4. Make question and choices labels readable within charts by adjusting them where needed (for instance question labels to be less than 80 char and choices labels less than 40), resolve typos if any... ( [koboloadeR::kobo_label]("reference/kobo_label.html") and [koboloadeR::kobo_encode]("reference/kobo_encode.html") 
+
+5. Merge household data with individual-level data – when using repeat components. There’s a file of data at the household-level and another file containing data on the individuals that constitute those households. There should be unique identifying codes that match households and individuals ( [koboloadeR::kobo_load_data]("reference/kobo_load_data.html")
+
+6. Review and potentially re-categorize open-ended answers when “or other” option was offered ( [koboloadeR::kobo_clean]("reference/kobo_clean.html") )
+
+7. Measure statistical disclosure risk in order to remove sensitive data and indirect identifiers [koboloadeR::kobo_anonymise]("reference/kobo_anonymise.html") and [koboloadeR::kobo_anonymisation_report]("reference/kobo_anonymisation_report.html") )
+
+8. Create new variables out of existing variables (also called feature engineering). For instance Group distinct answers into categories or ranges, Split up or extract components from an answer, aggregate variable collected at individual level to the household level ( [koboloadeR::kobo_indicator]("reference/kobo_indicator.html") )
+
+9. Generate easy to read visualization  for all tabulations, cross-tabulations and correlation ( [koboloadeR::kobo_cluster_report]("reference/kobo_luster_report.html") ) 
+
+10. Identify population segments, i.e. statistical clusters,  based on similar characteristics ( [koboloadeR::kobo_crunching_report]("reference/kobo_crunching_report.html")) 
 
 
-##  Overview
 
-The `koboloadeR` package allows to:
+You can have a look at [some examples of output reports here](https://github.com/unhcr/koboloadeR/tree/gh-pages/out).
 
-* connect to the [KoBo API (v1)](https://kc.kobotoolbox.org/api/v1/) for the [KoBo Toolbox](http://www.kobotoolbox.org/) project. 
+The approach offered through the package has the following advantages: 
 
-* compute a data dictionnary based on [xlsform](http://xlsform.org). It implies ot have a few additionnal column in the xlsform in order to better define how data shoudl be analysid (cf infra). as it based on a standard, this part and the following should work for any [xlsform compatible server](http://xlsform.org/#xlsform-tools) such as [OpenDataKit](https://opendatakit.org/) or [ONA](https://ona.io/home/)
+  *  End users __do not need to code__ in R and to master the language in order to use the package as the configuration is done in excel;  
+ 
+  *  The data __analysis plan__ is de facto fully documented and described;  
+ 
+  *  The resulting data crunching reports are fully __reproducible__;  
+ 
+  *  Analysis __iterations__ are facilitated;
+ 
+  *  Good __practices__ are enforced through the package.
 
-* generate automatically of a series of charts & maps based on the data dictionnary
+A more detailed introduction to the concepts used in the package is presented in the [Data Crunching article](articles/Crunching.html). 
 
-* generate automatically of a series of charts & maps based on a formatted data analysis plan
+## Environment setup 
 
-* access to a Shiny data viewer accessible using:
+### Software installation  
 
+  1. Install either [Java JRE](https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) or [Java JDK](http://jdk.java.net/12/):  JAVA is required to manipulate excel files. 
+ 
+Under Windows, You will need to have JRE or JDK register under the `Path` system variable (Right click on “This PC/Computer”, Go to `->Properties->Advanced system settings->Advanced->Environment Variables`, then under System variables select `Path` => Click `Edit`.
+ 
+If you install, the `JDK` (Java Development kit), Please make sure that `JAVA_HOME` is actually recorded as an [Environment Variable](https://java.com/en/download/help/path.xml). 
+
+If you install, the `JRE` (Java Runtime Environment), Please make sure that `JRE_HOME` is actually recorded as an [Environment Variable](https://confluence.atlassian.com/doc/setting-the-java_home-variable-in-windows-8895.html). 
+
+Once in R, you may double-check that Environement variable are correctly, i.e. JAVA_HOME or JRE_HOME, set by
+
+```{r}
+Sys.getenv()
 ```
-kobo_apps("data_viewer")
-```
 
+If JAVA is not correctly set, you will see an installatin error at a latter stage when loading the package `RJava`.
 
-## Walk Through
+Note in some case, you may need to reboot your computer to ensure that this environement variable is properly accounted for.
 
- 1. Install the package
-```
-source("https://raw.githubusercontent.com/Edouard-Legoupil/koboloadeR/master/inst/script/install_github.R")
+  2. [Install R](https://cran.r-project.org/): follow instruction from the installer.
+
+  3. __Only for windows user__ [Install RTools](https://cran.r-project.org/bin/windows/Rtools): This executable is needed to install the package from github. Follow instruction from the installer.
+
+  4. [Install R Studio](https://www.rstudio.com/products/rstudio/download/#download) : follow instruction from the installer
+
+You can now Launch __R Studio__ . You may check the list of common issues in the [Common Troubleshooting](articles/Troubleshooting.html) article.
+
+## Package installation from Github
+
+Note that the package is still in beta-version. We hope to have soon a release available on CRAN.
+
+  *  Open R studio interface and within the R console, install `devtools` package: 
+
+```{r}
 install.packages("devtools")
-library("devtools")
-install_github("Edouard-Legoupil/koboloadeR")
-library("koboloadeR")
-```
-(This version of `install_github` via [@jtilly](https://github.com/jtilly/install_github).)
-
- 2. Start a project within Rstudio
- 
- 3. Launch the initialisation function: 
-```
-kobo_projectinit()
-```
- in order to organise your project. It also starts a series of question to set up a configuration file to access a kobo server. You can now go in the `code` folder and source the `0-packages.R` script in order to install a curated list of packages.
- 
-```
- source("code/0-packages.R")
-```
- 
- 4. Either:  
- 
-   *  Grab your data with `kobo_data_downloader` & Get your form with `kobo_form`
-   * or simply copy your data in `csv` format and your xlsform in `xls` format in the `data` folder that was created during the project initiation
- 
- use the following options to extract data
-![alt text](https://raw.githubusercontent.com/Edouard-Legoupil/koboloadeR/master/inst/script/exportformat.png)
- 
- 5. Open the `1-loaddata.R` script in the code folder, replace the name of the dataset and the name of the form.
- 
- 6. Create your dictionnary with `kobo_dico`
- 
- 7. Generate your graphs with `kobo_bar_one`, `kobo_bar_multi`, `kobo_histo`, `kobo_trend`, `kobo_bar_one_facet`, `kobo_correlate`, `kobo_boxplot_facet` (see below for explanation)
-
-
-## Data Analysis Plan within your `xlsfrom`
-
-`Xlsform` is a convenient format to build advance form using any spreadsheet software such as [Libreoffice](https://www.libreoffice.org/download/libreoffice-fresh/) or MsExcel. 
-
-In order to build an an analysis plan within the form, the columns described in the tables below needs to be added. Note that if the column are not present, the script will create dummy ones. It's always possible to add your analysis plan to an existing form and relaunch `kobo_dico` in order to regenerate the correct analysis plan.
-
-Note that for charting purpose, it's recommanded that labels for questions & choices should not exceed 70 characters. It's possible again to re-edit directly your xlsform and regenerate a new `dico`.
-
-### In the `survey` worksheet:
-
-Column | Description
-------|--------------
-`repeatsummarize`| used to summarize repeat questions 
-`variable`| used to flag `ordinal` variables so that graphs are not ordered per frequency.
-`disaggregation`| used to flag variables used to  `facet` dataset 
-`correlate`| used to flag variables used for  statistical test of independence (for categorical variable) or correlation for numeric variable
-`chapter`| used to breakfdown the final report
-`sensitive`| used to flag variables identified as sensitive
-`anonymise`| used to generate an anonymised datset in line the anonymisation plan within the xlsform
-
-### In the `choices` worksheet:
-
-Column | Description
-------|--------------
-`order`| used to define order for ordinal variables
-`weight`| used to define weight for each answers in case it's used for some specific indicator calculation
-`recategorise`| used to recategorise quickly choices for a question
-
-### In a separate `analysis-plan` worksheet:
-
-The idea is to map calculation necessary to create complex indicators from the variables defined in the `survey` worksheet. This will automate the generation of indicators.
-
-Column | Description
-------|--------------
-`indicator`| used to map the question with an indicator
-`indicatorgroup`| used to reference the the group the indicator should be associated to
-`indicatortype`| define wether the indicator is  `Measurement`: variable used to quantify other indicators, `Disaggregation`: variable that describes certain groups, `Predictor`: Indicator that describes the cause of a situation, `Outcome`: Indicator that describes the consequence of a situation or `Judgment`: indicator that translates a subjective assessment
-`indicatorlevel`| used to define the geographic aggregation to be used for indicator calculation
-`Indicatorexternal`| used to reference an external dataset to be used to calculate the indicators. Could be for instance a population dataset.
-`indicatorcalculation`| used to reference the calculation method to be used for the indicator: `Percentage`, `Sum`, `Max/Min`, `Average`, `Score`, `Denominator`, `Numerator`, `Numerator.external` (i.e. linked to an external value)
-`indicatornomalisation`| used to reference the normalisation method to be used for the indicator
-
-## Core Functions
-
-The package contains the following core functions:
-
-Function | Description
-------|--------------
-`kobo_datasets`| Lists the datasets available for a given user. Returns a `data.table` with the basic metadata about the available datasets.
-`kobo_submission_count`|Lists the number of submissions for a particular data collection project. A single integer. This function is mostly for use within the `kobo_data_downloader` function.
-`kobo_data_downloader`|Downloads a specified dataset via the KoBo API. Returns a `data.table` of the entire dataset requested.
-
-For all of the above functions, the default is to use the UNHCR KoBo Toolbox API URLs. However, it should be possible to specify the API URL to use if you have a custom installation of the toolbox.
-
-## Chart Generation functions
-
-* Adding a `kobo_bar_one` function to generate bar chart - frequency for all `select_one` questions
-
-* Adding a `kobo_bar_multi` function to generate bar chart - frequency for all `select_multiple` questions
-
-* Adding a `kobo_histo` function to generate histogramme for all `integer` questions
-
-* Adding a `kobo_trend` function to generate histogramme for all `select_one` and `select_multiple` questions based 
-
-* Adding a `kobo_bar_one_facet` function to generate bar chart for all `select_one` questions facetted on questions tagged as `facet` in the data analysis plan 
-
-* Adding a `kobo_correlate` function to generate dot plot for all `integer` questions correlated with integer questions tagged as `correlate` in the data analysis plan 
-
-* Adding a `kobo_boxplot_facet` function to generate box plot for all `integer` questions faceted with categorical questions tagged as `facet` in the data analysis plan 
-
-## Shiny Apps
-
-The package contains the following Shiny apps, accessible via `kobo_apps("app_name")`:
-
-App | Description
----|---
-`"data_viewer"` | The `"data_viewer"` app provides a basic login screen to authenticate against the specified API. Once authenticated, the datasets available via the specified login are displayed, and a dropdown list is populated with which one can select the dataset they want to view. The dataset is also made available in the users Global Environment.
-
-Here's [a blog post introducing the package](http://news.mrdwab.com/post/koboloader/)!
-
-### Exported Utility Functions
-
-The package contains the following exported utility functions:
-
-Function|Description
-----|----
-`kobo_time_parser_UTC`|Converts a date/time character string into a POSIXct time object.
-`kobo_time_parser`|Formats a date/time character string into a character string for a specified timezone. Convert using `as.POSIXct` if you need an actual time object.
-
----------------
-
-## Examples
-
-The following examples access the public data available via KoBo Toolbox. Note that all of the functions have been set with defaults of `user = NULL` and `api = 'kobo'`.
-
-```
-kobo_datasets()[, c("description", "id"), with = FALSE] ## Just show the first two columns
-#                                                    description    id
-#   1:                                关于“西装微定制现状的调查“ 10427
-#   2:                زانیاری لەسەر كۆمپانیاكانی نەوت لە گەرمیان 11190
-#   3:                           מיפוי שדרות צ'רצ'יל - ורד ויואב 12568
-#   4:                                                      Test 39717
-#   5:                                             Market Survey  7640
-#  ---                                                                
-# 403: Webuy_Stock lot Business (No.1 Stock Bazar in Bangladesh) 30792
-# 404:                               WWF Zambia [Field Reporter]  4163
-# 405:                                         xls_form_training 41820
-# 406:                                    Mwanza KAP SURVEY 2015 25206
-# 407:                                    Elisha Zelina, GST6109  1857
-
-kobo_submission_count(4163)
-# [1] 37
-
-kobo_data_downloader("4163")
-# No local dataset found.
-# Downloading remote file.
-# ... The contents would normally be printed here
-
-### On a subsequent run, if the file is already there and no changes have been made
-kobo_data_downloader("4163")
-# Number of rows in local and remote file match.
-# Using local file.
 ```
 
-The `kobo_data_downloader` automatically checks for the existence of an object in your workspace named "data_####" (where "####" is the numeric form ID). If such an object is found, it then uses `kobo_submission_count` to compare the number of rows in the local dataset against the number of rows in the remote dataset. If the number is found to be different, the remote dataset is re-downloaded. If they are found to be the same, the local dataset is used. 
+  *  Install koboloadeR: 
 
-In the future, it is intended that there would be a more robust and efficient method rather than redownloading the entire dataset each time a change has been detected.
+```{r}
+devtools::install_github("unhcr/koboloadeR") 
+```  
 
---------------
+  *  You are all set! You can know use koboloadeR. If you have a problem consult the common troubleshooting part at the end of this page.
 
-Run the examples at the help pages to get a sense of some of the other features:
+### Project Walk Through 
 
+  *  In R Studio, select File, click New project. A box opens
+  
+  *  Choose New Directory
+  
+  *  Choose Empty project
+  
+  *  Type the name of the folder where you want to put your data
+  
+  *  Select where you want to put this folder
+  
+  *  Click Create project
+
+Then setup a few things: run those two lines:
+
+```{r}
+library (koboloadeR) # This loads koboloadeR package
+
+kobo_projectinit() # Creates folders necessary and transfer files needed
 ```
-example("kobo_datasets")
-example("kobo_submission_count")
-example("kobo_data_downloader")
-```
 
-## Authentication
-
-These functions all use basic HTTP authentication. The easiest way to enter the password details is the common `"username:password"` approach. Thus, when accessing form data using authentication, the function would be used in the following manner:
-
-```
-kobo_data_downloader("123456", "username:password")
-```
-
-## Anonymisation
-
-This method should be used whenever Kobo or ODK forms are used as data collection tools and personal data is being collected. Even when personal data is not being collected it still may be appropriate to apply the methodology since quasi-identifiable data or other sensitive data could lead to personal identification or should not be shared.
-
-Type            | Description
-----------------|--------------
-__Direct identifiers__      |	Can be directly used to identify an individual. E.g. Name, Address, Date of birth, Telephone number, GPS location
-__Quasi- identifiers__      |	Can be used to identify individuals when it is joined with other information. E.g. Age, Salary, Next of kin, School name, Place of work
-__Sensitive information__      | & Community identifiable information	Might not identify an individual but could put an individual or group at risk. E.g. Gender, Ethnicity, Religious belief
-__Meta data__      |	Data about who, where and how the data is collected is often stored separately to the main data and can be used identify individuals
+It might take a while as a few other packages have to be installed or loaded. Once the see the " >" again at the beginning of the line, you are ready to start
 
 
-The following are different anonymisation actions that can be performed on sensitive fields. The type of anonymisation should be dictated by the desired use of the data. A good approach to follow is to start from the minimum data required, and then to identify if any of those fields should be obscured.
+#### Console mode
 
-The methods below can be referenced in the dedicated column within xlsform (cf above)
+The __console mode__ is recommended - You can run the file `run-analysis.R` that is automatically copied in the `code` folder after you run the `kobo_projectinit()` function . 
 
-Method          | Description
-----------------|--------------
-  __Remove__    |	Variable is removed entirely from the data set. The Variable  is preserved in the original file.  
-__Reference__   |	Variable is removed entirely from the data set and is copied into a reference file. A random unique identifier field is added to the reference file and the data set so that they can be joined together in future.  The reference file is never shared and the Variable  is also preserved in the original file.  
-__Mask__        |	The Variable  values are replaced with meaningless values but the categories are preserved. A reference file is created to link the original value with the meaningless value. Typically applied to categorical Variable . For example, Town names could be masked with random combinations of letters. It would still be possible to perform statisitical analysis on the Variable  but the person running the analysis would not be able to identify the original values, they would only become meaningful when replaced with the original values. The reference file is never shared and the data is also preserved in the original file.  
-__Generalise__	| Continuous Variable  is turned into categorical or ordinal Variable  by summarising it into ranges. For example, Age could be turned into age ranges, Weight could be turned into ranges. It can also apply to categorical Variable  where parent groups are created. For example, illness is grouped into illness type. Generalised Variable  can also be masked for extra anonymisation. The Variable  is preserved in the original file.  
+This will be likely the quickest options, once your are used to the package.
 
+Note however that this implies that you configure correctly on your own the full configuration within the xlform file. 
 
+#### NOT MAINTAINED - Support would be wellcome - Graphical user interface (GUI) 
 
+A shinyApp to guide user through all those steps has been prototyped - unfortunately - it's not maintained with the last dev and might be buggy...
+
+All instructions and options for the project configuration and analysis plan settings shall be do-able through a dedicated GUI.
+```{r}
+kobo_shiny("app_main_koboloadeR.R")
+```  
+
+For better performances, select "Open in Browser" on the top of the window.
+
+#### Presentation of features 
+
+  *  [Getting data from server](articles/Getting_data.html) - How to retrieve data from the server within R?
+    
+  *  [Data Analysis Plan within your `xlsfrom`](articles/xlsform.html) - How to extend the xlsform to include your analysis plan?
+    
+  *  [Using console script](articles/Console.html) - How to use the package without using the GUI in Shiny?
+    
+  *  [Sampling](articles/Sampling.html): how to generate a sample from a registry or to post-stratify data when having a low response rate? 
+  
+  *  [Data Anonymisation and disclosure risk measurement](articles/Anonymisation.html): how to create anonymised data?
+  
+  *  [Data Cleaning](articles/Cleaning.html): how to use the package for reproducible and documented data cleaning? 
+    
+  *  [Predicting and scoring](articles/Predicting_Scoring.html): how to use survey in conjunction wiht registration data to build risk prediction and vulnerability scoring?
+    
+  *  [Dissiminating](articles/Dissiminating.html): how to dissiminate both survey microdata using DDI and variable crosstabulation on CKAN? 
+
+## Contributing
+
+Contributions to the packages are welcome. Please read first the [contribution guidelines](CONTRIBUTING.html), follow the [code of conduct](CODE_OF_CONDUCT.html) and use the [issue template](ISSUE_TEMPLATE.html).
+
+To go in more details, the suggested workflow is presented below (note that all of it is not yet fully implented - see [issue tracking for more details](https://github.com/unhcr/koboloadeR/issues)). You can read the [function documentations](reference/index.html) directly.
+
+![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow2.png)
+
+CRAN Notes
+==========
+
+Test results
+------------

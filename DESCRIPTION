@@ -89,7 +89,12 @@ Imports:
     VIM,
     viridis,
     xgboost,
-    xlsx
+    xlsx,
+    jsonlite,
+    magrittr,
+    tibble,
+    miniUI,
+    ckanr
 Suggests:
     testthat (>= 2.1.0)
 VignetteBuilder: 

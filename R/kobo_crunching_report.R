@@ -880,6 +880,7 @@ kobo_crunching_report <- function(form = "form.xls",
               cat(paste0("## and now the graph"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("geom_bar(fill = \"#2a87c8\", colour = \"#2a87c8\", stat = \"identity\", width = .8) +"),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("geom_errorbar(aes(ymin = mean-SE, ymax = mean+SE)) +"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("guides(fill = FALSE) +"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("geom_label_repel(aes(y = mean, label = freqper2), fill = \"#2a87c8\", color = 'white') +"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("ylab(\"Frequency\") +"),file = report.name ,sep = "\n", append = TRUE)

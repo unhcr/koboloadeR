@@ -1,0 +1,4 @@
+Name: RIDL Metadata Editor
+Description: Launch Shiny app to edit RIDL metadata
+Binding: kobo_edit_ridl_metadata
+Interactive: true

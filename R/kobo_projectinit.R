@@ -9,7 +9,7 @@
 #'
 #' @export kobo_projectinit
 #'
-#' @author Edouard Legoupil, Elliott MEesseiller
+#' @author Edouard Legoupil, Elliott Messeiller
 #'
 #' @examples
 #' \dontrun{

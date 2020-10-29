@@ -600,8 +600,8 @@ kobo_dico <- function(form = "form.xls") {
   #} else { dico$type <- dico$type
   #  cat("Note that select_one & select_multiple questions within REPEAT part are converted to integer (results are summed up).\n")
 
-  #utils::write.csv(dico, paste0(mainDir,"/data/dico_",form,".csv"), row.names = FALSE, na = "")
-  save(dico, file =  paste0(mainDir,"/data/dico_",form,".rda"))
+  utils::write.csv(dico, paste0(mainDir,"/data/dico_",form,".csv"), row.names = FALSE, na = "")
+  #save(dico, file =  paste0(mainDir,"/data/dico_",form,".rda"))
   # f_csv(dico)
   #  return(dico)
 }

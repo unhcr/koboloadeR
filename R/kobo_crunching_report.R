@@ -57,8 +57,8 @@ kobo_crunching_report <- function(form = "form.xls",
     ### Load the data
     cat("\n\n Loading data. It is assumed that the cleaning, weighting & re-encoding has been done previously \n")
 
-    #MainDataFrame <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_encoded.csv",sep = ""), encoding = "UTF-8", na.strings = "")
-    load(paste(mainDir,"/data/MainDataFrame_encoded.rda",sep = ""))
+   MainDataFrame <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_encoded.csv",sep = ""), encoding = "UTF-8", na.strings = "")
+     #load(paste(mainDir,"/data/MainDataFrame_encoded.rda",sep = ""))
     
 
     # Form ##########################################
@@ -70,8 +70,8 @@ kobo_crunching_report <- function(form = "form.xls",
     #kobo_dico(form)
 
     ## Load dictionary
-    #dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
-    load(paste0(mainDir,"/data/dico_",form,".rda"))
+    dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+    #load(paste0(mainDir,"/data/dico_",form,".rda"))
     #rm(form)
 
 
@@ -92,8 +92,8 @@ kobo_crunching_report <- function(form = "form.xls",
     ## Check if there's a repeat - aka hierarchical structure in the dataset
     if  (length(dataBeginRepeat) > 0) {
       for (dbr in dataBeginRepeat) {
-        #dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_encoded.csv",sep = ""),stringsAsFactors = F)
-        load(paste(mainDir,"/data/",dbr,"_encoded.rda",sep = ""))
+        dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_encoded.csv",sep = ""),stringsAsFactors = F)
+        #load(paste(mainDir,"/data/",dbr,"_encoded.rda",sep = ""))
         assign(dbr, kobo_label(dataFrame, dico))
         if (app == "shiny") {
           progress$set(message = paste("Labelling variables in",dbr,"File in progress..."))
@@ -144,8 +144,8 @@ kobo_crunching_report <- function(form = "form.xls",
 
     names(reports)[1] <- "Report"
 
-    #utils::write.csv(reports, paste(mainDir,"/data/reports.csv",sep = ""), row.names = FALSE, na = "")
-    save(reports, file =   paste(mainDir,"/data/reports.rda",sep = ""))
+    utils::write.csv(reports, paste(mainDir,"/data/reports.csv",sep = ""), row.names = FALSE, na = "")
+    #save(reports, file =   paste(mainDir,"/data/reports.rda",sep = ""))
     
 
     ## For each Report: create a Rmd file -------
@@ -273,23 +273,23 @@ kobo_crunching_report <- function(form = "form.xls",
 
       cat("## Provide below the name of the form in xsl form - format should be xls not xlsx", file = report.name , sep = "\n", append = TRUE)
       cat(paste0("form <- \"",form,"\""), file = report.name , sep = "\n", append = TRUE)
-      #cat("dico <- utils::read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = report.name , sep = "\n", append = TRUE)
-      cat("load(paste0(mainDirroot,\"/data/dico_\",form,\".rda\"))", file = report.name , sep = "\n", append = TRUE)
+      cat("dico <- utils::read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = report.name , sep = "\n", append = TRUE)
+      #cat("load(paste0(mainDirroot,\"/data/dico_\",form,\".rda\"))", file = report.name , sep = "\n", append = TRUE)
       
 
       ## TO DO: Use config file to load the different frame
 
 
-      #cat("MainDataFrame <- utils::read.csv(paste0(mainDirroot,\"/data/MainDataFrame_encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = report.name , sep = "\n", append = TRUE)
-      cat("load(paste0(mainDirroot,\"/data/MainDataFrame_encoded.rda\"))", file = report.name , sep = "\n", append = TRUE)
+      cat("MainDataFrame <- utils::read.csv(paste0(mainDirroot,\"/data/MainDataFrame_encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = report.name , sep = "\n", append = TRUE)
+      #cat("load(paste0(mainDirroot,\"/data/MainDataFrame_encoded.rda\"))", file = report.name , sep = "\n", append = TRUE)
       
       
       ## Check if there's a repeat - aka hierarchical structure in the dataset
       if  (length(dataBeginRepeat) > 0) {
         for (dbr in dataBeginRepeat) {
-          #cat(paste(dbr, " <- utils::read.csv(paste0(mainDirroot,\"/data/",dbr,"_encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", sep = ""), file = report.name , sep = "\n", append = TRUE)
+          cat(paste(dbr, " <- utils::read.csv(paste0(mainDirroot,\"/data/",dbr,"_encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", sep = ""), file = report.name , sep = "\n", append = TRUE)
           
-          cat(paste("load(paste0(mainDirroot,\"/data/",dbr,"_encoded.rda\"))", sep = ""), file = report.name , sep = "\n", append = TRUE)
+          #cat(paste("load(paste0(mainDirroot,\"/data/",dbr,"_encoded.rda\"))", sep = ""), file = report.name , sep = "\n", append = TRUE)
         }
       }
 
@@ -2062,8 +2062,8 @@ kobo_crunching_report <- function(form = "form.xls",
         #rm(list = ls())
         kobo_load_packages()
         mainDir <- kobo_getMainDirectory()
-        #reports <- utils::read.csv(paste(mainDir,"/data/reports.csv",sep = ""), encoding = "UTF-8", na.strings = "")
-        load(paste(mainDir,"/data/reports.rda",sep = ""))
+        reports <- utils::read.csv(paste(mainDir,"/data/reports.csv",sep = ""), encoding = "UTF-8", na.strings = "")
+        #load(paste(mainDir,"/data/reports.rda",sep = ""))
         ### Render now all reports
         cat(" Render now reports... \n")
         for (i in 1:nrow(reports)) {

@@ -68,7 +68,7 @@ kobo_submit_to_ridl <- function(formf = "data/form.xls", dataf = "data/data.json
     jsonlite::fromJSON(dataf)$results %>% 
     tibble::as_tibble(.name_repair = ~stringr::str_replace_all(., "(\\/)", "."))
   
-  prep_submission <- function(ridl_container, ridl_dataset, data) {
+  prep_submission <- function(ridl_container = NULL, ridl_dataset = NULL, data) {
     # FIXME: add support for repeating groups
     dataf <- fs::path(tempdir(), "data.csv")
     data %>% 
@@ -99,15 +99,15 @@ kobo_submit_to_ridl <- function(formf = "data/form.xls", dataf = "data/data.json
         format = "xls",
         file_type = "questionnaire")
     
-    tibble(
+    tibble::tibble(
       metadata = list(dplyr::mutate(dplyr::rowwise(metadata), value = glue::glue(value, .na = NULL))),
       resources = list(dplyr::bind_rows(resources.data, resources.meta)))
   }
   
   submissions <-
     data %>%
-    tidyr::nest(data = -c(ridl_container, ridl_dataset)) %>% 
-    dplyr::filter(!is.na(ridl_container), !is.na(ridl_dataset)) %>% 
+    tidyr::nest(data = -any_of(c("ridl_container", "ridl_dataset"))) %>% 
+    # dplyr::filter(!is.na(ridl_container), !is.na(ridl_dataset)) %>% 
     purrr::pmap_dfr(prep_submission)
   
   submissions %>% purrr::pwalk(kobo_submit_ridl_package)

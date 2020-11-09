@@ -164,7 +164,7 @@ like the following: "2015-08-27T13:28:29.000+06:30". These functions
 process these date/times into more usable formats.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>kobo_time_parser_UTC</span>(<span class='kw'>instring</span>)</pre>
+    <pre class="usage"><span class='fu'>kobo_time_parser_UTC</span><span class='op'>(</span><span class='va'>instring</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -185,10 +185,10 @@ string that can be easily parsed as a date/time object.</p>
     <p>Ananda Mahto</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='kw'>TIME</span> <span class='op'>&lt;-</span> <span class='st'>"2015-08-27T13:28:29.000+06:30"</span>
-<span class='fu'>kobo_time_parser_UTC</span>(<span class='kw'>TIME</span>)
-}
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='va'>TIME</span> <span class='op'>&lt;-</span> <span class='st'>"2015-08-27T13:28:29.000+06:30"</span>
+<span class='fu'>kobo_time_parser_UTC</span><span class='op'>(</span><span class='va'>TIME</span><span class='op'>)</span>
+<span class='op'>}</span>
 
 </div></pre>
   </div>

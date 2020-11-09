@@ -1,4 +1,25 @@
-#' @export
+#' @name kobo_edit_ridl_metadata
+#' @rdname kobo_edit_ridl_metadata
+#' @title  Edit RIDL / CKAN metadata
+#'
+#' @description  Edit RIDL / CKAN metadata
+#'
+#' @param form The full filename of the form to be accessed (xls file).
+#' It is assumed that the form is stored in the data folder.
+#'
+#'
+#' @author Hisham Galal
+#'
+#'
+#' @examples
+#' \dontrun{
+#' kobo_edit_ridl_metadata(form = "form.xls")
+#' }
+#'
+#' @export kobo_edit_ridl_metadata
+#'
+
+
 kobo_edit_ridl_metadata <- function(form = "data/form.xls") {
   ui <- miniUI::miniPage(
     miniUI::gadgetTitleBar(

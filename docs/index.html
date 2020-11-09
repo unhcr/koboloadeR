@@ -105,7 +105,6 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-
 <div id="koboloader-survey-data-crunching-" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#koboloader-survey-data-crunching-" class="anchor"></a>koboloadeR: Survey Data Crunching <img src="reference/figures/koboloadeR.png" width="200" align="right">
@@ -201,7 +200,7 @@
 <li><p>Click Create project</p></li>
 </ul>
 <p>Then setup a few things: run those two lines:</p>
-<pre class="{r}"><code><a href="https://unhcr.github.io/koboloadeR/docs">library (koboloadeR) # This loads koboloadeR package
+<pre class="{r}"><code><a href="https://unhcr.github.io/koboloadeR/docs/">library (koboloadeR) # This loads koboloadeR package
 
 kobo_projectinit() # Creates folders necessary and transfer files needed</a></code></pre>
 <p>It might take a while as a few other packages have to be installed or loaded. Once the see the " &gt;" again at the beginning of the line, you are ready to start</p>
@@ -242,17 +241,34 @@ kobo_projectinit() # Creates folders necessary and transfer files needed</a></co
 <p>Contributions to the packages are welcome. Please read first the <a href="CONTRIBUTING.html">contribution guidelines</a>, follow the <a href="CODE_OF_CONDUCT.html">code of conduct</a> and use the <a href="ISSUE_TEMPLATE.html">issue template</a>.</p>
 <p>To go in more details, the suggested workflow is presented below (note that all of it is not yet fully implented - see <a href="https://github.com/unhcr/koboloadeR/issues">issue tracking for more details</a>). You can read the <a href="reference/index.html">function documentations</a> directly.</p>
 <p><img src="https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow2.png" alt="alt text"></p>
-</div>
-</div>
-<div id="cran-notes" class="section level1">
-<h1 class="hasAnchor">
-<a href="#cran-notes" class="anchor"></a>CRAN Notes</h1>
-<div id="test-results" class="section level2">
-<h2 class="hasAnchor">
-<a href="#test-results" class="anchor"></a>Test results</h2>
-</div>
-</div>
+<blockquote>
+<p>This package is part of <code>unhcrverse</code>, a set of packages to ease the production of statistical evidence and data stories. You can install them all with the following:</p>
+</blockquote>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="co">## Use UNHCR Open data</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">'unhcr/unhcrdatapackage'</span><span class="op">)</span>
 
+<span class="co">## Use API to connect to licensed / internal data source</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">'unhcr-web/hcrdata'</span><span class="op">)</span>
+
+<span class="co">## Perform High Frequency Check during data collection</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">'unhcr-web/HighFrequencyChecks'</span><span class="op">)</span>
+
+<span class="co">## Process data crunching for survey dataset</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">'unhcr/koboloadeR'</span><span class="op">)</span>
+
+<span class="co">## Use UNHCR template for reporting and writing stories</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">'unhcr-web/unhcRstyle'</span><span class="op">)</span></pre></div>
+<div id="building-package-documentation" class="section level4">
+<h4 class="hasAnchor">
+<a href="#building-package-documentation" class="anchor"></a>Building package documentation</h4>
+<p><code><a href="https://devtools.r-lib.org//reference/document.html">devtools::document()</a></code></p>
+<p><code><a href="https://devtools.r-lib.org//reference/check.html">devtools::check(document = FALSE)</a></code></p>
+<p><code><a href="https://pkgdown.r-lib.org/reference/build_site.html">pkgdown::build_site()</a></code></p>
+<hr>
+</div>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

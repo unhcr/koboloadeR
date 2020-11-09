@@ -30,14 +30,14 @@ kobo_clean <- function(frame, form = "form.xls", app = "console") {
   mainDir <- kobo_getMainDirectory()
   form <- as.character(form)
   #cat(paste0(form,"\n"))
-  #formpath <- as.character(paste0(mainDir,"/data/dico_",form,".csv"))
+  formpath <- as.character(paste0(mainDir,"/data/dico_",form,".csv"))
   #cat(paste0(formpath,"\n"))
-  #dico <- utils::read.csv(formpath, encoding = "UTF-8", na.strings = "")
+  dico <- utils::read.csv(formpath, encoding = "UTF-8", na.strings = "")
   
   
-  formpath <- as.character(paste0(mainDir,"/data/dico_",form,".rda"))
+  #formpath <- as.character(paste0(mainDir,"/data/dico_",form,".rda"))
   #cat(paste0(formpath,"\n"))
-  load(formpath)
+  #load(formpath)
 
   # frame <- MainDataFrame
   # frame <- household

@@ -71,30 +71,30 @@ kobo_projectinit <- function() {
     }
     
     ## man folder creation ####
-    subDir <- "man"
-    if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
-      cat("man exists in mainDir and is a directory.\n")
-    } else if (file.exists(paste(mainDir, subDir, sep = "/", collapse = "/"))) {
-      cat("man directory exists in your project directory but is a file.\n")
-      # you will probably want to handle this separately
-    } else {
-      cat("man directory does not exist in your project directory - creating now!\n ")
-      dir.create(file.path(mainDir, subDir))
-    }
-    
-    if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
-      # By this point, the directory either existed or has been successfully created
-      setwd(file.path(mainDir, subDir))
-    } else {
-      cat("")
-      # Handle this error as appropriate
-    }
-    destfile = paste0(mainDir,"/man/README.md")
-    if (!file.exists(destfile)) {
-      fileConn <- file(destfile)
-      writeLines(c("### This folder is where the project documentation will be build"), fileConn)
-      close(fileConn)
-    }
+    # subDir <- "man"
+    # if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
+    #   cat("man exists in mainDir and is a directory.\n")
+    # } else if (file.exists(paste(mainDir, subDir, sep = "/", collapse = "/"))) {
+    #   cat("man directory exists in your project directory but is a file.\n")
+    #   # you will probably want to handle this separately
+    # } else {
+    #   cat("man directory does not exist in your project directory - creating now!\n ")
+    #   dir.create(file.path(mainDir, subDir))
+    # }
+    # 
+    # if (file.exists(paste(mainDir, subDir, "/", sep = "/", collapse = "/"))) {
+    #   # By this point, the directory either existed or has been successfully created
+    #   setwd(file.path(mainDir, subDir))
+    # } else {
+    #   cat("")
+    #   # Handle this error as appropriate
+    # }
+    # destfile = paste0(mainDir,"/man/README.md")
+    # if (!file.exists(destfile)) {
+    #   fileConn <- file(destfile)
+    #   writeLines(c("### This folder is where the project documentation will be build"), fileConn)
+    #   close(fileConn)
+    # }
     
     
     ## R folder creation ####

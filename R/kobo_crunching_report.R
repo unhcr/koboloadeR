@@ -10,8 +10,9 @@
 #' It is assumed that the form is stored in the data-raw folder.
 #' @param output The output format html or aspx if you need to upload on sharepoint), docx (to quickly cut non interesting vz and take note during data interpretation session), pptx (to quickly cut non interesting vz and persent during data interpretation session), Default is html
 #' @param app The place where the function has been executed, the default is the console and the second option is the shiny app
-#' @param render TRUE or FALSE - Tells wheter to only produce Rmd or to also knit it in the required output format. Default is TRUE. Usefull for testing as rending takes time.
-#' @param lang eng, fre or esp - Change the langauge of the intro to the report - default is english
+#' @param render TRUE or FALSE - Tells whether to only produce Rmd or to also knit it in the required output format. Default is TRUE. Useful for testing as rending takes time.
+#' @param lang eng, fre or esp - Change the language of the intro to the report - default is english
+#' @param unhcRstyle TRUE or FALSE tells wether to use UNHCR style fo rendering
 #'
 #' @return No return, All results will be saved on RMD files and Word files
 #'
@@ -30,7 +31,8 @@ kobo_crunching_report <- function(form = "form.xls",
                                   app = "console", 
                                   output ="html", 
                                   render = "TRUE", 
-                                  lang = "eng") {
+                                  lang = "eng",
+                                  unhcRstyle = "TRUE") {
   tryCatch({
     if (app == "shiny") {
       progress <- shiny::Progress$new()
@@ -909,10 +911,19 @@ kobo_crunching_report <- function(form = "form.xls",
               
               
               if (output == "pptx") {
-                cat(paste0("kobo_unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
-
+                if(unhcRstyle == "TRUE") {
+                  cat(paste0("unhcRstyle::unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
+                } else {
+                  cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                }
+                  
+                  
               } else {
-                cat(paste0("kobo_unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
+                if(unhcRstyle == "TRUE") {
+                  cat(paste0("unhcRstyle::unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
+                } else {
+                  cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                }
               }
 
 
@@ -1014,10 +1025,22 @@ kobo_crunching_report <- function(form = "form.xls",
                                     configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
                       
                       if (output == "pptx") {
-                        cat(paste0("kobo_unhcr_style_histo_big()"),file = report.name ,sep = "\n", append = TRUE)
+                        
+                        if(unhcRstyle == "TRUE") {
+                          cat(paste0("unhcRstyle::unhcr_style_histo_big()"),file = report.name ,sep = "\n", append = TRUE)
+                        } else {
+                          cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                        }
+                        
 
                       } else {
-                        cat(paste0("kobo_unhcr_histo_bar()"),file = report.name ,sep = "\n", append = TRUE)
+                        
+                        if(unhcRstyle == "TRUE") {
+                          cat(paste0("unhcRstyle::unhcr_style_histo()"),file = report.name ,sep = "\n", append = TRUE)
+                        } else {
+                          cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                        }
+                        
                       }
                       cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
 
@@ -1058,10 +1081,22 @@ kobo_crunching_report <- function(form = "form.xls",
                                             configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
                         
                         if (output == "pptx") {
-                          cat(paste0("kobo_unhcr_style_histo_big()"),file = report.name ,sep = "\n", append = TRUE)
-
+                          
+                          if(unhcRstyle == "TRUE") {
+                            cat(paste0("unhcRstyle::unhcr_style_histo_big()"),file = report.name ,sep = "\n", append = TRUE)
+                          } else {
+                            cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                          }
+                          
+                          
                         } else {
-                          cat(paste0("kobo_unhcr_style_histo()"),file = report.name ,sep = "\n", append = TRUE)
+                          
+                          if(unhcRstyle == "TRUE") {
+                            cat(paste0("unhcRstyle::unhcr_style_histo()"),file = report.name ,sep = "\n", append = TRUE)
+                          } else {
+                            cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                          }
+                          
                         }
 
                         cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
@@ -1147,16 +1182,28 @@ kobo_crunching_report <- function(form = "form.xls",
                                   max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                                            configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
                       
-                      if (output == "pptx") {
-                        cat(paste0("kobo_unhcr_style_bar_big() +"),file = report.name ,sep = "\n", append = TRUE)
-
-                      } else {
-                        cat(paste0("kobo_unhcr_style_bar() +"),file = report.name ,sep = "\n", append = TRUE)
-                      }
-
                       ## setting up the legend
                       #cat(paste0("guides(fill = FALSE) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("theme(legend.direction = \"horizontal\", legend.position = \"bottom\", legend.box = \"horizontal\",legend.title = element_blank()  )"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("theme(legend.direction = \"horizontal\", legend.position = \"bottom\", legend.box = \"horizontal\",legend.title = element_blank()  ) +"),file = report.name ,sep = "\n", append = TRUE)
+                      
+                      if (output == "pptx") {
+                        
+                        if(unhcRstyle == "TRUE") {
+                          cat(paste0("unhcRstyle::unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
+                        } else {
+                          cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                        }
+                        
+                        
+                      } else {
+                        
+                        if(unhcRstyle == "TRUE") {
+                          cat(paste0("unhcRstyle::unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
+                        } else {
+                          cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                        }
+                        
+                      }
                       cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
 
                       ## Close chunk
@@ -1393,12 +1440,23 @@ kobo_crunching_report <- function(form = "form.xls",
               
               
               if (output == "pptx") {
-                cat(paste0("kobo_unhcr_style_histo_big()"),file = report.name ,sep = "\n", append = TRUE)
-
+                
+                if(unhcRstyle == "TRUE") {
+                  cat(paste0("unhcRstyle::unhcr_style_histo_big()"),file = report.name ,sep = "\n", append = TRUE)
+                } else {
+                  cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                }
+                
+                
               } else {
-                cat(paste0("kobo_unhcr_style_histo()"),file = report.name ,sep = "\n", append = TRUE)
+                
+                if(unhcRstyle == "TRUE") {
+                  cat(paste0("unhcRstyle::unhcr_style_histo()"),file = report.name ,sep = "\n", append = TRUE)
+                } else {
+                  cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                }
+                
               }
-
               cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("\n\n"),file = report.name ,sep = "\n", append = TRUE)
               cat("\n")
@@ -1434,12 +1492,18 @@ kobo_crunching_report <- function(form = "form.xls",
                             configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
                 
                 if (output == "pptx") {
-                  cat(paste0("kobo_unhcr_style_histo_big()"),file = report.name ,sep = "\n", append = TRUE)
-
+                  if(unhcRstyle == "TRUE") {
+                    cat(paste0("unhcRstyle::unhcr_style_histo_big()"),file = report.name ,sep = "\n", append = TRUE)
+                  } else {
+                    cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                  }
                 } else {
-                  cat(paste0("kobo_unhcr_style_histo()"),file = report.name ,sep = "\n", append = TRUE)
+                  if(unhcRstyle == "TRUE") {
+                    cat(paste0("unhcRstyle::unhcr_style_histo()"),file = report.name ,sep = "\n", append = TRUE)
+                  } else {
+                    cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                  }
                 }
-
                 cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
               }
             }
@@ -1536,12 +1600,18 @@ kobo_crunching_report <- function(form = "form.xls",
                                  configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
                     
                     if (output == "pptx") {
-                      cat(paste0("kobo_unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
-
+                      if(unhcRstyle == "TRUE") {
+                        cat(paste0("unhcRstyle::unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
+                      } else {
+                        cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                      }
                     } else {
-                      cat(paste0("kobo_unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
+                      if(unhcRstyle == "TRUE") {
+                        cat(paste0("unhcRstyle::unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
+                      } else {
+                        cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                      }
                     }
-
                     cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
 
                     if (H >= 1.349) {
@@ -1567,12 +1637,18 @@ kobo_crunching_report <- function(form = "form.xls",
                                       configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
                       
                       if (output == "pptx") {
-                        cat(paste0("kobo_unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
-
+                        if(unhcRstyle == "TRUE") {
+                          cat(paste0("unhcRstyle::unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
+                        } else {
+                          cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                        }
                       } else {
-                        cat(paste0("kobo_unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
+                        if(unhcRstyle == "TRUE") {
+                          cat(paste0("unhcRstyle::unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
+                        } else {
+                          cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                        }
                       }
-
                       cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
                     }
                     ## Close chunk
@@ -1618,12 +1694,18 @@ kobo_crunching_report <- function(form = "form.xls",
                                 configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
 
                     if (output == "pptx") {
-                      cat(paste0("kobo_unhcr_style_scatter_big()"),file = report.name ,sep = "\n", append = TRUE)
-
+                      if(unhcRstyle == "TRUE") {
+                        cat(paste0("unhcRstyle::unhcr_style_scatter_big()"),file = report.name ,sep = "\n", append = TRUE)
+                      } else {
+                        cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                      }
                     } else {
-                      cat(paste0("kobo_unhcr_style_scatter()"),file = report.name ,sep = "\n", append = TRUE)
+                      if(unhcRstyle == "TRUE") {
+                        cat(paste0("unhcRstyle::unhcr_style_scatter()"),file = report.name ,sep = "\n", append = TRUE)
+                      } else {
+                        cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                      }
                     }
-
                     cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
 
 
@@ -1644,13 +1726,20 @@ kobo_crunching_report <- function(form = "form.xls",
                                 min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                 max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                                 configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                    
                     if (output == "pptx") {
-                      cat(paste0("kobo_unhcr_style_scatter_big() +"),file = report.name ,sep = "\n", append = TRUE)
-
+                      if(unhcRstyle == "TRUE") {
+                        cat(paste0("unhcRstyle::unhcr_style_scatter_big()"),file = report.name ,sep = "\n", append = TRUE)
+                      } else {
+                        cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                      }
                     } else {
-                      cat(paste0("kobo_unhcr_style_scatter() +"),file = report.name ,sep = "\n", append = TRUE)
+                      if(unhcRstyle == "TRUE") {
+                        cat(paste0("unhcRstyle::unhcr_scatter_histo()"),file = report.name ,sep = "\n", append = TRUE)
+                      } else {
+                        cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                      }
                     }
-
                     cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
 
                     ## Close chunk
@@ -1800,13 +1889,20 @@ kobo_crunching_report <- function(form = "form.xls",
                             min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                             max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                             configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                
                 if (output == "pptx") {
-                  cat(paste0("kobo_unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
-
+                  if(unhcRstyle == "TRUE") {
+                    cat(paste0("unhcRstyle::unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
+                  } else {
+                    cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                  }
                 } else {
-                  cat(paste0("kobo_unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
+                  if(unhcRstyle == "TRUE") {
+                    cat(paste0("unhcRstyle::unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
+                  } else {
+                    cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                  }
                 }
-
                 cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
                 
@@ -1917,15 +2013,19 @@ kobo_crunching_report <- function(form = "form.xls",
                                     max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                                     configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
                       
-                      
                       if (output == "pptx") {
-                        cat(paste0("kobo_unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
-                        
+                        if(unhcRstyle == "TRUE") {
+                          cat(paste0("unhcRstyle::unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
+                        } else {
+                          cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                        }
                       } else {
-                        cat(paste0("kobo_unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
+                        if(unhcRstyle == "TRUE") {
+                          cat(paste0("unhcRstyle::unhcr_bar_histo()"),file = report.name ,sep = "\n", append = TRUE)
+                        } else {
+                          cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                        }
                       }
-                      
-                      
                       cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
                       ## Close chunk
                       cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
@@ -1979,18 +2079,23 @@ kobo_crunching_report <- function(form = "form.xls",
                               min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                               max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
                               configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("theme(axis.text.x = element_text(angle = 60, hjust = 1,  vjust = 1 )) + "),file = report.name ,sep = "\n", append = TRUE)
                 
                 if (output == "pptx") {
-                  cat(paste0("kobo_unhcr_style_histo_big() +"),file = report.name ,sep = "\n", append = TRUE)
-
+                  if(unhcRstyle == "TRUE") {
+                    cat(paste0("unhcRstyle::unhcr_style_histo_big()"),file = report.name ,sep = "\n", append = TRUE)
+                  } else {
+                    cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                  }
                 } else {
-                  cat(paste0("kobo_unhcr_style_histo() +"),file = report.name ,sep = "\n", append = TRUE)
+                  if(unhcRstyle == "TRUE") {
+                    cat(paste0("unhcRstyle::unhcr_style_histo()"),file = report.name ,sep = "\n", append = TRUE)
+                  } else {
+                    cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
+                  }
                 }
-
-                cat(paste0("theme(axis.text.x = element_text(angle = 60, hjust = 1,  vjust = 1 ))"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
                 cat(paste0("\n\n"),file = report.name ,sep = "\n", append = TRUE)
-
 
                 ## Close chunk
                 cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)

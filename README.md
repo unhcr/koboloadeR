@@ -195,8 +195,31 @@ To go in more details, the suggested workflow is presented below (note that all 
 
 ![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow2.png)
 
-CRAN Notes
-==========
+> This package is part of `unhcrverse`, a set of packages to ease the production of statistical evidence and data stories. You can install them all with the following:
 
-Test results
+```r
+## Use UNHCR Open data
+remotes::install_github('unhcr/unhcrdatapackage')
+
+## Use API to connect to licensed / internal data source
+remotes::install_github('unhcr-web/hcrdata')
+
+## Perform High Frequency Check during data collection
+remotes::install_github('unhcr-web/HighFrequencyChecks')
+
+## Process data crunching for survey dataset
+remotes::install_github('unhcr/koboloadeR')
+
+## Use UNHCR template for reporting and writing stories
+remotes::install_github('unhcr-web/unhcRstyle')
+```
+
+#### Building package documentation 
+
+`devtools::document()`
+
+`devtools::check(document = FALSE)`
+
+`pkgdown::build_site()`
+
 ------------

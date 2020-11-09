@@ -22,7 +22,8 @@
         "str_replace", "str_replace_all", "str_wrap", "stri_rand_strings", "svydesign",
         "svytable", "tail", "theme", "theme.porttheme", "theme_gray", "theme_map",
         "theme_minimal", "theme_set", "trim", "type", "unit", "usedsampling", "usedweight",
-        "variable", "write.csv", "xlab", "ylab", "content", "progress", "setDT", "%>%"
+        "variable", "write.csv", "xlab", "ylab", "content", "progress", "setDT", "%>%",
+        "field_name", "form_placeholder", "help_text", "label", "list_name", "name required", "value"
       )
     )
 

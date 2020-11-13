@@ -1,3 +1,6 @@
+
+
+
 ridl <- function(action, ...) {
   httr::POST(glue::glue("https://ridl.unhcr.org/api/action/{action}"),
              httr::add_headers("Authorization" = Sys.getenv("RIDL_API_KEY")),
@@ -7,6 +10,8 @@ ridl <- function(action, ...) {
 }
 
 #' @export
+#' 
+#' 
 kobo_submit_ridl_resource <- function(pkg, ...) {
   metadata <- list(...)
   
@@ -42,6 +47,8 @@ kobo_submit_ridl_resource <- function(pkg, ...) {
             id = rid, uploadId = uid, save_action = "go-dataset-complete")
 }
 
+
+
 #' @export
 kobo_submit_ridl_package <- function(metadata, resources) {
   metadata <- metadata %>% dplyr::filter(!is.na(value))
@@ -60,7 +67,31 @@ kobo_submit_ridl_package <- function(metadata, resources) {
   purrr::pwalk(resources, kobo_submit_ridl_resource, pkg = pkg)
 }
 
-#' @export
+
+
+#' Quick explainer on how this works:
+#'   
+#'   You'll want to start by loading the form and data from KoBo:
+#' 
+#' formf <- 
+#'   hcrdata::hcrfetch(
+#'     src = "kobo",
+#'     dataset = "My kobo project",
+#'     file = "form.xls") 
+#' 
+#' dataf <- 
+#'   hcrdata::hcrfetch(
+#'     src = "kobo",
+#'     dataset = "My kobo project",
+#'     file = "data.json") 
+#' 
+#' Call kobo_prepare_form() to add the ridl-metadata sheets before launching the RIDL Metadata Editor RStudio Add-in (also accessible thru kobo_edit_ridl_metadata()).
+#' 
+#' While editing the sheet you'll have access to two variables ridl_container and ridl_dataset -exported from the data- which can be accessed from the ridl-metadata sheet by enclosing them in braces. The content of the braces is actually evaluated as an R expression with the two named variables in scope, so any necessary manipulations can be done there as well. The presence of the both variables in the data is optional - in which case the relevant information should be hard-coded in the ridl-metadata sheet and everything will end up in the same dataset/container.
+#' 
+#' Finally, when all is said and done, you can call kobo_submit_to_ridl(formf, dataf) to push the data to RIDL. The function takes care of massaging the submission into the format expected by RIDL. In case you'd like to submit treated data -anything other than the JSON KoBo export- you'll have to prepare the data in the right format manually. See resources.data and resources.meta in the kobo_ridl.R for details on the data structure.
+#' @export kobo_submit_to_ridl
+
 kobo_submit_to_ridl <- function(formf = "data/form.xls", dataf = "data/data.json") {
   metadata <- formf %>% readxl::read_excel(sheet = "ridl-metadata")
   

@@ -9,7 +9,8 @@ kobo_crunching_report(
   app = "console",
   output = "html",
   render = "TRUE",
-  lang = "eng"
+  lang = "eng",
+  unhcRstyle = "TRUE"
 )
 }
 \arguments{
@@ -21,9 +22,11 @@ It is assumed that the form is stored in the data-raw folder.}
 
 \item{output}{The output format html or aspx if you need to upload on sharepoint), docx (to quickly cut non interesting vz and take note during data interpretation session), pptx (to quickly cut non interesting vz and persent during data interpretation session), Default is html}
 
-\item{render}{TRUE or FALSE - Tells wheter to only produce Rmd or to also knit it in the required output format. Default is TRUE. Usefull for testing as rending takes time.}
+\item{render}{TRUE or FALSE - Tells whether to only produce Rmd or to also knit it in the required output format. Default is TRUE. Useful for testing as rending takes time.}
 
-\item{lang}{eng, fre or esp - Change the langauge of the intro to the report - default is english}
+\item{lang}{eng, fre or esp - Change the language of the intro to the report - default is english}
+
+\item{unhcRstyle}{TRUE or FALSE tells wether to use UNHCR style fo rendering}
 }
 \value{
 No return, All results will be saved on RMD files and Word files

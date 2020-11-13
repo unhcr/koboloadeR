@@ -174,73 +174,104 @@ kobo_crunching_report <- function(form = "form.xls",
       cat(paste("title: \"Data Crunching Report: ",reportsname , "- Draft not for distribution. \"", sep = ""), file = report.name , sep = "\n", append = TRUE)
       cat("author: \"Generated with [Koboloader](https://unhcr.github.io/koboloadeR/docs) \"", file = report.name , sep = "\n", append = TRUE)
       cat("date: \" `r format(Sys.Date(),  '%d %B %Y')`\"", file = report.name , sep = "\n", append = TRUE)
+      cat("always_allow_html: yes", file = report.name , sep = "\n", append = TRUE)
 
       if (output == "docx") {
-
-        cat("always_allow_html: yes", file = report.name , sep = "\n", append = TRUE)
-        cat("output:",file = report.name , sep = "\n", append = TRUE)
-        cat("  word_document:", file = report.name , sep = "\n", append = TRUE)
-        cat("    fig_caption: yes", file = report.name , sep = "\n", append = TRUE)
-        cat("    fig_height: 5", file = report.name , sep = "\n", append = TRUE)
-        cat("    fig_width: 8", file = report.name , sep = "\n", append = TRUE)
-        cat("    toc: yes", file = report.name , sep = "\n", append = TRUE)
-        cat("    toc_depth: 2", file = report.name , sep = "\n", append = TRUE)
-        cat("    reference_docx: style-unhcr-portrait.docx", file = report.name , sep = "\n", append = TRUE)
-        cat("---", file = report.name , sep = "\n", append = TRUE)
-        cat("\n\n", file = report.name , sep = "\n", append = TRUE)
+        
+        
+        if(unhcRstyle == "TRUE") {
+          cat("output:",file = report.name , sep = "\n", append = TRUE)
+          cat("  unhcRstyle::unhcr_templ_doc:", file = report.name , sep = "\n", append = TRUE)
+          cat("    toc: true", file = report.name , sep = "\n", append = TRUE)
+          cat("---", file = report.name , sep = "\n", append = TRUE)
+          cat("\n\n", file = report.name , sep = "\n", append = TRUE) 
+        } else {
+        
+          cat("output:",file = report.name , sep = "\n", append = TRUE)
+          cat("  word_document:", file = report.name , sep = "\n", append = TRUE)
+          cat("    fig_caption: yes", file = report.name , sep = "\n", append = TRUE)
+          cat("    fig_height: 5", file = report.name , sep = "\n", append = TRUE)
+          cat("    fig_width: 8", file = report.name , sep = "\n", append = TRUE)
+          cat("    toc: yes", file = report.name , sep = "\n", append = TRUE)
+          cat("    toc_depth: 2", file = report.name , sep = "\n", append = TRUE)
+         # cat("    reference_docx: style-unhcr-portrait.docx", file = report.name , sep = "\n", append = TRUE)
+          cat("---", file = report.name , sep = "\n", append = TRUE)
+          cat("\n\n", file = report.name , sep = "\n", append = TRUE) 
+        }
 
       } else if (output == "html") {
-
-        cat("always_allow_html: yes", file = report.name , sep = "\n", append = TRUE)
-        cat("output:",file = report.name , sep = "\n", append = TRUE)
-        cat("  html_document:", file = report.name , sep = "\n", append = TRUE)
-        cat("    fig_caption: yes", file = report.name , sep = "\n", append = TRUE)
-        cat("    fig_height: 5", file = report.name , sep = "\n", append = TRUE)
-        cat("    fig_width: 8", file = report.name , sep = "\n", append = TRUE)
-        cat("    toc: yes", file = report.name , sep = "\n", append = TRUE)
-        cat("    toc_depth: 2", file = report.name , sep = "\n", append = TRUE)
-        cat("    toc_float: yes", file = report.name , sep = "\n", append = TRUE)
-        cat("    includes:", file = report.name , sep = "\n", append = TRUE)
-        cat("       in_header: css/header.html", file = report.name , sep = "\n", append = TRUE)
-        cat("---", file = report.name , sep = "\n", append = TRUE)
-        cat("\n\n", file = report.name , sep = "\n", append = TRUE)
-        cat("<link rel=\"stylesheet\" href=\"css/unhcr-bootstrap.css\">", file = report.name , sep = "\n", append = TRUE)
-        cat("<link rel=\"stylesheet\" href=\"css/style.css\">", file = report.name , sep = "\n", append = TRUE)
-        cat("<link rel=\"stylesheet\" href=\"css/unhcr-header.css\">", file = report.name , sep = "\n", append = TRUE)
-        cat("\n\n", file = report.name , sep = "\n", append = TRUE)
+        if(unhcRstyle == "TRUE") {
+          cat("output:",file = report.name , sep = "\n", append = TRUE)
+          cat("  unhcRstyle::unhcr_templ_html:", file = report.name , sep = "\n", append = TRUE)
+          cat("    toc: true", file = report.name , sep = "\n", append = TRUE)
+          cat("---", file = report.name , sep = "\n", append = TRUE)
+          cat("\n\n", file = report.name , sep = "\n", append = TRUE) 
+        } else {
+        
+          cat("output:",file = report.name , sep = "\n", append = TRUE)
+          cat("  html_document:", file = report.name , sep = "\n", append = TRUE)
+          cat("    fig_caption: yes", file = report.name , sep = "\n", append = TRUE)
+          cat("    fig_height: 5", file = report.name , sep = "\n", append = TRUE)
+          cat("    fig_width: 8", file = report.name , sep = "\n", append = TRUE)
+          cat("    toc: yes", file = report.name , sep = "\n", append = TRUE)
+          cat("    toc_depth: 2", file = report.name , sep = "\n", append = TRUE)
+          cat("    toc_float: yes", file = report.name , sep = "\n", append = TRUE)
+          cat("    includes:", file = report.name , sep = "\n", append = TRUE)
+        #  cat("       in_header: css/header.html", file = report.name , sep = "\n", append = TRUE)
+          cat("---", file = report.name , sep = "\n", append = TRUE)
+          cat("\n\n", file = report.name , sep = "\n", append = TRUE)
+        #  cat("<link rel=\"stylesheet\" href=\"css/unhcr-bootstrap.css\">", file = report.name , sep = "\n", append = TRUE)
+        #  cat("<link rel=\"stylesheet\" href=\"css/style.css\">", file = report.name , sep = "\n", append = TRUE)
+        #  cat("<link rel=\"stylesheet\" href=\"css/unhcr-header.css\">", file = report.name , sep = "\n", append = TRUE)
+          cat("\n\n", file = report.name , sep = "\n", append = TRUE)
+        }
 
       }else if (output == "aspx") {
-
-        cat("always_allow_html: yes", file = report.name , sep = "\n", append = TRUE)
-        cat("output:",file = report.name , sep = "\n", append = TRUE)
-        cat("  html_document:", file = report.name , sep = "\n", append = TRUE)
-        cat("    fig_caption: yes", file = report.name , sep = "\n", append = TRUE)
-        cat("    fig_height: 5", file = report.name , sep = "\n", append = TRUE)
-        cat("    fig_width: 8", file = report.name , sep = "\n", append = TRUE)
-        cat("    toc: yes", file = report.name , sep = "\n", append = TRUE)
-        cat("    toc_depth: 2", file = report.name , sep = "\n", append = TRUE)
-        cat("    toc_float: yes", file = report.name , sep = "\n", append = TRUE)
-        cat("    includes:", file = report.name , sep = "\n", append = TRUE)
-        cat("       in_header: css/header.html", file = report.name , sep = "\n", append = TRUE)
-        cat("---", file = report.name , sep = "\n", append = TRUE)
-        cat("\n\n", file = report.name , sep = "\n", append = TRUE)
-        cat("<link rel=\"stylesheet\" href=\"css/unhcr-bootstrap.css\">", file = report.name , sep = "\n", append = TRUE)
-        cat("<link rel=\"stylesheet\" href=\"css/style.css\">", file = report.name , sep = "\n", append = TRUE)
-        cat("<link rel=\"stylesheet\" href=\"css/unhcr-header.css\">", file = report.name , sep = "\n", append = TRUE)
-        cat("\n\n", file = report.name , sep = "\n", append = TRUE)
+        
+        if(unhcRstyle == "TRUE") {
+          cat("output:",file = report.name , sep = "\n", append = TRUE)
+          cat("  unhcRstyle::unhcr_templ_html:", file = report.name , sep = "\n", append = TRUE)
+          cat("    toc: true", file = report.name , sep = "\n", append = TRUE)
+          cat("---", file = report.name , sep = "\n", append = TRUE)
+          cat("\n\n", file = report.name , sep = "\n", append = TRUE) 
+        } else {
+          cat("output:",file = report.name , sep = "\n", append = TRUE)
+          cat("  html_document:", file = report.name , sep = "\n", append = TRUE)
+          cat("    fig_caption: yes", file = report.name , sep = "\n", append = TRUE)
+          cat("    fig_height: 5", file = report.name , sep = "\n", append = TRUE)
+          cat("    fig_width: 8", file = report.name , sep = "\n", append = TRUE)
+          cat("    toc: yes", file = report.name , sep = "\n", append = TRUE)
+          cat("    toc_depth: 2", file = report.name , sep = "\n", append = TRUE)
+          cat("    toc_float: yes", file = report.name , sep = "\n", append = TRUE)
+          cat("    includes:", file = report.name , sep = "\n", append = TRUE)
+        #  cat("       in_header: css/header.html", file = report.name , sep = "\n", append = TRUE)
+          cat("---", file = report.name , sep = "\n", append = TRUE)
+          cat("\n\n", file = report.name , sep = "\n", append = TRUE)
+        #  cat("<link rel=\"stylesheet\" href=\"css/unhcr-bootstrap.css\">", file = report.name , sep = "\n", append = TRUE)
+       #   cat("<link rel=\"stylesheet\" href=\"css/style.css\">", file = report.name , sep = "\n", append = TRUE)
+        #  cat("<link rel=\"stylesheet\" href=\"css/unhcr-header.css\">", file = report.name , sep = "\n", append = TRUE)
+          cat("\n\n", file = report.name , sep = "\n", append = TRUE)
+        }
 
       } else if (output == "pptx") {
-
-        cat("always_allow_html: yes", file = report.name , sep = "\n", append = TRUE)
-        cat("output:",file = report.name , sep = "\n", append = TRUE)
-        cat("  powerpoint_presentation:", file = report.name , sep = "\n", append = TRUE)
-        cat("    fig_caption: yes", file = report.name , sep = "\n", append = TRUE)
-        cat("    fig_height: 9", file = report.name , sep = "\n", append = TRUE)
-        cat("    fig_width: 18", file = report.name , sep = "\n", append = TRUE)
-        cat("    reference_doc: templateUNHCR.pptx", file = report.name , sep = "\n", append = TRUE)
-        cat("    slide_level: 2", file = report.name , sep = "\n", append = TRUE)
-        cat("---", file = report.name , sep = "\n", append = TRUE)
-        cat("\n\n", file = report.name , sep = "\n", append = TRUE)
+        
+        if(unhcRstyle == "TRUE") {
+          cat("output:",file = report.name , sep = "\n", append = TRUE)
+          cat("  unhcRstyle::unhcr_templ_ppt:", file = report.name , sep = "\n", append = TRUE)
+          cat("    toc: true", file = report.name , sep = "\n", append = TRUE)
+          cat("---", file = report.name , sep = "\n", append = TRUE)
+          cat("\n\n", file = report.name , sep = "\n", append = TRUE) 
+        } else {
+          cat("output:",file = report.name , sep = "\n", append = TRUE)
+          cat("  powerpoint_presentation:", file = report.name , sep = "\n", append = TRUE)
+          cat("    fig_caption: yes", file = report.name , sep = "\n", append = TRUE)
+          cat("    fig_height: 9", file = report.name , sep = "\n", append = TRUE)
+          cat("    fig_width: 18", file = report.name , sep = "\n", append = TRUE)
+      #    cat("    reference_doc: templateUNHCR.pptx", file = report.name , sep = "\n", append = TRUE)
+          cat("    slide_level: 2", file = report.name , sep = "\n", append = TRUE)
+          cat("---", file = report.name , sep = "\n", append = TRUE)
+          cat("\n\n", file = report.name , sep = "\n", append = TRUE)
+        }
       }
 
 
@@ -893,7 +924,7 @@ kobo_crunching_report <- function(form = "form.xls",
               cat(paste0("## and now the graph"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("geom_bar(fill = \"#2a87c8\", colour = \"#2a87c8\", stat = \"identity\", width = .8) +"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("geom_errorbar(aes(ymin = mean-SE, ymax = mean+SE)) +"),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("geom_errorbar(aes(ymin = mean-SE, ymax = mean+SE), size=.4, width=.3, colour = 'grey20') +"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("guides(fill = FALSE) +"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("geom_label_repel(aes(y = mean, label = freqper2), fill = \"#2a87c8\", color = 'white') +"),file = report.name ,sep = "\n", append = TRUE)
               cat(paste0("ylab(\"Frequency\") +"),file = report.name ,sep = "\n", append = TRUE)
@@ -1363,7 +1394,7 @@ kobo_crunching_report <- function(form = "form.xls",
             }
 
 
-        ### Question Type = numeric ####################################################################################################
+            #### Question Type = numeric ####################################################################################################
           } else if (questions.type == "decimal" | questions.type == "integer" | questions.type == "numeric" | questions.type == "calculate") {
             cat(paste("Numeric question  " ,"\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
 
@@ -1750,7 +1781,7 @@ kobo_crunching_report <- function(form = "form.xls",
             }
 
 
-    ### Question Type = select_multiple ####################################################################################################
+            #### Question Type = select_multiple ####################################################################################################
           
           } else if ( questions.type == "select_multiple_d" ) {
             if (lang == "eng") { 
@@ -2021,7 +2052,7 @@ kobo_crunching_report <- function(form = "form.xls",
                         }
                       } else {
                         if(unhcRstyle == "TRUE") {
-                          cat(paste0("unhcRstyle::unhcr_bar_histo()"),file = report.name ,sep = "\n", append = TRUE)
+                          cat(paste0("unhcRstyle::unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
                         } else {
                           cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)  
                         }

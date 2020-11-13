@@ -22,6 +22,7 @@ Useful links:
 Authors:
 \itemize{
   \item Maher Daoud \email{daoudma@unhcr.org}
+  \item Hisham Galal \email{galalh@unhcr.org}
 }
 
 Other contributors:

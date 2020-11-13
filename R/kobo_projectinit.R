@@ -154,82 +154,82 @@ kobo_projectinit <- function() {
     
     ## shiny_app Subfolder creation ####
     
-    subsubDir <- "shiny_app"
-    if (file.exists(paste(mainDir, subDir,"/",subsubDir,"/", sep = "/", collapse = "/"))) {
-      cat("shiny_app exists in subDir and is a directory.\n")
-    } else if (file.exists(paste(mainDir, subDir, subsubDir, sep = "/", collapse = "/"))) {
-      cat("shiny_app directory exists in your project directory.\n")
-      # you will probably want to handle this separately
-    } else {
-      cat("shiny_app directory does not exist in your project directory - creating now!\n ")
-      dir.create(file.path(mainDir, subDir,subsubDir))
-    }
-    
-    destfile = paste0(mainDir,"/R/shiny_app/app_koboloadeR.R")
-    file.copy(paste(path_correct,"/koboloadeR/shiny_app/app_koboloadeR.R", sep = ""), destfile, overwrite = TRUE)
-    
-    destfile = paste0(mainDir,"/R/shiny_app/app_sampling.R")
-    file.copy(paste(path_correct,"/koboloadeR/shiny_app/app_sampling.R", sep = ""), destfile, overwrite = TRUE)
-    
-    destfile = paste0(mainDir,"/R/shiny_app/app_dataviewer.R")
-    file.copy(paste(path_correct,"/koboloadeR/shiny_app/app_dataviewer.R", sep = ""), destfile, overwrite = TRUE)
-    
-    destfile = paste0(mainDir,"/R/shiny_app/app_main_koboloadeR.R")
-    file.copy(paste(path_correct,"/koboloadeR/shiny_app/app_main_koboloadeR.R", sep = ""), destfile, overwrite = TRUE)
-    
-    ## WWW sub subfolder creation ####
-    
-    subsubsubDir <- "www"
-    if (file.exists(paste(mainDir, subDir,"/",subsubDir,"/",subsubsubDir, "/",sep = "/", collapse = "/"))) {
-      cat("www exists in subDir and is a directory.\n")
-    } else if (file.exists(paste(mainDir, subDir, subsubDir,subsubsubDir, sep = "/", collapse = "/"))) {
-      cat("www directory exists in your project directory.\n")
-      # you will probably want to handle this separately
-    } else {
-      cat("www directory does not exist in your project directory - creating now!\n ")
-      dir.create(file.path(mainDir, subDir,subsubDir,subsubsubDir))
-    }
-    
-    destfile = paste0(mainDir,"/R/shiny_app/www/exportformat.png")
-    if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/exportformat.png",sep = ""), destfile)
-    }else{
-      file.remove(destfile)
-      file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/exportformat.png",sep = ""), destfile)
-    }
-    
-    destfile = paste0(mainDir,"/R/shiny_app/www/bootstrap.min.css")
-    if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/bootstrap.min.css",sep = ""), destfile)
-    }else{
-      file.remove(destfile)
-      file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/bootstrap.min.css",sep = ""), destfile)
-    }
-    
-    destfile = paste0(mainDir,"/R/shiny_app/www/style.css")
-    if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/style.css",sep = ""), destfile)
-    }else{
-      file.remove(destfile)
-      file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/style.css",sep = ""), destfile)
-    }
-    
-    destfile = paste0(mainDir,"/R/shiny_app/www/background-lines.png")
-    if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/background-lines.png",sep = ""), destfile)
-    }else{
-      file.remove(destfile)
-      file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/background-lines.png",sep = ""), destfile)
-    }
-    
-    destfile = paste0(mainDir,"/R/shiny_app/www/analysis-plan-configuration.png")
-    if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/analysis-plan-configuration.png",sep = ""), destfile)
-    }else{
-      file.remove(destfile)
-      file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/analysis-plan-configuration.png",sep = ""), destfile)
-    }
-    
+    # subsubDir <- "shiny_app"
+    # if (file.exists(paste(mainDir, subDir,"/",subsubDir,"/", sep = "/", collapse = "/"))) {
+    #   cat("shiny_app exists in subDir and is a directory.\n")
+    # } else if (file.exists(paste(mainDir, subDir, subsubDir, sep = "/", collapse = "/"))) {
+    #   cat("shiny_app directory exists in your project directory.\n")
+    #   # you will probably want to handle this separately
+    # } else {
+    #   cat("shiny_app directory does not exist in your project directory - creating now!\n ")
+    #   dir.create(file.path(mainDir, subDir,subsubDir))
+    # }
+    # 
+    # destfile = paste0(mainDir,"/R/shiny_app/app_koboloadeR.R")
+    # file.copy(paste(path_correct,"/koboloadeR/shiny_app/app_koboloadeR.R", sep = ""), destfile, overwrite = TRUE)
+    # 
+    # destfile = paste0(mainDir,"/R/shiny_app/app_sampling.R")
+    # file.copy(paste(path_correct,"/koboloadeR/shiny_app/app_sampling.R", sep = ""), destfile, overwrite = TRUE)
+    # 
+    # destfile = paste0(mainDir,"/R/shiny_app/app_dataviewer.R")
+    # file.copy(paste(path_correct,"/koboloadeR/shiny_app/app_dataviewer.R", sep = ""), destfile, overwrite = TRUE)
+    # 
+    # destfile = paste0(mainDir,"/R/shiny_app/app_main_koboloadeR.R")
+    # file.copy(paste(path_correct,"/koboloadeR/shiny_app/app_main_koboloadeR.R", sep = ""), destfile, overwrite = TRUE)
+    # 
+    # ## WWW sub subfolder creation ####
+    # 
+    # subsubsubDir <- "www"
+    # if (file.exists(paste(mainDir, subDir,"/",subsubDir,"/",subsubsubDir, "/",sep = "/", collapse = "/"))) {
+    #   cat("www exists in subDir and is a directory.\n")
+    # } else if (file.exists(paste(mainDir, subDir, subsubDir,subsubsubDir, sep = "/", collapse = "/"))) {
+    #   cat("www directory exists in your project directory.\n")
+    #   # you will probably want to handle this separately
+    # } else {
+    #   cat("www directory does not exist in your project directory - creating now!\n ")
+    #   dir.create(file.path(mainDir, subDir,subsubDir,subsubsubDir))
+    # }
+    # 
+    # destfile = paste0(mainDir,"/R/shiny_app/www/exportformat.png")
+    # if (!file.exists(destfile)) {
+    #   file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/exportformat.png",sep = ""), destfile)
+    # }else{
+    #   file.remove(destfile)
+    #   file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/exportformat.png",sep = ""), destfile)
+    # }
+    # 
+    # destfile = paste0(mainDir,"/R/shiny_app/www/bootstrap.min.css")
+    # if (!file.exists(destfile)) {
+    #   file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/bootstrap.min.css",sep = ""), destfile)
+    # }else{
+    #   file.remove(destfile)
+    #   file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/bootstrap.min.css",sep = ""), destfile)
+    # }
+    # 
+    # destfile = paste0(mainDir,"/R/shiny_app/www/style.css")
+    # if (!file.exists(destfile)) {
+    #   file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/style.css",sep = ""), destfile)
+    # }else{
+    #   file.remove(destfile)
+    #   file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/style.css",sep = ""), destfile)
+    # }
+    # 
+    # destfile = paste0(mainDir,"/R/shiny_app/www/background-lines.png")
+    # if (!file.exists(destfile)) {
+    #   file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/background-lines.png",sep = ""), destfile)
+    # }else{
+    #   file.remove(destfile)
+    #   file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/background-lines.png",sep = ""), destfile)
+    # }
+    # 
+    # destfile = paste0(mainDir,"/R/shiny_app/www/analysis-plan-configuration.png")
+    # if (!file.exists(destfile)) {
+    #   file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/analysis-plan-configuration.png",sep = ""), destfile)
+    # }else{
+    #   file.remove(destfile)
+    #   file.copy(paste(path_correct,"/koboloadeR/shiny_app/www/analysis-plan-configuration.png",sep = ""), destfile)
+    # }
+    # 
     
     ## vignettes folder creation ####
     subDir <- "vignettes"
@@ -258,134 +258,134 @@ kobo_projectinit <- function() {
     }
     
     
-    destfile = paste0(mainDir,"/vignettes/templateUNHCR.pptx")
-    if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/script/templateUNHCR.pptx", sep = ""), destfile)
-    }
-    
-    
-    destfile = paste0(mainDir,"/vignettes/style-unhcr-portrait.docx")
-    if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/script/style-unhcr-portrait.docx", sep = ""), destfile)
-    }
-    
-    destfile = paste0(mainDir,"/vignettes/report_template.docx")
-    if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/script/report_template.docx", sep = ""), destfile)
-    }
-    
-    # destfile = paste0(mainDir,"/code/XLSform_template.xlsx")
+    # destfile = paste0(mainDir,"/vignettes/templateUNHCR.pptx")
     # if (!file.exists(destfile)) {
-    #   file.copy(paste(path_correct,"/koboloadeR/script/XLSform_template.xlsx", sep = ""), destfile)
+    #   file.copy(paste(path_correct,"/koboloadeR/script/templateUNHCR.pptx", sep = ""), destfile)
     # }
-    #
-    
-    
-    ## HTML Template ####
-    
-    subsubDir <- "css"
-    if (file.exists(paste(mainDir, subDir,"/",subsubDir,"/", sep = "/", collapse = "/"))) {
-      cat("css exists in subDir and is a directory.\n")
-    } else if (file.exists(paste(mainDir, subDir, subsubDir, sep = "/", collapse = "/"))) {
-      cat("css directory exists in your project directory.\n")
-      # you will probably want to handle this separately
-    } else {
-      cat("css directory does not exist in your project directory - creating now!\n ")
-      dir.create(file.path(mainDir, subDir,subsubDir))
-    }
-    
-    destfile = paste0(mainDir,"/vignettes/css/bootstrap.css")
-    file.copy(paste(path_correct,"/koboloadeR/css/bootstrap.css", sep = ""), destfile, overwrite = TRUE)
-    
-    destfile = paste0(mainDir,"/vignettes/css/unhcr-bootstrap.css")
-    file.copy(paste(path_correct,"/koboloadeR/css/unhcr-bootstrap.css", sep = ""), destfile, overwrite = TRUE)
-    
-    destfile = paste0(mainDir,"/vignettes/css/style.css")
-    file.copy(paste(path_correct,"/koboloadeR/css/style.css", sep = ""), destfile, overwrite = TRUE)
-    
-    destfile = paste0(mainDir,"/vignettes/css/unhcr-header.css")
-    file.copy(paste(path_correct,"/koboloadeR/css/unhcr-header.css", sep = ""), destfile, overwrite = TRUE)
-    
-    destfile = paste0(mainDir,"/vignettes/css/header.html")
-    file.copy(paste(path_correct,"/koboloadeR/css/header.html", sep = ""), destfile, overwrite = TRUE)
-    
-    
-    ## fonts sub subfolder creation ####
-    subsubsubDir <- "fonts"
-    if (file.exists(paste(mainDir, subDir,"/",subsubDir,"/",subsubsubDir, "/",sep = "/", collapse = "/"))) {
-      cat("fonts exists in subDir and is a directory.\n")
-    } else if (file.exists(paste(mainDir, subDir, subsubDir,subsubsubDir, sep = "/", collapse = "/"))) {
-      cat("fonts directory exists in your project directory.\n")
-      # you will probably want to handle this separately
-    } else {
-      cat("fonts directory does not exist in your project directory - creating now!\n ")
-      dir.create(file.path(mainDir, subDir,subsubDir,subsubsubDir))
-    }
-    destfile = paste0(mainDir,"/vignettes/css/fonts/glyphicons-halflings-regular.eot")
-    if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/css/fonts/glyphicons-halflings-regular.eot",sep = ""), destfile)
-    }
-    destfile = paste0(mainDir,"/vignettes/css/fonts/glyphicons-halflings-regular.svg")
-    if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/css/fonts/glyphicons-halflings-regular.svg",sep = ""), destfile)
-    }
-    destfile = paste0(mainDir,"/vignettes/css/fonts/glyphicons-halflings-regular.ttf")
-    if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/css/fonts/glyphicons-halflings-regular.ttf",sep = ""), destfile)
-    }
-    destfile = paste0(mainDir,"/vignettes/css/fonts/glyphicons-halflings-regular.woff")
-    if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/css/fonts/glyphicons-halflings-regular.woff",sep = ""), destfile)
-    }
-    destfile = paste0(mainDir,"/vignettes/css/fonts/glyphicons-halflings-regular.woff2")
-    if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/css/fonts/glyphicons-halflings-regular.woff2",sep = ""), destfile)
-    }
-    
-    ## image sub subfolder creation ####
-    subsubsubDir <- "image"
-    if (file.exists(paste(mainDir, subDir,"/",subsubDir,"/",subsubsubDir, "/",sep = "/", collapse = "/"))) {
-      cat("image exists in subDir and is a directory.\n")
-    } else if (file.exists(paste(mainDir, subDir, subsubDir,subsubsubDir, sep = "/", collapse = "/"))) {
-      cat("image directory exists in your project directory.\n")
-      # you will probably want to handle this separately
-    } else {
-      cat("image directory does not exist in your project directory - creating now!\n ")
-      dir.create(file.path(mainDir, subDir,subsubDir,subsubsubDir))
-    }
-    
-    destfile = paste0(mainDir,"/vignettes/css/image/decoded.png")
-    if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/decoded.png",sep = ""), destfile)}
-    
-    destfile = paste0(mainDir,"/vignettes/css/image/icon-mbl-nav-arrow.png")
-    if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/icon-mbl-nav-arrow.png",sep = ""), destfile)}
-    
-    destfile = paste0(mainDir,"/vignettes/css/image/icon-global-search.png")
-    if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/icon-global-search.png",sep = ""), destfile)}
-    
-    destfile = paste0(mainDir,"/vignettes/css/image/icon-global-search.png")
-    if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/icon-global-search.png",sep = ""), destfile)}
-    
-    destfile = paste0(mainDir,"/vignettes/css/image/icons-tool.png")
-    if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/icons-tool.png",sep = ""), destfile)}
-    
-    destfile = paste0(mainDir,"/vignettes/css/image/icons-key.png")
-    if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/icons-key.png",sep = ""), destfile)}
-    
-    destfile = paste0(mainDir,"/vignettes/css/image/icon-help.png")
-    if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/icon-help.png",sep = ""), destfile)}
-    
-    destfile = paste0(mainDir,"/vignettes/css/image/icon-close.png")
-    if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/icon-close.png",sep = ""), destfile)}
-    
-    destfile = paste0(mainDir,"/vignettes/css/image/icon-burger.png")
-    if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/icon-burger.png",sep = ""), destfile)}
-    
-    destfile = paste0(mainDir,"/vignettes/css/image/unhcr-logo.png")
-    if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/unhcr-logo.png",sep = ""), destfile)}
-    
-    destfile = paste0(mainDir,"/vignettes/css/image/icon-search.png")
-    if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/icon-search.png",sep = ""), destfile)}
+    # 
+    # 
+    # destfile = paste0(mainDir,"/vignettes/style-unhcr-portrait.docx")
+    # if (!file.exists(destfile)) {
+    #   file.copy(paste(path_correct,"/koboloadeR/script/style-unhcr-portrait.docx", sep = ""), destfile)
+    # }
+    # 
+    # destfile = paste0(mainDir,"/vignettes/report_template.docx")
+    # if (!file.exists(destfile)) {
+    #   file.copy(paste(path_correct,"/koboloadeR/script/report_template.docx", sep = ""), destfile)
+    # }
+    # 
+    # # destfile = paste0(mainDir,"/code/XLSform_template.xlsx")
+    # # if (!file.exists(destfile)) {
+    # #   file.copy(paste(path_correct,"/koboloadeR/script/XLSform_template.xlsx", sep = ""), destfile)
+    # # }
+    # #
+    # 
+    # 
+    # ## HTML Template ####
+    # 
+    # subsubDir <- "css"
+    # if (file.exists(paste(mainDir, subDir,"/",subsubDir,"/", sep = "/", collapse = "/"))) {
+    #   cat("css exists in subDir and is a directory.\n")
+    # } else if (file.exists(paste(mainDir, subDir, subsubDir, sep = "/", collapse = "/"))) {
+    #   cat("css directory exists in your project directory.\n")
+    #   # you will probably want to handle this separately
+    # } else {
+    #   cat("css directory does not exist in your project directory - creating now!\n ")
+    #   dir.create(file.path(mainDir, subDir,subsubDir))
+    # }
+    # 
+    # destfile = paste0(mainDir,"/vignettes/css/bootstrap.css")
+    # file.copy(paste(path_correct,"/koboloadeR/css/bootstrap.css", sep = ""), destfile, overwrite = TRUE)
+    # 
+    # destfile = paste0(mainDir,"/vignettes/css/unhcr-bootstrap.css")
+    # file.copy(paste(path_correct,"/koboloadeR/css/unhcr-bootstrap.css", sep = ""), destfile, overwrite = TRUE)
+    # 
+    # destfile = paste0(mainDir,"/vignettes/css/style.css")
+    # file.copy(paste(path_correct,"/koboloadeR/css/style.css", sep = ""), destfile, overwrite = TRUE)
+    # 
+    # destfile = paste0(mainDir,"/vignettes/css/unhcr-header.css")
+    # file.copy(paste(path_correct,"/koboloadeR/css/unhcr-header.css", sep = ""), destfile, overwrite = TRUE)
+    # 
+    # destfile = paste0(mainDir,"/vignettes/css/header.html")
+    # file.copy(paste(path_correct,"/koboloadeR/css/header.html", sep = ""), destfile, overwrite = TRUE)
+    # 
+    # 
+    # ## fonts sub subfolder creation ####
+    # subsubsubDir <- "fonts"
+    # if (file.exists(paste(mainDir, subDir,"/",subsubDir,"/",subsubsubDir, "/",sep = "/", collapse = "/"))) {
+    #   cat("fonts exists in subDir and is a directory.\n")
+    # } else if (file.exists(paste(mainDir, subDir, subsubDir,subsubsubDir, sep = "/", collapse = "/"))) {
+    #   cat("fonts directory exists in your project directory.\n")
+    #   # you will probably want to handle this separately
+    # } else {
+    #   cat("fonts directory does not exist in your project directory - creating now!\n ")
+    #   dir.create(file.path(mainDir, subDir,subsubDir,subsubsubDir))
+    # }
+    # destfile = paste0(mainDir,"/vignettes/css/fonts/glyphicons-halflings-regular.eot")
+    # if (!file.exists(destfile)) {
+    #   file.copy(paste(path_correct,"/koboloadeR/css/fonts/glyphicons-halflings-regular.eot",sep = ""), destfile)
+    # }
+    # destfile = paste0(mainDir,"/vignettes/css/fonts/glyphicons-halflings-regular.svg")
+    # if (!file.exists(destfile)) {
+    #   file.copy(paste(path_correct,"/koboloadeR/css/fonts/glyphicons-halflings-regular.svg",sep = ""), destfile)
+    # }
+    # destfile = paste0(mainDir,"/vignettes/css/fonts/glyphicons-halflings-regular.ttf")
+    # if (!file.exists(destfile)) {
+    #   file.copy(paste(path_correct,"/koboloadeR/css/fonts/glyphicons-halflings-regular.ttf",sep = ""), destfile)
+    # }
+    # destfile = paste0(mainDir,"/vignettes/css/fonts/glyphicons-halflings-regular.woff")
+    # if (!file.exists(destfile)) {
+    #   file.copy(paste(path_correct,"/koboloadeR/css/fonts/glyphicons-halflings-regular.woff",sep = ""), destfile)
+    # }
+    # destfile = paste0(mainDir,"/vignettes/css/fonts/glyphicons-halflings-regular.woff2")
+    # if (!file.exists(destfile)) {
+    #   file.copy(paste(path_correct,"/koboloadeR/css/fonts/glyphicons-halflings-regular.woff2",sep = ""), destfile)
+    # }
+    # 
+    # ## image sub subfolder creation ####
+    # subsubsubDir <- "image"
+    # if (file.exists(paste(mainDir, subDir,"/",subsubDir,"/",subsubsubDir, "/",sep = "/", collapse = "/"))) {
+    #   cat("image exists in subDir and is a directory.\n")
+    # } else if (file.exists(paste(mainDir, subDir, subsubDir,subsubsubDir, sep = "/", collapse = "/"))) {
+    #   cat("image directory exists in your project directory.\n")
+    #   # you will probably want to handle this separately
+    # } else {
+    #   cat("image directory does not exist in your project directory - creating now!\n ")
+    #   dir.create(file.path(mainDir, subDir,subsubDir,subsubsubDir))
+    # }
+    # 
+    # destfile = paste0(mainDir,"/vignettes/css/image/decoded.png")
+    # if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/decoded.png",sep = ""), destfile)}
+    # 
+    # destfile = paste0(mainDir,"/vignettes/css/image/icon-mbl-nav-arrow.png")
+    # if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/icon-mbl-nav-arrow.png",sep = ""), destfile)}
+    # 
+    # destfile = paste0(mainDir,"/vignettes/css/image/icon-global-search.png")
+    # if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/icon-global-search.png",sep = ""), destfile)}
+    # 
+    # destfile = paste0(mainDir,"/vignettes/css/image/icon-global-search.png")
+    # if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/icon-global-search.png",sep = ""), destfile)}
+    # 
+    # destfile = paste0(mainDir,"/vignettes/css/image/icons-tool.png")
+    # if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/icons-tool.png",sep = ""), destfile)}
+    # 
+    # destfile = paste0(mainDir,"/vignettes/css/image/icons-key.png")
+    # if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/icons-key.png",sep = ""), destfile)}
+    # 
+    # destfile = paste0(mainDir,"/vignettes/css/image/icon-help.png")
+    # if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/icon-help.png",sep = ""), destfile)}
+    # 
+    # destfile = paste0(mainDir,"/vignettes/css/image/icon-close.png")
+    # if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/icon-close.png",sep = ""), destfile)}
+    # 
+    # destfile = paste0(mainDir,"/vignettes/css/image/icon-burger.png")
+    # if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/icon-burger.png",sep = ""), destfile)}
+    # 
+    # destfile = paste0(mainDir,"/vignettes/css/image/unhcr-logo.png")
+    # if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/unhcr-logo.png",sep = ""), destfile)}
+    # 
+    # destfile = paste0(mainDir,"/vignettes/css/image/icon-search.png")
+    # if (!file.exists(destfile)) { file.copy(paste(path_correct,"/koboloadeR/css/image/icon-search.png",sep = ""), destfile)}
     
     ## Data folder creation ####
     subDir <- "data"

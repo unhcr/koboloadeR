@@ -244,21 +244,20 @@ kobo_projectinit() # Creates folders necessary and transfer files needed</a></co
 <blockquote>
 <p>This package is part of <code>unhcrverse</code>, a set of packages to ease the production of statistical evidence and data stories. You can install them all with the following:</p>
 </blockquote>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="co">## Use UNHCR Open data</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">'unhcr/unhcrdatapackage'</span><span class="op">)</span>
-
-<span class="co">## Use API to connect to licensed / internal data source</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">'unhcr-web/hcrdata'</span><span class="op">)</span>
-
-<span class="co">## Perform High Frequency Check during data collection</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">'unhcr-web/HighFrequencyChecks'</span><span class="op">)</span>
-
-<span class="co">## Process data crunching for survey dataset</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">'unhcr/koboloadeR'</span><span class="op">)</span>
-
-<span class="co">## Use UNHCR template for reporting and writing stories</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">'unhcr-web/unhcRstyle'</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co">## Use UNHCR Open data  - https://unhcr.github.io/unhcrdatapackage/docs/</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>remotes<span class="op">::</span><span class="kw">install_github</span>(<span class="st">'unhcr/unhcrdatapackage’)</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="st">## API to connect to internal data source - https://unhcr-web.github.io/hcrdata/docs/</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="st">remotes::install_github('</span>unhcr<span class="op">-</span>web<span class="op">/</span>hcrdata’)</span>
+<span id="cb6-6"><a href="#cb6-6"></a></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="co">## Perform High Frequency Check https://unhcr.github.io/HighFrequencyChecks/docs/</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a>remotes<span class="op">::</span><span class="kw">install_github</span>(<span class="st">'unhcr/HighFrequencyChecks’)</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="st">## Process data crunching for survey dataset - https://unhcr.github.io/koboloadeR/docs/</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="st">remotes::install_github('</span>unhcr<span class="op">/</span>koboloadeR’)</span>
+<span id="cb6-12"><a href="#cb6-12"></a></span>
+<span id="cb6-13"><a href="#cb6-13"></a><span class="co">## Use UNHCR graphical template- https://unhcr-web.github.io/unhcRstyle/docs/</span></span>
+<span id="cb6-14"><a href="#cb6-14"></a>remotes<span class="op">::</span><span class="kw">install_github</span>(<span class="st">'unhcr-web/unhcRstyle'</span>)</span></code></pre></div>
 <div id="building-package-documentation" class="section level4">
 <h4 class="hasAnchor">
 <a href="#building-package-documentation" class="anchor"></a>Building package documentation</h4>
@@ -299,6 +298,7 @@ kobo_projectinit() # Creates folders necessary and transfer files needed</a></co
 <ul class="list-unstyled">
 <li>Edouard Legoupil <br><small class="roles"> Author, maintainer </small>  </li>
 <li>Maher Daoud <br><small class="roles"> Author </small>  </li>
+<li>Hisham Galal <br><small class="roles"> Author </small>  </li>
 <li><a href="authors.html">All authors...</a></li>
 </ul>
 </div>
@@ -327,7 +327,7 @@ kobo_projectinit() # Creates folders necessary and transfer files needed</a></co
 
 
       <footer><div class="copyright">
-  <p>Developed by Edouard Legoupil, Maher Daoud.</p>
+  <p>Developed by Edouard Legoupil, Maher Daoud, Hisham Galal.</p>
 </div>
 
 <div class="pkgdown">

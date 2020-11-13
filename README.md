@@ -198,19 +198,19 @@ To go in more details, the suggested workflow is presented below (note that all 
 > This package is part of `unhcrverse`, a set of packages to ease the production of statistical evidence and data stories. You can install them all with the following:
 
 ```r
-## Use UNHCR Open data
-remotes::install_github('unhcr/unhcrdatapackage')
+## Use UNHCR Open data  - https://unhcr.github.io/unhcrdatapackage/docs/
+remotes::install_github('unhcr/unhcrdatapackage’)
 
-## Use API to connect to licensed / internal data source
-remotes::install_github('unhcr-web/hcrdata')
+## API to connect to internal data source - https://unhcr-web.github.io/hcrdata/docs/
+remotes::install_github('unhcr-web/hcrdata’)
 
-## Perform High Frequency Check during data collection
-remotes::install_github('unhcr-web/HighFrequencyChecks')
+## Perform High Frequency Check https://unhcr.github.io/HighFrequencyChecks/docs/
+remotes::install_github('unhcr/HighFrequencyChecks’)
 
-## Process data crunching for survey dataset
-remotes::install_github('unhcr/koboloadeR')
+## Process data crunching for survey dataset - https://unhcr.github.io/koboloadeR/docs/
+remotes::install_github('unhcr/koboloadeR’)
 
-## Use UNHCR template for reporting and writing stories
+## Use UNHCR graphical template- https://unhcr-web.github.io/unhcRstyle/docs/
 remotes::install_github('unhcr-web/unhcRstyle')
 ```
 

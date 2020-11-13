@@ -41,7 +41,7 @@ kobo_prepare_form <- function(form = "form.xls") {
 
     mainDir <- kobo_getMainDirectory()
 
-    form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
+    form_tmp <- paste(mainDir, "data-raw", form, sep = "/", collapse = "/")
 
     # Survey sheet ######################################
     survey <- tryCatch({

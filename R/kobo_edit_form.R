@@ -20,15 +20,15 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_edit_form("myform.xls")
+#' kobo_edit_form("form.xlsx")
 #' }
 #'
 #' @export kobo_edit_form
 #'
 
-kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, indicator = NULL, settings = NULL, analysisSettings=NULL) {
+kobo_edit_form <- function(form = "form.xlsx", survey = NULL, choices = NULL, indicator = NULL, settings = NULL, analysisSettings=NULL) {
   tryCatch({
-    wb <- xlsx::createWorkbook(type = "xls") #create xls workbook
+    wb <- openxlsx::createWorkbook()
     mainDir <- kobo_getMainDirectory()
     form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
 
@@ -63,10 +63,10 @@ kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, ind
     if(!is.null(survey)){
       survey[is.na(survey)] <-  ""
       sheetname <- "survey"
-      if(!is.null(xlsx::getSheets(wb)[[sheetname]]))
-        xlsx::removeSheet(wb, sheetname)
-      surveySheet <- xlsx::createSheet(wb, sheetname) #create survey sheet in wb
-      xlsx::addDataFrame(survey, surveySheet, col.names=TRUE, row.names=FALSE) #add survey dataframe in the survey sheet
+      if(!is.null(openxlsx::getSheets(wb)[[sheetname]]))
+        openxlsx::removeSheet(wb, sheetname)
+      surveySheet <- openxlsx::createSheet(wb, sheetname) #create survey sheet in wb
+      openxlsx::addDataFrame(survey, surveySheet, col.names=TRUE, row.names=FALSE) #add survey dataframe in the survey sheet
     }
 
 
@@ -87,10 +87,10 @@ kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, ind
     }
     if(!is.null(choices)){
       sheetname <- "choices"
-      if(!is.null(xlsx::getSheets(wb)[[sheetname]]))
-        xlsx::removeSheet(wb, sheetname)
-      choicesSheet <- xlsx::createSheet(wb, sheetName=sheetname)
-      xlsx::addDataFrame(choices, choicesSheet, col.names=TRUE, row.names=FALSE)
+      if(!is.null(openxlsx::getSheets(wb)[[sheetname]]))
+        openxlsx::removeSheet(wb, sheetname)
+      choicesSheet <- openxlsx::createSheet(wb, sheetName=sheetname)
+      openxlsx::addDataFrame(choices, choicesSheet, col.names=TRUE, row.names=FALSE)
     }
 
     #################################### indicator sheet ######################################
@@ -124,10 +124,10 @@ kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, ind
     }
     if(!is.null(indicator)){
       sheetname <- "indicator"
-      if(!is.null(xlsx::getSheets(wb)[[sheetname]]))
-        xlsx::removeSheet(wb, sheetname)
-      indicatorSheet <- xlsx::createSheet(wb, sheetName=sheetname)
-      xlsx::addDataFrame(indicator, indicatorSheet, col.names=TRUE, row.names=FALSE)
+      if(!is.null(openxlsx::getSheets(wb)[[sheetname]]))
+        openxlsx::removeSheet(wb, sheetname)
+      indicatorSheet <- openxlsx::createSheet(wb, sheetName=sheetname)
+      openxlsx::addDataFrame(indicator, indicatorSheet, col.names=TRUE, row.names=FALSE)
     }
 
 
@@ -149,10 +149,10 @@ kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, ind
     if(!is.null(settings)){
       sheetname <- "settings"
 
-      if(!is.null(xlsx::getSheets(wb)[[sheetname]]))
-        xlsx::removeSheet(wb, sheetname)
-      settingsSheet <- xlsx::createSheet(wb, sheetName=sheetname) #create sheet with settings name
-      xlsx::addDataFrame(settings, settingsSheet, col.names=TRUE, row.names=FALSE) #add settings data frame to this sheet
+      if(!is.null(openxlsx::getSheets(wb)[[sheetname]]))
+        openxlsx::removeSheet(wb, sheetname)
+      settingsSheet <- openxlsx::createSheet(wb, sheetName=sheetname) #create sheet with settings name
+      openxlsx::addDataFrame(settings, settingsSheet, col.names=TRUE, row.names=FALSE) #add settings data frame to this sheet
     }
 
 
@@ -174,13 +174,13 @@ kobo_edit_form <- function(form = "form.xls", survey = NULL, choices = NULL, ind
     if(!is.null(analysisSettings)){
       sheetname <- "analysisSettings"
 
-      if(!is.null(xlsx::getSheets(wb)[[sheetname]]))
-        xlsx::removeSheet(wb, sheetname)
-      settingsSheet <- xlsx::createSheet(wb, sheetName=sheetname) #create sheet with analysisSettings name
-      xlsx::addDataFrame(analysisSettings, settingsSheet, col.names=TRUE, row.names=FALSE) #add analysisSettings data frame to this sheet
+      if(!is.null(openxlsx::getSheets(wb)[[sheetname]]))
+        openxlsx::removeSheet(wb, sheetname)
+      settingsSheet <- openxlsx::createSheet(wb, sheetName=sheetname) #create sheet with analysisSettings name
+      openxlsx::addDataFrame(analysisSettings, settingsSheet, col.names=TRUE, row.names=FALSE) #add analysisSettings data frame to this sheet
     }
     if (file.exists(form_tmp)) file.remove(form_tmp)
-    xlsx::saveWorkbook(wb, form_tmp)
+    openxlsx::saveWorkbook(wb, form_tmp)
 
 
   }, error = function(err) {

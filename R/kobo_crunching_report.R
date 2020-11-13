@@ -21,13 +21,13 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_crunching_report("myform.xls")
+#' kobo_crunching_report("myform.xlsx")
 #' }
 #'
 #' @export kobo_crunching_report
 #'
 
-kobo_crunching_report <- function(form = "form.xls", 
+kobo_crunching_report <- function(form = "form.xlsx", 
                                   app = "console", 
                                   output ="html", 
                                   render = "TRUE", 

@@ -143,12 +143,13 @@ kobo_indicator <- function(mainDir = '') {
     data <- data.frame(data)
 
     #Rewrite data with new variables
-    wb <- xlsx::loadWorkbook(path.to.data)
-    sheets <- xlsx::getSheets(wb)
-    xlsx::removeSheet(wb, sheetName = "cleaned_data")
-    new_sheet <- xlsx::createSheet(wb, sheetName = as.character("cleaned_data"))
-    xlsx::addDataFrame(data, new_sheet, row.names = FALSE)
-    xlsx::saveWorkbook(wb, path.to.data)
+    wb <- openxlsx::loadWorkbook(path.to.data)
+    sheets <- openxlsx::names(wb)
+    openxlsx::removeWorksheet(wb, "cleaned_data")
+    
+    openxlsx::createSheet(wb, "cleaned_data")
+    openxlsx::writeData(wb, "cleaned_data", data)
+    openxlsx::saveWorkbook(wb, path.to.data)
   }
 
 

@@ -22,7 +22,7 @@
 #' @export kobo_correlation_analysis
 #'
 
-kobo_correlation_analysis <- function(form = "form.xls", frame, target, app = "console") {
+kobo_correlation_analysis <- function(form = "form.xlsx", frame, target, app = "console") {
   tryCatch({
     if (nrow(frame) == 0) {
       return(structure("Error: the frame is empty", class = "try-error"))

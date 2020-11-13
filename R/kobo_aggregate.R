@@ -21,7 +21,7 @@
 #' }
 #'
 
-kobo_aggregate <- function( form = "form.xls", 
+kobo_aggregate <- function( form = "form.xlsx", 
                             aggregVar = "admin1") {
   
   # aggregVar = mapref

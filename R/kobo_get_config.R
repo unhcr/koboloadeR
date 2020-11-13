@@ -18,7 +18,7 @@
 #' @export kobo_get_config
 #'
 
-kobo_get_config <- function(form = "form.xls") {
+kobo_get_config <- function(form = "form.xlsx") {
   mainDir <- kobo_getMainDirectory()
   form_tmp <- paste(mainDir, "data-raw", form, sep = "/", collapse = "/")
   settings <- tryCatch({

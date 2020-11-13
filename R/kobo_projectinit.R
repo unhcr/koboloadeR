@@ -449,9 +449,9 @@ kobo_projectinit <- function() {
       close(fileConn)
     }
     
-    destfile = paste0(mainDir,"/data-raw/form.xls")
+    destfile = paste0(mainDir,"/data-raw/form.xlsx")
     if (!file.exists(destfile)) {
-      file.copy(paste(path_correct,"/koboloadeR/script/form.xls", sep = ""), destfile)
+      file.copy(paste(path_correct,"/koboloadeR/script/form.xlsx", sep = ""), destfile)
     }
     
     

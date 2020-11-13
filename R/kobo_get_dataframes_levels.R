@@ -15,13 +15,13 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_get_dataframes_levels("myform.xls")
+#' kobo_get_dataframes_levels("myform.xlsx")
 #' }
 #'
 #' @export kobo_get_dataframes_levels
 #'
 
-kobo_get_dataframes_levels <- function(form="form.xls") {
+kobo_get_dataframes_levels <- function(form="form.xlsx") {
   tryCatch({
     mainDir <- kobo_getMainDirectory()
     #form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")

@@ -29,7 +29,7 @@
 #' }
 #'
 
-kobo_dummy <- function(form = "form.xls") {
+kobo_dummy <- function(form = "form.xlsx") {
 
   samplesize <- 381
 

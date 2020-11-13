@@ -13,14 +13,14 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_edit_ridl_metadata(form = "form.xls")
+#' kobo_edit_ridl_metadata(form = "form.xlsx")
 #' }
 #'
 #' @export kobo_edit_ridl_metadata
 #'
 
 
-kobo_edit_ridl_metadata <- function(form = "data/form.xls") {
+kobo_edit_ridl_metadata <- function(form = "data/form.xlsx") {
   ui <- miniUI::miniPage(
     miniUI::gadgetTitleBar(
       "RIDL Metadata",
@@ -99,27 +99,26 @@ kobo_edit_ridl_metadata <- function(form = "data/form.xls") {
         dplyr::left_join(inputs, by = "name") %>% 
         as.data.frame()
       
-      wb <- xlsx::loadWorkbook(form)
+      wb <- openopenxlsx::loadWorkbook(form)
       sheetname <- "ridl-metadata"
-      if (!is.null(xlsx::getSheets(wb)[[sheetname]]))
-        xlsx::removeSheet(wb, sheetname)
+      if (!is.null(openxlsx::names(wb)[[sheetname]]))
+        openxlsx::removeWorksheet(wb, sheetname)
       
-      ridl_sheet <- xlsx::createSheet(wb, sheetname) 
-      xlsx::addDataFrame(ridl_metadata, ridl_sheet, col.names = TRUE, row.names = FALSE)
-      rows <- xlsx::getRows(ridl_sheet)
-      cells <- xlsx::getCells(rows)
-      headerSt <- xlsx::CellStyle(wb) +
-        xlsx::Font(wb, isBold = TRUE, isItalic = FALSE, color = "white", heightInPoints = 13) +
-        xlsx::Fill(backgroundColor = "GREY_50_PERCENT", foregroundColor = "GREY_50_PERCENT",
-                   pattern = "SOLID_FOREGROUND")  +
-        xlsx::Border(color = "GREY_80_PERCENT", position = c("TOP", "BOTTOM"), "BORDER_THIN")
-      highlight <- paste("1", c(1:length(ridl_metadata)), sep = ".")
-      lapply(names(cells[highlight]),
-             function(ii) xlsx::setCellStyle(cells[[ii]], headerSt))
-      xlsx::autoSizeColumn(ridl_sheet, 1:length(ridl_metadata))
+      openxlsx::addWorksheet(wb, sheetname) 
+      openxlsx::writeData(wb, sheetname, ridl_metadata, withFilter = TRUE)
+      
+      openxlsx::setColWidths(wb, sheetname, cols = 1:ncol(ridl_metadata), widths = "auto")
+      
+      headerSt <- 
+        openxlsx::createStyle(
+          textDecoration = "bold", fontColour = "white", fontSize = 13, 
+          fgFill = "grey50",
+          border = "TopBottom", borderColour = "grey80", borderStyle = "thin")
+      
+      openxlsx::addStyle(wb, sheetname, headerSt, hdr.rows, 1:ncol(ridl_metadata), gridExpand = TRUE)
       
       if (file.exists(form)) file.remove(form)
-      xlsx::saveWorkbook(wb, form)
+      openxlsx::saveWorkbook(wb, form)
       
       shiny::stopApp(TRUE)
     })

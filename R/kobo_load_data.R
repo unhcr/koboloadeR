@@ -16,7 +16,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_load_data("myform.xls")
+#' kobo_load_data("form.xls")
 #' }
 #'
 #' @export kobo_load_data
@@ -40,9 +40,22 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
       updateProgress()
     }
 
-
     kobo_load_packages()
 
+    form_tmp <- fs::path("data-raw", form)
+    form <- fs::path_ext_set(form, "xlsx")
+    
+    wb <- openxlsx::createWorkbook()
+    
+    readxl::excel_sheets(form_tmp) %>% 
+      purrr::walk(
+        ~{openxlsx::addWorksheet(wb, .); 
+          openxlsx::writeData(wb, ., readxl::read_excel(form_tmp, sheet = .))})
+    
+    openxlsx::saveWorkbook(wb, fs::path("data-raw", form))
+    
+    fs::file_delete(form_tmp)
+    
     ## getting project configuration variables
     cat("\n\n\n Getting project configuration variables \n\n\n\n")
     configInfoOrigin <- kobo_get_config(form)
@@ -344,7 +357,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
 
     utils::write.csv(MainDataFrame,paste(mainDir,"/data/MainDataFrame_encoded.csv",sep = ""), row.names = FALSE, na = "")
     #save(MainDataFrame, file =  paste(mainDir,"/data/MainDataFrame_encoded.rda",sep = ""))
-
+    
     return(TRUE)
   }, error = function(err) {
     print("There was an error in the data processing step!!! \n\n")

@@ -41,18 +41,18 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
     }
 
 
-    kobo_load_packages()
+    koboloadeR::kobo_load_packages()
 
     ## getting project configuration variables
     cat("\n\n\n Getting project configuration variables \n\n\n\n")
-    configInfoOrigin <- kobo_get_config(form)
+    configInfoOrigin <- koboloadeR::kobo_get_config(form)
     configInfoOrigin <- configInfoOrigin[!is.na(configInfoOrigin$name),]
 
 
 
     cat("\n\n\n Generate dictionnary from the xlsform \n\n\n\n")
-    mainDir <- kobo_getMainDirectory()
-    kobo_dico(form)
+    mainDir <- koboloadeR::kobo_getMainDirectory()
+    koboloadeR::kobo_dico(form)
     dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
     #load(paste0(mainDir,"/data/dico_",form,".rda"))
 
@@ -75,7 +75,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
     }
 
     cat("\n\n\n Now split select_multiple  variables \n\n\n\n")
-    MainDataFrame <- kobo_split_multiple(originalData, dico)
+    MainDataFrame <- koboloadeR::kobo_split_multiple(originalData, dico)
 
 
     ## Clean variable if any ##########################################################
@@ -86,7 +86,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
 
 
     cat("\n\n\n Clean variable if any \n\n\n\n")
-    MainDataFrame <- kobo_clean(MainDataFrame, form)
+    MainDataFrame <- koboloadeR::kobo_clean(MainDataFrame, form)
 
 
 
@@ -130,7 +130,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
       updateProgress()
     }
     cat("\n\n\n Now  labeling variables \n\n\n\n")
-    MainDataFrame <- kobo_label(MainDataFrame, dico)
+    MainDataFrame <- koboloadeR::kobo_label(MainDataFrame, dico)
 
     ## Save preliminary version before encoding or adding indicators ##################
 
@@ -151,7 +151,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
 
     configInfo <- configInfoOrigin[startsWith(tolower(configInfoOrigin$name), "instanceid"),]
 
-    levelsOfDF <- kobo_get_dataframes_levels(form)
+    levelsOfDF <- koboloadeR::kobo_get_dataframes_levels(form)
 
 
     levelsOfDF <- levelsOfDF[levelsOfDF$name != "MainDataFrame",]
@@ -180,7 +180,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
           updateProgress()
         }
         cat(paste("Splitting",dbr,"file in progress...\n"))
-        dataFrame <- kobo_split_multiple(dataFrame, dico)
+        dataFrame <- koboloadeR::kobo_split_multiple(dataFrame, dico)
 
 
         if (app == "shiny") {
@@ -188,7 +188,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
           updateProgress()
         }
         cat(paste("Cleaning",dbr,"file in progress...\n"))
-        dataFrame <- kobo_clean(dataFrame)
+        dataFrame <- koboloadeR::kobo_clean(dataFrame)
 
 #
 #         if (app == "shiny") {
@@ -206,7 +206,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
           updateProgress()
         }
         cat(paste("Labeling",dbr,"file in progress...\n"))
-        dataFrame <- kobo_label(dataFrame, dico)
+        dataFrame <- koboloadeR::kobo_label(dataFrame, dico)
 
 
         cat("\n\n Saving ",dbr,"file as _edited..\n")
@@ -299,7 +299,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
     }
 
     cat("\n\n Now computing all calculated indicators  if defined..\n")
-    result <-  kobo_create_indicators(form)
+    result <-  koboloadeR::kobo_create_indicators(form)
 
     if (class(result) == "try-error") {
       return(structure(result, class = "try-error"))
@@ -323,7 +323,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
     }
 
 
-    MainDataFrame <- kobo_encode(MainDataFrame, dico)
+    MainDataFrame <- koboloadeR::kobo_encode(MainDataFrame, dico)
 
     ## loading nested frame
     for (dbr in levelsOfDF$name) {
@@ -331,7 +331,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
       dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
       #load(paste(mainDir,"/data/",dbr,"_edited.rda",sep = ""))
       
-      dataFrame <- kobo_encode(dataFrame, dico)
+      dataFrame <- koboloadeR::kobo_encode(dataFrame, dico)
       
       utils::write.csv(dataFrame,paste(mainDir,"/data/",dbr,"_encoded.csv",sep = ""), row.names = FALSE, na = "")
       #save(dataFrame, file =  paste(mainDir,"/data/",dbr,"_encoded.rda",sep = ""))

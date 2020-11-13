@@ -1,0 +1,182 @@
+---
+title: "7 Steps to build fully reproducible analysis"
+date: '`r Sys.Date()`'
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{7 Steps to build fully reproducible analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Below is a step by step guidance on how to generate quickly a fully reproducible analysis
+
+## Step 1: Set up your Rstudio project
+
+From Rstudio, create a new project - then make sure to install the necessary packages:
+
+[hcrdata](https://unhcr-web.github.io/hcrdata/docs/) to connect to both Kobo & RIDL API
+
+```r
+## API to connect to internal data sources
+remotes::install_github('unhcr-web/hcrdata’)
+```
+```r
+## Use UNHCR graphical template- https://unhcr-web.github.io/unhcRstyle/docs/
+remotes::install_github('unhcr-web/unhcRstyle')
+```
+```r
+## Perform High Frequency Check https://unhcr.github.io/HighFrequencyChecks/docs/
+remotes::install_github('unhcr/HighFrequencyChecks’)
+```
+```r
+## Process data crunching for survey dataset - https://unhcr.github.io/koboloadeR/docs/
+remotes::install_github('unhcr/koboloadeR’)
+
+```
+You can now prepare your project
+
+
+```r
+library (koboloadeR) # This loads koboloadeR package
+
+kobo_projectinit() # Creates folders necessary and transfer files needed
+```
+
+This last function creates a structure of folders that is consistent  with R regular package structure
+
+- `R` where processing scripts are stored
+- `data-raw` where raw data are stored
+- `data` where processed data are kept
+- `vignettes` where generated Rmarkdown 
+- `out` where generated report (knitted markdown) in word/powerpoint or html are pushed 
+
+## Step 2: get data and form from your Kobo Project
+
+In order to complete this step, you can either:
+
+ * Use the web interface and put the files into the `data-raw` folder
+
+ * pull from API with HCRdata 
+
+Open a new R script within a new RStudio project.
+
+You should then be able to launch the "data browser" within [Rstudio addins](https://rstudio.github.io/rstudio-extensions/rstudio_addins.html) menu or with the following command in your console:
+```r
+hcrdata:::hcrbrowse()
+```
+
+From there you will need to:
+ 1. select the source
+ 2. go to the dataset tab and select the project you want to pull data from
+ 3. go to the files tab and select the specific file you want to retrieve from the project.
+ 4. press the load data button and the R statement to pull this file from your project will be automatically inserted in your blank R script tab
+
+
+![preview](https://i.imgur.com/1hEUFkd.png) 
+
+alternatively, if you have the uniqueID of your koboproject
+
+```r
+
+## pulling data from RIDL
+dataset <-  "dataset-title-in-kobo"
+
+if(!dir_exists("data-raw")) {
+  dir_create(path("data-raw"))
+  
+  
+  hcrdata::hcrfetch(src = "kobo", 
+                    dataset = dataset, 
+                    file = "form.xls")
+                    
+hcrdata::hcrfetch(src = "kobo", 
+                  dataset = dataset, 
+                  file = "data.json")
+
+}
+
+file.copy(from = paste0("data-raw/",dataset,"/form.xls"),
+          to   = "data-raw/form.xls")
+
+file.copy(from = paste0("data-raw/",dataset,"/maindataframe.csv"),
+          to   = "data-raw/MainDataFrame.csv")
+
+```
+
+## Step 3: Prepare your report configuration in xlsform
+
+
+```r
+## Change here the precise name of the form if required
+form <- "form.xls" 
+
+## Extend xlsform with required column if necessary - done only once!
+#kobo_prepare_form(form)
+```
+
+
+
+
+## Step 4: Add calculated indicators, clean and anonymise the data
+
+
+## Step 6: Prepare your analysis post 
+
+
+## Step 5: Document the data and push it from kobo to RIDL
+
+
+
+
+## Step 7: Submit your analysis post to the Internal Analysis Repository
+
+
+```r
+
+## pulling data from RIDL
+dataset <-  "dataset-title-in-rild"
+
+if(!dir_exists("data-raw")) {
+  dir_create(path("data-raw"))
+  
+  
+  hcrdata::hcrfetch(src = "ridl", 
+                    dataset = dataset, 
+                    file = "form.xls",
+                    #path= here::here("data-raw",  file),
+                    cache = TRUE)
+hcrdata::hcrfetch(src = "ridl", 
+                  dataset = dataset, 
+                  file = "maindataframe.csv",
+                    #path= here::here("data-raw",  file),
+                    cache = TRUE)
+
+}
+
+file.copy(from = paste0("data-raw/",dataset,"/form.xls"),
+          to   = "data-raw/form.xls")
+
+file.copy(from = paste0("data-raw/",dataset,"/maindataframe.csv"),
+          to   = "data-raw/MainDataFrame.csv")
+
+
+if(!dir_exists("data")) {
+  dir_create(path("data"))
+  
+    if(!dir_exists("R")) {
+      dir_create(path("R"))
+      
+      form <- "form.xls"
+      koboloadeR::kobo_load_data()
+    
+    }
+}
+```
+

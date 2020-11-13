@@ -23,7 +23,7 @@
 
 kobo_create_indicators <- function(form = "form.xlsx") {
 
-  mainDir <- kobo_getMainDirectory()
+  mainDir <- koboloadeR::kobo_getMainDirectory()
   form_tmp <- paste(mainDir, "data-raw", form, sep = "/", collapse = "/")
 
   tryCatch({
@@ -39,7 +39,7 @@ kobo_create_indicators <- function(form = "form.xlsx") {
 
       ## load all required data files #########################################
       cat("\n\nload all required data files..\n")
-      dataBeginRepeat <- kobo_get_begin_repeat(form)
+      dataBeginRepeat <- koboloadeR::kobo_get_begin_repeat(form)
       dataBeginRepeat <- dataBeginRepeat$names
       
       
@@ -119,11 +119,11 @@ kobo_create_indicators <- function(form = "form.xlsx") {
         
         cat(paste('### Script to generate indicator: ',sep = ""), file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
         cat(paste('form <- "',form,'"',sep = ""), file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
-        cat("mainDir <- kobo_getMainDirectory()", file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+        cat("mainDir <- koboloadeR::kobo_getMainDirectory()", file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
         cat('form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
         
         
-        cat('dataBeginRepeat <- kobo_get_begin_repeat(form)', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+        cat('dataBeginRepeat <- koboloadeR::kobo_get_begin_repeat(form)', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
         cat('dataBeginRepeat <- dataBeginRepeat$names', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
         
          cat('MainDataFrame <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
@@ -426,7 +426,7 @@ kobo_create_indicators <- function(form = "form.xlsx") {
         
         ## label Variables
         cat("\n\n quick check on labeling\n")
-        MainDataFrame <- kobo_label(MainDataFrame , dico)
+        MainDataFrame <- koboloadeR::kobo_label(MainDataFrame , dico)
         
         ## Check if there's a repeat - aka hierarchical structure in the dataset
         if  (length(dataBeginRepeat) > 0) {
@@ -434,7 +434,7 @@ kobo_create_indicators <- function(form = "form.xlsx") {
             dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
             #load(paste(mainDir,"/data/",dbr,"_edited.rda",sep = ""))
   
-            dataFrame <- kobo_label(dataFrame, dico)
+            dataFrame <- koboloadeR::kobo_label(dataFrame, dico)
             utils::write.csv(dataFrame,paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""), row.names = FALSE, na = "")
             #save(dataFrame , file =  paste(mainDir,"/data/",dbr,"_edited.rda",sep = ""))
           }

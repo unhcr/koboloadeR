@@ -3,11 +3,11 @@
 #' @title Generate Data Crunching Report
 #'
 #' @description Generate crunching Report that contains all descriptive statistics, correlation analysis, tabulation and data visualization for variables and indicators.
-#' @param form The full filename of the form to be accessed (xls or xlsx file).
+#' @param form The full file name of the form to be accessed (xls or xlsx file).
 #' It is assumed that the form is stored in the data folder.
 #' @param output The output format html or aspx if you need to upload on sharepoint), docx (to quickly cut non interesting vz and take note during data interpretation session), pptx (to quickly cut non interesting vz and persent during data interpretation session), Default is html
 #' @param app The place where the function has been executed, the default is the console and the second option is the shiny app
-#' @param render TRUE or FALSE - Tells wheter to only produce Rmd or to also knit it in the required output format. Default is TRUE. Usefull for testing as rending takes time.
+#' @param render TRUE or FALSE - Tells whether to only produce Rmd or to also knit it in the required output format. Default is TRUE. Usefull for testing as rending takes time.
 #'
 #' @return No return, All results will be saved on RMD files and Word files
 #'

@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">koboloadeR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.8</span>
       </span>
     </div>
 
@@ -105,10 +105,9 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-
-<div id="koboloader-survey-data-crunching" class="section level1">
+<div id="koboloader-survey-data-crunching-" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#koboloader-survey-data-crunching" class="anchor"></a>koboloadeR: Survey Data Crunching <img src="reference/figures/koboloadeR.png" width="200" align="right">
+<a href="#koboloader-survey-data-crunching-" class="anchor"></a>koboloadeR: Survey Data Crunching <img src="reference/figures/koboloadeR.png" width="200" align="right">
 </h1></div>
 <!-- badges: start -->
 
@@ -185,7 +184,7 @@
 <ul>
 <li>Install koboloadeR:</li>
 </ul>
-<pre class="{r}"><code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github("unhcr/koboloadeR") </a></code></pre>
+<pre class="{r}"><code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github("unhcr/koboloadeR", Ncpus=4) </a></code></pre>
 <ul>
 <li>You are all set! You can know use koboloadeR. If you have a problem consult the common troubleshooting part at the end of this page.</li>
 </ul>
@@ -201,7 +200,7 @@
 <li><p>Click Create project</p></li>
 </ul>
 <p>Then setup a few things: run those two lines:</p>
-<pre class="{r}"><code><a href="https://unhcr.github.io/koboloadeR/docs//reference">library (koboloadeR) # This loads koboloadeR package
+<pre class="{r}"><code><a href="https://unhcr.github.io/koboloadeR/docs/">library (koboloadeR) # This loads koboloadeR package
 
 kobo_projectinit() # Creates folders necessary and transfer files needed</a></code></pre>
 <p>It might take a while as a few other packages have to be installed or loaded. Once the see the " &gt;" again at the beginning of the line, you are ready to start</p>
@@ -242,17 +241,33 @@ kobo_projectinit() # Creates folders necessary and transfer files needed</a></co
 <p>Contributions to the packages are welcome. Please read first the <a href="CONTRIBUTING.html">contribution guidelines</a>, follow the <a href="CODE_OF_CONDUCT.html">code of conduct</a> and use the <a href="ISSUE_TEMPLATE.html">issue template</a>.</p>
 <p>To go in more details, the suggested workflow is presented below (note that all of it is not yet fully implented - see <a href="https://github.com/unhcr/koboloadeR/issues">issue tracking for more details</a>). You can read the <a href="reference/index.html">function documentations</a> directly.</p>
 <p><img src="https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow2.png" alt="alt text"></p>
+<blockquote>
+<p>This package is part of <code>unhcrverse</code>, a set of packages to ease the production of statistical evidence and data stories. You can install them all with the following:</p>
+</blockquote>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co">## Use UNHCR Open data  - https://unhcr.github.io/unhcrdatapackage/docs/</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>remotes<span class="op">::</span><span class="kw">install_github</span>(<span class="st">'unhcr/unhcrdatapackage’)</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="st">## API to connect to internal data source - https://unhcr-web.github.io/hcrdata/docs/</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="st">remotes::install_github('</span>unhcr<span class="op">-</span>web<span class="op">/</span>hcrdata’)</span>
+<span id="cb6-6"><a href="#cb6-6"></a></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="co">## Perform High Frequency Check https://unhcr.github.io/HighFrequencyChecks/docs/</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a>remotes<span class="op">::</span><span class="kw">install_github</span>(<span class="st">'unhcr/HighFrequencyChecks’)</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="st">## Process data crunching for survey dataset - https://unhcr.github.io/koboloadeR/docs/</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="st">remotes::install_github('</span>unhcr<span class="op">/</span>koboloadeR’)</span>
+<span id="cb6-12"><a href="#cb6-12"></a></span>
+<span id="cb6-13"><a href="#cb6-13"></a><span class="co">## Use UNHCR graphical template- https://unhcr-web.github.io/unhcRstyle/docs/</span></span>
+<span id="cb6-14"><a href="#cb6-14"></a>remotes<span class="op">::</span><span class="kw">install_github</span>(<span class="st">'unhcr-web/unhcRstyle'</span>)</span></code></pre></div>
+<div id="building-package-documentation" class="section level4">
+<h4 class="hasAnchor">
+<a href="#building-package-documentation" class="anchor"></a>Building package documentation</h4>
+<p><code><a href="https://devtools.r-lib.org//reference/document.html">devtools::document()</a></code></p>
+<p><code><a href="https://devtools.r-lib.org//reference/check.html">devtools::check(document = FALSE)</a></code></p>
+<p><code><a href="https://pkgdown.r-lib.org/reference/build_site.html">pkgdown::build_site()</a></code></p>
+<hr>
 </div>
 </div>
-<div id="cran-notes" class="section level1">
-<h1 class="hasAnchor">
-<a href="#cran-notes" class="anchor"></a>CRAN Notes</h1>
-<div id="test-results" class="section level2">
-<h2 class="hasAnchor">
-<a href="#test-results" class="anchor"></a>Test results</h2>
 </div>
-</div>
-
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -283,6 +298,7 @@ kobo_projectinit() # Creates folders necessary and transfer files needed</a></co
 <ul class="list-unstyled">
 <li>Edouard Legoupil <br><small class="roles"> Author, maintainer </small>  </li>
 <li>Maher Daoud <br><small class="roles"> Author </small>  </li>
+<li>Hisham Galal <br><small class="roles"> Author </small>  </li>
 <li><a href="authors.html">All authors...</a></li>
 </ul>
 </div>
@@ -311,11 +327,11 @@ kobo_projectinit() # Creates folders necessary and transfer files needed</a></co
 
 
       <footer><div class="copyright">
-  <p>Developed by Edouard Legoupil, Maher Daoud.</p>
+  <p>Developed by Edouard Legoupil, Maher Daoud, Hisham Galal.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

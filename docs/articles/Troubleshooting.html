@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">koboloadeR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.8</span>
       </span>
     </div>
 
@@ -103,13 +103,14 @@
 
       
 
-      </header><div class="row">
+      </header><script src="Troubleshooting_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="Troubleshooting_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="Troubleshooting_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Common Troubleshooting</h1>
                         <h4 class="author">Edouard Legoupil</h4>
             
-            <h4 class="date">2020-05-27</h4>
+            <h4 class="date">2020-11-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/unhcr/koboloadeR/blob/master/vignettes/Troubleshooting.Rmd"><code>vignettes/Troubleshooting.Rmd</code></a></small>
       <div class="hidden name"><code>Troubleshooting.Rmd</code></div>
@@ -175,6 +176,15 @@ Sys.getenv("TZ")
 <pre><code>Error: package or namespace load failed for 'rJava'</code></pre>
 <p>It could be because you have a 64bit version of R, but have a 32bit version of Java. Check this thread for guidance: <a href="https://stackoverflow.com/questions/37735108/r-error-onload-failed-in-loadnamespace-for-rjava" class="uri">https://stackoverflow.com/questions/37735108/r-error-onload-failed-in-loadnamespace-for-rjava</a></p>
 </div>
+<div id="installing-pacckage-library-on-a-one-drive-folder" class="section level3">
+<h3 class="hasAnchor">
+<a href="#installing-pacckage-library-on-a-one-drive-folder" class="anchor"></a>Installing pacckage library on a one-drive folder</h3>
+<p>as explained here: <a href="https://www.accelebrate.com/library/how-to-articles/r-rstudio-library">https://www.accelebrate.com/library/how-to-articles/r-rstudio-library</a>, Go and edit to your Rprofile file by adding</p>
+<blockquote>
+<h1 id="my-custom-path">my custom path</h1>
+<p>myPaths &lt;- .libPaths() myPaths &lt;- c(myPaths[2], myPaths[1]) # switch them myPaths &lt;- c(myPaths, ‘C:’) # add new path .libPaths(myPaths) # reassign path</p>
+</blockquote>
+</div>
 </div>
   </div>
 
@@ -189,11 +199,11 @@ Sys.getenv("TZ")
 
 
       <footer><div class="copyright">
-  <p>Developed by Edouard Legoupil, Maher Daoud.</p>
+  <p>Developed by Edouard Legoupil, Maher Daoud, Hisham Galal.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

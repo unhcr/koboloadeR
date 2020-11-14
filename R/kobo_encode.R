@@ -32,8 +32,8 @@ kobo_encode <- function(data, dico) {
   data.label <- plyr::join(x = data.label, y = dico, by = "fullname", type = "left" )
   ## Now we can also re-encode the records themself
 
-  #################################################################################################
-  ###### Case 1: Re-encoding  when we have select_multiple
+ 
+  ###### Case 1: Re-encoding  when we have select_multiple ####
   ## List of select one and select multiple variable to re-encode ## "select_one",
 
   selectdf <- as.data.frame(dico[dico$type %in% c( "select_multiple"), c("fullname","name","listname","type")])
@@ -53,7 +53,8 @@ kobo_encode <- function(data, dico) {
     cat("************************************************************\n \n")
   } else{
       #names(selectdf)[1] <- "selectvar"
-
+    
+      cat(paste0("There's ",nrow(selectdf3)," select_multiple modalities to encode \n"))
       for (i in 1:nrow(selectdf3)) {
         # i <- 98
         fullname <- as.character(selectdf3[ i,1])
@@ -88,7 +89,7 @@ kobo_encode <- function(data, dico) {
           data[ , fullname][data[ , fullname] == "True"] <- labelchoice
           }
 
-        cat(paste0(i, "- Recode disagreggated select_multiple variable ", fullname," for: ",labelchoice, "\n"))
+        cat(paste0(i, "- Recode disagreggated select_multiple modality ", fullname," for: ",labelchoice, "\n"))
 
         } else{cat(paste0("The following variable has no answers to recode in the dataset: ",fullname, "\n")) }
 
@@ -96,7 +97,7 @@ kobo_encode <- function(data, dico) {
       }
    }
 
-  ###### Case 2: Re-encoding  when we have disaggregated select_one - select_one_d
+  ###### Case 2: Re-encoding  when we have disaggregated select_one - select_one_d  ####
   ## List of select one and select multiple variable to re-encode ## "select_one",
   selectdf <- as.data.frame(dico[dico$type %in% c( "select_one_d"), c("fullname","name","listname","type")])
   ### Verify that those variable are actually in the original dataframe
@@ -145,7 +146,7 @@ kobo_encode <- function(data, dico) {
   }
 
 
-  ###### Case 3: Re-encoding  when we have select_select_one
+  ###### Case 3: Re-encoding  when we have select_select_one  ####
   ## List of select one and select multiple variable to re-encode ## "select_one",
   selectdf <- as.data.frame(dico[dico$type %in% c( "select_one"), c("fullname","name","listname","type")])
   ### Verify that those variable are actually in the original dataframe
@@ -167,7 +168,7 @@ kobo_encode <- function(data, dico) {
       cat(paste0("There's ",nrow(selectdf3)," select_one variables to encode \n"))
 
      for (i in 1:nrow(selectdf3)) {
-      # i <- 1
+      # i <- 50
       fullname <- as.character(selectdf3[ i,1])
       variablename <- as.character(selectdf3[ i,2])
       variablelistname <- as.character(selectdf3[ i,3])
@@ -190,14 +191,14 @@ kobo_encode <- function(data, dico) {
         #data[ , fullname] <- as.factor(data[ , fullname])
         data[ , fullname] <- as.factor(data[[fullname]])
         #View(data[i])
-        cat(paste0("Recode variable: ", fullname," \n"))
+        cat(paste0(i, "- Recode variable: ", fullname," \n"))
 
       } else {cat(paste0("The following variable has no answers to recode in the dataset: ",fullname, "\n")) }
 
      rm(fullname, variablename, variablelistname,variablelevel)
     }
   }
-  ###### Case 4: Re-encoding  when we have select_select_multiple
+  ###### Case 4: Re-encoding  when we have select_select_multiple  ####
   ## List of select one and select multiple variable to re-encode ## "select_one",
   selectdf <- as.data.frame(dico[dico$type %in% c( "select_multiple_d"), c("fullname","name","listname","type")])
   ### Verify that those variable are actually in the original dataframe

@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">koboloadeR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.8</span>
       </span>
     </div>
 
@@ -160,15 +160,19 @@
     <p>Return ggplot2 styling for histogram with big labels for powerpoints</p>
     </div>
 
-    <pre class="usage"><span class='fu'>kobo_unhcr_style_histo_big</span>()</pre>
+    <pre class="usage"><span class='fu'>kobo_unhcr_style_histo_big</span><span class='op'>(</span><span class='op'>)</span></pre>
 
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Return UNHCR Style</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Edouard Legoupil - with inspiration from bbc</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>kobo_unhcr_style_histo_big</span>()</div><div class='output co'>#&gt; List of 20
+    <pre class="examples"><div class='input'><span class='fu'>kobo_unhcr_style_histo_big</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; List of 20
 #&gt;  $ axis.title        : list()
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_blank" "element"
 #&gt;  $ axis.text         :List of 11
@@ -193,9 +197,8 @@
 #&gt;   ..$ vjust        : NULL
 #&gt;   ..$ angle        : NULL
 #&gt;   ..$ lineheight   : NULL
-#&gt;   ..$ margin       : 'margin' num [1:4] 5pt 0pt 9pt 0pt
-#&gt;   .. ..- attr(*, "valid.unit")= int 8
-#&gt;   .. ..- attr(*, "unit")= chr "pt"
+#&gt;   ..$ margin       : 'margin' num [1:4] 5points 0points 9points 0points
+#&gt;   .. ..- attr(*, "unit")= int 8
 #&gt;   ..$ debug        : NULL
 #&gt;   ..$ inherit.blank: logi FALSE
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_text" "element"
@@ -242,7 +245,7 @@
 #&gt;   ..$ family       : chr "Lato"
 #&gt;   ..$ face         : chr "bold"
 #&gt;   ..$ colour       : chr "#222222"
-#&gt;   ..$ size         : num 26
+#&gt;   ..$ size         : num 28
 #&gt;   ..$ hjust        : NULL
 #&gt;   ..$ vjust        : NULL
 #&gt;   ..$ angle        : NULL
@@ -260,14 +263,25 @@
 #&gt;   ..$ vjust        : NULL
 #&gt;   ..$ angle        : NULL
 #&gt;   ..$ lineheight   : NULL
-#&gt;   ..$ margin       : 'margin' num [1:4] 9pt 0pt 9pt 0pt
-#&gt;   .. ..- attr(*, "valid.unit")= int 8
-#&gt;   .. ..- attr(*, "unit")= chr "pt"
+#&gt;   ..$ margin       : 'margin' num [1:4] 9points 0points 9points 0points
+#&gt;   .. ..- attr(*, "unit")= int 8
 #&gt;   ..$ debug        : NULL
 #&gt;   ..$ inherit.blank: logi FALSE
 #&gt;   ..- attr(*, "class")= chr [1:2] "element_text" "element"
-#&gt;  $ plot.caption      : list()
-#&gt;   ..- attr(*, "class")= chr [1:2] "element_blank" "element"
+#&gt;  $ plot.caption      :List of 11
+#&gt;   ..$ family       : chr "Lato"
+#&gt;   ..$ face         : NULL
+#&gt;   ..$ colour       : chr "#939184"
+#&gt;   ..$ size         : num 8
+#&gt;   ..$ hjust        : num 0.92
+#&gt;   ..$ vjust        : NULL
+#&gt;   ..$ angle        : NULL
+#&gt;   ..$ lineheight   : NULL
+#&gt;   ..$ margin       : 'margin' num [1:4] 0.2cm 0cm 0cm 0cm
+#&gt;   .. ..- attr(*, "unit")= int 1
+#&gt;   ..$ debug        : NULL
+#&gt;   ..$ inherit.blank: logi FALSE
+#&gt;   ..- attr(*, "class")= chr [1:2] "element_text" "element"
 #&gt;  $ strip.background  :List of 5
 #&gt;   ..$ fill         : chr "white"
 #&gt;   ..$ colour       : NULL
@@ -303,11 +317,11 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Edouard Legoupil, Maher Daoud.</p>
+  <p>Developed by Edouard Legoupil, Maher Daoud, Hisham Galal.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

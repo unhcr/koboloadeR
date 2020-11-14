@@ -5,7 +5,7 @@
 #' @description Function to compute indicators from indicator sheet
 #'
 #' @param form The full filename of the form to be accessed (xls or xlsx file).
-#' It is assumed that the form is stored in the data folder.
+#' It is assumed that the form is stored in the data-raw folder.
 #'
 #'
 #' @return No return, all results will be saved inside new CSV files
@@ -23,8 +23,8 @@
 
 kobo_create_indicators <- function(form = "form.xls") {
 
-  mainDir <- kobo_getMainDirectory()
-  form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
+  mainDir <- koboloadeR::kobo_getMainDirectory()
+  form_tmp <- paste(mainDir, "data-raw", form, sep = "/", collapse = "/")
 
   tryCatch({
     #### Load and test i indicators #############################################################################
@@ -39,13 +39,19 @@ kobo_create_indicators <- function(form = "form.xls") {
 
       ## load all required data files #########################################
       cat("\n\nload all required data files..\n")
-      dataBeginRepeat <- kobo_get_begin_repeat()
+      dataBeginRepeat <- koboloadeR::kobo_get_begin_repeat(form)
       dataBeginRepeat <- dataBeginRepeat$names
-      for (dbr in dataBeginRepeat) {
-        dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
-        assign(dbr, dataFrame)
+      
+      
+      ## Check if there's a repeat - aka hierarchical structure in the dataset
+      if  (length(dataBeginRepeat) > 0) {
+        for (dbr in dataBeginRepeat) {
+          dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
+          #load(paste(mainDir,"/data/",dbr,"_edited.rda",sep = ""))
+          
+          assign(dbr, dataFrame)
+        }
       }
-
 
       indicator <- readxl::read_excel(form_tmp, sheet = "indicator")
       if (nrow(indicator) == 0) {
@@ -55,8 +61,8 @@ kobo_create_indicators <- function(form = "form.xls") {
         ## Load data & dico #############################################################################
         #form <- "form.xls"
         ## Run this only after data cleaning
-        dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
-
+         dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+        #load(paste(mainDir,"/data/dico_",form,".rda",sep = ""))
         ## Create the dicotemp #############################################################################
         #names(dico)
         dicotemp <- data.frame(c("trigger"))
@@ -108,13 +114,39 @@ kobo_create_indicators <- function(form = "form.xls") {
 
         ## Load indicator info #############################################################################
 
-        for (i in 1:nrow(indicator))
+        if (file.exists(paste0(mainDir,"/R/build_indicator.R") )) file.remove(paste0(mainDir,"/R/build_indicator.R"))
+        
+        
+        cat(paste('### Script to generate indicator: ',sep = ""), file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+        cat(paste('form <- "',form,'"',sep = ""), file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+        cat("mainDir <- koboloadeR::kobo_getMainDirectory()", file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+        cat('form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+        
+        
+        cat('dataBeginRepeat <- koboloadeR::kobo_get_begin_repeat(form)', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+        cat('dataBeginRepeat <- dataBeginRepeat$names', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+        
+         cat('MainDataFrame <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+        #cat('load(paste(mainDir,"/data/MainDataFrame_edited.rda",sep = ""))', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+        
+        ## Check if there's a repeat - aka hierarchical structure in the dataset
+        if  (length(dataBeginRepeat) > 0) {
+          cat('for (dbr in dataBeginRepeat) {
+            dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
+            #load(paste(mainDir,"/data/",dbr,"_edited.rda",sep = ""))
 
+            assign(paste0(dbr,"_edited"), dataFrame)  }', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+        }
+        
+        
+        
+        for (i in 1:nrow(indicator))
         {
           # i <- 1
           indicator.type	<- as.character(indicator[ i, c("type")])
           indicator.fullname	<- as.character(indicator[ i, c("fullname")])
-          indicator.label	<- as.character(indicator[ i, c("label")])
+         # indicator.label	<- as.character(indicator[ i, c("label")])
+          indicator.label	<- as.character("")
           indicator.labelReport	<- as.character(indicator[ i, c("labelReport")])
           indicator.hintReport	<- as.character(indicator[ i, c("hintReport")])
           indicator.report	<- as.character(indicator[ i, c("report")])
@@ -138,47 +170,31 @@ kobo_create_indicators <- function(form = "form.xls") {
 
           ## Build and run the formula to insert the indicator in the right frame  ###########################
           indic.formula <- paste0(indicator.frame,"$",indicator.fullname," <- ",indicator.calculation )
-          if (file.exists(paste0(mainDir,"/code/temp.R") )) file.remove(paste0(mainDir,"/code/temp.R"))
 
-
-          cat(paste('### Script to generate indicator: ',indicator.labelReport,sep = ""), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-          cat(paste('form <- "',form,'"',sep = ""), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-          cat("mainDir <- kobo_getMainDirectory()", file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-          cat('form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-          cat('dataBeginRepeat <- kobo_get_begin_repeat()', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-          cat('dataBeginRepeat <- dataBeginRepeat$names', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-
-          cat('MainDataFrame <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-
-          cat('for (dbr in dataBeginRepeat) {
-            dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
-
-            assign(paste0(dbr,"_edited"), dataFrame)
-          }', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-
-          cat(indic.formula, file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-          cat("####", file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+          
+          cat(paste('\n \n### Script to generate indicator: ',indicator.labelReport,sep = ""), file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+          cat(indic.formula, file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+          
 
           ## do a check on indicator variable type
           indicator.type2 <- indicator.type
           ifelse(indicator.type == "select_one", indicator.type2 <- "character", indicator.type2 <- indicator.type)
 
 
-          cat(paste0(indicator.frame,"$",indicator.fullname," <- as.",indicator.type2,"(",indicator.frame,"$",indicator.fullname,")"), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-          cat(paste0("str(",indicator.frame,"$",indicator.fullname,")"), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-          cat(paste0("summary(",indicator.frame,"$",indicator.fullname,")"), file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
+          cat(paste0(indicator.frame,"$",indicator.fullname," <- as.",indicator.type2,"(",indicator.frame,"$",indicator.fullname,")"), file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+          cat(paste0("str(",indicator.frame,"$",indicator.fullname,")"), file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+          cat(paste0("summary(",indicator.frame,"$",indicator.fullname,")"), file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+    
+           # if (indicator.frame == "MainDataFrame_edited") {
+           # }else{
+           #   cat(paste('dbr<-"',indicator.frame,'"',sep = ""))
+           #   cat('utils::write.csv(eval(as.name(dbr)),paste(mainDir,"/data/",dbr,".csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+           # }
 
-           if (indicator.frame == "MainDataFrame_edited") {
-             cat('utils::write.csv(MainDataFrame, paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-           }else{
-             cat(paste('dbr<-"',indicator.frame,'"',sep = ""))
-             cat('utils::write.csv(eval(as.name(dbr)),paste(mainDir,"/data/",dbr,".csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/code/temp.R") , sep = "\n", append = TRUE)
-           }
 
-
-          source(paste0(mainDir,"/code/temp.R"))
-          cat(paste0(i, "- Executed  indicator: ", indicator.labelReport,"\n"))
-          if (file.exists(paste0(mainDir,"/code/temp.R"))) file.remove(paste0(mainDir,"/code/temp.R"))
+          # source(paste0(mainDir,"/R/build_indicator.R"))
+          # cat(paste0(i, "- Executed  indicator: ", indicator.labelReport,"\n"))
+          # if (file.exists(paste0(mainDir,"/R/build_indicator.R"))) file.remove(paste0(mainDir,"/R/build_indicator.R"))
 
           ## Insert the indicator in a temp dico frame to be appended to the full dico  ######################
 
@@ -225,12 +241,19 @@ kobo_create_indicators <- function(form = "form.xls") {
           dicotemp <- rbind(dicotemp,dicotemp1)
 
         }
+         cat('utils::write.csv(MainDataFrame, paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), row.names = FALSE, na = "")', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+        #cat('save(MainDataFrame, file =   paste(mainDir,"/data/MainDataFrame_edited.rda",sep = ""))', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+        
+        source(paste0(mainDir,"/R/build_indicator.R"))
+        
         ## Append indicators in the dico  #############################################################################
 
         ## removing first line
           dicotemp <- dicotemp[ 2:nrow(dicotemp), ]
 
-          ### mergin choices from the newly created indicators #################################################################
+       
+        
+        ### Merging choices from the newly created indicators #################################################################
 
           cat("\n\n\n It's assumed that the modalities for newly calculated categoric indicators are in the same xlsform - choices worksheet  \n\n\n\n")
           choices <- readxl::read_excel(form_tmp, sheet = "choices")
@@ -244,8 +267,8 @@ kobo_create_indicators <- function(form = "form.xls") {
           names(choices)[names(choices) == "list_name"] <- "listname"
 
           ## Remove trailing space
-          choices$listname <- trim(choices$listname)
-          choices$label <- trim(choices$label)
+          choices$listname <- trimws(choices$listname)
+          choices$label <- trimws(choices$label)
 
 
 
@@ -279,9 +302,9 @@ kobo_create_indicators <- function(form = "form.xls") {
             choices$score <- ""
             }
 
-          choices <- choices[,c("listname",  "name",  "label",  "order", "weight","score","recategorise")]
-
-          names(choices)[names(choices) == "label"] <- "labelchoice"
+          choices <- choices[,c("listname",  "name",  "labelReport",  "order", "weight","score","recategorise")]
+          names(choices)[names(choices) == "labelReport"] <- "labelchoice"
+         # names(choices)[names(choices) == "label"] <- "labelchoice"
           #rm(choices)
 
         dicotemp.choice <- dicotemp[ !(is.na(dicotemp$listname)), c( "type", "name",
@@ -398,20 +421,31 @@ kobo_create_indicators <- function(form = "form.xls") {
         rm(dicotemp,dicotemp1, choices, choices2, choices3, dicotemp.choice)
 
 
-        MainDataFrame <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")
+         MainDataFrame <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")
+        #load(paste(mainDir,"/data/MainDataFrame_edited.rda",sep = ""))
+        
         ## label Variables
         cat("\n\n quick check on labeling\n")
-        MainDataFrame <- kobo_label(MainDataFrame , dico)
-        for (dbr in dataBeginRepeat) {
-          dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
-
-          dataFrame <- kobo_label(dataFrame, dico)
-          utils::write.csv(dataFrame,paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""), row.names = FALSE, na = "")
+        MainDataFrame <- koboloadeR::kobo_label(MainDataFrame , dico)
+        
+        ## Check if there's a repeat - aka hierarchical structure in the dataset
+        if  (length(dataBeginRepeat) > 0) {
+          for (dbr in dataBeginRepeat) {
+            dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
+            #load(paste(mainDir,"/data/",dbr,"_edited.rda",sep = ""))
+  
+            dataFrame <- koboloadeR::kobo_label(dataFrame, dico)
+            utils::write.csv(dataFrame,paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""), row.names = FALSE, na = "")
+            #save(dataFrame , file =  paste(mainDir,"/data/",dbr,"_edited.rda",sep = ""))
+          }
         }
         cat("\n\nWrite dico\n")
-        utils::write.csv(dico, paste0(mainDir,"/data/dico_",form,".csv"), row.names = FALSE, na = "")
+       utils::write.csv(dico, paste0(mainDir,"/data/dico_",form,".csv"), row.names = FALSE, na = "")
+        # save(dico, file =   paste0(mainDir,"/data/dico_",form,".rda"))
 
-        utils::write.csv(MainDataFrame, paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), row.names = FALSE, na = "")
+        utils::write.csv(MainDataFrame, paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), row.names = FALSE, na = "")    
+        
+        #save(MainDataFrame, file =   paste(mainDir,"/data/MainDataFrame_edited.rda",sep = ""))
 
 
       }

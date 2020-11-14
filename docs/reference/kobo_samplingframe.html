@@ -88,7 +88,7 @@ Takes 3 types of sampling strategies:
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">koboloadeR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.8</span>
       </span>
     </div>
 
@@ -172,16 +172,16 @@ Takes 3 types of sampling strategies:
   margin of error, proportion and survey buffer provided.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>kobo_samplingframe</span>(
-  <span class='no'>data</span>,
-  <span class='no'>strata</span>,
-  <span class='no'>pop_col</span>,
-  <span class='kw'>confidence_level</span> <span class='kw'>=</span> <span class='fl'>0.95</span>,
-  <span class='kw'>margin_error</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
-  <span class='kw'>proportion</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
-  <span class='no'>method</span>,
-  <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>0.05</span>
-)</pre>
+    <pre class="usage"><span class='fu'>kobo_samplingframe</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  <span class='va'>strata</span>,
+  <span class='va'>pop_col</span>,
+  confidence_level <span class='op'>=</span> <span class='fl'>0.95</span>,
+  margin_error <span class='op'>=</span> <span class='fl'>0.05</span>,
+  proportion <span class='op'>=</span> <span class='fl'>0.5</span>,
+  <span class='va'>method</span>,
+  buffer <span class='op'>=</span> <span class='fl'>0.05</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -223,13 +223,18 @@ Takes 3 types of sampling strategies:
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Elliott Messeiller</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'>kobo_samplingframe</span>(<span class='kw'>data</span><span class='kw'>=</span><span class='no'>SamplingFrame</span>, <span class='kw'>strata</span><span class='kw'>=</span><span class='st'>"Province"</span>, <span class='kw'>pop_col</span> <span class='kw'>=</span> <span class='st'>"Households"</span>,
-                   <span class='kw'>confidence_level</span> <span class='kw'>=</span> <span class='fl'>0.95</span>, <span class='kw'>margin_error</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>proportion</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
-                    <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"strat2st"</span>)
-}</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='fu'>kobo_samplingframe</span><span class='op'>(</span>data<span class='op'>=</span><span class='va'>SamplingFrame</span>, strata<span class='op'>=</span><span class='st'>"Province"</span>, pop_col <span class='op'>=</span> <span class='st'>"Households"</span>,
+                   confidence_level <span class='op'>=</span> <span class='fl'>0.95</span>, margin_error <span class='op'>=</span> <span class='fl'>0.05</span>, proportion <span class='op'>=</span> <span class='fl'>0.5</span>,
+                    method <span class='op'>=</span> <span class='st'>"strat2st"</span><span class='op'>)</span>
+<span class='op'>}</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -241,11 +246,11 @@ Takes 3 types of sampling strategies:
 
       <footer>
       <div class="copyright">
-  <p>Developed by Edouard Legoupil, Maher Daoud.</p>
+  <p>Developed by Edouard Legoupil, Maher Daoud, Hisham Galal.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

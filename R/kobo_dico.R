@@ -28,7 +28,7 @@ kobo_dico <- function(form = "form.xls") {
   # read the survey tab of ODK from
   mainDir <- kobo_getMainDirectory()
 
-  form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
+  form_tmp <- paste(mainDir, "data-raw", form, sep = "/", collapse = "/")
 
 
   ### First review all questions from survey sheet #################################################
@@ -601,7 +601,7 @@ kobo_dico <- function(form = "form.xls") {
   #  cat("Note that select_one & select_multiple questions within REPEAT part are converted to integer (results are summed up).\n")
 
   utils::write.csv(dico, paste0(mainDir,"/data/dico_",form,".csv"), row.names = FALSE, na = "")
-
+  #save(dico, file =  paste0(mainDir,"/data/dico_",form,".rda"))
   # f_csv(dico)
   #  return(dico)
 }

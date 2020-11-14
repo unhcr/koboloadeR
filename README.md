@@ -120,7 +120,7 @@ install.packages("devtools")
   *  Install koboloadeR: 
 
 ```{r}
-devtools::install_github("unhcr/koboloadeR") 
+devtools::install_github("unhcr/koboloadeR", Ncpus=4) 
 ```  
 
   *  You are all set! You can know use koboloadeR. If you have a problem consult the common troubleshooting part at the end of this page.
@@ -195,8 +195,31 @@ To go in more details, the suggested workflow is presented below (note that all 
 
 ![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow2.png)
 
-CRAN Notes
-==========
+> This package is part of `unhcrverse`, a set of packages to ease the production of statistical evidence and data stories. You can install them all with the following:
 
-Test results
+```r
+## Use UNHCR Open data  - https://unhcr.github.io/unhcrdatapackage/docs/
+remotes::install_github('unhcr/unhcrdatapackage’)
+
+## API to connect to internal data source - https://unhcr-web.github.io/hcrdata/docs/
+remotes::install_github('unhcr-web/hcrdata’)
+
+## Perform High Frequency Check https://unhcr.github.io/HighFrequencyChecks/docs/
+remotes::install_github('unhcr/HighFrequencyChecks’)
+
+## Process data crunching for survey dataset - https://unhcr.github.io/koboloadeR/docs/
+remotes::install_github('unhcr/koboloadeR’)
+
+## Use UNHCR graphical template- https://unhcr-web.github.io/unhcRstyle/docs/
+remotes::install_github('unhcr-web/unhcRstyle')
+```
+
+#### Building package documentation 
+
+`devtools::document()`
+
+`devtools::check(document = FALSE)`
+
+`pkgdown::build_site()`
+
 ------------

@@ -41,7 +41,7 @@ kobo_prepare_form <- function(form = "form.xls") {
 
     mainDir <- kobo_getMainDirectory()
 
-    form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
+    form_tmp <- paste(mainDir, "data-raw", form, sep = "/", collapse = "/")
 
     # Survey sheet ######################################
     survey <- tryCatch({
@@ -864,6 +864,42 @@ kobo_prepare_form <- function(form = "form.xls") {
           )
         }
 
+        ## Geographic file for maps
+        
+        
+        if (!"geofile" %in% analysisSettings$name) {
+          analysisSettings <- rbind(analysisSettings,
+                                    data.frame(name = "universefile",
+                                               label = "Name of the geojson file with geo data",
+                                               options = "",
+                                               value = "geofile.geojson",
+                                               path = NA,
+                                               stringsAsFactors = FALSE)
+          )
+        }
+        
+        if (!"geofileid" %in% analysisSettings$name) {
+          analysisSettings <- rbind(analysisSettings,
+                                    data.frame(name = "geofileid",
+                                               label = "Name of the variable within geofile to do the join with the survey",
+                                               options = "",
+                                               value = "geoid",
+                                               path = NA,
+                                               stringsAsFactors = FALSE)
+          )
+        }
+        
+        if (!"geosurveyid" %in% analysisSettings$name) {
+          analysisSettings <- rbind(analysisSettings,
+                                    data.frame(name = "geosurveyid",
+                                               label = "Name of the variable within survey to do the join with the geofile",
+                                               options = "",
+                                               value = "geoid",
+                                               path = NA,
+                                               stringsAsFactors = FALSE)
+          )
+        }        
+        
 
       }
     }
@@ -1058,14 +1094,89 @@ kobo_prepare_form <- function(form = "form.xls") {
     xlsx::autoSizeColumn(indicatorSheet, 1:length(survey))
     cat("\n******************** Indicator sheet, ready to be used *********************\n \n")
 
-
+    cat("############################### \n")
+    cat("### Checking now RIDL sheets ## \n")
+    cat("############################### \n")
+  
+    ridl_schema <- jsonlite::fromJSON("https://raw.githubusercontent.com/okfn/ckanext-unhcr/master/ckanext/unhcr/schemas/dataset.json")
+    
+    ridl_dataset_fields <- ridl_schema$dataset_fields # %>% tibble::as_tibble()
+    ridl_resource_fields <- ridl_schema$resource_fields # %>% tibble::as_tibble()
+    
+    ridl_choices <- 
+      ridl_dataset_fields %>% 
+      dplyr::mutate(choices = purrr::map(choices, as.data.frame)) %>% 
+      dplyr::select(field_name, choices) %>% 
+      tidyr::unnest(choices) %>% 
+      dplyr::select(list_name = field_name, name = value, label) %>% 
+      as.data.frame()
+    
+    ridl_metadata <- 
+      ridl_dataset_fields %>% 
+      dplyr::transmute(
+        type = 
+          dplyr::case_when(
+            preset == "multiple_select" ~ stringr::str_c("select_multiple", field_name, sep = " "),
+            field_name %in% ridl_choices$list_name ~ stringr::str_c("select_one", field_name, sep = " "),
+            TRUE ~ "text"),
+        name = field_name,
+        label,
+        required,
+        hint = dplyr::if_else(!is.na(help_text), help_text, form_placeholder),
+        value = "")
+    
+    sheetname <- "ridl-metadata"
+    if (sheetname %in% readxl::excel_sheets(form_tmp)) {
+      ridl_metadata <- 
+        ridl_metadata %>% 
+        dplyr::select(-value) %>% 
+        dplyr::left_join(readxl::read_excel(form_tmp, sheet = sheetname) %>% dplyr::select(name, value), by = "name")
+    }
+    
+    if (!is.null(xlsx::getSheets(wb)[[sheetname]]))
+      xlsx::removeSheet(wb, sheetname)
+    
+    ridl_sheet <- xlsx::createSheet(wb, sheetname) 
+    xlsx::addDataFrame(ridl_metadata, ridl_sheet, col.names = TRUE, row.names = FALSE)
+    rows <- xlsx::getRows(ridl_sheet)
+    cells <- xlsx::getCells(rows)
+    headerSt <- xlsx::CellStyle(wb) +
+      xlsx::Font(wb, isBold = TRUE, isItalic = FALSE, color = "white", heightInPoints = 13) +
+      xlsx::Fill(backgroundColor = "GREY_50_PERCENT", foregroundColor = "GREY_50_PERCENT",
+                 pattern = "SOLID_FOREGROUND")  +
+      xlsx::Border(color = "GREY_80_PERCENT", position = c("TOP", "BOTTOM"), "BORDER_THIN")
+    highlight <- paste("1", c(1:length(ridl_metadata)), sep = ".")
+    lapply(names(cells[highlight]),
+           function(ii) xlsx::setCellStyle(cells[[ii]], headerSt))
+    xlsx::autoSizeColumn(ridl_sheet, 1:length(ridl_metadata))
+    
+    sheetname <- "ridl-choices"
+    if (!is.null(xlsx::getSheets(wb)[[sheetname]]))
+      xlsx::removeSheet(wb, sheetname)
+    
+    ridl_sheet <- xlsx::createSheet(wb, sheetname) 
+    xlsx::addDataFrame(ridl_choices, ridl_sheet, col.names = TRUE, row.names = FALSE)
+    
+    rows <- xlsx::getRows(ridl_sheet)
+    cells <- xlsx::getCells(rows)
+    headerSt <- xlsx::CellStyle(wb) +
+      xlsx::Font(wb, isBold = TRUE, isItalic = FALSE, color = "white", heightInPoints = 13) +
+      xlsx::Fill(backgroundColor = "GREY_50_PERCENT", foregroundColor = "GREY_50_PERCENT",
+                 pattern = "SOLID_FOREGROUND")  +
+      xlsx::Border(color = "GREY_80_PERCENT", position = c("TOP", "BOTTOM"), "BORDER_THIN")
+    highlight <- paste("1", c(1:length(ridl_choices)), sep = ".")
+    lapply(names(cells[highlight]),
+           function(ii) xlsx::setCellStyle(cells[[ii]], headerSt))
+    xlsx::autoSizeColumn(ridl_sheet, 1:length(ridl_choices))
+    
+    cat("\n******************** RIDL sheets, ready to be used *********************\n \n")
+    
     if (file.exists(form_tmp)) file.remove(form_tmp)
     xlsx::saveWorkbook(wb, form_tmp)
-
-
+    
+    
     cat("\n******************** The XLSFORM has now been extended to include your analysis plan *********************\n \n")
-
-
+    
   }, error = function(err) {
     print("There was an error in the xlsform preparation step!!! \n\n")
     return(structure(err, class = "try-error"))

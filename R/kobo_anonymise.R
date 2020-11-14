@@ -41,11 +41,11 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_anonymise(frame,  form = "form.xls")
+#' kobo_anonymise(frame,  form = "form.xlsx")
 #' }
 #'
 
-kobo_anonymise <- function(frame, form = "form.xls", app = "console") {
+kobo_anonymise <- function(frame, form = "form.xlsx", app = "console") {
 
   mainDir <- kobo_getMainDirectory()
   form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")

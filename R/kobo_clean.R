@@ -20,12 +20,12 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_clean(frame, form = "form.xls")
+#' kobo_clean(frame, form = "form.xlsx")
 #' }
 #'
 #'
 
-kobo_clean <- function(frame, form = "form.xls", app = "console") {
+kobo_clean <- function(frame, form = "form.xlsx", app = "console") {
 
   mainDir <- kobo_getMainDirectory()
   form <- as.character(form)

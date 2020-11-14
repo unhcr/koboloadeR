@@ -14,13 +14,13 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_check_project_configuration("myform.xls")
+#' kobo_check_project_configuration("myform.xlsx")
 #' }
 #'
 #' @export kobo_check_project_configuration
 #'
 
-kobo_check_project_configuration <- function(form = "form.xls") {
+kobo_check_project_configuration <- function(form = "form.xlsx") {
   tryCatch({
     result <- list()
     result$flag <- T

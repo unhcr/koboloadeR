@@ -15,13 +15,13 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_dico(form = "form.xls")
+#' kobo_dico(form = "form.xlsx")
 #' }
 #'
 #' @export kobo_dico
 #'
 
-kobo_dico <- function(form = "form.xls") {
+kobo_dico <- function(form = "form.xlsx") {
 
   #kobo_form(formid, user = user, api = api)
   cat("\n Your form should be placed within the `data` folder. \n \n")

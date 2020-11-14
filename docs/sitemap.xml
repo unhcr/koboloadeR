@@ -73,6 +73,9 @@
     <loc>https://unhcr.github.io/koboloadeR/docs//reference/kobo_edit_form.html</loc>
   </url>
   <url>
+    <loc>https://unhcr.github.io/koboloadeR/docs//reference/kobo_edit_ridl_metadata.html</loc>
+  </url>
+  <url>
     <loc>https://unhcr.github.io/koboloadeR/docs//reference/kobo_encode.html</loc>
   </url>
   <url>
@@ -157,6 +160,9 @@
     <loc>https://unhcr.github.io/koboloadeR/docs//reference/kobo_submission_count.html</loc>
   </url>
   <url>
+    <loc>https://unhcr.github.io/koboloadeR/docs//reference/kobo_submit_to_ridl.html</loc>
+  </url>
+  <url>
     <loc>https://unhcr.github.io/koboloadeR/docs//reference/kobo_time_parser_UTC.html</loc>
   </url>
   <url>
@@ -188,6 +194,9 @@
   </url>
   <url>
     <loc>https://unhcr.github.io/koboloadeR/docs//reference/kobo_weight.html</loc>
+  </url>
+  <url>
+    <loc>https://unhcr.github.io/koboloadeR/docs//reference/koboloadeR-package.html</loc>
   </url>
   <url>
     <loc>https://unhcr.github.io/koboloadeR/docs//reference/ltbl.html</loc>

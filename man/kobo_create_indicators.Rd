@@ -8,7 +8,7 @@ kobo_create_indicators(form = "form.xls")
 }
 \arguments{
 \item{form}{The full filename of the form to be accessed (xls or xlsx file).
-It is assumed that the form is stored in the data folder.}
+It is assumed that the form is stored in the data-raw folder.}
 }
 \value{
 No return, all results will be saved inside new CSV files

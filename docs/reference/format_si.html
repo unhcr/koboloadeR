@@ -91,7 +91,7 @@ Args:" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">koboloadeR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.8</span>
       </span>
     </div>
 
@@ -178,7 +178,7 @@ https://stat.ethz.ch/pipermail/r-help/2012-January/299804.html
 Args:</p>
     </div>
 
-    <pre class="usage"><span class='fu'>format_si</span>(<span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>format_si</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -193,9 +193,13 @@ Args:</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Formatted number.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Someone</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>format_si</span>()</div><div class='output co'>#&gt; function (x) 
+    <pre class="examples"><div class='input'><span class='fu'>format_si</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; function (x) 
 #&gt; {
 #&gt;     limits &lt;- c(1e-24, 1e-21, 1e-18, 1e-15, 1e-12, 1e-09, 1e-06, 
 #&gt;         0.001, 1, 1000, 1e+06, 1e+09, 1e+12, 1e+15, 1e+18, 1e+21, 
@@ -207,8 +211,8 @@ Args:</p>
 #&gt;     paste(format(round(x/limits[i], 1), trim = TRUE, scientific = FALSE, 
 #&gt;         ...), prefix[i])
 #&gt; }
-#&gt; &lt;bytecode: 0x560cc0771248&gt;
-#&gt; &lt;environment: 0x560cc0773718&gt;</div><div class='input'>
+#&gt; &lt;bytecode: 0x562e39973930&gt;
+#&gt; &lt;environment: 0x562e399779a0&gt;</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -221,11 +225,11 @@ Args:</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Edouard Legoupil, Maher Daoud.</p>
+  <p>Developed by Edouard Legoupil, Maher Daoud, Hisham Galal.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

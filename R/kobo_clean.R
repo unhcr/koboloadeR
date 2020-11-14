@@ -20,12 +20,12 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_clean(frame, form = "form.xls")
+#' kobo_clean(frame, form = "form.xlsx")
 #' }
 #'
 #'
 
-kobo_clean <- function(frame, form = "form.xls", app = "console") {
+kobo_clean <- function(frame, form = "form.xlsx", app = "console") {
 
   mainDir <- kobo_getMainDirectory()
   form <- as.character(form)
@@ -33,6 +33,11 @@ kobo_clean <- function(frame, form = "form.xls", app = "console") {
   formpath <- as.character(paste0(mainDir,"/data/dico_",form,".csv"))
   #cat(paste0(formpath,"\n"))
   dico <- utils::read.csv(formpath, encoding = "UTF-8", na.strings = "")
+  
+  
+  #formpath <- as.character(paste0(mainDir,"/data/dico_",form,".rda"))
+  #cat(paste0(formpath,"\n"))
+  #load(formpath)
 
   # frame <- MainDataFrame
   # frame <- household
@@ -49,7 +54,8 @@ kobo_clean <- function(frame, form = "form.xls", app = "console") {
      dico.clean <- dico[ !(is.na(dico[, c("clean")])) ,  ]
       if (nrow(dico.clean) > 0) {
         cat(paste0(nrow(dico.clean), " potential variables to clean\n"))
-
+        
+        if (file.exists("R/apply_clean.R")) file.remove("R/apply_clean.R")
           for (i in 1:nrow(dico.clean)) {
            # i <- 1
             cat(paste0(i, "- Clean through an external table, if exists, the value of question: ", as.character(dico.clean[ i, c("label")]),"\n"))
@@ -58,7 +64,7 @@ kobo_clean <- function(frame, form = "form.xls", app = "console") {
             variable <- paste0(as.character(dico.clean[ i, c("fullname")]))
             cleanfile <- paste0(as.character(dico.clean[ i, c("clean")]))
             cleanframe <- paste0(substr(as.character(dico.clean[ i, c("clean")]), 1, nchar(cleanfile) - 4))
-            formula1 <-  paste0(cleanframe," <- utils::read.csv(\"data/", cleanfile,"\", encoding = \"UTF-8\", na.strings = \"\")" )
+            formula1 <-  paste0(cleanframe," <- utils::read.csv(\"data-raw/", cleanfile,"\", encoding = \"UTF-8\", na.strings = \"\")" )
             formula2 <- paste0("names(",cleanframe,")[1] <- \"",dico.clean[ i, c("fullname")],"\"" )
             formula3 <- paste0("names(",cleanframe,")[2] <- \"",dico.clean[ i, c("fullname")],".clean\"" )
             formula4 <- paste0("colname <- which(colnames(",framename,") == \"", variable,"\")")
@@ -69,20 +75,20 @@ kobo_clean <- function(frame, form = "form.xls", app = "console") {
             formula9 <- paste0("round( nrow(", framename ,"[ !(is.na(", framename ,"$", variable ,".clean)), ]) / nrow(", framename ,") *100,digits = 1),\"%\n\n\"))")
 
 
-            if (file.exists("code/temp-clean.R")) file.remove("code/temp-clean.R")
-            cat(paste0("if (\"", as.character(dico.clean[ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file = "code/temp-clean.R" , sep = "\n", append = TRUE)
-            cat(paste0(formula1, ""), file = "code/temp-clean.R" , sep = "\n", append = TRUE)
-            cat(paste0(formula2, ""), file = "code/temp-clean.R" , sep = "\n", append = TRUE)
-            cat(paste0(formula3, ""), file = "code/temp-clean.R" , sep = "\n", append = TRUE)
-            cat(paste0(formula4, ""), file = "code/temp-clean.R" , sep = "\n", append = TRUE)
-            cat(paste0(formula5, ""), file = "code/temp-clean.R" , sep = "\n", append = TRUE)
-            cat(paste0(formula6, ""), file = "code/temp-clean.R" , sep = "\n", append = TRUE)
-            cat(paste0(formula7, ""), file = "code/temp-clean.R" , sep = "\n", append = TRUE)
-            cat(paste0(formula8, ""), file = "code/temp-clean.R" , sep = "\n", append = TRUE)
-            cat(paste0(formula9, "} else {cat(\" That variable is not in that frame...\n\") } "), file = "code/temp-clean.R" , sep = "\n", append = TRUE)
-            source("code/temp-clean.R")
-            if (file.exists("code/temp-clean.R")) file.remove("code/temp-clean.R")
-          }
+            cat(paste0("if (\"", as.character(dico.clean[ i, c("fullname")]) , "\" %in% names(", framename, ")) {" ), file = "R/apply_clean.R" , sep = "\n", append = TRUE)
+            cat(paste0(formula1, ""), file = "R/apply_clean.R" , sep = "\n", append = TRUE)
+            cat(paste0(formula2, ""), file = "R/apply_clean.R" , sep = "\n", append = TRUE)
+            cat(paste0(formula3, ""), file = "R/apply_clean.R" , sep = "\n", append = TRUE)
+            cat(paste0(formula4, ""), file = "R/apply_clean.R" , sep = "\n", append = TRUE)
+            cat(paste0(formula5, ""), file = "R/apply_clean.R" , sep = "\n", append = TRUE)
+            cat(paste0(formula6, ""), file = "R/apply_clean.R" , sep = "\n", append = TRUE)
+            cat(paste0(formula7, ""), file = "R/apply_clean.R" , sep = "\n", append = TRUE)
+            cat(paste0(formula8, ""), file = "R/apply_clean.R" , sep = "\n", append = TRUE)
+            cat(paste0(formula9, "} else {cat(\" That variable is not in that frame...\n\") } "), file = "R/apply_clean.R" , sep = "\n", append = TRUE)
+
+          } 
+        source("R/apply_clean.R")
+        #if (file.exists("R/apply_clean.R")) file.remove("R/apply_clean.R")
       }
   }
   return(frame)

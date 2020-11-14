@@ -34,7 +34,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_prediction_report("myform.xls")
+#' kobo_prediction_report("myform.xlsx")
 #' }
 #'
 

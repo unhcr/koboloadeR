@@ -1,7 +1,7 @@
 Type: Package
 Package: koboloadeR
 Title: A Metapackage for Survey Data Crunching
-Version: 0.1.7
+Version: 0.1.8
 Authors@R: 
     c(person(given = "Edouard",
              family = "Legoupil",
@@ -11,6 +11,10 @@ Authors@R:
              family = "Daoud",
              role = "aut",
              email = "daoudma@unhcr.org"),
+      person(given = "Hisham",
+             family = "Galal",
+             role = "aut",
+             email = "galalh@unhcr.org"),
       person(given = "Elliott",
              family = "Messeiller",
              role = "ctb",
@@ -58,6 +62,7 @@ Imports:
     pander,
     pls,
     plyr,
+    qpdf,
     randomForest,
     rattle,
     RColorBrewer,
@@ -82,14 +87,19 @@ Imports:
     stringi,
     stringr,
     survey,
-    tidyverse,
     tools,
     truncnorm,
     tidyverse,
     VIM,
     viridis,
     xgboost,
-    xlsx
+    jsonlite,
+    magrittr,
+    tibble,
+    miniUI,
+    ckanr,
+    openxlsx,
+    fs
 Suggests:
     testthat (>= 2.1.0)
 VignetteBuilder: 

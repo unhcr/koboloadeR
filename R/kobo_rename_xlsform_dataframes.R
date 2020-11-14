@@ -22,7 +22,7 @@
 #'
 
 
-kobo_rename_xlsform_dataframes <- function(form = "form.xls", app="console") {
+kobo_rename_xlsform_dataframes <- function(form = "form.xlsx", app="console") {
   tryCatch({
     mainDir <- kobo_getMainDirectory()
 

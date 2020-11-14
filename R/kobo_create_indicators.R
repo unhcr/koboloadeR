@@ -15,13 +15,13 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_create_indicators("myform.xls")
+#' kobo_create_indicators("myform.xlsx")
 #' }
 #'
 #' @export kobo_create_indicators
 #'
 
-kobo_create_indicators <- function(form = "form.xls") {
+kobo_create_indicators <- function(form = "form.xlsx") {
 
   mainDir <- koboloadeR::kobo_getMainDirectory()
   form_tmp <- paste(mainDir, "data-raw", form, sep = "/", collapse = "/")

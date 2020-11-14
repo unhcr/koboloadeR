@@ -15,7 +15,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_get_begin_repeat("myform.xls")
+#' kobo_get_begin_repeat("myform.xlsx")
 #' }
 #'
 #' @export kobo_get_begin_repeat
@@ -23,7 +23,7 @@
 #'
 #'
 
-kobo_get_begin_repeat <- function(form = "form.xls") {
+kobo_get_begin_repeat <- function(form = "form.xlsx") {
 
   mainDir <- kobo_getMainDirectory()
   form_tmp <- paste(mainDir, "data-raw", form, sep = "/", collapse = "/")

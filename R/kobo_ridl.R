@@ -77,7 +77,7 @@ kobo_submit_ridl_package <- function(metadata, resources) {
 #'   hcrdata::hcrfetch(
 #'     src = "kobo",
 #'     dataset = "My kobo project",
-#'     file = "form.xls") 
+#'     file = "form.xlsx") 
 #' 
 #' dataf <- 
 #'   hcrdata::hcrfetch(
@@ -92,7 +92,7 @@ kobo_submit_ridl_package <- function(metadata, resources) {
 #' Finally, when all is said and done, you can call kobo_submit_to_ridl(formf, dataf) to push the data to RIDL. The function takes care of massaging the submission into the format expected by RIDL. In case you'd like to submit treated data -anything other than the JSON KoBo export- you'll have to prepare the data in the right format manually. See resources.data and resources.meta in the kobo_ridl.R for details on the data structure.
 #' @export kobo_submit_to_ridl
 
-kobo_submit_to_ridl <- function(formf = "data/form.xls", dataf = "data/data.json") {
+kobo_submit_to_ridl <- function(formf = "data/form.xlsx", dataf = "data/data.json") {
   metadata <- formf %>% readxl::read_excel(sheet = "ridl-metadata")
   
   data <- 
@@ -125,7 +125,7 @@ kobo_submit_to_ridl <- function(formf = "data/form.xls", dataf = "data/data.json
       tibble::tibble(
         type = "attachment",
         url = formf,
-        name = "form.xls",
+        name = "form.xlsx",
         description = "XLSform",
         format = "xls",
         file_type = "questionnaire")

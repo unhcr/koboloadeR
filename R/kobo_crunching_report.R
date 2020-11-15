@@ -725,7 +725,13 @@ kobo_crunching_report <- function(form = "form.xlsx",
         # v <- 3
         chaptersname <- as.character(chapters[ v , 1])
 
-        report.name.i.v <- stringr::str_c(report.name, i, v, 0, sep = "-")
+        report.name.i.v <- 
+          stringr::str_c(
+            report.name, 
+            stringr::str_pad(i, 2, pad = "0"), 
+            stringr::str_pad(v, 2, pad = "0"),
+            "00",
+            sep = "-")
 
         ## Getting chapter questions ####################################################################################################
         #chapterquestions <- dico[which(dico$chapter== chaptersname ), c("chapter", "name", "label", "type", "qrepeatlabel", "fullname","listname") ]
@@ -756,7 +762,14 @@ kobo_crunching_report <- function(form = "form.xlsx",
         
         crunch_question <- function(j)
         {
-          report.name.i.v.j <- stringr::str_c(report.name, i, v, j, sep = "-")
+          report.name.i.v <- 
+            stringr::str_c(
+              report.name, 
+              stringr::str_pad(i, 2, pad = "0"), 
+              stringr::str_pad(v, 2, pad = "0"),
+              stringr::str_pad(j, 2, pad = "0"),
+              sep = "-")
+          
           ## Now getting level for each questions
           if (app == "shiny") {
             progress$set(message = paste("Render question: ",as.character(chapterquestions[ j , c("labelReport")])))

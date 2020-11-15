@@ -150,7 +150,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
     utils::write.csv(reports, paste(mainDir,"/data/reports.csv",sep = ""), row.names = FALSE, na = "")
     #save(reports, file =   paste(mainDir,"/data/reports.rda",sep = ""))
 
-
+    future::plan(future::multisession)
     ## For each Report: create a Rmd file -------
 
     ##Loop through defined reports ------------
@@ -725,7 +725,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
         # v <- 3
         chaptersname <- as.character(chapters[ v , 1])
 
-
+        report.name.i.v <- stringr::str_c(report.name, i, v, 0, sep = "-")
 
         ## Getting chapter questions ####################################################################################################
         #chapterquestions <- dico[which(dico$chapter== chaptersname ), c("chapter", "name", "label", "type", "qrepeatlabel", "fullname","listname") ]
@@ -735,12 +735,12 @@ kobo_crunching_report <- function(form = "form.xlsx",
 
         ## add better slides separator
         if (output == "pptx") {
-          cat(paste("---"),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("# ", chaptersname),file = report.name , sep = "\n", append = TRUE)
+          cat(paste("---"),file = report.name.i.v , sep = "\n", append = TRUE)
+          cat(paste("# ", chaptersname),file = report.name.i.v , sep = "\n", append = TRUE)
          # cat(paste0("Linked questions: ", as.character(chapterquestions$labelReport) ),file = report.name , sep = "\n", append = TRUE)
-          cat(paste("---"),file = report.name , sep = "\n", append = TRUE)
+          cat(paste("---"),file = report.name.i.v , sep = "\n", append = TRUE)
         } else  {
-          cat(paste("# ", chaptersname),file = report.name , sep = "\n", append = TRUE)
+          cat(paste("# ", chaptersname),file = report.name.i.v , sep = "\n", append = TRUE)
          # cat(paste("Linked questions: ", as.character(chapterquestions$labelReport) ),file = report.name , sep = "\n", append = TRUE)
         }
         if (app == "shiny") {
@@ -753,9 +753,10 @@ kobo_crunching_report <- function(form = "form.xlsx",
           progress$set(message = "Getting levels for each questions in progress...")
           updateProgress()
         }
-        for (j in 1:nrow(chapterquestions))
+        
+        crunch_question <- function(j)
         {
-          # j <- 9
+          report.name.i.v.j <- stringr::str_c(report.name, i, v, j, sep = "-")
           ## Now getting level for each questions
           if (app == "shiny") {
             progress$set(message = paste("Render question: ",as.character(chapterquestions[ j , c("labelReport")])))
@@ -777,25 +778,25 @@ kobo_crunching_report <- function(form = "form.xlsx",
 
 
           ## write question name
-          cat("\n ",file = report.name , sep = "\n", append = TRUE)
-          cat(paste("## ", questions.label ,sep = ""),file = report.name , sep = "\n", append = TRUE)
+          cat("\n ",file = report.name.i.v.j , sep = "\n", append = TRUE)
+          cat(paste("## ", questions.label ,sep = ""),file = report.name.i.v.j , sep = "\n", append = TRUE)
 
 
           ## Now create para based on question type
 
 
-          cat(paste(if (is.na(questions.hint)){paste0("")} else {paste0("__Interpretation Hint__: ", questions.hint)},"\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
+          cat(paste(if (is.na(questions.hint)){paste0("")} else {paste0("__Interpretation Hint__: ", questions.hint)},"\n\n",sep = ""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
 
           #### Question Type = select_one ###################################################################################################
           if (questions.type == "select_one" ) {
 
             if (lang == "eng") {
-              cat(paste("Single choice question ","\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste("Single choice question ","\n\n",sep = ""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
             } else if (lang == "esp") {
-              cat(paste("Pregunta de selección única ","\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste("Pregunta de selección única ","\n\n",sep = ""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
             } else if (lang == "fre") {
-              cat(paste("Question a choix unique ","\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste("Question a choix unique ","\n\n",sep = ""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
             }
 
 
@@ -823,12 +824,12 @@ kobo_crunching_report <- function(form = "form.xlsx",
             if (nrow(frequ) %in% c("0") ) {
 
               if (lang == "eng") {
-                cat(paste0("No responses  recorded for this question.\n"),file = report.name , sep = "\n", append = TRUE)
+                cat(paste0("No responses  recorded for this question.\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
 
                } else if (lang == "esp") {
-                cat(paste0("No se registraron respuestas  para esta pregunta.\n"),file = report.name , sep = "\n", append = TRUE)
+                cat(paste0("No se registraron respuestas  para esta pregunta.\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
               } else if (lang == "fr") {
-                cat(paste0("Pas de reponses  donne a cette question.\n"),file = report.name , sep = "\n", append = TRUE)
+                cat(paste0("Pas de reponses  donne a cette question.\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
               }
 
               cat("No responses recorded for this question...\n")
@@ -841,21 +842,21 @@ kobo_crunching_report <- function(form = "form.xlsx",
             }   else  if (nrow(frequ) %in% c("1") ) {
               ## Case we a unique modality
               if (lang == "eng") {
-                cat(paste0("The same answer was given (only one modality) recorded for this question.\n"),file = report.name , sep = "\n", append = TRUE)
+                cat(paste0("The same answer was given (only one modality) recorded for this question.\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
 
               } else if (lang == "esp") {
-                cat(paste0("La misma respuesta (sólo una modalidad) se registraron para esta pregunta.\n"),file = report.name , sep = "\n", append = TRUE)
+                cat(paste0("La misma respuesta (sólo una modalidad) se registraron para esta pregunta.\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
               } else if (lang == "fr") {
-                cat(paste0("La meme reponse a toujours ete donne a cette question.\n"),file = report.name , sep = "\n", append = TRUE)
+                cat(paste0("La meme reponse a toujours ete donne a cette question.\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
               }
               if (output == "pptx") {
-                cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name, append = TRUE)
+                cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name.i.v.j, append = TRUE)
               } else {
-                cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight,", size=\"small\"}\n"), file = report.name, append = TRUE)
+                cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight,", size=\"small\"}\n"), file = report.name.i.v.j, append = TRUE)
               }
-              cat(paste0("table(",questions.variable,")"),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("table(",questions.variable,")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
-              cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
+              cat(paste0("\n```\n", sep = '\n'), file = report.name.i.v.j, append = TRUE)
 
             }    else      {
 
@@ -863,16 +864,16 @@ kobo_crunching_report <- function(form = "form.xlsx",
               ## Open chunk
 
               if (output == "pptx") {
-                cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name, append = TRUE)
+                cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name.i.v.j, append = TRUE)
               } else {
-                cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight,", size=\"small\"}\n"), file = report.name, append = TRUE)
+                cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight,", size=\"small\"}\n"), file = report.name.i.v.j, append = TRUE)
               }
 
               #  cat(paste("### Tabulation" ,sep = ""),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("##Compute contingency table"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("frequ <- as.data.frame(table(",questions.variable,"))"),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("##Compute contingency table"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("frequ <- as.data.frame(table(",questions.variable,"))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               #cat(paste0("if (nrow(frequ)==0){ cat(\"No response for this question\") } else{"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("nresp <- sum(frequ$Freq)"),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("nresp <- sum(frequ$Freq)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
               # cat(paste0("## display table"),file = report.name ,sep = "\n", append = TRUE)
               # cat(paste0("## Reorder factor"),file = report.name ,sep = "\n", append = TRUE)
@@ -882,28 +883,28 @@ kobo_crunching_report <- function(form = "form.xlsx",
               ## - if not ordinal order according to frequency - if ordinal order according to order in the dico
               if (questions.ordinal == "ordinal" ) {
                 ### get the list of options in the right order
-                cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", questions.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("levels(frequ$Var1) <- list.ordinal"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", questions.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("levels(frequ$Var1) <- list.ordinal"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               } else {
-                cat(paste0("frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("frequ <- frequ[ order(frequ[ , 1]) ,  ]"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("frequ <- frequ[ order(frequ[ , 1]) ,  ]"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               }
 
 
-              cat(paste0("names(frequ)[1] <- \"", questions.shortname,"\""),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("names(frequ)[1] <- \"", questions.shortname,"\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               # cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("## Frequency table with NA in order to get non response rate"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("frequ1 <- as.data.frame(prop.table(table(", questions.variable,", useNA = \"ifany\")))"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("frequ1 <- frequ1[!(frequ1$Var1 == \"NA\"), ]"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),\"%\")"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("## Frequency table without NA"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("frequ2 <- as.data.frame(prop.table(table(", questions.variable,",useNA = \"no\")))"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("## Frequency table with weight"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("frequ.weight <- as.data.frame(svymean(~ ",questions.name,", design = ",questions.frame,".survey, na.rm = TRUE))"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("## Binding the two"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("frequ3 <- cbind(frequ2,frequ.weight)"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("## Reorder factor"),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("## Frequency table with NA in order to get non response rate"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("frequ1 <- as.data.frame(prop.table(table(", questions.variable,", useNA = \"ifany\")))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("frequ1 <- frequ1[!(is.na(frequ1$Var1)), ]"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("frequ1 <- frequ1[!(frequ1$Var1 == \"NA\"), ]"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("percentreponse <- paste0(round(sum(frequ1$Freq)*100,digits = 1),\"%\")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("## Frequency table without NA"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("frequ2 <- as.data.frame(prop.table(table(", questions.variable,",useNA = \"no\")))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("## Frequency table with weight"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("frequ.weight <- as.data.frame(svymean(~ ",questions.name,", design = ",questions.frame,".survey, na.rm = TRUE))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("## Binding the two"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("frequ3 <- cbind(frequ2,frequ.weight)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("## Reorder factor"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               #    cat(paste0("frequ2[ ,1] = factor(frequ2[ ,1],levels(frequ2[ ,1])[order(frequ2$Freq, decreasing = FALSE)])"),file = report.name ,sep = "\n", append = TRUE)
               #    cat(paste0("frequ2 <- frequ2[ order(frequ2[ , 1]) ,  ]"),file = report.name ,sep = "\n", append = TRUE)
               #    cat(paste0("frequ2[ ,3] <- paste0(round(frequ2[ ,2]*100,digits = 1),\"%\")"),file = report.name ,sep = "\n", append = TRUE)
@@ -911,74 +912,74 @@ kobo_crunching_report <- function(form = "form.xlsx",
 
 
               if (questions.ordinal == "ordinal" ) {
-                cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", questions.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("levels(frequ3$Var1) <- list.ordinal"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", questions.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("levels(frequ3$Var1) <- list.ordinal"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               } else {
-                cat(paste0("frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("frequ3 <- frequ3[ order(frequ3[ , 1]) ,  ]"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               }
 
-              cat(paste0("frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),\"%\")"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("names(frequ3)[5] <- \"freqper2\""),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),\"%\")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("names(frequ3)[5] <- \"freqper2\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
-              cat(paste0("\n"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("## and now the graph"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("geom_bar(fill = \"#2a87c8\", colour = \"#2a87c8\", stat = \"identity\", width = .8) +"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("geom_errorbar(aes(ymin = mean-SE, ymax = mean+SE), size=.4, width=.3, colour = 'grey20') +"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("guides(fill = FALSE) +"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("geom_label_repel(aes(y = mean, label = freqper2), fill = \"#2a87c8\", color = 'white') +"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("ylab(\"Frequency\") +"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("scale_y_continuous(labels = percent) +"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("xlab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("subtitle = paste0(\" Question response rate: \",percentreponse,\"  - respondents: \", nresp),"),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("\n"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("## and now the graph"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("geom_bar(fill = \"#2a87c8\", colour = \"#2a87c8\", stat = \"identity\", width = .8) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("geom_errorbar(aes(ymin = mean-SE, ymax = mean+SE), size=.4, width=.3, colour = 'grey20') +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("guides(fill = FALSE) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("geom_label_repel(aes(y = mean, label = freqper2), fill = \"#2a87c8\", color = 'white') +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("ylab(\"Frequency\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("scale_y_continuous(labels = percent) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("xlab(\"\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("coord_flip() +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("labs(title = \"",questions.label,"\","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("subtitle = paste0(\" Question response rate: \",percentreponse,\"  - respondents: \", nresp),"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \",
                             nrow(MainDataFrame), \" total records collected between \",
                             min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                             max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
-                            configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                            configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
 
 
               if (output == "pptx") {
                 if(unhcRstyle == "TRUE") {
-                  cat(paste0("unhcRstyle::unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
+                  cat(paste0("unhcRstyle::unhcr_style_bar_big()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                 } else {
-                  cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                  cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                 }
 
 
               } else {
                 if(unhcRstyle == "TRUE") {
-                  cat(paste0("unhcRstyle::unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
+                  cat(paste0("unhcRstyle::unhcr_style_bar()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                 } else {
-                  cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                  cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                 }
               }
 
 
-              cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               #cat(paste0("}"),file = report.name ,sep = "\n", append = TRUE)
               ## Close chunk
-              cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
-              cat(paste0("\n\n\n\n", sep = '\n'), file = report.name, append = TRUE)
+              cat(paste0("\n```\n", sep = '\n'), file = report.name.i.v.j, append = TRUE)
+              cat(paste0("\n\n\n\n", sep = '\n'), file = report.name.i.v.j, append = TRUE)
 
 
               ##selectone.crosstabulation
               if (nrow(disaggregation) == 0) {
                 #cat("No disaggregation requested for this question...\n",file = report.name , sep = "\n", append = TRUE)
                 cat("No disaggregation requested for this question...\n")
-                cat("\n", file = report.name, append = TRUE)
+                cat("\n", file = report.name.i.v.j, append = TRUE)
               } else if (nrow(frequ) %in% c("0","1")) {
                 # cat("No responses recorded for this question. No disaggregation...\n",file = report.name , sep = "\n", append = TRUE)
                 cat("No responses or only one modality recorded for this question. No disaggregation...\n")
-                cat("\n", file = report.name, append = TRUE)
+                cat("\n", file = report.name.i.v.j, append = TRUE)
               } else {
 
-                cat(paste("### Cross-tabulations" ,sep = ""),file = report.name ,sep = "\n", append = TRUE)
-                cat("\n", file = report.name, append = TRUE)
+                cat(paste("### Cross-tabulations" ,sep = ""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat("\n", file = report.name.i.v.j, append = TRUE)
 
                 for (h in 1:nrow(disaggregation))
                 {
@@ -997,9 +998,9 @@ kobo_crunching_report <- function(form = "form.xlsx",
 
 
                   if (disag.variable == questions.variable) {
-                    cat(paste0("\n"),file = report.name , sep = "\n", append = TRUE)
+                    cat(paste0("\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
                   } else if (nrow(as.data.frame(table( get(paste0(questions.frame))[[disag.name]]))) == 0) {
-                    cat(paste0("\n"),file = report.name , sep = "\n", append = TRUE)
+                    cat(paste0("\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
                   } else {
 
 
@@ -1022,59 +1023,59 @@ kobo_crunching_report <- function(form = "form.xlsx",
 
                       ## Open chunk
                       if (output == "pptx") {
-                        cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name, append = TRUE)
+                        cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name.i.v.j, append = TRUE)
                       } else {
-                        cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight*3,", size=\"small\"}\n"), file = report.name, append = TRUE)
+                        cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight*3,", size=\"small\"}\n"), file = report.name.i.v.j, append = TRUE)
                       }
                       cat(paste("\n",i,"-", j,"-" , h, " - Render disaggregation : ", disag.label, "for question: ", questions.label,"\n" ))
 
                       ### Just making sure that the variable is actually a numeric one... in case it was not parsed correctly
-                      cat(paste0(questions.frame,"$",disag.name," <- as.numeric(",questions.frame,"$",disag.name,")"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0(questions.frame,"$",disag.name," <- as.numeric(",questions.frame,"$",disag.name,")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                       ## Boxplot
                       ## To do test if there's outliers... ###
                       #if( stats::quantile(questions.frame$disag.name, probs=c(.25, .75), na.rm = T))
 
                       if (disag.ordinal == "ordinal" ) {
-                        cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("levels(",questions.frame,"$",disag.name,") <- list.ordinal"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("levels(",questions.frame,"$",disag.name,") <- list.ordinal"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       } else {}
 
-                      cat(paste0("plot1 <- ggplot(",questions.frame,", aes(x = ",questions.frame,"$",questions.name," , y = ",questions.frame,"$",disag.name,")) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("geom_boxplot(fill = \"#2a87c8\",colour = \"black\" ) + "),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("scale_size_area(max_size = 10) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("guides(fill = FALSE) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("xlab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("ylab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("subtitle = \". By question: ",disag.label,".\","),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("plot1 <- ggplot(",questions.frame,", aes(x = ",questions.frame,"$",questions.name," , y = ",questions.frame,"$",disag.name,")) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("geom_boxplot(fill = \"#2a87c8\",colour = \"black\" ) + "),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("scale_size_area(max_size = 10) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("guides(fill = FALSE) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("xlab(\"\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("ylab(\"\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("coord_flip() +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("labs(title = \"",questions.label,"\","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("subtitle = \". By question: ",disag.label,".\","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \",
                                     nrow(MainDataFrame), \" total records collected between \",
                                     min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                     max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
-                                    configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                                    configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                       if (output == "pptx") {
 
                         if(unhcRstyle == "TRUE") {
-                          cat(paste0("unhcRstyle::unhcr_style_histo_big()"),file = report.name ,sep = "\n", append = TRUE)
+                          cat(paste0("unhcRstyle::unhcr_style_histo_big()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         } else {
-                          cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                          cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         }
 
 
                       } else {
 
                         if(unhcRstyle == "TRUE") {
-                          cat(paste0("unhcRstyle::unhcr_style_histo()"),file = report.name ,sep = "\n", append = TRUE)
+                          cat(paste0("unhcRstyle::unhcr_style_histo()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         } else {
-                          cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                          cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         }
 
                       }
-                      cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
 
                       data.outlier <- get(paste0(questions.frame))[[disag.name]]
@@ -1083,58 +1084,58 @@ kobo_crunching_report <- function(form = "form.xlsx",
                       caps.df <- as.data.frame(stats::quantile(data.outlier, probs = c(.05, .95), na.rm = T))
                       H  <- stats::IQR(data.outlier, na.rm = T)
                       if (H >= 1.349 ) {
-                        cat(paste0("cat(\"No outliers detected...\")"),file = report.name , sep = "\n", append = TRUE)
+                        cat(paste0("cat(\"No outliers detected...\")"),file = report.name.i.v.j , sep = "\n", append = TRUE)
                         cat("\n")
                       } else {
-                        cat(paste0("data.outlier1 <- ",questions.frame,"$",disag.name),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("data.nooutlier1 <- as.data.frame(",questions.frame,"$",disag.name,")"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("qnt1 <- stats::quantile(data.outlier1, probs=c(.25, .75), na.rm = T)"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("caps.df1 <- as.data.frame(stats::quantile(data.outlier1, probs=c(.05, .95), na.rm = T))"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("H1  <- 1.5 * IQR(data.outlier1, na.rm = T)"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("data.nooutlier1[(data.nooutlier1 < (qnt1[1] - H1)) & !(is.na( data.nooutlier1))  ] <- caps.df1[1,1]"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("data.nooutlier1[ (data.nooutlier1 > (qnt1[2] + H1)) & !(is.na(data.nooutlier1)) ] <- caps.df1[2,1]"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("names(data.nooutlier1)[1] <- \"variable\""),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("data.outlier1 <- ",questions.frame,"$",disag.name),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("data.nooutlier1 <- as.data.frame(",questions.frame,"$",disag.name,")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("qnt1 <- stats::quantile(data.outlier1, probs=c(.25, .75), na.rm = T)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("caps.df1 <- as.data.frame(stats::quantile(data.outlier1, probs=c(.05, .95), na.rm = T))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("H1  <- 1.5 * IQR(data.outlier1, na.rm = T)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("data.nooutlier1[(data.nooutlier1 < (qnt1[1] - H1)) & !(is.na( data.nooutlier1))  ] <- caps.df1[1,1]"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("data.nooutlier1[ (data.nooutlier1 > (qnt1[2] + H1)) & !(is.na(data.nooutlier1)) ] <- caps.df1[2,1]"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("names(data.nooutlier1)[1] <- \"variable\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         ## Boxplot with capping treatment
-                        cat(paste0("## Boxplot"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("plot1 <- ggplot(",questions.frame,", aes(y = data.nooutlier1$variable, x = ",questions.frame,"$",questions.name,")) +"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("geom_boxplot(fill = \"#2a87c8\",colour = \"black\") +  #notch=TRUE"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("scale_size_area(max_size = 10) +"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("guides(fill = FALSE) +"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("xlab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("ylab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,".\","),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("## Boxplot"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("plot1 <- ggplot(",questions.frame,", aes(y = data.nooutlier1$variable, x = ",questions.frame,"$",questions.name,")) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("geom_boxplot(fill = \"#2a87c8\",colour = \"black\") +  #notch=TRUE"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("scale_size_area(max_size = 10) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("guides(fill = FALSE) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("xlab(\"\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("ylab(\"\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("coord_flip() +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("labs(title = \"",questions.label,"\","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,".\","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \",
                                             nrow(MainDataFrame), \" total records collected between \",
                                             min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                             max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
-                                            configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                                            configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                         if (output == "pptx") {
 
                           if(unhcRstyle == "TRUE") {
-                            cat(paste0("unhcRstyle::unhcr_style_histo_big()"),file = report.name ,sep = "\n", append = TRUE)
+                            cat(paste0("unhcRstyle::unhcr_style_histo_big()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                           } else {
-                            cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                            cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                           }
 
 
                         } else {
 
                           if(unhcRstyle == "TRUE") {
-                            cat(paste0("unhcRstyle::unhcr_style_histo()"),file = report.name ,sep = "\n", append = TRUE)
+                            cat(paste0("unhcRstyle::unhcr_style_histo()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                           } else {
-                            cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                            cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                           }
 
                         }
 
-                        cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       }
                       ## Close chunk
-                      cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
+                      cat(paste0("\n```\n", sep = '\n'), file = report.name.i.v.j, append = TRUE)
 
                       ## Case #2 - categoric * categoric -> stacked bar plot
                     } else if (disag.type == "select_one") {
@@ -1156,91 +1157,91 @@ kobo_crunching_report <- function(form = "form.xlsx",
 
                       ## Open chunk
                       if (output == "pptx") {
-                        cat(paste0("\n```{r ", questions.name,h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name, append = TRUE)
+                        cat(paste0("\n```{r ", questions.name,h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name.i.v.j, append = TRUE)
                       } else {
-                        cat(paste0("\n```{r ", questions.name,h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight,", size=\"small\"}\n"), file = report.name, append = TRUE)
+                        cat(paste0("\n```{r ", questions.name,h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight,", size=\"small\"}\n"), file = report.name.i.v.j, append = TRUE)
                       }
 
                       cat(paste("\n",i,"-", j,"-" , h, " - Render disaggregation: ", disag.label, "for question: ", questions.label,"\n" ))
 
                       if (disag.ordinal == "ordinal" & questions.ordinal == "ordinal" ) {
-                        cat(paste0("## Reorder factor"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("crosssfrequ.weight <- as.data.frame(prop.table(survey::svytable(~", questions.name ," + ", disag.name,", design = ",questions.frame ,".survey  ), margin = 2))"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("names(crosssfrequ.weight)[1] <- \"quest\""),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("names(crosssfrequ.weight)[2] <- \"disag\""),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),\"%\")"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("levels(crosssfrequ.weight$disag) <- list.ordinal"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", questions.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("levels(crosssfrequ.weight$quest) <- list.ordinal"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("## Reorder factor"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("crosssfrequ.weight <- as.data.frame(prop.table(survey::svytable(~", questions.name ," + ", disag.name,", design = ",questions.frame ,".survey  ), margin = 2))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("names(crosssfrequ.weight)[1] <- \"quest\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("names(crosssfrequ.weight)[2] <- \"disag\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),\"%\")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("levels(crosssfrequ.weight$disag) <- list.ordinal"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", questions.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("levels(crosssfrequ.weight$quest) <- list.ordinal"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                       } else if (disag.ordinal == "ordinal" ) {
-                        cat(paste0("## Reorder factor"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("crosssfrequ.weight <- as.data.frame(prop.table(survey::svytable(~", questions.name ," + ", disag.name,", design = ",questions.frame ,".survey  ), margin = 2))"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("names(crosssfrequ.weight)[1] <- \"quest\""),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("names(crosssfrequ.weight)[2] <- \"disag\""),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),\"%\")"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("levels(crosssfrequ.weight$disag) <- list.ordinal"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("## Reorder factor"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("crosssfrequ.weight <- as.data.frame(prop.table(survey::svytable(~", questions.name ," + ", disag.name,", design = ",questions.frame ,".survey  ), margin = 2))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("names(crosssfrequ.weight)[1] <- \"quest\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("names(crosssfrequ.weight)[2] <- \"disag\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),\"%\")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("levels(crosssfrequ.weight$disag) <- list.ordinal"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                       } else {
-                        cat(paste0("crosssfrequ.weight <- as.data.frame(prop.table(survey::svytable(~", questions.name ," + ", disag.name,", design = ",questions.frame ,".survey  ), margin = 2))"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("names(crosssfrequ.weight)[1] <- \"quest\""),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("names(crosssfrequ.weight)[2] <- \"disag\""),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),\"%\")"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("## Reorder factor"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = \"Freq\")"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))"),file = report.name ,sep = "\n", append = TRUE)
-                        cat(paste0("\n"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("crosssfrequ.weight <- as.data.frame(prop.table(survey::svytable(~", questions.name ," + ", disag.name,", design = ",questions.frame ,".survey  ), margin = 2))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("names(crosssfrequ.weight)[1] <- \"quest\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("names(crosssfrequ.weight)[2] <- \"disag\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),\"%\")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("## Reorder factor"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("cross <- dcast(crosssfrequ.weight, disag  ~ quest, value.var = \"Freq\")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("cross <- cross[ order(cross[ ,2], decreasing = FALSE) ,  ]"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("crosssfrequ.weight$disag <- factor(crosssfrequ.weight$disag, levels = as.character(cross[ ,1]))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("\n"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       }
 
 
-                      cat(paste0("## and now the graph"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("plot1 <- ggplot(crosssfrequ.weight, aes(fill = crosssfrequ.weight$quest, y = crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("geom_bar(colour = \"white\", stat = \"identity\", width = .8, aes(fill = quest), position = position_stack(reverse = TRUE)) +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("## and now the graph"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("plot1 <- ggplot(crosssfrequ.weight, aes(fill = crosssfrequ.weight$quest, y = crosssfrequ.weight$Freq, x = crosssfrequ.weight$disag)) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("geom_bar(colour = \"white\", stat = \"identity\", width = .8, aes(fill = quest), position = position_stack(reverse = TRUE)) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       #cat(paste0("geom_label_repel(aes(label = Freq2), fill = \"#2a87c8\", color = 'white') +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("ylab(\"Frequency\") +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("ylab(\"Frequency\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       #cat(paste0("facet_wrap(~disag, ncol=3) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("scale_y_continuous(labels = percent) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("scale_fill_viridis(discrete = TRUE) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("xlab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("labs(title = \"",questions.label," (color)\","),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("subtitle = \" By question: ",disag.label," (bar)\","),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("scale_y_continuous(labels = percent) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("scale_fill_viridis(discrete = TRUE) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("xlab(\"\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("coord_flip() +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("labs(title = \"",questions.label," (color)\","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("subtitle = \" By question: ",disag.label," (bar)\","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \",
                                   nrow(MainDataFrame), \" total records collected between \",
                                   min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                   max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
-                                           configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                                           configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                       ## setting up the legend
                       #cat(paste0("guides(fill = FALSE) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("theme(legend.direction = \"horizontal\", legend.position = \"bottom\", legend.box = \"horizontal\",legend.title = element_blank()  ) +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("theme(legend.direction = \"horizontal\", legend.position = \"bottom\", legend.box = \"horizontal\",legend.title = element_blank()  ) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                       if (output == "pptx") {
 
                         if(unhcRstyle == "TRUE") {
-                          cat(paste0("unhcRstyle::unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
+                          cat(paste0("unhcRstyle::unhcr_style_bar_big()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         } else {
-                          cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                          cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         }
 
 
                       } else {
 
                         if(unhcRstyle == "TRUE") {
-                          cat(paste0("unhcRstyle::unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
+                          cat(paste0("unhcRstyle::unhcr_style_bar()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         } else {
-                          cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                          cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         }
 
                       }
-                      cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                       ## Close chunk
-                      cat(paste0("\n```\n", sep = ""), file = report.name, append = TRUE)
-                      cat("\n", file = report.name, append = TRUE)
+                      cat(paste0("\n```\n", sep = ""), file = report.name.i.v.j, append = TRUE)
+                      cat("\n", file = report.name.i.v.j, append = TRUE)
 
                     }
                   }
@@ -1261,33 +1262,33 @@ kobo_crunching_report <- function(form = "form.xlsx",
 
               if (nrow(correlationdf) == 0 ) {
                 if (lang == "eng") {
-                  cat("No correlation requested for this question.\n",file = report.name , sep = "\n", append = TRUE)
+                  cat("No correlation requested for this question.\n",file = report.name.i.v.j , sep = "\n", append = TRUE)
                 } else if (lang == "esp") {
-                  cat(paste0("No se solicita correlación para esta pregunta.\n"),file = report.name , sep = "\n", append = TRUE)
+                  cat(paste0("No se solicita correlación para esta pregunta.\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
                 } else if (lang == "esp") {
-                  cat(paste0("Pas de recherche de correlation configuree pour cette question.\n"),file = report.name , sep = "\n", append = TRUE)
+                  cat(paste0("Pas de recherche de correlation configuree pour cette question.\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
                 }
 
                 cat("No correlation requested for this question...\n")
-                cat("\n", file = report.name, append = TRUE)
+                cat("\n", file = report.name.i.v.j, append = TRUE)
               } else if (nrow(frequ) %in% c("0","1")) {
                 #cat("No responses recorded for this question. No analysis of correlation...\n",file = report.name , sep = "\n", append = TRUE)
                 cat("No responses recorded for this question. No analysis of correlation...\n")
-                cat("\n", file = report.name, append = TRUE)
+                cat("\n", file = report.name.i.v.j, append = TRUE)
               } else {
 
-                cat("\n", file = report.name, append = TRUE)
+                cat("\n", file = report.name.i.v.j, append = TRUE)
 
                 if (lang == "eng") {
-                  cat(paste("### Significant Associations (chi-square with p value < 5%)" ,sep = ""),file = report.name ,sep = "\n", append = TRUE)
+                  cat(paste("### Significant Associations (chi-square with p value < 5%)" ,sep = ""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                 } else if (lang == "esp") {
-                  cat(paste0("### Asociaciones significativas (chi-cuadrado con valor p <5%)"),file = report.name , sep = "\n", append = TRUE)
+                  cat(paste0("### Asociaciones significativas (chi-cuadrado con valor p <5%)"),file = report.name.i.v.j , sep = "\n", append = TRUE)
                 } else if (lang == "fre") {
-                  cat(paste0("### Asociation significatives (test chi-deux p <5%)"),file = report.name , sep = "\n", append = TRUE)
+                  cat(paste0("### Asociation significatives (test chi-deux p <5%)"),file = report.name.i.v.j , sep = "\n", append = TRUE)
                 }
 
 
-                cat("\n", file = report.name, append = TRUE)
+                cat("\n", file = report.name.i.v.j, append = TRUE)
 
                 rm(chiquare.resultall)
                 chiquare.resultall <- data.frame(c(1))
@@ -1351,7 +1352,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
 
                 ### Case there not any positive test
                 if (nrow(chiquare.true) == 0 ) {
-                  cat("No significant association found for this question...\n",file = report.name , sep = "\n", append = TRUE)
+                  cat("No significant association found for this question...\n",file = report.name.i.v.j , sep = "\n", append = TRUE)
                   cat("No significant association found for this question...\n")
 
                 } else {
@@ -1372,23 +1373,23 @@ kobo_crunching_report <- function(form = "form.xlsx",
 
                     ## Open chunk
                     if (output == "pptx") {
-                      cat(paste0("\n```{r ", questions.name,"ccc",m, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name, append = TRUE)
+                      cat(paste0("\n```{r ", questions.name,"ccc",m, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name.i.v.j, append = TRUE)
                     } else {
-                       cat(paste0("\n```{r ", questions.name,"ccc",m, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=6, size=\"small\"}\n"), file = report.name, append = TRUE)
+                       cat(paste0("\n```{r ", questions.name,"ccc",m, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=6, size=\"small\"}\n"), file = report.name.i.v.j, append = TRUE)
                     }
-                    cat(paste0("corrplot(stats::chisq.test(",formula.target1,",", formula.tested1,")$residuals,"), file = report.name , sep = "\n", append = TRUE)
-                    cat(paste0("is.cor = FALSE, # use for general matrix to convert to Sq form"), file = report.name , sep = "\n", append = TRUE)
-                    cat(paste0("cl.pos = \"n\", ## Do not display the color legend"), file = report.name , sep = "\n", append = TRUE)
-                    cat(paste0("cl.cex = 0.7, # Size of all label"), file = report.name , sep = "\n", append = TRUE)
-                    cat(paste0("tl.cex = 0.7, # Size of axis label"), file = report.name , sep = "\n", append = TRUE)
-                    cat(paste0("tl.srt = 45, # string rotation in degrees"), file = report.name , sep = "\n", append = TRUE)
-                    cat(paste0("tl.col = \"black\", # color of text label."), file = report.name , sep = "\n", append = TRUE)
-                    cat(paste0("addCoef.col = \"grey\", # add coeff in the chart"), file = report.name , sep = "\n", append = TRUE)
-                    cat(paste0("number.cex = 3/ncol(stats::chisq.test(",formula.target1,",", formula.tested1,")), # size of coeff"), file = report.name , sep = "\n", append = TRUE)
-                    cat(paste0("mar = c(0.5,0.5,4, 0.5), ## margin of plots"), file = report.name , sep = "\n", append = TRUE)
-                    cat(paste0("title = paste0(\"Correlation between", "\n",target.label," (row)\n", " & ",tested.label," (col)\")) "), file = report.name , sep = "\n", append = TRUE)
+                    cat(paste0("corrplot(stats::chisq.test(",formula.target1,",", formula.tested1,")$residuals,"), file = report.name.i.v.j , sep = "\n", append = TRUE)
+                    cat(paste0("is.cor = FALSE, # use for general matrix to convert to Sq form"), file = report.name.i.v.j , sep = "\n", append = TRUE)
+                    cat(paste0("cl.pos = \"n\", ## Do not display the color legend"), file = report.name.i.v.j , sep = "\n", append = TRUE)
+                    cat(paste0("cl.cex = 0.7, # Size of all label"), file = report.name.i.v.j , sep = "\n", append = TRUE)
+                    cat(paste0("tl.cex = 0.7, # Size of axis label"), file = report.name.i.v.j , sep = "\n", append = TRUE)
+                    cat(paste0("tl.srt = 45, # string rotation in degrees"), file = report.name.i.v.j , sep = "\n", append = TRUE)
+                    cat(paste0("tl.col = \"black\", # color of text label."), file = report.name.i.v.j , sep = "\n", append = TRUE)
+                    cat(paste0("addCoef.col = \"grey\", # add coeff in the chart"), file = report.name.i.v.j , sep = "\n", append = TRUE)
+                    cat(paste0("number.cex = 3/ncol(stats::chisq.test(",formula.target1,",", formula.tested1,")), # size of coeff"), file = report.name.i.v.j , sep = "\n", append = TRUE)
+                    cat(paste0("mar = c(0.5,0.5,4, 0.5), ## margin of plots"), file = report.name.i.v.j , sep = "\n", append = TRUE)
+                    cat(paste0("title = paste0(\"Correlation between", "\n",target.label," (row)\n", " & ",tested.label," (col)\")) "), file = report.name.i.v.j , sep = "\n", append = TRUE)
                     ## Close chunk
-                    cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
+                    cat(paste0("\n```\n", sep = '\n'), file = report.name.i.v.j, append = TRUE)
                   }
                 }
               }
@@ -1397,7 +1398,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
 
             #### Question Type = numeric ####################################################################################################
           } else if (questions.type == "decimal" | questions.type == "integer" | questions.type == "numeric" | questions.type == "calculate") {
-            cat(paste("Numeric question  " ,"\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
+            cat(paste("Numeric question  " ,"\n\n",sep = ""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
             ## Check the lenght of the table to see if we can display it or not...
             frequ <- as.data.frame(table( get(paste0(questions.frame))[[questions.name]]))
@@ -1407,13 +1408,13 @@ kobo_crunching_report <- function(form = "form.xlsx",
 
             ## Open chunk
             if (output == "pptx") {
-              cat(paste0("\n```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name, append = TRUE)
+              cat(paste0("\n```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name.i.v.j, append = TRUE)
             } else {
-              cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=4, size=\"small\"}\n", sep = '\n'), file = report.name, append = TRUE)
+              cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=4, size=\"small\"}\n", sep = '\n'), file = report.name.i.v.j, append = TRUE)
             }
             ### Just making sure that the variable is actually a numeric one... in case it was not parsed correctly
-            cat(paste0(questions.frame,"$",questions.name," <- as.numeric(",questions.frame,"$",questions.name,")"),file = report.name ,sep = "\n", append = TRUE)
-            cat(paste0("frequ <- as.data.frame(table(",questions.variable,"))"),file = report.name ,sep = "\n", append = TRUE)
+            cat(paste0(questions.frame,"$",questions.name," <- as.numeric(",questions.frame,"$",questions.name,")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+            cat(paste0("frequ <- as.data.frame(table(",questions.variable,"))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
             ### Check if we have records or if we have too many records
             if (nrow(frequ) %in% c("0","1")) {
@@ -1432,7 +1433,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
               cat("\n")
             } else {
 
-              cat(paste0("average <- as.data.frame(survey::svymean(~ ",questions.name,", design = ",questions.frame,".survey, na.rm = TRUE))"),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("average <- as.data.frame(survey::svymean(~ ",questions.name,", design = ",questions.frame,".survey, na.rm = TRUE))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               #cat(paste0("cat(paste0(\"Based on the sample design, the average weighted mean response for this question is \", as.numeric(round(average$mean, digits = 2))))"),file = report.name ,sep = "\n", append = TRUE)
               #  cat(paste0("sd <- as.data.frame(jtools::svysd(~ ",questions.name,", design = ",questions.frame,".survey, na.rm = TRUE))"),file = report.name ,sep = "\n", append = TRUE)
               # cat(paste0("cat(paste0(\"Based on the sample design, the average weighted standard deviation for this question is \", as.numeric(round(sd, digits = 2))))"),file = report.name ,sep = "\n", append = TRUE)
@@ -1452,109 +1453,109 @@ kobo_crunching_report <- function(form = "form.xlsx",
               if (H >= 1.349 ) {
               # cat(paste0("cat(\"No outliers detected...\")"),file = report.name , sep = "\n", append = TRUE)
 
-              cat(paste0("#  regular histogram"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("geom_bar(fill = \"#2a87c8\",colour = \"white\", stat = \"identity\", width = .8) +"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("labs(x = \"\", y = \"Count\") +"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("subtitle = paste0(\"No obvious outliers detected, based on the sample design, the average weighted mean response for this question is \", as.numeric(round(average$mean, digits = 2)))\n"),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("#  regular histogram"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("plot1 <- ggplot(data = frequ, aes(x = frequ$Var1, y = frequ$Freq)) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("geom_bar(fill = \"#2a87c8\",colour = \"white\", stat = \"identity\", width = .8) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("labs(x = \"\", y = \"Count\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("labs(title = \"",questions.label,"\","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("subtitle = paste0(\"No obvious outliers detected, based on the sample design, the average weighted mean response for this question is \", as.numeric(round(average$mean, digits = 2)))\n"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               # cat(paste0("\"Mean: \",round(mean(frequ$Var1),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
               # cat(paste0("\"Standard Deviation: \",round(sd(frequ$Var1),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
               #cat(paste0("\"Coefficient of Variation: \",round(cv(frequ$Var1),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
               #cat(paste0("\"Skewness: \",round(skewness(frequ$Var1),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
               #cat(paste0("\"and Kurtosis: \",round(kurtosis(frequ$Var1),2) ,\n\""), file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0(","),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0(","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \",
                         nrow(MainDataFrame), \" total records collected between \",
                         min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                         max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
-                         configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                         configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
 
               if (output == "pptx") {
 
                 if(unhcRstyle == "TRUE") {
-                  cat(paste0("unhcRstyle::unhcr_style_histo_big()"),file = report.name ,sep = "\n", append = TRUE)
+                  cat(paste0("unhcRstyle::unhcr_style_histo_big()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                 } else {
-                  cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                  cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                 }
 
 
               } else {
 
                 if(unhcRstyle == "TRUE") {
-                  cat(paste0("unhcRstyle::unhcr_style_histo()"),file = report.name ,sep = "\n", append = TRUE)
+                  cat(paste0("unhcRstyle::unhcr_style_histo()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                 } else {
-                  cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                  cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                 }
 
               }
-              cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
-              cat(paste0("\n\n"),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("\n\n"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               cat("\n")
               } else {
 
-                cat(paste0("data.outlier <- ",questions.frame,"$",questions.name),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("data.nooutlier <- as.data.frame(",questions.frame,"$",questions.name,")"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("qnt <- stats::quantile(data.outlier, probs = c(.25, .75), na.rm = T)"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("caps.df <- as.data.frame(stats::quantile(data.outlier, probs = c(.05, .95), na.rm = T))"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("H  <- 1.5 * stats::IQR(data.outlier, na.rm = T)"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("data.outlier <- ",questions.frame,"$",questions.name),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("data.nooutlier <- as.data.frame(",questions.frame,"$",questions.name,")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("qnt <- stats::quantile(data.outlier, probs = c(.25, .75), na.rm = T)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("caps.df <- as.data.frame(stats::quantile(data.outlier, probs = c(.05, .95), na.rm = T))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("H  <- 1.5 * stats::IQR(data.outlier, na.rm = T)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
-                cat(paste0("data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("names(data.nooutlier)[1] <- \"variable\""),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("data.nooutlier[(data.nooutlier < (qnt[1] - H)) & !(is.na(data.nooutlier))  ] <- caps.df[1,1]"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("data.nooutlier[ (data.nooutlier > (qnt[2] + H)) & !(is.na(data.nooutlier)) ] <- caps.df[2,1]"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("names(data.nooutlier)[1] <- \"variable\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
 
                 ### Now graphs with treated variable
-                cat(paste0("plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("geom_histogram(color = \"white\",fill = \"#2a87c8\", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("labs(x = \"\", y = \"Count\") +"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("subtitle = \"After data capping treatement:\n\""),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("plot1 <- ggplot(data = data.nooutlier, aes(x = data.nooutlier$variable)) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("geom_histogram(color = \"white\",fill = \"#2a87c8\", breaks = pretty(data.nooutlier$variable, n = nclass.Sturges(data.nooutlier$variable),min.n = 1)) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("labs(x = \"\", y = \"Count\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("labs(title = \"",questions.label,"\","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("subtitle = \"After data capping treatement:\n\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                 #cat(paste0("\"Mean: \",round(mean(data.nooutlier$variable),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
                 #cat(paste0("\"Standard Deviation: \",round(sd(data.nooutlier$variable),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
                 #cat(paste0("\"Coefficient of Variation: \",round(cv(data.nooutlier$variable),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
                 #cat(paste0("\"Skewness: \",round(skewness(data.nooutlier$variable),2) ,\n\""),file = report.name ,sep = "\n", append = TRUE)
                 #cat(paste0("\"and Kurtosis: \",round(kurtosis(data.nooutlier$variable),2) ,\n\""), file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0(","),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0(","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                 cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \",
                             nrow(MainDataFrame), \" total records collected between \",
                             min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                             max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
-                            configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                            configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                 if (output == "pptx") {
                   if(unhcRstyle == "TRUE") {
-                    cat(paste0("unhcRstyle::unhcr_style_histo_big()"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("unhcRstyle::unhcr_style_histo_big()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                   } else {
-                    cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                   }
                 } else {
                   if(unhcRstyle == "TRUE") {
-                    cat(paste0("unhcRstyle::unhcr_style_histo()"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("unhcRstyle::unhcr_style_histo()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                   } else {
-                    cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                   }
                 }
-                cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               }
             }
             ## Close chunk
-            cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
+            cat(paste0("\n```\n", sep = '\n'), file = report.name.i.v.j, append = TRUE)
 
             ###Decimal.crosstabulation
             if (nrow(disaggregation) == 0) {
-              cat("No disaggregation requested for this question...\n",file = report.name , sep = "\n", append = TRUE)
+              cat("No disaggregation requested for this question...\n",file = report.name.i.v.j , sep = "\n", append = TRUE)
               cat("No disaggregation requested for this question...\n")
-              cat("\n", file = report.name, append = TRUE)
+              cat("\n", file = report.name.i.v.j, append = TRUE)
             } else if (nrow(frequ) %in% c("0","1")) {
               # cat("No responses recorded for this question. No disaggregation...\n",file = report.name , sep = "\n", append = TRUE)
               cat("No responses recorded for this question. No disaggregation...\n")
-              cat("\n", file = report.name, append = TRUE)
+              cat("\n", file = report.name.i.v.j, append = TRUE)
             } else {
 
 
-              cat(paste("### Analysis of relationship" ,sep = ""),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste("### Analysis of relationship" ,sep = ""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               for (h in 1:nrow(disaggregation)) {
                 #h <-1
                 ## Now getting level for each questions
@@ -1569,9 +1570,9 @@ kobo_crunching_report <- function(form = "form.xlsx",
                 disag.variable <- paste0(questions.frame,"$",disag.name)
 
                 if (disag.variable == questions.variable) {
-                  cat(paste0("\n"),file = report.name , sep = "\n", append = TRUE)
+                  cat(paste0("\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
                 }  else if (nrow(as.data.frame(table( get(paste0(questions.frame))[[disag.name]]))) == 0) {
-                  cat(paste0("\n"),file = report.name , sep = "\n", append = TRUE)
+                  cat(paste0("\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
                 } else {
 
 
@@ -1596,95 +1597,95 @@ kobo_crunching_report <- function(form = "form.xlsx",
 
                     ## Open chunk
                     if (output == "pptx") {
-                      cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name, append = TRUE)
+                      cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name.i.v.j, append = TRUE)
                     } else {
-                      cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight,", size=\"small\"}\n"), file = report.name, append = TRUE)
+                      cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=",figheight,", size=\"small\"}\n"), file = report.name.i.v.j, append = TRUE)
                     }
                     cat(paste("\n", i,"-", j,"-" , h, " - Render disaggregation : ", disag.label, "for question: ", questions.label,"\n" ))
 
                     ## account of Ordinal variable
                     if (disag.ordinal == "ordinal") {
-                      cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0(questions.frame,"$",disag.name," <- as.factor(",questions.frame,"$",disag.name,")"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("levels(",questions.frame,"$",disag.name,") <- list.ordinal"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("\n"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0(questions.frame,"$",disag.name," <- as.factor(",questions.frame,"$",disag.name,")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("levels(",questions.frame,"$",disag.name,") <- list.ordinal"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("\n"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                     } else {
-                      cat(paste0("\n"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("\n"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                     }
 
 
                     ## Boxplot
 
-                    cat(paste0("plot1 <- ggplot(",questions.frame,", aes(y=",questions.frame,"$",questions.name," , x=",questions.frame,"$",disag.name,")) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("geom_boxplot(fill = \"#2a87c8\",colour = \"black\") + "),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("scale_size_area(max_size = 10) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("guides(fill = FALSE) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("xlab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("ylab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("scale_y_continuous(breaks = pretty_breaks()) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("subtitle = \"by question: ",disag.label,"\","),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("plot1 <- ggplot(",questions.frame,", aes(y=",questions.frame,"$",questions.name," , x=",questions.frame,"$",disag.name,")) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("geom_boxplot(fill = \"#2a87c8\",colour = \"black\") + "),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("scale_size_area(max_size = 10) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("guides(fill = FALSE) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("xlab(\"\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("ylab(\"\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("coord_flip() +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("scale_y_continuous(breaks = pretty_breaks()) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("labs(title = \"",questions.label,"\","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("subtitle = \"by question: ",disag.label,"\","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                     cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \",
                                  nrow(MainDataFrame), \" total records collected between \",
                                  min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                  max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
-                                 configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                                 configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                     if (output == "pptx") {
                       if(unhcRstyle == "TRUE") {
-                        cat(paste0("unhcRstyle::unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("unhcRstyle::unhcr_style_bar_big()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       } else {
-                        cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       }
                     } else {
                       if(unhcRstyle == "TRUE") {
-                        cat(paste0("unhcRstyle::unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("unhcRstyle::unhcr_style_bar()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       } else {
-                        cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       }
                     }
-                    cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                     if (H >= 1.349) {
-                      cat(paste0("cat(\"No outliers detected...\")"),file = report.name , sep = "\n", append = TRUE)
+                      cat(paste0("cat(\"No outliers detected...\")"),file = report.name.i.v.j , sep = "\n", append = TRUE)
                       cat("\n")
                     } else {
                       ## Boxplot with capping treatment
-                      cat(paste0("## Boxplot"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("plot1 <- ggplot(",questions.frame,", aes(y=data.nooutlier$variable, x= ",questions.frame,"$",disag.name,")) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("geom_boxplot(fill = \"#2a87c8\",colour = \"black\") +  #notch=TRUE"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("scale_size_area(max_size = 10) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("guides(fill = FALSE) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("xlab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("ylab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("scale_y_continuous(breaks = pretty_breaks()) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,"\","),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("## Boxplot"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("plot1 <- ggplot(",questions.frame,", aes(y=data.nooutlier$variable, x= ",questions.frame,"$",disag.name,")) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("geom_boxplot(fill = \"#2a87c8\",colour = \"black\") +  #notch=TRUE"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("scale_size_area(max_size = 10) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("guides(fill = FALSE) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("xlab(\"\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("ylab(\"\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("coord_flip() +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("scale_y_continuous(breaks = pretty_breaks()) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("labs(title = \"",questions.label,"\","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("subtitle = \"After data capping treatement. By question: ",disag.label,"\","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \",
                                       nrow(MainDataFrame), \" total records collected between \",
                                       min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                       max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
-                                      configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                                      configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                       if (output == "pptx") {
                         if(unhcRstyle == "TRUE") {
-                          cat(paste0("unhcRstyle::unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
+                          cat(paste0("unhcRstyle::unhcr_style_bar_big()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         } else {
-                          cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                          cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         }
                       } else {
                         if(unhcRstyle == "TRUE") {
-                          cat(paste0("unhcRstyle::unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
+                          cat(paste0("unhcRstyle::unhcr_style_bar()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         } else {
-                          cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                          cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         }
                       }
-                      cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                     }
                     ## Close chunk
-                    cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
+                    cat(paste0("\n```\n", sep = '\n'), file = report.name.i.v.j, append = TRUE)
 
                     ## Case #2 - numeric*numeric -> scatter plot
                   } else if (disag.type == "integer") {
@@ -1692,90 +1693,90 @@ kobo_crunching_report <- function(form = "form.xlsx",
                     ## Open chunk
 
                     if (output == "pptx") {
-                      cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name, append = TRUE)
+                      cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name.i.v.j, append = TRUE)
                     } else {
-                      cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=8, size=\"small\"}\n"), file = report.name, append = TRUE)
+                      cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=8, size=\"small\"}\n"), file = report.name.i.v.j, append = TRUE)
                     }
                     cat(paste("\n", i,"-", j,"-" , h, " - Render disaggregation : ", disag.label, "for question: ", questions.label,"\n" ))
 
 
-                    cat(paste0("data.outlier1 <- ",questions.frame,"$",disag.name),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("data.nooutlier1 <- as.data.frame(",questions.frame,"$",disag.name,")"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("qnt1 <- stats::quantile(data.outlier1, probs=c(.25, .75), na.rm = T)"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("caps.df1 <- as.data.frame(stats::quantile(data.outlier1, probs=c(.05, .95), na.rm = T))"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("H1  <- 1.5 * IQR(data.outlier1, na.rm = T)"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("data.nooutlier1[(data.nooutlier1 < (qnt1[1] - H)) & !(is.na( data.nooutlier1))  ] <- caps.df1[1,1]"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("data.nooutlier1[ (data.nooutlier1 > (qnt1[2] + H)) & !(is.na(data.nooutlier1)) ] <- caps.df1[2,1]"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("names(data.nooutlier1)[1] <- \"variable\""),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("data.outlier1 <- ",questions.frame,"$",disag.name),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("data.nooutlier1 <- as.data.frame(",questions.frame,"$",disag.name,")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("qnt1 <- stats::quantile(data.outlier1, probs=c(.25, .75), na.rm = T)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("caps.df1 <- as.data.frame(stats::quantile(data.outlier1, probs=c(.05, .95), na.rm = T))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("H1  <- 1.5 * IQR(data.outlier1, na.rm = T)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("data.nooutlier1[(data.nooutlier1 < (qnt1[1] - H)) & !(is.na( data.nooutlier1))  ] <- caps.df1[1,1]"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("data.nooutlier1[ (data.nooutlier1 > (qnt1[2] + H)) & !(is.na(data.nooutlier1)) ] <- caps.df1[2,1]"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("names(data.nooutlier1)[1] <- \"variable\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
-                    cat(paste0("## Scatter plot"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("plot1 <- ggplot(",questions.frame,", aes(x= ",questions.frame,"$",disag.name, ", y=",questions.frame,"$",questions.name,")) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("geom_count(aes(size = ..prop.., group = 1)) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("scale_size_area(max_size = 10) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("guides(fill = FALSE) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("scale_x_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("# xlab(correllabel) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("# ylab(variablelabel) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("geom_smooth(method=lm) +  # Add a loess smoothed fit curve with confidence region"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("labs(title = \"Scatterplot before data capping treatment\","),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("## Scatter plot"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("plot1 <- ggplot(",questions.frame,", aes(x= ",questions.frame,"$",disag.name, ", y=",questions.frame,"$",questions.name,")) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("geom_count(aes(size = ..prop.., group = 1)) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("scale_size_area(max_size = 10) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("guides(fill = FALSE) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("scale_x_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("# xlab(correllabel) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("# ylab(variablelabel) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("geom_smooth(method=lm) +  # Add a loess smoothed fit curve with confidence region"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("labs(title = \"Scatterplot before data capping treatment\","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                     cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \",
                                 nrow(MainDataFrame), \" total records collected between \",
                                 min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                 max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
-                                configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                                configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                     if (output == "pptx") {
                       if(unhcRstyle == "TRUE") {
-                        cat(paste0("unhcRstyle::unhcr_style_scatter_big()"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("unhcRstyle::unhcr_style_scatter_big()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       } else {
-                        cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       }
                     } else {
                       if(unhcRstyle == "TRUE") {
-                        cat(paste0("unhcRstyle::unhcr_style_scatter()"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("unhcRstyle::unhcr_style_scatter()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       } else {
-                        cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       }
                     }
-                    cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
 
 
-                    cat(paste0("## Scatter plot rev "),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("plot1 <- ggplot(",questions.frame,", aes(x= data.nooutlier$variable, y=data.nooutlier1$variable )) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("geom_count(aes(size = ..prop.., group = 1)) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("scale_size_area(max_size = 10) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("guides(fill = FALSE) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("scale_x_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("# xlab(correllabel) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("#ylab(variablelabel) +"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("geom_smooth(method=lm) +  # Add a loess smoothed fit curve with confidence region"),file = report.name ,sep = "\n", append = TRUE)
-                    cat(paste0("labs(title = \"Scatterplot after data capping treatment\") ,"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("## Scatter plot rev "),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("plot1 <- ggplot(",questions.frame,", aes(x= data.nooutlier$variable, y=data.nooutlier1$variable )) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("geom_count(aes(size = ..prop.., group = 1)) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("scale_size_area(max_size = 10) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("guides(fill = FALSE) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("scale_y_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("scale_x_continuous(breaks = pretty_breaks(), label = format_si()) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("# xlab(correllabel) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("#ylab(variablelabel) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("geom_smooth(method=lm) +  # Add a loess smoothed fit curve with confidence region"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                    cat(paste0("labs(title = \"Scatterplot after data capping treatment\") ,"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                     cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \",
                                 nrow(MainDataFrame), \" total records collected between \",
                                 min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                 max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
-                                configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                                configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                     if (output == "pptx") {
                       if(unhcRstyle == "TRUE") {
-                        cat(paste0("unhcRstyle::unhcr_style_scatter_big()"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("unhcRstyle::unhcr_style_scatter_big()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       } else {
-                        cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       }
                     } else {
                       if(unhcRstyle == "TRUE") {
-                        cat(paste0("unhcRstyle::unhcr_scatter_histo()"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("unhcRstyle::unhcr_scatter_histo()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       } else {
-                        cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                        cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       }
                     }
-                    cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                     ## Close chunk
-                    cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
+                    cat(paste0("\n```\n", sep = '\n'), file = report.name.i.v.j, append = TRUE)
                   }
                 }
               }
@@ -1786,11 +1787,11 @@ kobo_crunching_report <- function(form = "form.xlsx",
 
           } else if ( questions.type == "select_multiple_d" ) {
             if (lang == "eng") {
-              cat(paste("Multiple choice question ","\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste("Multiple choice question ","\n",sep = ""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
             } else if (lang == "esp") {
-              cat(paste("Pregunta de selección múltiple ","\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste("Pregunta de selección múltiple ","\n",sep = ""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
             } else if (lang == "fre") {
-              cat(paste("Question a choix multiple ","\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste("Question a choix multiple ","\n",sep = ""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
             }
 
 
@@ -1819,11 +1820,11 @@ kobo_crunching_report <- function(form = "form.xlsx",
               #cat("No responses recorded for this question...\n",file = report.name , sep = "\n", append = TRUE)
               cat("No responses recorded for this question...\n")
               if (lang == "eng") {
-                cat(paste("No responses recorded for this question ","\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste("No responses recorded for this question ","\n\n",sep = ""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               } else if (lang == "esp") {
-                cat(paste("No hay respuestas registradas para esta pregunta ","\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste("No hay respuestas registradas para esta pregunta ","\n\n",sep = ""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               } else if (lang == "fre") {
-                cat(paste("Aucune réponse enregistrée pour cette question","\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste("Aucune réponse enregistrée pour cette question","\n\n",sep = ""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               }
 
             } else {
@@ -1849,11 +1850,11 @@ kobo_crunching_report <- function(form = "form.xlsx",
               if (nrow(frequ) %in% c("0","1") |  nrow(meltdata) == 0) {
 
                 if (lang == "eng") {
-                  cat(paste0("No responses or the same answer was given (only one modality) recorded for this question.\n"),file = report.name , sep = "\n", append = TRUE)
+                  cat(paste0("No responses or the same answer was given (only one modality) recorded for this question.\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
                 } else if (lang == "esp") {
-                  cat(paste0("No se registraron respuestas o se da la misma respuesta (sólo una modalidad) para esta pregunta.\n"),file = report.name , sep = "\n", append = TRUE)
+                  cat(paste0("No se registraron respuestas o se da la misma respuesta (sólo una modalidad) para esta pregunta.\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
                 } else if (lang == "fr") {
-                  cat(paste0("Pas de reponses - ou alors la meme reponse a toujours ete donne a cette question.\n"),file = report.name , sep = "\n", append = TRUE)
+                  cat(paste0("Pas de reponses - ou alors la meme reponse a toujours ete donne a cette question.\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
                 }
                 cat("No responses recorded for this question...\n")
 
@@ -1861,82 +1862,82 @@ kobo_crunching_report <- function(form = "form.xlsx",
 
                 ## Open chunk
                 if (output == "pptx") {
-                  cat(paste0("\n```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name, append = TRUE)
+                  cat(paste0("\n```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name.i.v.j, append = TRUE)
                 } else {
-                  cat(paste0("\n```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=8, size=\"small\"}\n", sep = '\n'), file = report.name, append = TRUE)
+                  cat(paste0("\n```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=8, size=\"small\"}\n", sep = '\n'), file = report.name.i.v.j, append = TRUE)
                 }
 
                 # cat(paste0("### Tabulation"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("##Compute contingency table"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("selectmultilist1 <- as.data.frame(dico[dico$type == \"select_multiple\" & dico$listname==\"",questions.listname, "\" & grepl(\"", questions.shortname,"\",dico$fullname)==TRUE , c(\"fullname\")])"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("##Compute contingency table"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("selectmultilist1 <- as.data.frame(dico[dico$type == \"select_multiple\" & dico$listname==\"",questions.listname, "\" & grepl(\"", questions.shortname,"\",dico$fullname)==TRUE , c(\"fullname\")])"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
-                cat(paste0("names(selectmultilist1)[1] <- \"check\""),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("check <- as.data.frame(names(",questions.frame ,"))"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("names(check)[1] <- \"check\""),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("check$id <- row.names(check)"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("check <- merge(x = check, y = selectmultilist1, by = \"check\")"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("selectmultilist <- as.character(check[ ,1])"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("names(selectmultilist1)[1] <- \"check\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("check <- as.data.frame(names(",questions.frame ,"))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("names(check)[1] <- \"check\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("check$id <- row.names(check)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("check <- merge(x = check, y = selectmultilist1, by = \"check\")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("selectmultilist <- as.character(check[ ,1])"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
-                cat(paste0("## Reshape answers"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("data.selectmultilist <- ",questions.frame ,"[ selectmultilist ]"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("data.selectmultilist$id <- rownames(data.selectmultilist)"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("totalanswer <- nrow(data.selectmultilist)"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("## Reshape answers"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("data.selectmultilist <- ",questions.frame ,"[ selectmultilist ]"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("data.selectmultilist$id <- rownames(data.selectmultilist)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("totalanswer <- nrow(data.selectmultilist)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                 ## Remove the not replied to avoid going beyond 100%
-                cat(paste0("data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!=\"Not replied\", ]"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!=\"Not replied\", ]"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
-                cat(paste0("percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),\"%\")"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("meltdata <- reshape2::melt(data.selectmultilist,id=\"id\")"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("castdata <- as.data.frame(table(meltdata[c(\"value\")]))"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("castdata$freqper <- castdata$Freq/nrow(data.selectmultilist)"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("castdata <- castdata[castdata$Var1!=\"Not selected\", ]"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("castdata$Var1 <- factor(castdata$Var1, levels=castdata[order(castdata$freqper), \"Var1\"])"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("frequ <- castdata[castdata$Var1!=\"\", ]"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),\"%\")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("meltdata <- reshape2::melt(data.selectmultilist,id=\"id\")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("castdata <- as.data.frame(table(meltdata[c(\"value\")]))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("castdata$freqper <- castdata$Freq/nrow(data.selectmultilist)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("castdata <- castdata[castdata$Var1!=\"Not selected\", ]"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("castdata$Var1 <- factor(castdata$Var1, levels=castdata[order(castdata$freqper), \"Var1\"])"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("frequ <- castdata[castdata$Var1!=\"\", ]"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
-                cat(paste0("## display table"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("## display table"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                 #cat(paste0("names(frequ)[1] <- \"", questions.shortname,"\""),file = report.name ,sep = "\n", append = TRUE)
                 #cat(paste0("frequ[ ,3] <- paste0(round(frequ[ ,3]*100,digits = 1),\"%\")"),file = report.name ,sep = "\n", append = TRUE)
 
                 #    cat(paste0("kable(frequ, caption=\"__Table__:", questions.label,"\")"),file = report.name ,sep = "\n", append = TRUE)
 
-                cat(paste0("frequ1 <- castdata[castdata$Var1!=\"\", ]"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("frequ1[ ,4] <- paste0(round(frequ1[ ,3]*100,digits = 1),\"%\")"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("names(frequ1)[4] <- \"freqper2\""),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("frequ1 <- castdata[castdata$Var1!=\"\", ]"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("frequ1[ ,4] <- paste0(round(frequ1[ ,3]*100,digits = 1),\"%\")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("names(frequ1)[4] <- \"freqper2\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
-                cat(paste0("\n"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("## and now the graph"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("\n"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("## and now the graph"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
-                cat(paste0("plot1 <- ggplot(frequ1, aes(x=Var1, y=freqper)) +"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("geom_bar(fill = \"#2a87c8\", colour = \"#2a87c8\", stat = \"identity\", width = .8) +"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("guides(fill = FALSE) +"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("geom_label_repel(aes(y = freqper, label = freqper2), fill = \"#2a87c8\", color = 'white') +"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("ylab(\"Frequency\") +"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("scale_y_continuous(labels = percent) +"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("xlab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("subtitle = paste0(\"Question response rate: \",percentreponse,\" .\"),"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("plot1 <- ggplot(frequ1, aes(x=Var1, y=freqper)) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("geom_bar(fill = \"#2a87c8\", colour = \"#2a87c8\", stat = \"identity\", width = .8) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("guides(fill = FALSE) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("geom_label_repel(aes(y = freqper, label = freqper2), fill = \"#2a87c8\", color = 'white') +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("ylab(\"Frequency\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("scale_y_continuous(labels = percent) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("xlab(\"\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("coord_flip() +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("labs(title = \"",questions.label,"\","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("subtitle = paste0(\"Question response rate: \",percentreponse,\" .\"),"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                 cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \",
                             nrow(MainDataFrame), \" total records collected between \",
                             min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                             max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
-                            configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                            configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                 if (output == "pptx") {
                   if(unhcRstyle == "TRUE") {
-                    cat(paste0("unhcRstyle::unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("unhcRstyle::unhcr_style_bar_big()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                   } else {
-                    cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                   }
                 } else {
                   if(unhcRstyle == "TRUE") {
-                    cat(paste0("unhcRstyle::unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("unhcRstyle::unhcr_style_bar()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                   } else {
-                    cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                   }
                 }
-                cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
+                cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("\n```\n", sep = '\n'), file = report.name.i.v.j, append = TRUE)
 
 
 
@@ -1945,13 +1946,13 @@ kobo_crunching_report <- function(form = "form.xlsx",
                 if (nrow(disaggregation) == 0) {
                   #cat("No disaggregation requested for this question...\n",file = report.name , sep = "\n", append = TRUE)
                   cat("No disaggregation requested for this question...\n")
-                  cat("\n", file = report.name, append = TRUE)
+                  cat("\n", file = report.name.i.v.j, append = TRUE)
                 } else if (nrow(frequ) %in% c("0","1")) {
                   # cat("No responses recorded for this question. No disaggregation...\n",file = report.name , sep = "\n", append = TRUE)
                   cat("No responses or only one modality recorded for this question. No disaggregation...\n")
-                  cat("\n", file = report.name, append = TRUE)
+                  cat("\n", file = report.name.i.v.j, append = TRUE)
                 } else {
-                  cat(paste("### Analysis of relationship" ,sep = ""),file = report.name ,sep = "\n", append = TRUE)
+                  cat(paste("### Analysis of relationship" ,sep = ""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                   for (h in 1:nrow(disaggregation))
                   {
                     #h <-3
@@ -1969,98 +1970,98 @@ kobo_crunching_report <- function(form = "form.xlsx",
 
 
                     if (disag.variable == questions.variable) {
-                      cat(paste0("\n"),file = report.name , sep = "\n", append = TRUE)
+                      cat(paste0("\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
                     } else if (nrow(as.data.frame(table( get(paste0(questions.frame))[[disag.name]]))) == 0) {
-                      cat(paste0("\n"),file = report.name , sep = "\n", append = TRUE)
+                      cat(paste0("\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
                     } else if (disag.type != "select_one") {
                       ## Only faceting with a select_one is adressed now
-                      cat(paste0("\n"),file = report.name , sep = "\n", append = TRUE)
+                      cat(paste0("\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
                     } else {
 
                       ## Open chunk
                       if (output == "pptx") {
-                        cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name, append = TRUE)
+                        cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name.i.v.j, append = TRUE)
                       } else {
-                        cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=8, size=\"small\"}\n", sep = '\n'), file = report.name, append = TRUE)
+                        cat(paste0("\n```{r ", questions.name,"x",h, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=8, size=\"small\"}\n", sep = '\n'), file = report.name.i.v.j, append = TRUE)
                       }
 
                       # cat(paste0("### Tabulation"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("##Compute contingency table"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("selectmultilist1 <- as.data.frame(dico[dico$type == \"select_multiple\" & dico$listname==\"",questions.listname, "\" & grepl(\"", questions.shortname,"\",dico$fullname)==TRUE , c(\"fullname\")])"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("##Compute contingency table"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("selectmultilist1 <- as.data.frame(dico[dico$type == \"select_multiple\" & dico$listname==\"",questions.listname, "\" & grepl(\"", questions.shortname,"\",dico$fullname)==TRUE , c(\"fullname\")])"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
-                      cat(paste0("names(selectmultilist1)[1] <- \"check\""),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("check <- as.data.frame(names(",questions.frame ,"))"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("names(check)[1] <- \"check\""),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("check$id <- row.names(check)"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("check <- merge(x = check, y = selectmultilist1, by = \"check\")"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("names(selectmultilist1)[1] <- \"check\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("check <- as.data.frame(names(",questions.frame ,"))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("names(check)[1] <- \"check\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("check$id <- row.names(check)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("check <- merge(x = check, y = selectmultilist1, by = \"check\")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
 
-                      cat(paste0("selectmultilist <- c(as.character(check[ ,1]), \"",disag.name,"\")" ),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("selectmultilist <- c(as.character(check[ ,1]), \"",disag.name,"\")" ),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
-                      cat(paste0("## Reshape answers"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("data.selectmultilist <- ",questions.frame ,"[ selectmultilist ]"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("data.selectmultilist$id <- rownames(data.selectmultilist)"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("totalanswer <- nrow(data.selectmultilist)"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("## Reshape answers"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("data.selectmultilist <- ",questions.frame ,"[ selectmultilist ]"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("data.selectmultilist$id <- rownames(data.selectmultilist)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("totalanswer <- nrow(data.selectmultilist)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       ## Remove not replied to avoid going beyond 100%
-                      cat(paste0("data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!=\"Not replied\", ]"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),\"%\")"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("meltdata <- reshape2::melt(data.selectmultilist,id=c(\"id\",\"",disag.name,"\"))"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("data.selectmultilist <- data.selectmultilist[ data.selectmultilist[ ,1]!=\"Not replied\", ]"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("percentreponse <- paste0(round((nrow(data.selectmultilist)/totalanswer)*100,digits = 1),\"%\")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("meltdata <- reshape2::melt(data.selectmultilist,id=c(\"id\",\"",disag.name,"\"))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
 
-                      cat(paste0("castdata2 <- as.data.frame(table(data.selectmultilist[c(\"",disag.name,"\")]))"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("names(castdata2)[1] <-\"",disag.name,"\"" ),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("names(castdata2)[2] <- \"nobs\""),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("castdata2 <- as.data.frame(table(data.selectmultilist[c(\"",disag.name,"\")]))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("names(castdata2)[1] <-\"",disag.name,"\"" ),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("names(castdata2)[2] <- \"nobs\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
-                      cat(paste0("castdata3 <- as.data.frame(table(meltdata[c(\"value\",\"",disag.name,"\")]))"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("castdata3 <- dplyr::left_join( x = castdata3, y = castdata2, by =\"",disag.name,"\")"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("castdata3 <- as.data.frame(table(meltdata[c(\"value\",\"",disag.name,"\")]))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("castdata3 <- dplyr::left_join( x = castdata3, y = castdata2, by =\"",disag.name,"\")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
 
 
-                      cat(paste0("castdata3$freqper <- castdata3$Freq/castdata3$nobs"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("castdata3 <- castdata3[castdata3$value!=\"Not selected\", ]"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("castdata3$value <- factor(castdata3$value, levels=castdata[order(castdata$freqper), \"Var1\"])"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("castdata3$freqper <- castdata3$Freq/castdata3$nobs"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("castdata3 <- castdata3[castdata3$value!=\"Not selected\", ]"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("castdata3$value <- factor(castdata3$value, levels=castdata[order(castdata$freqper), \"Var1\"])"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
-                      cat(paste0("frequ1 <- castdata3[castdata3$value!=\"\", ]"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("frequ1[ ,6] <- paste0(round(frequ1[ ,5]*100,digits = 1),\"%\")"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("names(frequ1)[2] <- \"faceting\""),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("names(frequ1)[6] <- \"freqper2\""),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("frequ1 <- castdata3[castdata3$value!=\"\", ]"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("frequ1[ ,6] <- paste0(round(frequ1[ ,5]*100,digits = 1),\"%\")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("names(frequ1)[2] <- \"faceting\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("names(frequ1)[6] <- \"freqper2\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
-                      cat(paste0("\n"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("## and now the graph"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("\n"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("## and now the graph"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
-                      cat(paste0("plot1 <- ggplot(frequ1, aes(x=value, y=freqper)) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("geom_bar(fill = \"#2a87c8\", colour = \"#2a87c8\", stat = \"identity\", width = .8) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("guides(fill = FALSE) +"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("plot1 <- ggplot(frequ1, aes(x=value, y=freqper)) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("geom_bar(fill = \"#2a87c8\", colour = \"#2a87c8\", stat = \"identity\", width = .8) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("guides(fill = FALSE) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                      # cat(paste0("geom_label_repel(aes(y = freqper, label = freqper2), fill = \"#2a87c8\", color = 'white') +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("ylab(\"Frequency\") +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("scale_y_continuous(labels = percent) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("xlab(\"\") +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("coord_flip() +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("facet_wrap(~ faceting, ncol=3) +"),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-                      cat(paste0("subtitle = \"Faceted by question: ",disag.label,".\","),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("ylab(\"Frequency\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("scale_y_continuous(labels = percent) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("xlab(\"\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("coord_flip() +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("facet_wrap(~ faceting, ncol=3) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("labs(title = \"",questions.label,"\","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("subtitle = \"Faceted by question: ",disag.label,".\","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \",
                                     nrow(MainDataFrame), \" total records collected between \",
                                     min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                                     max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
-                                    configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
+                                    configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                       if (output == "pptx") {
                         if(unhcRstyle == "TRUE") {
-                          cat(paste0("unhcRstyle::unhcr_style_bar_big()"),file = report.name ,sep = "\n", append = TRUE)
+                          cat(paste0("unhcRstyle::unhcr_style_bar_big()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         } else {
-                          cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                          cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         }
                       } else {
                         if(unhcRstyle == "TRUE") {
-                          cat(paste0("unhcRstyle::unhcr_style_bar()"),file = report.name ,sep = "\n", append = TRUE)
+                          cat(paste0("unhcRstyle::unhcr_style_bar()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         } else {
-                          cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                          cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         }
                       }
-                      cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
+                      cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       ## Close chunk
-                      cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
+                      cat(paste0("\n```\n", sep = '\n'), file = report.name.i.v.j, append = TRUE)
 
 
 
@@ -2078,7 +2079,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
 
             #### Question Type =  date ###############################################################################################
           } else if (questions.type == "date") {
-            cat(paste("Date question  in data frame: ",questions.frame,"\n\n",sep = ""),file = report.name ,sep = "\n", append = TRUE)
+            cat(paste("Date question  in data frame: ",questions.frame,"\n\n",sep = ""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
             ## Check if the there are answeers to that questions...
             frequ <- as.data.frame(table( get(paste0(questions.frame))[[questions.name]]))
@@ -2091,53 +2092,53 @@ kobo_crunching_report <- function(form = "form.xlsx",
               ## Open chunk
               if (output == "pptx") {
 
-                cat(paste0("\n```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name, append = TRUE)
+                cat(paste0("\n```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE }\n"), file = report.name.i.v.j, append = TRUE)
 
               } else {
 
-                cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=4, size=\"small\"}\n", sep = '\n'), file = report.name, append = TRUE)
+                cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=4, size=\"small\"}\n", sep = '\n'), file = report.name.i.v.j, append = TRUE)
               }
 
                  ### Just making sure that the variable is actually a date one... in case it was not parsed correctly
-                cat(paste0(questions.frame,"$",questions.name," <- as.Date(",questions.frame,"$",questions.name,", format = \"%Y-%m-%d\")"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("#  date histogram"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("plot1 <- ggplot(data = ", questions.frame, ", aes(x = ", questions.name ," , ..count..)) +"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("geom_histogram(fill = \"#2a87c8\",colour = \"white\", binwidth = 60) +"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("labs(x = \"\", y = \"Count\") +"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("labs(title = \"",questions.label,"\","),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("subtitle = \"\" ,"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0(questions.frame,"$",questions.name," <- as.Date(",questions.frame,"$",questions.name,", format = \"%Y-%m-%d\")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("#  date histogram"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("plot1 <- ggplot(data = ", questions.frame, ", aes(x = ", questions.name ," , ..count..)) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("geom_histogram(fill = \"#2a87c8\",colour = \"white\", binwidth = 60) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("labs(x = \"\", y = \"Count\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("labs(title = \"",questions.label,"\","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("subtitle = \"\" ,"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                 cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \",
                               nrow(MainDataFrame), \" total records collected between \",
                               min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",
                               max(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" in \", \" ",
-                              configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("theme(axis.text.x = element_text(angle = 60, hjust = 1,  vjust = 1 )) + "),file = report.name ,sep = "\n", append = TRUE)
+                              configInfo[configInfo$name == "Country", c("value")]," \")) +"), file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("theme(axis.text.x = element_text(angle = 60, hjust = 1,  vjust = 1 )) + "),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                 if (output == "pptx") {
                   if(unhcRstyle == "TRUE") {
-                    cat(paste0("unhcRstyle::unhcr_style_histo_big()"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("unhcRstyle::unhcr_style_histo_big()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                   } else {
-                    cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                   }
                 } else {
                   if(unhcRstyle == "TRUE") {
-                    cat(paste0("unhcRstyle::unhcr_style_histo()"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("unhcRstyle::unhcr_style_histo()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                   } else {
-                    cat(paste0("theme_minimal()"),file = report.name ,sep = "\n", append = TRUE)
+                    cat(paste0("theme_minimal()"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                   }
                 }
-                cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("\n\n"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("ggpubr::ggarrange(kobo_left_align(plot1, c(\"caption\", \"subtitle\", \"title\")), ncol = 1, nrow = 1)"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("\n\n"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                 ## Close chunk
-                cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
+                cat(paste0("\n```\n", sep = '\n'), file = report.name.i.v.j, append = TRUE)
 
             }
 
 
         #### Question Type = text #############################################################################################
           } else if ( questions.type == "text" ) {
-            cat(paste("Open ended question  in data frame: ",questions.frame,"\n\n", sep = ""),file = report.name ,sep = "\n", append = TRUE)
+            cat(paste("Open ended question  in data frame: ",questions.frame,"\n\n", sep = ""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
             ## Check if the there are answeers to that questions...
             frequ <- as.data.frame(table( get(paste0(questions.frame))[[questions.name]]))
@@ -2147,21 +2148,21 @@ kobo_crunching_report <- function(form = "form.xlsx",
               cat("No responses recorded for this question...\n")
             } else{
 
-              cat(paste("List of given answers \n" ,sep = ""),file = report.name ,sep = "\n", append = TRUE)
+              cat(paste("List of given answers \n" ,sep = ""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               ## Open chunk
               if (output == "pptx") {
                 ## Not  displayed in ppt
-                cat(paste0("\n\n"), file = report.name, append = TRUE)
+                cat(paste0("\n\n"), file = report.name.i.v.j, append = TRUE)
               } else {
 
-                cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=4, size=\"small\"}\n", sep = '\n'), file = report.name, append = TRUE)
-                cat(paste0("textresponse <- as.data.frame(table(",questions.frame,"[!(is.na(",questions.variable,")), c(\"",questions.name,"\")]))"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("```{r ", questions.name, ".tab, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=4, size=\"small\"}\n", sep = '\n'), file = report.name.i.v.j, append = TRUE)
+                cat(paste0("textresponse <- as.data.frame(table(",questions.frame,"[!(is.na(",questions.variable,")), c(\"",questions.name,"\")]))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
-                cat(paste0("names(textresponse)[1] <- \"", questions.shortname,"\""),file = report.name ,sep = "\n", append = TRUE)
-                cat(paste0("kable(textresponse, caption=\"__Table__:", questions.label,"\")"),file = report.name ,sep = "\n", append = TRUE)
+                cat(paste0("names(textresponse)[1] <- \"", questions.shortname,"\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("kable(textresponse, caption=\"__Table__:", questions.label,"\")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
                 ## Close chunk
-                cat(paste0("\n```\n", sep = '\n'), file = report.name, append = TRUE)
+                cat(paste0("\n```\n", sep = '\n'), file = report.name.i.v.j, append = TRUE)
               }
             }
             # End test on question on type
@@ -2169,15 +2170,16 @@ kobo_crunching_report <- function(form = "form.xlsx",
 
           ## End loop on questions
         }
-
-
+        
+        furrr::future_walk(1:nrow(chapterquestions), crunch_question, .progress = FALSE)
+        
         if (output == "docx") {
-          cat(paste("##### Page Break"),file = report.name ,sep = "\n", append = TRUE)
+          cat(paste("##### Page Break"),file = report.name.i.v ,sep = "\n", append = TRUE)
         } else {
-          cat(paste(""),file = report.name ,sep = "\n", append = TRUE)
+          cat(paste(""),file = report.name.i.v ,sep = "\n", append = TRUE)
         }
       }
-
+      
     }
 
 
@@ -2206,6 +2208,16 @@ kobo_crunching_report <- function(form = "form.xlsx",
         cat(" Render now reports... \n")
         for (i in 1:nrow(reports)) {
           reportsname <- as.character(reports[ i , 1])
+          
+          report.name <- paste(mainDir, "/vignettes/",i,"-", reportsname, "-report.Rmd", sep = "")
+
+          fs::dir_ls(fs::path_dir(report.name), glob = paste0(report.name, "-*-*")) %>%
+            purrr::map_chr(readr::read_file) %>%
+            purrr::walk(readr::write_file, file = report.name, append = TRUE)
+
+          fs::dir_ls(fs::path_dir(report.name), glob = paste0(report.name, "-*-*")) %>%
+            purrr::walk(fs::file_delete)
+          
           if (app == "shiny") {
             progress$set(message = paste("Rendering output report for ",reportsname, " chapter in progress..."))
             updateProgress()

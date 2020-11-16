@@ -125,6 +125,15 @@
 <a href="#approach" class="anchor"></a>Approach</h2>
 <p>The main concept behind the package is to implement a survey data analysis plan and configuration directly within the same <a href="http://xlsform.org">xlsform</a> excel file that has been used to develop the questionnaire. A few additional column are created in this excel document, the package read those column to generate a series of predefined report.</p>
 <p><img src="https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow.png" alt="alt text"></p>
+<p>The approach offered through the package has the following advantages:</p>
+<ul>
+<li><p>End users <strong>do not need to code</strong> in R and to master the language in order to use the package as the configuration is done in excel;</p></li>
+<li><p>The data <strong>analysis plan</strong> is de facto fully documented and described;</p></li>
+<li><p>The resulting data crunching reports are fully <strong>reproducible</strong>;</p></li>
+<li><p>Analysis <strong>iterations</strong> are facilitated;</p></li>
+<li><p>Good <strong>practices</strong> are enforced through the package.</p></li>
+</ul>
+<p>A more detailed introduction to the concepts used in the package is presented in the <a href="articles/Crunching.html">Data Crunching article</a>.</p>
 <p>The data crunching allows to generated quickly initial reports through a series of semi-automated processes:</p>
 <ol>
 <li><p>Have all the configuration used to generate the reports (details of tabulation and crosstabulation plans, weighting approach) documented within the xlsform allow to track easily all changes to the data and to facilitate ( <a href="%22reference/kobo_dico.html%22">koboloadeR::kobo_dico</a>)</p></li>
@@ -139,15 +148,6 @@
 <li><p>Identify population segments, i.e. statistical clusters, based on similar characteristics ( <a href="%22reference/kobo_crunching_report.html%22">koboloadeR::kobo_crunching_report</a>)</p></li>
 </ol>
 <p>You can have a look at <a href="https://github.com/unhcr/koboloadeR/tree/gh-pages/out">some examples of output reports here</a>.</p>
-<p>The approach offered through the package has the following advantages:</p>
-<ul>
-<li><p>End users <strong>do not need to code</strong> in R and to master the language in order to use the package as the configuration is done in excel;</p></li>
-<li><p>The data <strong>analysis plan</strong> is de facto fully documented and described;</p></li>
-<li><p>The resulting data crunching reports are fully <strong>reproducible</strong>;</p></li>
-<li><p>Analysis <strong>iterations</strong> are facilitated;</p></li>
-<li><p>Good <strong>practices</strong> are enforced through the package.</p></li>
-</ul>
-<p>A more detailed introduction to the concepts used in the package is presented in the <a href="articles/Crunching.html">Data Crunching article</a>.</p>
 </div>
 <div id="environment-setup" class="section level2">
 <h2 class="hasAnchor">
@@ -155,16 +155,6 @@
 <div id="software-installation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#software-installation" class="anchor"></a>Software installation</h3>
-<ol>
-<li>Install either <a href="https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html">Java JRE</a> or <a href="http://jdk.java.net/12/">Java JDK</a>: JAVA is required to manipulate excel files.</li>
-</ol>
-<p>Under Windows, You will need to have JRE or JDK register under the <code>Path</code> system variable (Right click on “This PC/Computer”, Go to <code>-&gt;Properties-&gt;Advanced system settings-&gt;Advanced-&gt;Environment Variables</code>, then under System variables select <code>Path</code> =&gt; Click <code>Edit</code>.</p>
-<p>If you install, the <code>JDK</code> (Java Development kit), Please make sure that <code>JAVA_HOME</code> is actually recorded as an <a href="https://java.com/en/download/help/path.xml">Environment Variable</a>.</p>
-<p>If you install, the <code>JRE</code> (Java Runtime Environment), Please make sure that <code>JRE_HOME</code> is actually recorded as an <a href="https://confluence.atlassian.com/doc/setting-the-java_home-variable-in-windows-8895.html">Environment Variable</a>.</p>
-<p>Once in R, you may double-check that Environement variable are correctly, i.e. JAVA_HOME or JRE_HOME, set by</p>
-<pre class="{r}"><code><a href="https://rdrr.io/r/base/Sys.getenv.html">Sys.getenv()</a></code></pre>
-<p>If JAVA is not correctly set, you will see an installatin error at a latter stage when loading the package <code>RJava</code>.</p>
-<p>Note in some case, you may need to reboot your computer to ensure that this environement variable is properly accounted for.</p>
 <ol>
 <li><p><a href="https://cran.r-project.org/">Install R</a>: follow instruction from the installer.</p></li>
 <li><p><strong>Only for windows user</strong> <a href="https://cran.r-project.org/bin/windows/Rtools">Install RTools</a>: This executable is needed to install the package from github. Follow instruction from the installer.</p></li>
@@ -188,9 +178,13 @@
 <ul>
 <li>You are all set! You can know use koboloadeR. If you have a problem consult the common troubleshooting part at the end of this page.</li>
 </ul>
-<div id="project-walk-through" class="section level3">
+<div id="quick-project-walk-through" class="section level3">
 <h3 class="hasAnchor">
-<a href="#project-walk-through" class="anchor"></a>Project Walk Through</h3>
+<a href="#quick-project-walk-through" class="anchor"></a>Quick Project Walk Through</h3>
+<p>You can consult the vignettes for a detailed guidance</p>
+<div id="create-project" class="section level5">
+<h5 class="hasAnchor">
+<a href="#create-project" class="anchor"></a>Create project</h5>
 <ul>
 <li><p>In R Studio, select File, click New project. A box opens</p></li>
 <li><p>Choose New Directory</p></li>
@@ -204,6 +198,7 @@
 
 kobo_projectinit() # Creates folders necessary and transfer files needed</a></code></pre>
 <p>It might take a while as a few other packages have to be installed or loaded. Once the see the " &gt;" again at the beginning of the line, you are ready to start</p>
+</div>
 <div id="console-mode" class="section level4">
 <h4 class="hasAnchor">
 <a href="#console-mode" class="anchor"></a>Console mode</h4>
@@ -219,45 +214,31 @@ kobo_projectinit() # Creates folders necessary and transfer files needed</a></co
 <pre class="{r}"><code><a href="reference/kobo_shiny.html">kobo_shiny("app_main_koboloadeR.R")</a></code></pre>
 <p>For better performances, select “Open in Browser” on the top of the window.</p>
 </div>
-<div id="presentation-of-features" class="section level4">
-<h4 class="hasAnchor">
-<a href="#presentation-of-features" class="anchor"></a>Presentation of features</h4>
-<ul>
-<li><p><a href="articles/Getting_data.html">Getting data from server</a> - How to retrieve data from the server within R?</p></li>
-<li><p><a href="articles/xlsform.html">Data Analysis Plan within your <code>xlsfrom</code></a> - How to extend the xlsform to include your analysis plan?</p></li>
-<li><p><a href="articles/Console.html">Using console script</a> - How to use the package without using the GUI in Shiny?</p></li>
-<li><p><a href="articles/Sampling.html">Sampling</a>: how to generate a sample from a registry or to post-stratify data when having a low response rate?</p></li>
-<li><p><a href="articles/Anonymisation.html">Data Anonymisation and disclosure risk measurement</a>: how to create anonymised data?</p></li>
-<li><p><a href="articles/Cleaning.html">Data Cleaning</a>: how to use the package for reproducible and documented data cleaning?</p></li>
-<li><p><a href="articles/Predicting_Scoring.html">Predicting and scoring</a>: how to use survey in conjunction wiht registration data to build risk prediction and vulnerability scoring?</p></li>
-<li><p><a href="articles/Dissiminating.html">Dissiminating</a>: how to dissiminate both survey microdata using DDI and variable crosstabulation on CKAN?</p></li>
-</ul>
-</div>
 </div>
 </div>
 <div id="contributing" class="section level2">
 <h2 class="hasAnchor">
 <a href="#contributing" class="anchor"></a>Contributing</h2>
 <p>Contributions to the packages are welcome. Please read first the <a href="CONTRIBUTING.html">contribution guidelines</a>, follow the <a href="CODE_OF_CONDUCT.html">code of conduct</a> and use the <a href="ISSUE_TEMPLATE.html">issue template</a>.</p>
-<p>To go in more details, the suggested workflow is presented below (note that all of it is not yet fully implented - see <a href="https://github.com/unhcr/koboloadeR/issues">issue tracking for more details</a>). You can read the <a href="reference/index.html">function documentations</a> directly.</p>
+<p>To go in more details, the suggested work-flow is presented below (note that all of it is not yet fully implemented - see <a href="https://github.com/unhcr/koboloadeR/issues">issue tracking for more details</a>). You can read the <a href="reference/index.html">function documentations</a> directly.</p>
 <p><img src="https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow2.png" alt="alt text"></p>
 <blockquote>
 <p>This package is part of <code>unhcrverse</code>, a set of packages to ease the production of statistical evidence and data stories. You can install them all with the following:</p>
 </blockquote>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co">## Use UNHCR Open data  - https://unhcr.github.io/unhcrdatapackage/docs/</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a>remotes<span class="op">::</span><span class="kw">install_github</span>(<span class="st">'unhcr/unhcrdatapackage’)</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a></span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="st">## API to connect to internal data source - https://unhcr-web.github.io/hcrdata/docs/</span></span>
-<span id="cb6-5"><a href="#cb6-5"></a><span class="st">remotes::install_github('</span>unhcr<span class="op">-</span>web<span class="op">/</span>hcrdata’)</span>
-<span id="cb6-6"><a href="#cb6-6"></a></span>
-<span id="cb6-7"><a href="#cb6-7"></a><span class="co">## Perform High Frequency Check https://unhcr.github.io/HighFrequencyChecks/docs/</span></span>
-<span id="cb6-8"><a href="#cb6-8"></a>remotes<span class="op">::</span><span class="kw">install_github</span>(<span class="st">'unhcr/HighFrequencyChecks’)</span></span>
-<span id="cb6-9"><a href="#cb6-9"></a></span>
-<span id="cb6-10"><a href="#cb6-10"></a><span class="st">## Process data crunching for survey dataset - https://unhcr.github.io/koboloadeR/docs/</span></span>
-<span id="cb6-11"><a href="#cb6-11"></a><span class="st">remotes::install_github('</span>unhcr<span class="op">/</span>koboloadeR’)</span>
-<span id="cb6-12"><a href="#cb6-12"></a></span>
-<span id="cb6-13"><a href="#cb6-13"></a><span class="co">## Use UNHCR graphical template- https://unhcr-web.github.io/unhcRstyle/docs/</span></span>
-<span id="cb6-14"><a href="#cb6-14"></a>remotes<span class="op">::</span><span class="kw">install_github</span>(<span class="st">'unhcr-web/unhcRstyle'</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co">## Use UNHCR Open data  - https://unhcr.github.io/unhcrdatapackage/docs/</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>remotes<span class="op">::</span><span class="kw">install_github</span>(<span class="st">'unhcr/unhcrdatapackage’)</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="st">## API to connect to internal data source - https://unhcr-web.github.io/hcrdata/docs/</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="st">remotes::install_github('</span>unhcr<span class="op">-</span>web<span class="op">/</span>hcrdata’)</span>
+<span id="cb5-6"><a href="#cb5-6"></a></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co">## Perform High Frequency Check https://unhcr.github.io/HighFrequencyChecks/docs/</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a>remotes<span class="op">::</span><span class="kw">install_github</span>(<span class="st">'unhcr/HighFrequencyChecks’)</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a></span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="st">## Process data crunching for survey dataset - https://unhcr.github.io/koboloadeR/docs/</span></span>
+<span id="cb5-11"><a href="#cb5-11"></a><span class="st">remotes::install_github('</span>unhcr<span class="op">/</span>koboloadeR’)</span>
+<span id="cb5-12"><a href="#cb5-12"></a></span>
+<span id="cb5-13"><a href="#cb5-13"></a><span class="co">## Use UNHCR graphical template- https://unhcr-web.github.io/unhcRstyle/docs/</span></span>
+<span id="cb5-14"><a href="#cb5-14"></a>remotes<span class="op">::</span><span class="kw">install_github</span>(<span class="st">'unhcr-web/unhcRstyle'</span>)</span></code></pre></div>
 <div id="building-package-documentation" class="section level4">
 <h4 class="hasAnchor">
 <a href="#building-package-documentation" class="anchor"></a>Building package documentation</h4>

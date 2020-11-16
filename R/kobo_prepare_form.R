@@ -1,12 +1,12 @@
 #' @name kobo_prepare_form
 #' @rdname kobo_prepare_form
-#' @title  Prepare XLS form
+#' @title  Prepare XLSform
 #'
 #' @description  Prepare XLSform by adding chapter, disaggregation, correlate, variable, anonymise, structuralequation,
 #' clean, cluster, predict, mappoint, mappoly in case if those fields are not exist; the function will create dummy column for each one.
 #' Also, coloring all rows that have type equal to "begin group", "end group", "begin repeat" or "end repeat".
 #'
-#' @param form The full filename of the form to be accessed (xls or xlsx file).
+#' @param form The full filename of the form to be accessed (has to be xlsx file).
 #' It is assumed that the form is stored in the data folder.
 #'
 #'
@@ -17,7 +17,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_prepare_form("myform.xls")
+#' kobo_prepare_form("myform.xlsx")
 #' }
 #'
 #' @export kobo_prepare_form
@@ -153,7 +153,7 @@ kobo_prepare_form <- function(form = "form.xlsx") {
     namesOfSur <- c(namesOfSur, "repeat_count")
 
     cat("Checking now for additional information within your xlsform.
-        Note that you can insert them in the xls and re-run the function! \n \n ")
+        Note that you can insert them in the xlsx and re-run the function! \n \n ")
     ### Add column if not present
     if ("labelReport" %in% colnames(survey)) {
       cat(" Good: You have a column `labelReport` in your survey worksheet.\n");
@@ -303,40 +303,40 @@ kobo_prepare_form <- function(form = "form.xlsx") {
     survey[is.na(survey)] <-  ""
 
     #------------ create styles for header and cells ------------#
-    headerSt <- 
+    headerSt <-
       openxlsx::createStyle(
-        textDecoration = "bold", fontColour = "white", fontSize = 13, 
+        textDecoration = "bold", fontColour = "white", fontSize = 13,
         fgFill = "grey50",
         border = "TopBottom", borderColour = "grey80", borderStyle = "thin")
-    cs1 <- 
+    cs1 <-
       openxlsx::createStyle(
         textDecoration = "bold", fontColour = "black",
         fgFill = "orange",
         border = "TopBottom", borderColour = "orange", borderStyle = "thin")
-    cs2 <- 
+    cs2 <-
       openxlsx::createStyle(
         textDecoration = "bold", fontColour = "white",
         fgFill = "skyblue",
         border = "TopBottom", borderColour = "skyblue", borderStyle = "thin")
-    
+
     #### Styling part for survey sheet
     sheetname <- "survey"
-    
+
     openxlsx::addWorksheet(wb, sheetname)
     openxlsx::writeData(wb, sheetname, survey, withFilter = TRUE)
-    
+
     openxlsx::setColWidths(wb, sheetname, cols = 1:ncol(survey), widths = "auto")
     openxlsx::setColWidths(wb, sheetname, cols = 2:3, widths = 30)
-    
+
     all.cols <- 1:ncol(survey)
     hdr.rows <- 1
     group.rows <- which(stringr::str_detect(survey$type, "group"))+1
     repeat.rows <- which(stringr::str_detect(survey$type, "repeat"))+1
-    
+
     openxlsx::addStyle(wb, sheetname, headerSt, hdr.rows, all.cols, gridExpand = TRUE)
     openxlsx::addStyle(wb, sheetname, cs1, group.rows, all.cols, gridExpand = TRUE)
     openxlsx::addStyle(wb, sheetname, cs2, repeat.rows, all.cols, gridExpand = TRUE)
-    
+
     cat("\n********************Survey sheet, ready to be used*********************\n \n")
 
 
@@ -408,15 +408,15 @@ kobo_prepare_form <- function(form = "form.xlsx") {
     choices <- choices[ ,namesOfCho]
 
     sheetname <- "choices"
-    
+
     openxlsx::addWorksheet(wb, sheetname)
     openxlsx::writeData(wb, sheetname, choices, withFilter = TRUE)
-    
+
     openxlsx::setColWidths(wb, sheetname, cols = 1:ncol(choices), widths = "auto")
     openxlsx::setColWidths(wb, sheetname, cols = 2:3, widths = 30)
-    
+
     openxlsx::addStyle(wb, sheetname, headerSt, hdr.rows, 1:ncol(choices), gridExpand = TRUE)
-    
+
     cat("\n********************Choices sheet, ready to be used*********************\n \n")
 
 
@@ -442,14 +442,14 @@ kobo_prepare_form <- function(form = "form.xlsx") {
       })
 
       sheetname <- "settings"
-      
+
       openxlsx::addWorksheet(wb, sheetname)
       openxlsx::writeData(wb, sheetname, settings, withFilter = TRUE)
-      
+
       openxlsx::setColWidths(wb, sheetname, cols = 1:ncol(settings), widths = "auto")
-      
+
       openxlsx::addStyle(wb, sheetname, headerSt, hdr.rows, 1:ncol(settings), gridExpand = TRUE)
-      
+
       cat("\n******************** Settings sheet, ready to be used*********************\n \n")
 
 
@@ -498,7 +498,7 @@ kobo_prepare_form <- function(form = "form.xlsx") {
       analysisSettings <- rbind(analysisSettings,
                                 data.frame(name = "abstract",
                                            label = "Abstract",
-                                           options = "Free Text",
+                                           options = "Free Text - adjust if necessary",
                                            value = "Blablablablablabla",
                                            path = NA,
                                            stringsAsFactors = FALSE)
@@ -745,7 +745,8 @@ kobo_prepare_form <- function(form = "form.xlsx") {
                                            label = "Name and the path of MainDataFrame",
                                            options = NA,
                                            value = "MainDataFrame",
-                                           path = paste0(mainDir,"/data/MainDataFrame.csv"),
+                                           #path = paste0(mainDir,"/data/MainDataFrame.csv"),
+                                           path = paste0("MainDataFrame.csv"),
                                            stringsAsFactors = FALSE)
       )
     }
@@ -764,7 +765,8 @@ kobo_prepare_form <- function(form = "form.xlsx") {
                                                label = paste("Name and the path of", dbr),
                                                options = NA,
                                                value = paste0( dbr,".csv"),
-                                               path = paste0(mainDir,"/data/", dbr,".csv"),
+                                               #path = paste0(mainDir,"/data/", dbr,".csv"),
+                                               path = paste0( dbr,".csv"),
                                                stringsAsFactors = FALSE)
           )
         }
@@ -792,8 +794,8 @@ kobo_prepare_form <- function(form = "form.xlsx") {
         }
 
         ## Geographic file for maps
-        
-        
+
+
         if (!"geofile" %in% analysisSettings$name) {
           analysisSettings <- rbind(analysisSettings,
                                     data.frame(name = "universefile",
@@ -804,7 +806,7 @@ kobo_prepare_form <- function(form = "form.xlsx") {
                                                stringsAsFactors = FALSE)
           )
         }
-        
+
         if (!"geofileid" %in% analysisSettings$name) {
           analysisSettings <- rbind(analysisSettings,
                                     data.frame(name = "geofileid",
@@ -815,7 +817,7 @@ kobo_prepare_form <- function(form = "form.xlsx") {
                                                stringsAsFactors = FALSE)
           )
         }
-        
+
         if (!"geosurveyid" %in% analysisSettings$name) {
           analysisSettings <- rbind(analysisSettings,
                                     data.frame(name = "geosurveyid",
@@ -825,22 +827,22 @@ kobo_prepare_form <- function(form = "form.xlsx") {
                                                path = NA,
                                                stringsAsFactors = FALSE)
           )
-        }        
-        
+        }
+
 
       }
     }
 
     sheetname <- "analysisSettings"
-    
+
     openxlsx::addWorksheet(wb, sheetname)
     openxlsx::writeData(wb, sheetname, analysisSettings, withFilter = TRUE)
-    
+
     openxlsx::setColWidths(wb, sheetname, cols = 1:ncol(analysisSettings), widths = "auto")
-    
+
     openxlsx::addStyle(wb, sheetname, headerSt, hdr.rows, 1:ncol(analysisSettings), gridExpand = TRUE)
-    
-    
+
+
     cat("\n******************** Project Analysis Settings sheet, ready to be used*********************\n \n")
 
 
@@ -988,38 +990,38 @@ kobo_prepare_form <- function(form = "form.xlsx") {
                                "anonymise", "cluster", "predict", "variable", "mappoint", "mappoly")]
 
     sheetname <- "indicator"
-    
+
     openxlsx::addWorksheet(wb, sheetname)
     openxlsx::writeData(wb, sheetname, indicator, withFilter = TRUE)
-    
+
     openxlsx::setColWidths(wb, sheetname, cols = 1:ncol(indicator), widths = "auto")
-    
+
     openxlsx::addStyle(wb, sheetname, headerSt, hdr.rows, 1:ncol(indicator), gridExpand = TRUE)
-    
-    
+
+
     cat("\n******************** Indicator sheet, ready to be used *********************\n \n")
 
     cat("############################### \n")
     cat("### Checking now RIDL sheets ## \n")
     cat("############################### \n")
-  
+
     ridl_schema <- jsonlite::fromJSON("https://raw.githubusercontent.com/okfn/ckanext-unhcr/master/ckanext/unhcr/schemas/dataset.json")
-    
+
     ridl_dataset_fields <- ridl_schema$dataset_fields # %>% tibble::as_tibble()
     ridl_resource_fields <- ridl_schema$resource_fields # %>% tibble::as_tibble()
-    
-    ridl_choices <- 
-      ridl_dataset_fields %>% 
-      dplyr::mutate(choices = purrr::map(choices, as.data.frame)) %>% 
-      dplyr::select(field_name, choices) %>% 
-      tidyr::unnest(choices) %>% 
-      dplyr::select(list_name = field_name, name = value, label) %>% 
+
+    ridl_choices <-
+      ridl_dataset_fields %>%
+      dplyr::mutate(choices = purrr::map(choices, as.data.frame)) %>%
+      dplyr::select(field_name, choices) %>%
+      tidyr::unnest(choices) %>%
+      dplyr::select(list_name = field_name, name = value, label) %>%
       as.data.frame()
-    
-    ridl_metadata <- 
-      ridl_dataset_fields %>% 
+
+    ridl_metadata <-
+      ridl_dataset_fields %>%
       dplyr::transmute(
-        type = 
+        type =
           dplyr::case_when(
             preset == "multiple_select" ~ stringr::str_c("select_multiple", field_name, sep = " "),
             field_name %in% ridl_choices$list_name ~ stringr::str_c("select_one", field_name, sep = " "),
@@ -1029,41 +1031,41 @@ kobo_prepare_form <- function(form = "form.xlsx") {
         required,
         hint = dplyr::if_else(!is.na(help_text), help_text, form_placeholder),
         value = "")
-    
+
     sheetname <- "ridl-metadata"
     if (sheetname %in% readxl::excel_sheets(form_tmp)) {
-      ridl_metadata <- 
-        ridl_metadata %>% 
-        dplyr::select(-value) %>% 
+      ridl_metadata <-
+        ridl_metadata %>%
+        dplyr::select(-value) %>%
         dplyr::left_join(readxl::read_excel(form_tmp, sheet = sheetname) %>% dplyr::select(name, value), by = "name")
     }
-    
+
     sheetname <- "ridl-metadata"
-    
+
     openxlsx::addWorksheet(wb, sheetname)
     openxlsx::writeData(wb, sheetname, ridl_metadata, withFilter = TRUE)
-    
+
     openxlsx::setColWidths(wb, sheetname, cols = 1:ncol(ridl_metadata), widths = "auto")
-    
+
     openxlsx::addStyle(wb, sheetname, headerSt, hdr.rows, 1:ncol(ridl_metadata), gridExpand = TRUE)
-    
+
     sheetname <- "ridl-choices"
-    
+
     openxlsx::addWorksheet(wb, sheetname)
     openxlsx::writeData(wb, sheetname, ridl_choices, withFilter = TRUE)
-    
+
     openxlsx::setColWidths(wb, sheetname, cols = 1:ncol(ridl_choices), widths = "auto")
-    
+
     openxlsx::addStyle(wb, sheetname, headerSt, hdr.rows, 1:ncol(ridl_choices), gridExpand = TRUE)
-    
+
     cat("\n******************** RIDL sheets, ready to be used *********************\n \n")
-    
+
     if (file.exists(form_tmp)) file.remove(form_tmp)
     openxlsx::saveWorkbook(wb, form_tmp)
-    
-    
+
+
     cat("\n******************** The XLSFORM has now been extended to include your analysis plan *********************\n \n")
-    
+
   }, error = function(err) {
     print("There was an error in the xlsform preparation step!!! \n\n")
     return(structure(err, class = "try-error"))

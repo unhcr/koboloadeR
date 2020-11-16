@@ -5,7 +5,7 @@
 \title{Generate Data Crunching Report}
 \usage{
 kobo_crunching_report(
-  form = "form.xls",
+  form = "form.xlsx",
   app = "console",
   output = "html",
   render = "TRUE",
@@ -37,7 +37,7 @@ Generate crunching Report that contains all descriptive statistics, correlation 
 }
 \examples{
 \dontrun{
-kobo_crunching_report("myform.xls")
+kobo_crunching_report("myform.xlsx")
 }
 
 }

@@ -4,10 +4,10 @@
 \alias{kobo_load_data}
 \title{Kobo Load Data}
 \usage{
-kobo_load_data(form = "form.xls", app = "console")
+kobo_load_data(form = "form.xlsx", app = "console")
 }
 \arguments{
-\item{form}{The full filename of the form to be accessed (xls or xlsx file).
+\item{form}{The full filename of the form to be accessed (has to be xlsx file).
 It is assumed that the form is stored in the data folder.}
 
 \item{app}{The place where the function has been executed, the default is the console and the second option is the shiny app}
@@ -20,7 +20,7 @@ Load form, building dictionnary, loading all required data into the environment,
 }
 \examples{
 \dontrun{
-kobo_load_data("myform.xls")
+kobo_load_data("form.xlsx")
 }
 
 }

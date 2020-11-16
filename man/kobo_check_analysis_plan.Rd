@@ -4,7 +4,7 @@
 \alias{kobo_check_analysis_plan}
 \title{Check Analysis Plan}
 \usage{
-kobo_check_analysis_plan(form = "form.xls")
+kobo_check_analysis_plan(form = "form.xlsx")
 }
 \arguments{
 \item{form}{The full filename of the form to be accessed (xls or xlsx file).
@@ -18,7 +18,7 @@ Check if the user setup the analysis plan in the right way.
 }
 \examples{
 \dontrun{
-kobo_check_analysis_plan("myform.xls")
+kobo_check_analysis_plan("form.xlsx")
 }
 
 }

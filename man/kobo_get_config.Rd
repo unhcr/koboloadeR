@@ -4,7 +4,7 @@
 \alias{kobo_get_config}
 \title{Get Configuration}
 \usage{
-kobo_get_config(form = "form.xls")
+kobo_get_config(form = "form.xlsx")
 }
 \arguments{
 \item{form}{The full filename of the form to be accessed (xls or xlsx file). where settings sheet contains all configuration of the project}

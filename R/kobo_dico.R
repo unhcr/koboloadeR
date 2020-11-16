@@ -24,7 +24,7 @@
 kobo_dico <- function(form = "form.xlsx") {
 
   #kobo_form(formid, user = user, api = api)
-  cat("\n Your form should be placed within the `data` folder. \n \n")
+  cat("\n Your form should be placed within the `data-raw` folder. \n \n")
   # read the survey tab of ODK from
   mainDir <- kobo_getMainDirectory()
 

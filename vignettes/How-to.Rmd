@@ -17,6 +17,25 @@ knitr::opts_chunk$set(
 
 Below is a step by step guidance on how to generate quickly a fully reproducible analysis
 
+#### Presentation of features 
+
+  *  [Getting data from server](articles/Getting_data.html) - How to retrieve data from the server within R?
+    
+  *  [Data Analysis Plan within your `xlsfrom`](articles/xlsform.html) - How to extend the xlsform to include your analysis plan?
+    
+  *  [Using console script](articles/Console.html) - How to use the package without using the GUI in Shiny?
+    
+  *  [Sampling](articles/Sampling.html): how to generate a sample from a registry or to post-stratify data when having a low response rate? 
+  
+  *  [Data Anonymisation and disclosure risk measurement](articles/Anonymisation.html): how to create anonymised data?
+  
+  *  [Data Cleaning](articles/Cleaning.html): how to use the package for reproducible and documented data cleaning? 
+    
+  *  [Predicting and scoring](articles/Predicting_Scoring.html): how to use survey in conjunction wiht registration data to build risk prediction and vulnerability scoring?
+    
+  *  [Dissiminating](articles/Dissiminating.html): how to dissiminate both survey microdata using DDI and variable crosstabulation on CKAN? 
+
+
 ## Step 1: Set up your Rstudio project
 
 From Rstudio, create a new project - then make sure to install the necessary packages:

@@ -4,7 +4,7 @@
 \alias{kobo_correlation_analysis}
 \title{Correlation Analysis}
 \usage{
-kobo_correlation_analysis(form = "form.xls", frame, target, app = "console")
+kobo_correlation_analysis(form = "form.xlsx", frame, target, app = "console")
 }
 \arguments{
 \item{form}{The full filename of the form to be accessed (xls or xlsx file).

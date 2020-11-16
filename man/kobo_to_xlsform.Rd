@@ -4,7 +4,7 @@
 \alias{kobo_to_xlsform}
 \title{Generate xlsfrom skeleton from a dataframe}
 \usage{
-kobo_to_xlsform(df, form = "form.xls", n = 100)
+kobo_to_xlsform(df, form = "form.xlsx", n = 100)
 }
 \arguments{
 \item{df}{dataset to use}

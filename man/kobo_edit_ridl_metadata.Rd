@@ -4,7 +4,7 @@
 \alias{kobo_edit_ridl_metadata}
 \title{Edit RIDL / CKAN metadata}
 \usage{
-kobo_edit_ridl_metadata(form = "data/form.xls")
+kobo_edit_ridl_metadata(form = "data/form.xlsx")
 }
 \arguments{
 \item{form}{The full filename of the form to be accessed (xls file).
@@ -15,7 +15,7 @@ Edit RIDL / CKAN metadata
 }
 \examples{
 \dontrun{
-kobo_edit_ridl_metadata(form = "form.xls")
+kobo_edit_ridl_metadata(form = "form.xlsx")
 }
 
 }

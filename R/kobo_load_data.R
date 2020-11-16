@@ -4,7 +4,7 @@
 #'
 #' @description Load form, building dictionnary, loading all required data into the environment, Check to split select_multiple if data is extracted from ODK, Clean variable if any and Re-encoding data based on the dictionnary
 #'
-#' @param form The full filename of the form to be accessed (xls or xlsx file).
+#' @param form The full filename of the form to be accessed (has to be xlsx file).
 #' It is assumed that the form is stored in the data folder.
 #'
 #' @param app The place where the function has been executed, the default is the console and the second option is the shiny app
@@ -16,13 +16,13 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_load_data("form.xls")
+#' kobo_load_data("form.xlsx")
 #' }
 #'
 #' @export kobo_load_data
 #'
 
-kobo_load_data <- function(form = "form.xls", app = "console") {
+kobo_load_data <- function(form = "form.xlsx", app = "console") {
   tryCatch ( {
     ## Load all required packages#############################################
 
@@ -44,18 +44,19 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
 
     form_tmp <- fs::path("data-raw", form)
     form <- fs::path_ext_set(form, "xlsx")
-    
-    wb <- openxlsx::createWorkbook()
-    
-    readxl::excel_sheets(form_tmp) %>% 
-      purrr::walk(
-        ~{openxlsx::addWorksheet(wb, .); 
-          openxlsx::writeData(wb, ., readxl::read_excel(form_tmp, sheet = .))})
-    
-    openxlsx::saveWorkbook(wb, fs::path("data-raw", form))
-    
-    fs::file_delete(form_tmp)
-    
+
+    # wb <- openxlsx::createWorkbook()
+    #
+    # #require(tidyverse)
+    # readxl::excel_sheets(form_tmp) %>%
+    #   purrr::walk(
+    #     ~{openxlsx::addWorksheet(wb, .);
+    #       openxlsx::writeData(wb, ., readxl::read_excel(form_tmp, sheet = .))})
+    #
+    # openxlsx::saveWorkbook(wb, fs::path("data-raw", form))
+    #
+    # fs::file_delete(form_tmp)
+
     ## getting project configuration variables
     cat("\n\n\n Getting project configuration variables \n\n\n\n")
     configInfoOrigin <- koboloadeR::kobo_get_config(form)
@@ -71,7 +72,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
 
     ## Load data #######################################################################
     cat("\n\n\n Load original dataset \n\n\n\n")
-    
+
     # originalData <- readr::read_csv(paste0(mainDir, "/data-raw/",configInfoOrigin[configInfoOrigin$name == "MainDataFrame", "path"]))
     originalData <- utils::read.csv(paste0(mainDir, "/data-raw/",configInfoOrigin[configInfoOrigin$name == "MainDataFrame", "path"]), sep = ",", encoding = "UTF-8", na.strings = "")
 
@@ -151,7 +152,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
     cat("\n\n Write backup before encoding or indicators calculation..\n")
     utils::write.csv(MainDataFrame,paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), row.names = FALSE, na = "")
     #save(MainDataFrame, file =  paste(mainDir,"/data/MainDataFrame_edited.rda",sep = ""))
-    
+
 
 
     ## load all required data files #########################################
@@ -171,7 +172,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
     if (nrow(levelsOfDF) != 0) {
     #  levelsOfDF[levelsOfDF$parent == "MainDataFrame","parent"] <- "MainDataFrame"
     #}
-    #dataBeginRepeat <- kobo_get_begin_repeat("form2.xls")
+    #dataBeginRepeat <- kobo_get_begin_repeat("form2.xlsx")
 
 
     #dataBeginRepeat <- dataBeginRepeat$names
@@ -321,8 +322,8 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
 
     dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
     #load(paste(mainDir,"/data/dico_",form,".rda",sep = ""))
-    
-    
+
+
     MainDataFrame <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")
     #load(paste(mainDir,"/data/MainDataFrame_edited.rda",sep = ""))
 
@@ -340,12 +341,12 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
 
     ## loading nested frame
     for (dbr in levelsOfDF$name) {
-      
+
       dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
       #load(paste(mainDir,"/data/",dbr,"_edited.rda",sep = ""))
-      
+
       dataFrame <- koboloadeR::kobo_encode(dataFrame, dico)
-      
+
       utils::write.csv(dataFrame,paste(mainDir,"/data/",dbr,"_encoded.csv",sep = ""), row.names = FALSE, na = "")
       #save(dataFrame, file =  paste(mainDir,"/data/",dbr,"_encoded.rda",sep = ""))
 
@@ -357,7 +358,7 @@ kobo_load_data <- function(form = "form.xls", app = "console") {
 
     utils::write.csv(MainDataFrame,paste(mainDir,"/data/MainDataFrame_encoded.csv",sep = ""), row.names = FALSE, na = "")
     #save(MainDataFrame, file =  paste(mainDir,"/data/MainDataFrame_encoded.rda",sep = ""))
-    
+
     return(TRUE)
   }, error = function(err) {
     print("There was an error in the data processing step!!! \n\n")

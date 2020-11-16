@@ -4,7 +4,7 @@
 \alias{kobo_anonymise}
 \title{Remove direct identifier}
 \usage{
-kobo_anonymise(frame, form = "form.xls", app = "console")
+kobo_anonymise(frame, form = "form.xlsx", app = "console")
 }
 \arguments{
 \item{frame}{dataset to use}
@@ -43,7 +43,7 @@ The methods above can be reference in the column
 }
 \examples{
 \dontrun{
-kobo_anonymise(frame,  form = "form.xls")
+kobo_anonymise(frame,  form = "form.xlsx")
 }
 
 }

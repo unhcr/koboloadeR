@@ -762,7 +762,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
         
         crunch_question <- function(j)
         {
-          report.name.i.v <- 
+          report.name.i.v.j <- 
             stringr::str_c(
               report.name, 
               stringr::str_pad(i, 2, pad = "0"), 

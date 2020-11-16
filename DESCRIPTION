@@ -99,7 +99,9 @@ Imports:
     miniUI,
     ckanr,
     openxlsx,
-    fs
+    fs,
+    furrr,
+    future
 Suggests:
     testthat (>= 2.1.0)
 VignetteBuilder: 

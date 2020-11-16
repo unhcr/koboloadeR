@@ -12,20 +12,10 @@ navbar:
     menu:
      - text: Data Crunching
        href: articles/Crunching.html
+     - text: Steps to build fully reproducible analysis
+       href: articles/How-to.html
      - text: Getting data from server
        href: articles/Getting_data.html
-     - text: Data Analysis Plan within your `xlsfrom`
-       href: articles/xlsform.html
-     - text: Using console script
-       href: articles/Console.html
-     - text: Sampling
-       href: articles/Sampling.html
-     - text: Data Anonymisation and disclosure risk measurement
-       href: articles/Anonymisation.html
-     - text: Data Cleaning
-       href: articles/Cleaning.html
-     - text: Predicting and scoring
-       href: articles/Predicting_Scoring.html
      - text: Common Troubleshooting
        href: articles/Troubleshooting.html
   - text: News

@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>7 Steps to build fully reproducible analysis • koboloadeR</title>
+<title>Steps to build fully reproducible analysis • koboloadeR</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="7 Steps to build fully reproducible analysis">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Steps to build fully reproducible analysis">
 <meta property="og:description" content="koboloadeR">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -54,25 +54,10 @@
       <a href="../articles/Crunching.html">Data Crunching</a>
     </li>
     <li>
+      <a href="../articles/How-to.html">Steps to build fully reproducible analysis</a>
+    </li>
+    <li>
       <a href="../articles/Getting_data.html">Getting data from server</a>
-    </li>
-    <li>
-      <a href="../articles/xlsform.html">Data Analysis Plan within your `xlsfrom`</a>
-    </li>
-    <li>
-      <a href="../articles/Console.html">Using console script</a>
-    </li>
-    <li>
-      <a href="../articles/Sampling.html">Sampling</a>
-    </li>
-    <li>
-      <a href="../articles/Anonymisation.html">Data Anonymisation and disclosure risk measurement</a>
-    </li>
-    <li>
-      <a href="../articles/Cleaning.html">Data Cleaning</a>
-    </li>
-    <li>
-      <a href="../articles/Predicting_Scoring.html">Predicting and scoring</a>
     </li>
     <li>
       <a href="../articles/Troubleshooting.html">Common Troubleshooting</a>
@@ -107,7 +92,7 @@
 <script src="How-to_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>7 Steps to build fully reproducible analysis</h1>
+      <h1 data-toc-skip>Steps to build fully reproducible analysis</h1>
             
             <h4 class="date">2020-11-16</h4>
       
@@ -169,6 +154,11 @@
 <div id="step-2-get-data-and-form-from-your-kobo-project" class="section level2">
 <h2 class="hasAnchor">
 <a href="#step-2-get-data-and-form-from-your-kobo-project" class="anchor"></a>Step 2: get data and form from your Kobo Project</h2>
+<p>The initial step to start your project is to get your data.</p>
+<p>The package is using only <code>csv</code> files. this is to avoid the limitations linked the number of columns that some version of excel can handle.</p>
+<p>One important point to note is related to the limitation in terms of variable names in R: A syntactically valid name consists of letters, numbers and the dot or underline characters and <strong>starts with a letter or the dot not followed by a number</strong>. Names such as “.2way” or “2.way” are not valid, and neither are the reserved words.</p>
+<p>In case your original variable names within your xlsform were starting with a number, you will <strong>need to rename manually</strong> all variable names both in your xlsform and in the data you downloaded.</p>
+<p>Below is a step by step guidance on how to generate quickly a fully reproducible analysis</p>
 <p>In order to complete this step, you can either:</p>
 <ul>
 <li><p>Use the web interface and put the files into the <code>data-raw</code> folder</p></li>
@@ -182,11 +172,12 @@
 <div class="figure">
 <img src="https://i.imgur.com/1hEUFkd.png" alt=""><p class="caption">preview</p>
 </div>
-<p>alternatively, if you have the uniqueID of your koboproject</p>
+<p>alternatively, if you have the uniqueID of your koboproject: <code>dataset</code> and the name of your form file in your project, you could use directly the code below - note that</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="co">## pulling data from RIDL</span>
+<span class="co">## pulling data from Kobo</span>
 <span class="va">dataset</span> <span class="op">&lt;-</span>  <span class="st">"dataset-title-in-kobo"</span>
+<span class="va">form</span> <span class="op">&lt;-</span> <span class="st">"name-of-the-form.xlsx"</span>
 
 <span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu">dir_exists</span><span class="op">(</span><span class="st">"data-raw"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu">dir_create</span><span class="op">(</span><span class="fu">path</span><span class="op">(</span><span class="st">"data-raw"</span><span class="op">)</span><span class="op">)</span>
@@ -194,45 +185,151 @@
   
   <span class="fu">hcrdata</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/hcrdata/man/hcrfetch.html">hcrfetch</a></span><span class="op">(</span>src <span class="op">=</span> <span class="st">"kobo"</span>, 
                     dataset <span class="op">=</span> <span class="va">dataset</span>, 
-                    file <span class="op">=</span> <span class="st">"form.xls"</span><span class="op">)</span>
+                    file <span class="op">=</span> <span class="va">form</span><span class="op">)</span>
                     
-<span class="fu">hcrdata</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/hcrdata/man/hcrfetch.html">hcrfetch</a></span><span class="op">(</span>src <span class="op">=</span> <span class="st">"kobo"</span>, 
-                  dataset <span class="op">=</span> <span class="va">dataset</span>, 
-                  file <span class="op">=</span> <span class="st">"data.json"</span><span class="op">)</span>
+<span class="va">data</span> <span class="op">&lt;-</span>
+  <span class="fu">hcrdata</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/hcrdata/man/hcrfetch.html">hcrfetch</a></span><span class="op">(</span>
+    src <span class="op">=</span> <span class="st">"kobo"</span>,
+    dataset <span class="op">=</span> <span class="st">"My kobo project"</span>,
+    file <span class="op">=</span> <span class="st">"data.json"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/jsonlite/man/fromJSON.html">fromJSON</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="st">"results"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/set_names.html">set_names</a></span><span class="op">(</span><span class="op">~</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace_all</a></span><span class="op">(</span><span class="va">.</span>, <span class="st">"(\\/)"</span>, <span class="st">"."</span><span class="op">)</span><span class="op">)</span>
+  
+<span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.csv</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"data-raw/MainDataFrame.csv"</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>  
 
 <span class="op">}</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/files.html">file.copy</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"data-raw/"</span>,<span class="va">dataset</span>,<span class="st">"/form.xls"</span><span class="op">)</span>,
-          to   <span class="op">=</span> <span class="st">"data-raw/form.xls"</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/files.html">file.copy</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"data-raw/"</span>,<span class="va">dataset</span>,<span class="st">"/maindataframe.csv"</span><span class="op">)</span>,
-          to   <span class="op">=</span> <span class="st">"data-raw/MainDataFrame.csv"</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/files.html">file.copy</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"data-raw/"</span>,<span class="va">dataset</span>,<span class="st">"/form.xlsx"</span><span class="op">)</span>,
+          to   <span class="op">=</span> <span class="st">"data-raw/form.xlsx"</span><span class="op">)</span>
+</code></pre></div>
+<p><strong>Note</strong> that for the rest of the process, it is convenient to name your form <code>form.xlsx</code> and your downloaded data frame <code>MainDataFrame.csv</code></p>
 </div>
 <div id="step-3-prepare-your-report-configuration-in-xlsform" class="section level2">
 <h2 class="hasAnchor">
 <a href="#step-3-prepare-your-report-configuration-in-xlsform" class="anchor"></a>Step 3: Prepare your report configuration in xlsform</h2>
+<p>You need first to make sure that the form is in the xlsx format so that it can be used by the package - if not, open your xls file in LibreOffice or Excel and save it within the right format.</p>
+<p>Next step is to extend your xlsform:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## Change here the precise name of the form if required</span>
-<span class="va">form</span> <span class="op">&lt;-</span> <span class="st">"form.xls"</span> 
+<span class="va">form</span> <span class="op">&lt;-</span> <span class="st">"form.xlsx"</span> 
 
 <span class="co">## Extend xlsform with required column if necessary - done only once!</span>
 <span class="co">#kobo_prepare_form(form)</span></code></pre></div>
+<p>Once the xlsform as been extended, re-open it in your favorite spreadsheet processing software</p>
+<div id="in-survey-worksheet" class="section level3">
+<h3 class="hasAnchor">
+<a href="#in-survey-worksheet" class="anchor"></a>in survey Worksheet</h3>
+<ul>
+<li>Relabel by adjusting the field <code>labelReport</code> for both the questions in <code>survey</code> and the question modalities in <code>choice</code> worksheet. Note that label for questions should be less than 80 characters long and modalities should be less than 40 characters.</li>
+</ul>
+<div id="fill-report-and-chapter" class="section level4">
+<h4 class="hasAnchor">
+<a href="#fill-report-and-chapter" class="anchor"></a>Fill <code>report</code> and <code>chapter</code>
+</h4>
 </div>
-<div id="step-4-add-calculated-indicators-clean-and-anonymise-the-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#step-4-add-calculated-indicators-clean-and-anonymise-the-data" class="anchor"></a>Step 4: Add calculated indicators, clean and anonymise the data</h2>
+<div id="document-disaggregation-correlate-and-variable" class="section level4">
+<h4 class="hasAnchor">
+<a href="#document-disaggregation-correlate-and-variable" class="anchor"></a>Document <code>disaggregation</code>, <code>correlate</code> and <code>variable</code>
+</h4>
+<ul>
+<li>
+<code>disaggregation</code>: used to flag variables used to <code>facet</code> dataset</li>
+<li>
+<code>correlate</code>: used to flag variables used for statistical test of independence (for categorical variable) or correlation for numeric variable</li>
+<li>
+<code>variable</code>: used to flag <code>ordinal</code> variables so that graphs are not ordered per frequency.</li>
+</ul>
 </div>
-<div id="step-6-prepare-your-analysis-post" class="section level2">
-<h2 class="hasAnchor">
-<a href="#step-6-prepare-your-analysis-post" class="anchor"></a>Step 6: Prepare your analysis post</h2>
+<div id="document-clean" class="section level4">
+<h4 class="hasAnchor">
+<a href="#document-clean" class="anchor"></a>Document <code>clean</code>
+</h4>
+<p>A well-designed and tested survey should allow to minimise data cleaning issues. Specifically unconsistent answers can be anticipated and avoided through a series of well set-up constraints. You can learn more on <a href="https://unhcr.github.io/Integrated-framework-household-survey/Configure-forms.html">questionnaire design here</a></p>
+<p>However even with the best designed questionnaires, there will still be some issues to fix</p>
+<p>Survey data cleaning may involves different steps:</p>
+<div id="remove-records" class="section level5">
+<h5 class="hasAnchor">
+<a href="#remove-records" class="anchor"></a>Remove Records</h5>
+<p>identifying and removing responses from individuals who either don’t match the target audience criteria or did not answer your questions thoughtfully. In case of self-administered questionnaire online, there might be also issues called “speeders” and “flat-liners” (respondents expediting the questionnaire), in such situation, date/time stamp on questions or group of questions can help identifying the records to be removed</p>
 </div>
-<div id="step-5-document-the-data-and-push-it-from-kobo-to-ridl" class="section level2">
-<h2 class="hasAnchor">
-<a href="#step-5-document-the-data-and-push-it-from-kobo-to-ridl" class="anchor"></a>Step 5: Document the data and push it from kobo to RIDL</h2>
+<div id="adjust-closed-question-from-open-end-answers" class="section level5">
+<h5 class="hasAnchor">
+<a href="#adjust-closed-question-from-open-end-answers" class="anchor"></a>Adjust closed question from open-end answers</h5>
+<p>Often some people will tend to use this last <em>other</em> options to enter information. The result is an open ended question that is very difficult to analyse. Re-encoding certains <strong>select_one</strong> <em>list_name</em> <strong>or_other</strong> variables is therefore quite often a necessary step.</p>
+<p>Koboloader has some functions to handle this situation</p>
+<ul>
+<li><p><code>kobo_cleanlog(form)</code></p></li>
+<li><p><code><a href="../reference/kobo_clean.html">kobo_clean(frame, dico)</a></code></p></li>
+</ul>
+<p>Insert a column named clean and reference the csv file to use for cleaning.</p>
 </div>
-<div id="step-7-submit-your-analysis-post-to-the-internal-analysis-repository" class="section level2">
+</div>
+<div id="document-cluster" class="section level4">
+<h4 class="hasAnchor">
+<a href="#document-cluster" class="anchor"></a>Document <code>cluster</code>
+</h4>
+</div>
+<div id="document-anonymise" class="section level4">
+<h4 class="hasAnchor">
+<a href="#document-anonymise" class="anchor"></a>Document <code>anonymise</code>
+</h4>
+</div>
+</div>
+<div id="in-choice-worksheet" class="section level3">
+<h3 class="hasAnchor">
+<a href="#in-choice-worksheet" class="anchor"></a>in Choice Worksheet</h3>
+</div>
+<div id="in-analysissetting-worksheet" class="section level3">
+<h3 class="hasAnchor">
+<a href="#in-analysissetting-worksheet" class="anchor"></a>in analysisSetting Worksheet</h3>
+</div>
+</div>
+<div id="step-4-prepare-your-analysis-post" class="section level2">
 <h2 class="hasAnchor">
-<a href="#step-7-submit-your-analysis-post-to-the-internal-analysis-repository" class="anchor"></a>Step 7: Submit your analysis post to the Internal Analysis Repository</h2>
+<a href="#step-4-prepare-your-analysis-post" class="anchor"></a>Step 4: Prepare your analysis post</h2>
+<div id="document-the-data-and-push-it-from-kobo-to-ridl" class="section level3">
+<h3 class="hasAnchor">
+<a href="#document-the-data-and-push-it-from-kobo-to-ridl" class="anchor"></a>Document the data and push it from kobo to RIDL</h3>
+<p>You have now done the biggest part of the work. You can already push some of those document to the data repository. The standard for this is <a href="https://gridl.unhcr.org">UNHCR Raw Internal Data Library - RIDL</a>, which is based <a href="https://ckan.org/">CKAN servers</a>, the same software being used for <a href="https://data.humdata.org/">HDX - The Humanitarian Data Exchange</a>. More</p>
+</div>
+<div id="prepare-material-for-joint-data-interpretation" class="section level3">
+<h3 class="hasAnchor">
+<a href="#prepare-material-for-joint-data-interpretation" class="anchor"></a>Prepare material for Joint Data Interpretation</h3>
+<p>Once you have generated all potential markdown files, you will end with a lot of visuals. Therefore it is key to carefully select the most relevant visual that will be presented for interpretation. In order to keep participant focused, a typical <strong>joint data interpretation session</strong> shall not last more than 2 hours and include not more than 60 visuals/slide.</p>
+<p>You can create an empty markdown using the <code><a href="https://rdrr.io/pkg/unhcRstyle/man/unhcr_templ_ppt.html">unhcRstyle::unhcr_templ_ppt</a></code> powerpoint template and copy/paste within this new file the most relevant charts.</p>
+<p>In order to guide this selection phase, the data crunching expert and report designer, in collaboration with the data analysis group, can use the following elements:</p>
+<ul>
+<li><p>For numeric value, check the frequency distributions of each variable to average, deviation, including outliers and oddities</p></li>
+<li><p>For categorical variables, check for unexpected values: any weird results based on common sense expectations</p></li>
+<li><p>Use correlation analysis to check for potential contradictions in respondents answers to different questions for identified associations (chi-square)</p></li>
+<li><p>Always, Check for missing data (NA) or “%of respondent who answered” that you cannot confidently explain</p></li>
+<li><p>Check unanswered questions, that corresponds to unused skip logic in the questionnaire: For instance, did a person who was never displaced answer displacement-related questions? Were employment-related answers provided for a toddler?</p></li>
+</ul>
+</div>
+<div id="take-notes-during-the-joint-data-interpretation-session" class="section level3">
+<h3 class="hasAnchor">
+<a href="#take-notes-during-the-joint-data-interpretation-session" class="anchor"></a>Take notes during the joint data interpretation session</h3>
+<p>Before the session, you need to agree in advance on the <strong>note-taker role</strong>. That person may potential write the notes directly within the markdown file.</p>
+<p>When analyzing those representations in a collective setting during data interpretation sessions, you may:</p>
+<ul>
+<li><p><strong>Reflect</strong>: question data quality and/or make suggestions to adjust questions, identify additional cleaning steps;</p></li>
+<li><p><strong>Interpret</strong>: develop qualitative interpretations of data patterns;</p></li>
+<li><p><strong>Recommend</strong>: suggest recommendations in terms of programmatic adjustment;</p></li>
+<li><p><strong>Classify</strong>: define level of sensitivity for certain topics if required.</p></li>
+</ul>
+</div>
+<div id="write-the-final-markdown" class="section level3">
+<h3 class="hasAnchor">
+<a href="#write-the-final-markdown" class="anchor"></a>Write the final markdown</h3>
+</div>
+</div>
+<div id="step-5-peer-review-your-analysis-post-through-the-internal-analysis-repository" class="section level2">
+<h2 class="hasAnchor">
+<a href="#step-5-peer-review-your-analysis-post-through-the-internal-analysis-repository" class="anchor"></a>Step 5: Peer review your analysis post through the Internal Analysis Repository</h2>
+<p>Peer Review is essential to produce good analysis. Such peer review is performed through the submission of your Rmd files to your data analysis focal point in the Regional Bureau.</p>
+<p>Before submitting your markdown files, plug them directly to the correct RIDl container with the following code chunk</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co">## pulling data from RIDL</span>

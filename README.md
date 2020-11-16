@@ -98,13 +98,16 @@ Note that the package is still in beta-version. We hope to have soon a release a
   *  Open R studio interface and within the R console, install `devtools` package: 
 
 ```{r}
-install.packages("devtools")
+install.packages("remotes")
 ```
 
   *  Install koboloadeR: 
 
 ```{r}
-devtools::install_github("unhcr/koboloadeR", Ncpus=4) 
+remotes::install_github("unhcr/koboloadeR", Ncpus=4) 
+
+## Use UNHCR graphical template- https://unhcr-web.github.io/unhcRstyle/docs/
+remotes::install_github('unhcr-web/unhcRstyle')
 ```  
 
   *  You are all set! You can know use koboloadeR. If you have a problem consult the common troubleshooting part at the end of this page.

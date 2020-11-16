@@ -725,10 +725,10 @@ kobo_crunching_report <- function(form = "form.xlsx",
         # v <- 3
         chaptersname <- as.character(chapters[ v , 1])
 
-        report.name.i.v <- 
+        report.name.i.v <-
           stringr::str_c(
-            report.name, 
-            stringr::str_pad(i, 2, pad = "0"), 
+            report.name,
+            stringr::str_pad(i, 2, pad = "0"),
             stringr::str_pad(v, 2, pad = "0"),
             "00",
             sep = "-")
@@ -759,17 +759,17 @@ kobo_crunching_report <- function(form = "form.xlsx",
           progress$set(message = "Getting levels for each questions in progress...")
           updateProgress()
         }
-        
+
         crunch_question <- function(j)
         {
-          report.name.i.v.j <- 
+          report.name.i.v.j <-
             stringr::str_c(
-              report.name, 
-              stringr::str_pad(i, 2, pad = "0"), 
+              report.name,
+              stringr::str_pad(i, 2, pad = "0"),
               stringr::str_pad(v, 2, pad = "0"),
               stringr::str_pad(j, 2, pad = "0"),
               sep = "-")
-          
+
           ## Now getting level for each questions
           if (app == "shiny") {
             progress$set(message = paste("Render question: ",as.character(chapterquestions[ j , c("labelReport")])))
@@ -2183,16 +2183,16 @@ kobo_crunching_report <- function(form = "form.xlsx",
 
           ## End loop on questions
         }
-        
+
         furrr::future_walk(1:nrow(chapterquestions), crunch_question, .progress = FALSE)
-        
+
         if (output == "docx") {
           cat(paste("##### Page Break"),file = report.name.i.v ,sep = "\n", append = TRUE)
         } else {
           cat(paste(""),file = report.name.i.v ,sep = "\n", append = TRUE)
         }
       }
-      
+
     }
 
 
@@ -2220,17 +2220,20 @@ kobo_crunching_report <- function(form = "form.xlsx",
         ### Render now all reports
         cat(" Render now reports... \n")
         for (i in 1:nrow(reports)) {
+          # i <- 1
           reportsname <- as.character(reports[ i , 1])
-          
+
           report.name <- paste(mainDir, "/vignettes/",i,"-", reportsname, "-report.Rmd", sep = "")
 
+
+          ### Consolidate all report subpart
           fs::dir_ls(fs::path_dir(report.name), glob = paste0(report.name, "-*-*")) %>%
             purrr::map_chr(readr::read_file) %>%
             purrr::walk(readr::write_file, file = report.name, append = TRUE)
 
           fs::dir_ls(fs::path_dir(report.name), glob = paste0(report.name, "-*-*")) %>%
             purrr::walk(fs::file_delete)
-          
+
           if (app == "shiny") {
             progress$set(message = paste("Rendering output report for ",reportsname, " chapter in progress..."))
             updateProgress()
@@ -2242,7 +2245,8 @@ kobo_crunching_report <- function(form = "form.xlsx",
             rmarkdown::render(paste(mainDir,"/vignettes/",i,"-", reportsname, "-report.Rmd", sep = ""))
             ## Put the report in the out folder
             mainDir <- kobo_getMainDirectory()
-            file.rename(paste(mainDir,"/vignettes/",i,"-", reportsname, "-report.docx", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", reportsname,"-",Sys.Date(), "-report.docx"))
+            file.rename(paste(mainDir,"/vignettes/",i,"-", reportsname, "-report.docx", sep = ""),
+                        paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", reportsname,"-",Sys.Date(), "-report.docx"))
             ## Clean  memory
             gc()
 
@@ -2253,7 +2257,8 @@ kobo_crunching_report <- function(form = "form.xlsx",
             rmarkdown::render(paste(mainDir,"/vignettes/",i,"-", reportsname, "-report.Rmd", sep = ""))
             ## Put the report in the out folder
             mainDir <- kobo_getMainDirectory()
-            file.rename(paste(mainDir,"/vignettes/",i,"-", reportsname, "-report.html", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", reportsname,"-",Sys.Date(), "-report.html"))
+            file.rename(paste(mainDir,"/vignettes/",i,"-", reportsname, "-report.html", sep = ""),
+                        paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", reportsname,"-",Sys.Date(), "-report.html"))
             ## Clean  memory
             gc()
 
@@ -2264,7 +2269,8 @@ kobo_crunching_report <- function(form = "form.xlsx",
             rmarkdown::render(paste(mainDir,"/vignettes/",i,"-", reportsname, "-report.Rmd", sep = ""))
             ## Put the report in the out folder
             mainDir <- kobo_getMainDirectory()
-            file.rename(paste(mainDir,"/vignettes/",i,"-", reportsname, "-report.html", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", reportsname,"-",Sys.Date(), "-report.aspx"))
+            file.rename(paste(mainDir,"/vignettes/",i,"-", reportsname, "-report.html", sep = ""),
+                        paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", reportsname,"-",Sys.Date(), "-report.aspx"))
             ## Clean  memory
             gc()
 
@@ -2275,7 +2281,8 @@ kobo_crunching_report <- function(form = "form.xlsx",
             rmarkdown::render(paste(mainDir,"/vignettes/",i,"-", reportsname, "-report.Rmd", sep = ""))
             ## Put the report in the out folder
             mainDir <- kobo_getMainDirectory()
-            file.rename(paste(mainDir,"/vignettes/",i,"-", reportsname, "-report.pptx", sep = ""), paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", reportsname,"-",Sys.Date(), "-report.pptx"))
+            file.rename(paste(mainDir,"/vignettes/",i,"-", reportsname, "-report.pptx", sep = ""),
+                        paste0(mainDir,"/out/crunching_reports/Crunching-report-",i,"-", reportsname,"-",Sys.Date(), "-report.pptx"))
             ## Clean  memory
             gc()
           }

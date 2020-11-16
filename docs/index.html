@@ -54,25 +54,10 @@
       <a href="articles/Crunching.html">Data Crunching</a>
     </li>
     <li>
+      <a href="articles/How-to.html">Steps to build fully reproducible analysis</a>
+    </li>
+    <li>
       <a href="articles/Getting_data.html">Getting data from server</a>
-    </li>
-    <li>
-      <a href="articles/xlsform.html">Data Analysis Plan within your `xlsfrom`</a>
-    </li>
-    <li>
-      <a href="articles/Console.html">Using console script</a>
-    </li>
-    <li>
-      <a href="articles/Sampling.html">Sampling</a>
-    </li>
-    <li>
-      <a href="articles/Anonymisation.html">Data Anonymisation and disclosure risk measurement</a>
-    </li>
-    <li>
-      <a href="articles/Cleaning.html">Data Cleaning</a>
-    </li>
-    <li>
-      <a href="articles/Predicting_Scoring.html">Predicting and scoring</a>
     </li>
     <li>
       <a href="articles/Troubleshooting.html">Common Troubleshooting</a>
@@ -170,11 +155,14 @@
 <ul>
 <li>Open R studio interface and within the R console, install <code>devtools</code> package:</li>
 </ul>
-<pre class="{r}"><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("devtools")</a></code></pre>
+<pre class="{r}"><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("remotes")</a></code></pre>
 <ul>
 <li>Install koboloadeR:</li>
 </ul>
-<pre class="{r}"><code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github("unhcr/koboloadeR", Ncpus=4) </a></code></pre>
+<pre class="{r}"><code><a href="https://remotes.r-lib.org/reference/install_github.html">remotes::install_github("unhcr/koboloadeR", Ncpus=4) 
+
+## Use UNHCR graphical template- https://unhcr-web.github.io/unhcRstyle/docs/
+remotes::install_github('unhcr-web/unhcRstyle')</a></code></pre>
 <ul>
 <li>You are all set! You can know use koboloadeR. If you have a problem consult the common troubleshooting part at the end of this page.</li>
 </ul>

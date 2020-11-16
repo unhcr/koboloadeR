@@ -4,7 +4,7 @@
 \alias{kobo_create_indicators}
 \title{Create Indicators}
 \usage{
-kobo_create_indicators(form = "form.xls")
+kobo_create_indicators(form = "form.xlsx")
 }
 \arguments{
 \item{form}{The full filename of the form to be accessed (xls or xlsx file).
@@ -18,7 +18,7 @@ Function to compute indicators from indicator sheet
 }
 \examples{
 \dontrun{
-kobo_create_indicators("myform.xls")
+kobo_create_indicators("myform.xlsx")
 }
 
 }

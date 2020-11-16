@@ -4,7 +4,7 @@
 \alias{kobo_rename_xlsform_dataframes}
 \title{Rename xlsform and all dataframes}
 \usage{
-kobo_rename_xlsform_dataframes(form = "form.xls", app = "console")
+kobo_rename_xlsform_dataframes(form = "form.xlsx", app = "console")
 }
 \arguments{
 \item{form}{The full filename of the form to be accessed (xls or xlsx file).

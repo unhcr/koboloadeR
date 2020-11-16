@@ -4,7 +4,7 @@
 \alias{kobo_get_dataframes_levels}
 \title{Dataframes Levels}
 \usage{
-kobo_get_dataframes_levels(form = "form.xls")
+kobo_get_dataframes_levels(form = "form.xlsx")
 }
 \arguments{
 \item{form}{The full filename of the form to be accessed (xls or xlsx file).
@@ -18,7 +18,7 @@ Produce a dataframe that represents levels and parents for the main dataframe an
 }
 \examples{
 \dontrun{
-kobo_get_dataframes_levels("myform.xls")
+kobo_get_dataframes_levels("myform.xlsx")
 }
 
 }

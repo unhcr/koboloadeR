@@ -6,14 +6,14 @@
   
   You'll want to start by loading the form and data from KoBo:}
 \usage{
-kobo_submit_to_ridl(formf = "data/form.xls", dataf = "data/data.json")
+kobo_submit_to_ridl(formf = "data/form.xlsx", dataf = "data/data.json")
 }
 \description{
 formf <- 
   hcrdata::hcrfetch(
     src = "kobo",
     dataset = "My kobo project",
-    file = "form.xls")
+    file = "form.xlsx")
 }
 \details{
 dataf <- 

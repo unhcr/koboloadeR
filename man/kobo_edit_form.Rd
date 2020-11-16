@@ -5,7 +5,7 @@
 \title{Edit XLS form with shiny app for configuration}
 \usage{
 kobo_edit_form(
-  form = "form.xls",
+  form = "form.xlsx",
   survey = NULL,
   choices = NULL,
   indicator = NULL,
@@ -35,7 +35,7 @@ This function used to change the data of sheets in the xlsform and apply all req
 }
 \examples{
 \dontrun{
-kobo_edit_form("myform.xls")
+kobo_edit_form("form.xlsx")
 }
 
 }

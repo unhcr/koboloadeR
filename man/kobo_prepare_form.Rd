@@ -2,12 +2,12 @@
 % Please edit documentation in R/kobo_prepare_form.R
 \name{kobo_prepare_form}
 \alias{kobo_prepare_form}
-\title{Prepare XLS form}
+\title{Prepare XLSform}
 \usage{
-kobo_prepare_form(form = "form.xls")
+kobo_prepare_form(form = "form.xlsx")
 }
 \arguments{
-\item{form}{The full filename of the form to be accessed (xls or xlsx file).
+\item{form}{The full filename of the form to be accessed (has to be xlsx file).
 It is assumed that the form is stored in the data folder.}
 }
 \value{
@@ -20,7 +20,7 @@ Also, coloring all rows that have type equal to "begin group", "end group", "beg
 }
 \examples{
 \dontrun{
-kobo_prepare_form("myform.xls")
+kobo_prepare_form("myform.xlsx")
 }
 
 }

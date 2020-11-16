@@ -5,7 +5,7 @@
 \title{Generate an atlas out of the dataset}
 \usage{
 kobo_atlas_report(
-  form = "form.xls",
+  form = "form.xlsx",
   app = "console",
   output = "html",
   render = "TRUE",

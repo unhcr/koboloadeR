@@ -103,21 +103,7 @@
 
     
     
-<p>Below is a step by step guidance on how to generate quickly a fully reproducible analysis</p>
-<div id="presentation-of-features" class="section level4">
-<h4 class="hasAnchor">
-<a href="#presentation-of-features" class="anchor"></a>Presentation of features</h4>
-<ul>
-<li><p><a href="articles/Getting_data.html">Getting data from server</a> - How to retrieve data from the server within R?</p></li>
-<li><p><a href="articles/xlsform.html">Data Analysis Plan within your <code>xlsfrom</code></a> - How to extend the xlsform to include your analysis plan?</p></li>
-<li><p><a href="articles/Console.html">Using console script</a> - How to use the package without using the GUI in Shiny?</p></li>
-<li><p><a href="articles/Sampling.html">Sampling</a>: how to generate a sample from a registry or to post-stratify data when having a low response rate?</p></li>
-<li><p><a href="articles/Anonymisation.html">Data Anonymisation and disclosure risk measurement</a>: how to create anonymised data?</p></li>
-<li><p><a href="articles/Cleaning.html">Data Cleaning</a>: how to use the package for reproducible and documented data cleaning?</p></li>
-<li><p><a href="articles/Predicting_Scoring.html">Predicting and scoring</a>: how to use survey in conjunction wiht registration data to build risk prediction and vulnerability scoring?</p></li>
-<li><p><a href="articles/Dissiminating.html">Dissiminating</a>: how to dissiminate both survey microdata using DDI and variable crosstabulation on CKAN?</p></li>
-</ul>
-</div>
+<p>Below is a step by step guidance on how to generate quickly a fully reproducible analysis notebook.</p>
 <div id="step-1-set-up-your-rstudio-project" class="section level2">
 <h2 class="hasAnchor">
 <a href="#step-1-set-up-your-rstudio-project" class="anchor"></a>Step 1: Set up your Rstudio project</h2>
@@ -125,12 +111,15 @@
 <p><a href="https://unhcr-web.github.io/hcrdata/docs/">hcrdata</a> to connect to both Kobo &amp; RIDL API</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">## API to connect to internal data sources</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a>remotes<span class="op">::</span><span class="kw">install_github</span>(<span class="st">'unhcr-web/hcrdata’)</span></span></code></pre></div>
+<p><a href="https://unhcr-web.github.io/unhcRstyle/docs/">unhcRstyle</a> includes all necessary palette, ggplot2 themed and markdown template in line with <a href="https://intranet.unhcr.org/content/dam/unhcr/intranet/staff%20support/strategic/documents/english/branded-templates/main/Accessing%20UNHCR%20Brand%20Compliant%20Templates%20user%20guide.pdf">UNHCR brand book</a>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## Use UNHCR graphical template- https://unhcr-web.github.io/unhcRstyle/docs/</span>
+<code class="sourceCode R"><span class="co">## Use UNHCR graphical template</span>
 <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">'unhcr-web/unhcRstyle'</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co">## Perform High Frequency Check https://unhcr.github.io/HighFrequencyChecks/docs/</span></span>
+<p><a href="https://unhcr.github.io/HighFrequencyChecks/docs/">HighFrequencyChecks</a> can be performed during data collection to monitor data quality.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co">## Perform High Frequency Check </span></span>
 <span id="cb3-2"><a href="#cb3-2"></a>remotes<span class="op">::</span><span class="kw">install_github</span>(<span class="st">'unhcr/HighFrequencyChecks’)</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co">## Process data crunching for survey dataset - https://unhcr.github.io/koboloadeR/docs/</span></span>
+<p><a href="https://unhcr.github.io/koboloadeR/docs/">koboloadeR</a> allows to quickly generate notebook from a dataset collected on Kobo.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co">## Process data crunching for survey dataset</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a>remotes<span class="op">::</span><span class="kw">install_github</span>(<span class="st">'unhcr/koboloadeR’)</span></span></code></pre></div>
 <p>You can now prepare your project</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -157,7 +146,7 @@
 <p>The initial step to start your project is to get your data.</p>
 <p>The package is using only <code>csv</code> files. this is to avoid the limitations linked the number of columns that some version of excel can handle.</p>
 <p>One important point to note is related to the limitation in terms of variable names in R: A syntactically valid name consists of letters, numbers and the dot or underline characters and <strong>starts with a letter or the dot not followed by a number</strong>. Names such as “.2way” or “2.way” are not valid, and neither are the reserved words.</p>
-<p>In case your original variable names within your xlsform were starting with a number, you will <strong>need to rename manually</strong> all variable names both in your xlsform and in the data you downloaded.</p>
+<p>In case your original variable names within your XlsForm were starting with a number, you will <strong>need to rename manually</strong> all variable names both in your XlsForm and in the data you downloaded.</p>
 <p>Below is a step by step guidance on how to generate quickly a fully reproducible analysis</p>
 <p>In order to complete this step, you can either:</p>
 <ul>
@@ -208,22 +197,24 @@
 </div>
 <div id="step-3-prepare-your-report-configuration-in-xlsform" class="section level2">
 <h2 class="hasAnchor">
-<a href="#step-3-prepare-your-report-configuration-in-xlsform" class="anchor"></a>Step 3: Prepare your report configuration in xlsform</h2>
-<p>You need first to make sure that the form is in the xlsx format so that it can be used by the package - if not, open your xls file in LibreOffice or Excel and save it within the right format.</p>
-<p>Next step is to extend your xlsform:</p>
+<a href="#step-3-prepare-your-report-configuration-in-xlsform" class="anchor"></a>Step 3: Prepare your report configuration in XlsForm</h2>
+<p>You need first to make sure that the form is in the <code>xlsx</code> format so that it can be used by the package - if not, open your <code>xls</code> file in <a href="https://www.libreoffice.org/download/libreoffice-fresh/">Libreoffice</a> or Excel and save it within the right format.</p>
+<p>Next step is to extend your XlsForm with the <code>kobo_prepare_form</code> function</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## Change here the precise name of the form if required</span>
 <span class="va">form</span> <span class="op">&lt;-</span> <span class="st">"form.xlsx"</span> 
 
-<span class="co">## Extend xlsform with required column if necessary - done only once!</span>
-<span class="co">#kobo_prepare_form(form)</span></code></pre></div>
-<p>Once the xlsform as been extended, re-open it in your favorite spreadsheet processing software</p>
+<span class="co">## Extend XlsForm with required column if necessary - done only once!</span>
+<span class="fu"><a href="../reference/kobo_prepare_form.html">kobo_prepare_form</a></span><span class="op">(</span><span class="va">form</span><span class="op">)</span></code></pre></div>
+<p>Once the XlsForm as been extended, re-open it in your favorite spreadsheet processing software</p>
 <div id="in-survey-worksheet" class="section level3">
 <h3 class="hasAnchor">
-<a href="#in-survey-worksheet" class="anchor"></a>in survey Worksheet</h3>
-<ul>
-<li>Relabel by adjusting the field <code>labelReport</code> for both the questions in <code>survey</code> and the question modalities in <code>choice</code> worksheet. Note that label for questions should be less than 80 characters long and modalities should be less than 40 characters.</li>
-</ul>
+<a href="#in-survey-worksheet" class="anchor"></a>in <code>survey</code> Worksheet</h3>
+<div id="relabel" class="section level4">
+<h4 class="hasAnchor">
+<a href="#relabel" class="anchor"></a>Relabel</h4>
+<p>Tou can adjust the field/column <code>labelReport</code> for the questions in <code>survey</code>. Note that label for questions should be less than 80 characters long.</p>
+</div>
 <div id="fill-report-and-chapter" class="section level4">
 <h4 class="hasAnchor">
 <a href="#fill-report-and-chapter" class="anchor"></a>Fill <code>report</code> and <code>chapter</code>
@@ -249,14 +240,13 @@
 <p>A well-designed and tested survey should allow to minimise data cleaning issues. Specifically unconsistent answers can be anticipated and avoided through a series of well set-up constraints. You can learn more on <a href="https://unhcr.github.io/Integrated-framework-household-survey/Configure-forms.html">questionnaire design here</a></p>
 <p>However even with the best designed questionnaires, there will still be some issues to fix</p>
 <p>Survey data cleaning may involves different steps:</p>
-<div id="remove-records" class="section level5">
-<h5 class="hasAnchor">
-<a href="#remove-records" class="anchor"></a>Remove Records</h5>
+<ul>
+<li>Remove Records</li>
+</ul>
 <p>identifying and removing responses from individuals who either don’t match the target audience criteria or did not answer your questions thoughtfully. In case of self-administered questionnaire online, there might be also issues called “speeders” and “flat-liners” (respondents expediting the questionnaire), in such situation, date/time stamp on questions or group of questions can help identifying the records to be removed</p>
-</div>
-<div id="adjust-closed-question-from-open-end-answers" class="section level5">
-<h5 class="hasAnchor">
-<a href="#adjust-closed-question-from-open-end-answers" class="anchor"></a>Adjust closed question from open-end answers</h5>
+<ul>
+<li>Adjust closed question from open-end answers</li>
+</ul>
 <p>Often some people will tend to use this last <em>other</em> options to enter information. The result is an open ended question that is very difficult to analyse. Re-encoding certains <strong>select_one</strong> <em>list_name</em> <strong>or_other</strong> variables is therefore quite often a necessary step.</p>
 <p>Koboloader has some functions to handle this situation</p>
 <ul>
@@ -265,11 +255,18 @@
 </ul>
 <p>Insert a column named clean and reference the csv file to use for cleaning.</p>
 </div>
-</div>
 <div id="document-cluster" class="section level4">
 <h4 class="hasAnchor">
 <a href="#document-cluster" class="anchor"></a>Document <code>cluster</code>
 </h4>
+<p>One interesting element of analysis is to identify potential “cluster” within the observed population. Such type of analysis is part of the <a href="https://en.wikipedia.org/wiki/Unsupervised_learning">unsupervised learning / classification</a> type. Dedicated algorithm are available for such type of analysis and are included when running the <a href="reference/kobo_crunching_report.html">kobo_cluster_report</a> function.</p>
+<p>In order to get such report, one need to indicate the variable to be used within the <code>cluster</code> variable/column.</p>
+</div>
+<div id="document-predict" class="section level4">
+<h4 class="hasAnchor">
+<a href="#document-predict" class="anchor"></a>Document <code>predict</code>
+</h4>
+<p>Alternatively, it is also possible to use a target variable in order to identify the explanatory variable for such target. This is then used by the <a href="reference/kobo_prediction_report.html">kobo_prediction_report</a> function.</p>
 </div>
 <div id="document-anonymise" class="section level4">
 <h4 class="hasAnchor">
@@ -279,11 +276,15 @@
 </div>
 <div id="in-choice-worksheet" class="section level3">
 <h3 class="hasAnchor">
-<a href="#in-choice-worksheet" class="anchor"></a>in Choice Worksheet</h3>
+<a href="#in-choice-worksheet" class="anchor"></a>in <code>choice</code> Worksheet</h3>
+<ul>
+<li><p>Relabel by adjusting the field <code>labelReport</code> for the question modalities in <code>choice</code> worksheet. Note that label for questions should be less than 40 characters.</p></li>
+<li><p>Indicate the required order for the <code>list_name</code> corresponding to ordinal variable</p></li>
+</ul>
 </div>
 <div id="in-analysissetting-worksheet" class="section level3">
 <h3 class="hasAnchor">
-<a href="#in-analysissetting-worksheet" class="anchor"></a>in analysisSetting Worksheet</h3>
+<a href="#in-analysissetting-worksheet" class="anchor"></a>in <code>analysisSetting</code> Worksheet</h3>
 </div>
 </div>
 <div id="step-4-prepare-your-analysis-post" class="section level2">

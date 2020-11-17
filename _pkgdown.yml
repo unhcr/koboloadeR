@@ -35,9 +35,10 @@ reference:
       - kobo_question
       - kobo_crunching_report
       - kobo_cluster_report
-      - kobo_anonymisation_report
+      - kobo_prediction_report
       - kobo_atlas_report
       - kobo_trend_report
+      - kobo_anonymisation_report
   - title: Analysis Plan Configuration
     contents:
       - kobo_dico

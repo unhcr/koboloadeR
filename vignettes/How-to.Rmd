@@ -15,28 +15,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-Below is a step by step guidance on how to generate quickly a fully reproducible analysis
-
-#### Presentation of features 
-
-  *  [Getting data from server](articles/Getting_data.html) - How to retrieve data from the server within R?
-    
-  *  [Data Analysis Plan within your `xlsfrom`](articles/xlsform.html) - How to extend the xlsform to include your analysis plan?
-    
-  *  [Using console script](articles/Console.html) - How to use the package without using the GUI in Shiny?
-    
-  *  [Sampling](articles/Sampling.html): how to generate a sample from a registry or to post-stratify data when having a low response rate? 
-  
-  *  [Data Anonymisation and disclosure risk measurement](articles/Anonymisation.html): how to create anonymised data?
-  
-  *  [Data Cleaning](articles/Cleaning.html): how to use the package for reproducible and documented data cleaning? 
-    
-  *  [Predicting and scoring](articles/Predicting_Scoring.html): how to use survey in conjunction wiht registration data to build risk prediction and vulnerability scoring?
-    
-  *  [Dissiminating](articles/Dissiminating.html): how to dissiminate both survey microdata using DDI and variable crosstabulation on CKAN? 
-
-
-
+Below is a step by step guidance on how to generate quickly a fully reproducible analysis notebook.
 
 
 ## Step 1: Set up your Rstudio project
@@ -49,16 +28,25 @@ From Rstudio, create a new project - then make sure to install the necessary pac
 ## API to connect to internal data sources
 remotes::install_github('unhcr-web/hcrdata’)
 ```
+
+[unhcRstyle](https://unhcr-web.github.io/unhcRstyle/docs/) includes all necessary palette, ggplot2 themed and markdown template in line with [UNHCR brand book](https://intranet.unhcr.org/content/dam/unhcr/intranet/staff%20support/strategic/documents/english/branded-templates/main/Accessing%20UNHCR%20Brand%20Compliant%20Templates%20user%20guide.pdf).
+
 ```r
-## Use UNHCR graphical template- https://unhcr-web.github.io/unhcRstyle/docs/
+## Use UNHCR graphical template
 remotes::install_github('unhcr-web/unhcRstyle')
 ```
+
+[HighFrequencyChecks](https://unhcr.github.io/HighFrequencyChecks/docs/) can be performed during data collection to monitor data quality.
+
 ```r
-## Perform High Frequency Check https://unhcr.github.io/HighFrequencyChecks/docs/
+## Perform High Frequency Check 
 remotes::install_github('unhcr/HighFrequencyChecks’)
 ```
+
+[koboloadeR](https://unhcr.github.io/koboloadeR/docs/) allows to quickly generate notebook from a dataset collected on Kobo.
+
 ```r
-## Process data crunching for survey dataset - https://unhcr.github.io/koboloadeR/docs/
+## Process data crunching for survey dataset
 remotes::install_github('unhcr/koboloadeR’)
 
 ```
@@ -81,14 +69,13 @@ This last function creates a structure of folders that is consistent  with R reg
 
 ## Step 2: get data and form from your Kobo Project
 
-
 The initial step to start your project is to get your data.
 
 The package is using only `csv` files. this is to avoid the limitations linked the number of columns that some version of excel can handle.
 
 One important point to note is related to the limitation in terms of variable names in R: A syntactically valid name consists of letters, numbers and the dot or underline characters and __starts with a letter or the dot not followed by a number__. Names such as ".2way" or "2.way" are not valid, and neither are the reserved words.
 
-In case your original variable names within your xlsform were starting with a number, you will __need to rename manually__ all variable names both in your xlsform and in the data you downloaded.
+In case your original variable names within your XlsForm were starting with a number, you will __need to rename manually__ all variable names both in your XlsForm and in the data you downloaded.
 
 Below is a step by step guidance on how to generate quickly a fully reproducible analysis
 
@@ -152,25 +139,29 @@ file.copy(from = paste0("data-raw/",dataset,"/form.xlsx"),
 
 __Note__ that for the rest of the process, it is convenient to name your form `form.xlsx` and your downloaded data frame `MainDataFrame.csv`
 
-## Step 3: Prepare your report configuration in xlsform
 
-You need first to make sure that the form is in the xlsx format so that it can be used by the package - if not, open your xls file in LibreOffice or Excel and save it within the right format.
+## Step 3: Prepare your report configuration in XlsForm
 
-Next step is to extend your xlsform:
+You need first to make sure that the form is in the `xlsx` format so that it can be used by the package - if not, open your `xls` file in [Libreoffice](https://www.libreoffice.org/download/libreoffice-fresh/) or Excel and save it within the right format.
+
+Next step is to extend your XlsForm with the `kobo_prepare_form` function
 
 ```r
 ## Change here the precise name of the form if required
 form <- "form.xlsx" 
 
-## Extend xlsform with required column if necessary - done only once!
-#kobo_prepare_form(form)
+## Extend XlsForm with required column if necessary - done only once!
+kobo_prepare_form(form)
 ```
 
-Once the xlsform as been extended, re-open it in your favorite spreadsheet processing software 
+Once the XlsForm as been extended, re-open it in your favorite spreadsheet processing software 
 
-### in survey Worksheet
+### in `survey` Worksheet
 
- *  Relabel by adjusting the field `labelReport` for both the questions in `survey` and the question modalities in `choice` worksheet. Note that label for questions should be less than 80 characters long and modalities should be less than 40 characters.
+####   Relabel 
+ 
+ Tou can adjust the field/column `labelReport` for the questions in `survey`. Note that label for questions should be less than 80 characters long.
+ 
 
 #### Fill `report` and  `chapter`
  
@@ -189,11 +180,11 @@ However even with the best designed questionnaires, there will still be some iss
 
 Survey data cleaning may involves different steps:
 
-##### Remove Records
+ * Remove Records
 
  identifying and removing responses from individuals who either don’t match the target audience criteria or did not answer your questions thoughtfully. In case of self-administered questionnaire online, there might be also issues called “speeders” and “flat-liners” (respondents expediting the questionnaire), in such situation, date/time stamp on questions or group of questions can help identifying the records to be removed 
 
-##### Adjust closed question from open-end answers
+ * Adjust closed question from open-end answers
 
 Often some people will tend to use this last _other_ options to enter information. The result is an open ended question that is very difficult to analyse. 
 Re-encoding certains __select_one__ _list_name_ __or_other__ variables is therefore quite often a necessary step. 
@@ -209,15 +200,27 @@ Insert a column named clean and reference the csv file to use for cleaning.
  
 #### Document `cluster`
 
+One interesting element of analysis is to identify potential "cluster" within the observed population. Such type of analysis is part of the [unsupervised learning / classification](https://en.wikipedia.org/wiki/Unsupervised_learning) type. Dedicated algorithm are available for such type of analysis and are included when running the [kobo_cluster_report](reference/kobo_crunching_report.html) function.
+
+In order to get such report, one need to indicate the variable to be used within the `cluster` variable/column.
+
+
+#### Document `predict`
+
+Alternatively, it is also possible to use a target variable in order to identify the explanatory variable for such target. This is then used by the [kobo_prediction_report](reference/kobo_prediction_report.html) function.
+
  
 #### Document `anonymise`	
  
  
  
-### in Choice Worksheet
+### in `choice` Worksheet
 
+ *  Relabel by adjusting the field `labelReport` for the question modalities in `choice` worksheet. Note that label for questions should be less than 40 characters.
+ 
+ * Indicate the required order for the `list_name` corresponding to ordinal variable
 
-### in analysisSetting Worksheet
+### in `analysisSetting` Worksheet
 
 
 

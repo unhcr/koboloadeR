@@ -23,15 +23,15 @@
 
 <!-- badges: end -->
 
-koboloadeR is a metapackage, that brings together a series of specialised packages in an organised data analysis workflow, to conduct data discovery and analysis for data collected through  [KoboToolbox](https://www.kobotoolbox.org/), [ODK](https://opendatakit.org/), [ONA](https://ona.io/home/) or any __[xlsform](http://xlsform.org)__ compliant data collection platform.
+koboloadeR is a meta-package, that brings together a series of specialized packages in an organized data analysis work-flow in order to generate [notebook](https://bookdown.org/yihui/rmarkdown/notebook.html). It allows to conduct data discovery and analysis for data collected through  [KoboToolbox](https://www.kobotoolbox.org/), [ODK](https://opendatakit.org/), [ONA](https://ona.io/home/) or any __[XlsForm](http://xlsform.org)__ compliant data collection platform.
 
 This package first builds on the capacity of [UNHCR Kobo server](http://kobo.unhcr.org) but it can also be used from any structured dataset. It comes as a companion tool to the [Integrated Framework for Household Survey](https://unhcr.github.io/Integrated-framework-household-survey).
 
-koboloadeR aims at helping [humanitarian data analysts](https://humanitarian-user-group.github.io/) to focus in data interpretation by saving the time needed to quickly generate the graphs and charts required to discover insights from a dataset. It also ensure analysis __reproducibility__ through a separation of the analysis configuration and the analysis process. The package allows to account for sample weights and hierachical dataset structure (both capacities that are not available through the default [reporting engine](http://support.kobotoolbox.org/articles/2847676-viewing-and-creating-custom-reports) or the [excel-analyzer](http://support.kobotoolbox.org/articles/592387-using-the-excel-analyzer)). 
+koboloadeR aims at helping [humanitarian data analysts](https://humanitarian-user-group.github.io/) to focus in data interpretation by saving the time needed to quickly generate the graphs and charts required to discover insights from a dataset. It also ensure analysis __reproducibility__ through a separation of the analysis configuration and the analysis process. The package allows to account for sample weights and hierarchical dataset structure (both capacities that are not available through the default [reporting engine](http://support.kobotoolbox.org/articles/2847676-viewing-and-creating-custom-reports) or the [excel-analyzer](http://support.kobotoolbox.org/articles/592387-using-the-excel-analyzer)). 
 
 ## Approach
  
-The main concept behind the package is to implement a survey data analysis plan and configuration directly within the same [xlsform](http://xlsform.org) excel file that has been used to develop the questionnaire. A few additional column are created in this excel document, the package read those column to generate a series of predefined report.
+The main concept behind the package is to implement a survey data analysis plan and configuration directly within the same [XlsForm](http://xlsform.org) excel file that has been used to develop the questionnaire. A few additional column are created in this excel document, the package read those columns to generate a series of predefined reports.
 
 ![alt text](https://raw.githubusercontent.com/unhcr/koboloadeR/gh-pages/inst/script/workflow.png)
 
@@ -55,7 +55,7 @@ A more detailed introduction to the concepts used in the package is presented in
 
 The data crunching allows to generated quickly initial reports through a series of semi-automated processes: 
 
-1. Have all the configuration used to generate the reports (details of tabulation and crosstabulation plans, weighting approach) documented within the xlsform allow to track easily all changes to the data and to facilitate ( [koboloadeR::kobo_dico]("reference/kobo_dico.html"))
+1. Have all the configuration used to generate the reports (details of tabulation and crosstabulation plans, weighting approach) documented within the [XlsForm](http://xlsform.org) allows to track easily all changes to the data and to facilitate ( [koboloadeR::kobo_dico]("reference/kobo_dico.html"))
 
 2. Have a clear and consistent folder structure and naming conventions for all the files coming in and out of the crunching workflow ( [koboloadeR::kobo_projectinit]("reference/kobo_projectinit.html"))
 
@@ -99,11 +99,8 @@ Note that the package is still in beta-version. We hope to have soon a release a
 
 ```{r}
 install.packages("remotes")
-```
 
-  *  Install koboloadeR: 
-
-```{r}
+# Install koboloadeR: 
 remotes::install_github("unhcr/koboloadeR", Ncpus=4) 
 
 ## Use UNHCR graphical template- https://unhcr-web.github.io/unhcRstyle/docs/
@@ -147,11 +144,11 @@ The __console mode__ is recommended - You can run the file `run-analysis.R` that
 
 This will be likely the quickest options, once your are used to the package.
 
-Note however that this implies that you configure correctly on your own the full configuration within the xlform file. 
+Note however that this implies that you configure correctly on your own the full configuration within the [XlsForm](http://xlsform.org) file. 
 
-#### NOT MAINTAINED - Support would be wellcome - Graphical user interface (GUI) 
+#### NOT MAINTAINED - Graphical user interface (GUI) 
 
-A shinyApp to guide user through all those steps has been prototyped - unfortunately - it's not maintained with the last dev and might be buggy...
+A ShinyApp to guide user through all those steps has been prototyped - unfortunately - it's not maintained with the last dev and might be buggy...
 
 All instructions and options for the project configuration and analysis plan settings shall be do-able through a dedicated GUI.
 ```{r}

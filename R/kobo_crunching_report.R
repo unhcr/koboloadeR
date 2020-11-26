@@ -12,8 +12,11 @@
 #' @param output The output format html or aspx if you need to upload on sharepoint), docx (to quickly cut non interesting vz and take note during data interpretation session), pptx (to quickly cut non interesting vz and persent during data interpretation session), Default is html
 #' @param app The place where the function has been executed, the default is the console and the second option is the shiny app
 #' @param render TRUE or FALSE - Tells whether to only produce Rmd or to also knit it in the required output format. Default is TRUE. Useful for testing as rending takes time.
-#' @param lang eng, fre or esp - Change the language of the intro to the report - default is english
-#' @param unhcRstyle TRUE or FALSE tells wether to use UNHCR style fo rendering
+#' @param lang eng, fre or esp - Change the language of the intro to the report - default is "eng" for english
+#' @param unhcRstyle TRUE or FALSE tells whether to use UNHCR style fo rendering
+#' @param use_pct TRUE or FALSE - Tells whether to add percent or absolute value in the chart - default is TRUE
+#' @param add_error_bar TRUE or FALSE - Tells whether to whiskers for error in the chart - default is TRUE
+#'
 #' @return No return, All results will be saved on RMD files and Word files
 #'
 #' @author Edouard Legoupil, Maher Daoud
@@ -33,7 +36,9 @@ kobo_crunching_report <- function(form = "form.xlsx",
                                   output ="html",
                                   render = "TRUE",
                                   lang = "eng",
-                                  unhcRstyle = "TRUE") {
+                                  unhcRstyle = "TRUE",
+                                  use_pct = "TRUE",
+                                  add_error_bar = "TRUE") {
   tryCatch({
     if (app == "shiny") {
       progress <- shiny::Progress$new()
@@ -722,7 +727,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
 
       for (v in 1:nrow(chapters) )
       {
-        # v <- 3
+        # v <- 1
         chaptersname <- as.character(chapters[ v , 1])
 
         report.name.i.v <-
@@ -935,15 +940,36 @@ kobo_crunching_report <- function(form = "form.xlsx",
               cat(paste0("frequ3[ ,5] <- paste0(round(frequ3[ ,3]*100,digits = 1),\"%\")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               cat(paste0("names(frequ3)[5] <- \"freqper2\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
 
+              cat(paste0("frequ3 <- cbind(frequ3,frequ[, 2])"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              cat(paste0("names(frequ3)[6] <- \"count\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+
+
               cat(paste0("\n"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               cat(paste0("## and now the graph"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
-              cat(paste0("plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+
+              if (use_pct == "TRUE") {
+               cat(paste0("plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$mean)) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              } else {
+                cat(paste0("plot1 <- ggplot(frequ3, aes(x = frequ3$Var1, y = frequ3$count)) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              }
+
               cat(paste0("geom_bar(fill = \"#2a87c8\", colour = \"#2a87c8\", stat = \"identity\", width = .8) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
-              cat(paste0("geom_errorbar(aes(ymin = mean-SE, ymax = mean+SE), size=.4, width=.3, colour = 'grey20') +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+
+              if(add_error_bar == "TRUE") {
+               cat(paste0("geom_errorbar(aes(ymin = mean-SE, ymax = mean+SE), size=.4, width=.3, colour = 'grey20') +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              }
               cat(paste0("guides(fill = FALSE) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
-              cat(paste0("geom_label_repel(aes(y = mean, label = freqper2), fill = \"#2a87c8\", color = 'white') +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
-              cat(paste0("ylab(\"Frequency\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
-              cat(paste0("scale_y_continuous(labels = percent) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+
+              if (use_pct == "TRUE") {
+                cat(paste0("geom_label_repel(aes(y = mean, label = freqper2), fill = \"#2a87c8\", color = 'white') +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("ylab(\"Frequency\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("scale_y_continuous(labels = percent) +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              } else {
+                cat(paste0("geom_label_repel(aes(y = count, label = count), fill = \"#2a87c8\", color = 'white') +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("ylab(\"Count\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+              }
+
+
               cat(paste0("xlab(\"\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               cat(paste0("coord_flip() +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               cat(paste0("labs(title = \"",questions.label,"\","),file = report.name.i.v.j ,sep = "\n", append = TRUE)

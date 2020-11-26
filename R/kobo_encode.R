@@ -32,7 +32,7 @@ kobo_encode <- function(data, dico) {
   data.label <- plyr::join(x = data.label, y = dico, by = "fullname", type = "left" )
   ## Now we can also re-encode the records themself
 
- 
+
   ###### Case 1: Re-encoding  when we have select_multiple ####
   ## List of select one and select multiple variable to re-encode ## "select_one",
 
@@ -53,10 +53,10 @@ kobo_encode <- function(data, dico) {
     cat("************************************************************\n \n")
   } else{
       #names(selectdf)[1] <- "selectvar"
-    
+
       cat(paste0("There's ",nrow(selectdf3)," select_multiple modalities to encode \n"))
       for (i in 1:nrow(selectdf3)) {
-        # i <- 98
+        # i <- 40
         fullname <- as.character(selectdf3[ i,1])
         variablename <- as.character(selectdf3[ i,2])
         variablelistname <- as.character(selectdf3[ i,3])
@@ -168,7 +168,7 @@ kobo_encode <- function(data, dico) {
       cat(paste0("There's ",nrow(selectdf3)," select_one variables to encode \n"))
 
      for (i in 1:nrow(selectdf3)) {
-      # i <- 50
+      # i <- 41
       fullname <- as.character(selectdf3[ i,1])
       variablename <- as.character(selectdf3[ i,2])
       variablelistname <- as.character(selectdf3[ i,3])
@@ -182,6 +182,7 @@ kobo_encode <- function(data, dico) {
 
       if (nrow(variablelevel) > 0) {
         #rm(df)
+        cat(paste0(i, "- Recode variable: ", fullname," \n"))
         df <- as.data.frame(data[ , fullname])
         names(df)[1] <- "name"
         df$name <- as.character(df$name)
@@ -191,7 +192,6 @@ kobo_encode <- function(data, dico) {
         #data[ , fullname] <- as.factor(data[ , fullname])
         data[ , fullname] <- as.factor(data[[fullname]])
         #View(data[i])
-        cat(paste0(i, "- Recode variable: ", fullname," \n"))
 
       } else {cat(paste0("The following variable has no answers to recode in the dataset: ",fullname, "\n")) }
 

@@ -153,7 +153,9 @@
   output <span class='op'>=</span> <span class='st'>"html"</span>,
   render <span class='op'>=</span> <span class='st'>"TRUE"</span>,
   lang <span class='op'>=</span> <span class='st'>"eng"</span>,
-  unhcRstyle <span class='op'>=</span> <span class='st'>"TRUE"</span>
+  unhcRstyle <span class='op'>=</span> <span class='st'>"TRUE"</span>,
+  use_pct <span class='op'>=</span> <span class='st'>"TRUE"</span>,
+  add_error_bar <span class='op'>=</span> <span class='st'>"TRUE"</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -178,11 +180,19 @@
     </tr>
     <tr>
       <th>lang</th>
-      <td><p>eng, fre or esp - Change the language of the intro to the report - default is english</p></td>
+      <td><p>eng, fre or esp - Change the language of the intro to the report - default is "eng" for english</p></td>
     </tr>
     <tr>
       <th>unhcRstyle</th>
-      <td><p>TRUE or FALSE tells wether to use UNHCR style fo rendering</p></td>
+      <td><p>TRUE or FALSE tells whether to use UNHCR style fo rendering</p></td>
+    </tr>
+    <tr>
+      <th>use_pct</th>
+      <td><p>TRUE or FALSE - Tells whether to add percent or absolute value in the chart - default is TRUE</p></td>
+    </tr>
+    <tr>
+      <th>add_error_bar</th>
+      <td><p>TRUE or FALSE - Tells whether to whiskers for error in the chart - default is TRUE</p></td>
     </tr>
     </table>
 

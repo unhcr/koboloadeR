@@ -23,9 +23,9 @@
 #' }
 #'
 
-kobo_cluster_report <- function(frame =  MainDataFrame , 
-                                form = "form.xlsx", 
-                                output ="html", 
+kobo_cluster_report <- function(frame =  MainDataFrame ,
+                                form = "form.xlsx",
+                                output ="html",
                                 app = "console") {
   tryCatch({
     if (app == "shiny") {
@@ -65,7 +65,7 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
       progress$set(message = "Check presence of variable for anom plan...")
       updateProgress()
     }
-    selected.cluster <- dico[ which(dico$cluster == "yes" & dico$type %in% c("select_one", "calculate") 
+    selected.cluster <- dico[ which(dico$cluster == "yes" & dico$type %in% c("select_one", "calculate")
                                     ), ]
     selected.cluster <- plyr::join(x = selected.cluster, y = check, by = "fullname", type = "left")
    # selected.cluster <- selected.cluster[!is.na(selected.cluster$id), ]
@@ -77,25 +77,33 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
     selected.id <- dico[ which(dico$cluster == "id"), ]
     selected.id <- plyr::join(x = selected.id, y = check, by = "fullname", type = "left")
     selected.id <- selected.id[!is.na(selected.id$id),  ]
-    
+
+    ## if no id defined - instanceID used default
+    # if (nrow(selected.id) != 1) {
+    #   cat("you have not selected a correct unique id, we use instanceID per default")
+    #   selected.idVars <- "instanceID"
+    # } else {
+    #   selected.idVars <- as.character(selected.id[ , c("fullname")])
+    #   cat(paste("you have configure ",selected.idVars , " as unique id" ))
+    # }
+
     ## if no id defined - instanceID used default
     if (nrow(selected.id) != 1) {
-      cat("you have not selected a correct unique id, we use instanceID per default")
-      selected.idVars <- "instanceID"
+      cat("you have not selected a correct unique id, we use X_ID per default")
+      selected.idVars <- "X_id"
     } else {
       selected.idVars <- as.character(selected.id[ , c("fullname")])
       cat(paste("you have configure ",selected.idVars , " as unique id" ))
     }
-   
-    
+
     #frame1 <- frame[ , c( selected.idVars)]
     #frame2 <- frame[ , c( selected.clusterVars)]
-    
+
     frame <- frame[ , c( selected.idVars, selected.clusterVars)]
-    
+
     framecluster <- paste0(mainDir,"/data/clustering-report-",framename,".csv")
     if (file.exists(framecluster)) file.remove(framecluster)
-    
+
     utils::write.csv(frame, framecluster,  row.names = FALSE)
 
     if (nrow(selected.cluster) == 0) {
@@ -106,21 +114,21 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
         progress$set(message = "Generating Multivariate Analysis in progress...")
         updateProgress()
       }
-        reportcluster  <- paste0(mainDir,"/code/clustering-report-",framename,".Rmd")
+        reportcluster  <- paste0(mainDir,"/vignettes/clustering-report-",framename,".Rmd")
           ## TO DO : CHECK IF FILE EXIST - AND REQUEST USER TO DELETE BEFORE REGENERATING - SUGGESTING TO SAVE PREVIOUS UNDER NEW NAME
           if (file.exists(reportcluster)) file.remove(reportcluster)
-        
+
         ## Start Building the report ##########
-        
+
           cat("---", file = reportcluster , sep = "\n", append = TRUE)
           cat("title: \"Multivariate analysis\"", file = reportcluster , sep = "\n", append = TRUE)
           cat("author: \"Generated with [Koboloader](https://github.com/unhcr/koboloadeR)\"", file = reportcluster , sep = "\n", append = TRUE)
           cat("date: \" `r format(Sys.Date(), '%d %B %Y')`\"", file = reportcluster, sep = "\n", append = TRUE)
-          
-          
-          
+
+
+
           if (output == "docx") {
-            
+
             cat("always_allow_html: yes", file = reportcluster , sep = "\n", append = TRUE)
             cat("output:",file = reportcluster , sep = "\n", append = TRUE)
             cat("  word_document:", file = reportcluster , sep = "\n", append = TRUE)
@@ -132,9 +140,9 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
             cat("    reference_docx: style-unhcr-portrait.docx", file = reportcluster , sep = "\n", append = TRUE)
             cat("---", file = reportcluster , sep = "\n", append = TRUE)
             cat("\n\n", file = reportcluster , sep = "\n", append = TRUE)
-            
+
           } else if (output == "html") {
-            
+
             cat("always_allow_html: yes", file = reportcluster , sep = "\n", append = TRUE)
             cat("output:",file = reportcluster , sep = "\n", append = TRUE)
             cat("  html_document:", file = reportcluster , sep = "\n", append = TRUE)
@@ -152,9 +160,9 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
             cat("<link rel=\"stylesheet\" href=\"css/style.css\">", file = reportcluster , sep = "\n", append = TRUE)
             cat("<link rel=\"stylesheet\" href=\"css/unhcr-header.css\">", file = reportcluster , sep = "\n", append = TRUE)
             cat("\n\n", file = reportcluster , sep = "\n", append = TRUE)
-            
+
           }else if (output == "aspx") {
-            
+
             cat("always_allow_html: yes", file = reportcluster , sep = "\n", append = TRUE)
             cat("output:",file = reportcluster , sep = "\n", append = TRUE)
             cat("  html_document:", file = reportcluster , sep = "\n", append = TRUE)
@@ -172,9 +180,9 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
             cat("<link rel=\"stylesheet\" href=\"css/style.css\">", file = reportcluster , sep = "\n", append = TRUE)
             cat("<link rel=\"stylesheet\" href=\"css/unhcr-header.css\">", file = reportcluster , sep = "\n", append = TRUE)
             cat("\n\n", file = reportcluster , sep = "\n", append = TRUE)
-            
+
           } else if (output == "pptx") {
-            
+
             cat("always_allow_html: yes", file = reportcluster , sep = "\n", append = TRUE)
             cat("output:",file = reportcluster , sep = "\n", append = TRUE)
             cat("  powerpoint_presentation:", file = reportcluster , sep = "\n", append = TRUE)
@@ -186,22 +194,22 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
             cat("---", file = reportcluster , sep = "\n", append = TRUE)
             cat("\n\n", file = reportcluster , sep = "\n", append = TRUE)
           }
-          
-          
-          
-          
 
-         
-          
-          
-          
+
+
+
+
+
+
+
+
           # , [FactoMineR](http://factominer.free.fr/factomethods/multiple-correspondence-analysis.html) & [FactoExtra](http://www.sthda.com/english/articles/31-principal-component-methods-in-r-practical-guide/114-mca-multiple-correspondence-analysis-in-r-essentials/)
-          
+
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("```{r setup, include=FALSE}", file = reportcluster , sep = "\n", append = TRUE)
           cat("knitr::opts_chunk$set(echo = TRUE)", file = reportcluster , sep = "\n", append = TRUE)
-          
-          
+
+
           cat("using <- function(...) {", file = reportcluster , sep = "\n", append = TRUE)
           cat("libs <- unlist(list(...))", file = reportcluster , sep = "\n", append = TRUE)
           cat("req <- unlist(lapply(libs,require,character.only = TRUE))", file = reportcluster , sep = "\n", append = TRUE)
@@ -212,16 +220,16 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
           cat("    }", file = reportcluster , sep = "\n", append = TRUE)
           cat("  }", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n\n", file = reportcluster , sep = "\n", append = TRUE)
-          
+
           cat("## Load all required packages", file = reportcluster , sep = "\n", append = TRUE)
           cat("using('knitr', 'FactoMineR', 'factoextra', 'ggplot2', 'reshape2', 'plyr', 'stringr', 'koboloadeR')", file = reportcluster , sep = "\n", append = TRUE)
           cat("options(scipen = 999) # turn-off scientific notation like 1e+48", file = reportcluster , sep = "\n", append = TRUE)
-        
+
           cat("```", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-          
-          
-          
+
+
+
           cat("```{r , echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE}", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("mainDir <- getwd()", file = reportcluster , sep = "\n", append = TRUE)
@@ -230,13 +238,13 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
           cat("library(koboloadeR)", file = reportcluster , sep = "\n", append = TRUE)
           #cat("kobo_load_data()", file = reportcluster , sep = "\n", append = TRUE)
           cat("## Provide below the name of the form in xsl form - format should be xls not xlsx", file = reportcluster , sep = "\n", append = TRUE)
-          cat("form <- \"form.xls\"", file = reportcluster , sep = "\n", append = TRUE)
+          cat(paste0("form <- \"", form,"\""), file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("dico <- utils::read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
 
           cat(paste0("datacluster <-  utils::read.csv(paste0(mainDirroot,\"/data/clustering-report-",framename,".csv\"), sep = \",\", encoding = \"UTF-8\", na.strings = \"\")"), file = reportcluster , sep = "\n", append = TRUE)
-         
+
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("```", file = reportcluster , sep = "\n", append = TRUE)
           #cat("# Executive Summary", file = reportcluster , sep = "\n", append = TRUE)
@@ -244,19 +252,19 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
           #cat("***", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("# Methodology: an introduction to statistical clustering", file = reportcluster , sep = "\n", append = TRUE)
-          cat("An important challenge to understand the profile of a population is to discover how categories interact together. 
-              To describe profiles within a population, it is necessary to interlace defined by multiple categories. 
-              Univariate analysis does not allow to get a synthetic vision from a large set of variables that can describe a population. 
+          cat("An important challenge to understand the profile of a population is to discover how categories interact together.
+              To describe profiles within a population, it is necessary to interlace defined by multiple categories.
+              Univariate analysis does not allow to get a synthetic vision from a large set of variables that can describe a population.
               Because of inherent brain & cognitive limitations, it is challenging to process together more than 7 categories and to make
               sense out of too many graphs.", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("Since the 70's, Social scientist have developed advanced __exploratory__ techniques that allow to discover statistical profiles
-              among a specific population. Clustering is an exploratory data analysis tool wich aims to group a set of records in such a way 
-              that records in the same group are more similar to each other than to those in other groups. 
+              among a specific population. Clustering is an exploratory data analysis tool wich aims to group a set of records in such a way
+              that records in the same group are more similar to each other than to those in other groups.
               [Multiple Correspondence Analysis (MCA)](https://en.wikipedia.org/wiki/Multiple_correspondence_analysis) together with
-              [Hierarchical Classification on Principle Components](http://factominer.free.fr/classical-methods/hierarchical-clustering-on-principal-components.html) allow to 
-              process nominal categorical data (as it is the case for Refugee biodata) in order to detect and represent the underlying structures in a data set. 
+              [Hierarchical Classification on Principle Components](http://factominer.free.fr/classical-methods/hierarchical-clustering-on-principal-components.html) allow to
+              process nominal categorical data (as it is the case for Refugee biodata) in order to detect and represent the underlying structures in a data set.
               This approach is based on looking at description to generate induction rather than testing an hypothesis according to model.", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
         #  cat("![Correspondence Analysis Handbook : J.-P. Benzecri (1992).](bencrezi.jpg)", file = reportcluster , sep = "\n", append = TRUE)
@@ -271,8 +279,8 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
           cat(" 5.  __Overview of groups__: Display the frequency of each group as well the breakdown of specific needs within each group.", file = reportcluster , sep = "\n", append = TRUE)
           cat(" 6.  __Modalities within each group__: Describe the main variable modalities that describe the profile.", file = reportcluster , sep = "\n", append = TRUE)
          cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-          
-          
+
+
           cat("# 1. Dimensionnality reduction  ", file = reportcluster , sep = "\n", append = TRUE)
           cat("The initial step is to first select the variable to use for the analysis. \n", file = reportcluster , sep = "\n", append = TRUE)
 
@@ -284,7 +292,7 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
           cat("check$id <- row.names(check)", file = reportcluster , sep = "\n", append = TRUE)
           cat("check <- plyr::join(x = check, y = dico, by = \"fullname\", type = \"left\")", file = reportcluster , sep = "\n", append = TRUE)
 
-          
+
           cat("selected.cluster <- dico[ which(dico$cluster == \"yes\" & dico$type == \"select_one\" ), ]", file = reportcluster , sep = "\n", append = TRUE)
           cat("selected.cluster <- plyr::join(x = selected.cluster, y = check, by = \"fullname\", type = \"left\")", file = reportcluster , sep = "\n", append = TRUE)
          # cat("selected.cluster <- selected.cluster[!is.na(selected.cluster$id), ]", file = reportcluster , sep = "\n", append = TRUE)
@@ -292,7 +300,7 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
           cat("#selected.clusterVars2 <- as.character(selected.cluster[ , c(\"name\")])", file = reportcluster , sep = "\n", append = TRUE)
           cat("selected.clusterVars2 <- stringr::str_replace_all(as.character(selected.cluster[ , c(\"name\")]), \"_\", \".\")", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-          
+
           cat("selected.id <- dico[ which(dico$cluster == \"id\"), ]", file = reportcluster , sep = "\n", append = TRUE)
           cat("selected.id <- plyr::join(x = selected.id, y = check, by = \"fullname\", type = \"left\")", file = reportcluster , sep = "\n", append = TRUE)
           cat("selected.id <- selected.id[!is.na(selected.id$id),  ]", file = reportcluster , sep = "\n", append = TRUE)
@@ -329,30 +337,30 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("datacluster3 <- datacluster2[complete.cases(datacluster2), ]", file = reportcluster , sep = "\n", append = TRUE)
           cat("if(nrow(datacluster3) > 10000) { samplesize <- 10000 } else { samplesize <- nrow(datacluster3)} ", file = reportcluster , sep = "\n", append = TRUE)
-          
+
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-          
+
           cat("data.sample <- datacluster2[sample(1:nrow(datacluster2), samplesize, replace = FALSE), ]", file = reportcluster , sep = "\n", append = TRUE)
-          
+
           cat("selected <- dico[ dico$fullname %in% selected.clusterVars, c(\"fullname\", \"labelReport\") ]", file = reportcluster , sep = "\n", append = TRUE)
           cat("row.names(selected) <- NULL", file = reportcluster , sep = "\n", append = TRUE)
           cat("knitr::kable (selected , caption = \"Selected variable for the analysis\")", file = reportcluster , sep = "\n", append = TRUE)
           cat("```", file = reportcluster , sep = "\n", append = TRUE)
-          
+
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("The algorithm is then used on those variable in order to assemble them within 2 dimensions. \n", file = reportcluster , sep = "\n", append = TRUE)
-          
+
           cat("```{r, echo=FALSE, warning=FALSE}", file = reportcluster , sep = "\n", append = TRUE)
-          
-          
-          
+
+
+
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("### Checking sample modalities frequency", file = reportcluster , sep = "\n", append = TRUE)
           cat("#prop.table(table(data.sample$cool1Cat, useNA = \"ifany\"))", file = reportcluster , sep = "\n", append = TRUE)
           cat("#prop.table(table(data2$cool1Cat, useNA = \"ifany\"))", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-          
+
           ## 1. Multiple correspondence analysis #####
           cat("# Dimensionality reduction: Multiple correspondance analysis", file = reportcluster , sep = "\n", append = TRUE)
           cat("data.mca <- FactoMineR::MCA(data.sample, graph = FALSE)", file = reportcluster , sep = "\n", append = TRUE)
@@ -362,7 +370,7 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("```", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-          
+
           # 2. Composition of the 2 axis ####
           cat("# 2. Composition of the 2 axis ", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
@@ -374,15 +382,15 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
           cat( "caption = \"The reference dashed line corresponds to the expected value if the contribution where uniform\")  +", file = reportcluster , sep = "\n", append = TRUE)
           cat("  coord_flip()", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-          
+
           cat("factoextra::fviz_contrib(data.mca, choice = \"var\", axes = 2, top = 15, sort.val = \"asc\") + theme_minimal() +", file = reportcluster , sep = "\n", append = TRUE)
           cat("  labs(title = \"Contribution of the top 15  variables to the second axis (Dim 2)\", x = \"\", ", file = reportcluster , sep = "\n", append = TRUE)
           cat( "caption = \"The reference dashed line corresponds to the expected value if the contribution where uniform\")  +", file = reportcluster , sep = "\n", append = TRUE)
           cat("  coord_flip()", file = reportcluster , sep = "\n", append = TRUE)
           cat("```", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-         
-          ## 3. Categories Representation #### 
+
+          ## 3. Categories Representation ####
            cat("# 3. Categories Representation  ", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat(" It is also possible to map variable modalities on that bidimensional space. \n", file = reportcluster , sep = "\n", append = TRUE)
@@ -392,8 +400,8 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
           cat("  theme_minimal()", file = reportcluster , sep = "\n", append = TRUE)
           cat("```", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-          
-          
+
+
           ### 4. Hierarchical Classification ####
           cat("# 4. Hierarchical Classification  ", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
@@ -404,8 +412,8 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
           cat("#data.predict <- predict(data.mca, data2)", file = reportcluster , sep = "\n", append = TRUE)
           cat("#data.mca.hcpc <- FactoMineR::HCPC(data.mca, nb.clust = -1, min = 3, max = 4, graph = FALSE, order = FALSE, consol = TRUE, kk = 1000)", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-          
-          
+
+
           cat("data.mca.hcpc <- HCPC(data.mca, graph = FALSE)", file = reportcluster , sep = "\n", append = TRUE)
           cat("# Visualize dendrogram", file = reportcluster , sep = "\n", append = TRUE)
           cat("#factoextra::fviz_dend(data.mca.hcpc, show_labels = FALSE, rect = TRUE)", file = reportcluster , sep = "\n", append = TRUE)
@@ -416,7 +424,7 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
           cat("plot(data.mca.hcpc, title = \"3D view within the cloud of point of the profiles\")", file = reportcluster , sep = "\n", append = TRUE)
           cat("plot(data.mca.hcpc, choice = \"map\", title = \"profiles within the cloud of points\")", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-          
+
           cat("# Visualize cluster", file = reportcluster , sep = "\n", append = TRUE)
           cat("#fviz_cluster(data.mca.hcpc, ellipse.type = \"convex\")", file = reportcluster , sep = "\n", append = TRUE)
 
@@ -424,11 +432,11 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("```", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-          
+
           ## 5. Overview of groups  #####
           cat("# 5. Overview of groups  ", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-          
+
           cat(" Once defined, we can now have an idea of the frequency of each profile. \n", file = reportcluster , sep = "\n", append = TRUE)
           cat("```{r, echo=FALSE, warning=FALSE}", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
@@ -457,17 +465,17 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
           cat("      theme(plot.title = element_text(face = \"bold\", size = 9),", file = reportcluster , sep = "\n", append = TRUE)
           cat("            plot.background = element_rect(fill = \"transparent\",colour = NA)) +", file = reportcluster , sep = "\n", append = TRUE)
           cat("            kobo_unhcr_style_bar()", file = reportcluster , sep = "\n", append = TRUE)
-          
+
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("```", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-          
+
           # 6. Modalities within each group #####
           cat("# 6. Modalities within each group  ", file = reportcluster , sep = "\n", append = TRUE)
-          
-          
+
+
           cat("The variable modalities in each of the profiles can be __interpreted__ using the following information: ", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat(" * _Cla/Mod_ is the pourcentage of records who have that modality and who are in that the profile (for instance: 50.3% of the cases who have a head of family who marrital status is single also belongs to profile 1)", file = reportcluster , sep = "\n", append = TRUE)
@@ -480,13 +488,13 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat(" * _v-test_ If the v-test is positive, it means that the category is over-expressed for the category and if the v-test is negative it means that the category is under-expressed for the category.What is interesting in the v-test is only the sign of the v-test.", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-          
+
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("Only variable modalities for which critical probability is below 0.02 are used.", file = reportcluster , sep = "\n", append = TRUE)
-          
-          
+
+
           cat(" The tables below allows to describe each profile in narrative terms. \n", file = reportcluster , sep = "\n", append = TRUE)
-          
+
           cat("```{r, echo=FALSE, warning=FALSE}", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("kable(data.mca.hcpc$desc.var$category$`1`, digits = 2, caption = \"Description of modalities contribution to Profile 1\")", file = reportcluster , sep = "\n", append = TRUE)
@@ -503,56 +511,56 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
             progress$set(message = "Rendering Clustering report Now in progress...")
             updateProgress()
           }
-        
-          
+
+
         cat("Render Clustering report Now. It may take some time... \n ")
-        
-        
+
+
         if (output == "docx") {
-          
+
           cat(paste( " - Render word output report for ",reportcluster))
           mainDir <- kobo_getMainDirectory()
           rmarkdown::render(reportcluster, clean = TRUE, envir = new.env() )
           ## Put the report in the out folder
           mainDir <- kobo_getMainDirectory()
-          file.rename(paste(mainDir,"/code/clustering-report-",framename,".docx", sep = ""), paste0(mainDir,"/out/cluster_reports/Clustering-report-", framename,"-" ,Sys.Date(), "-report.docx"))
+          file.rename(paste(mainDir,"/vignettes/clustering-report-",framename,".docx", sep = ""), paste0(mainDir,"/out/cluster_reports/Clustering-report-", framename,"-" ,Sys.Date(), "-report.docx"))
           ## Clean  memory
           gc()
-          
+
         } else if (output == "html") {
-          
+
           cat(paste( " - Render html output report for ",reportcluster))
           mainDir <- kobo_getMainDirectory()
           rmarkdown::render(reportcluster, clean = TRUE, envir = new.env() )
           ## Put the report in the out folder
           mainDir <- kobo_getMainDirectory()
-          file.rename(paste(mainDir,"/code/clustering-report-",framename,".html", sep = ""), paste0(mainDir,"/out/cluster_reports/Clustering-report-", framename,"-" ,Sys.Date(), "-report.html"))
+          file.rename(paste(mainDir,"/vignettes/clustering-report-",framename,".html", sep = ""), paste0(mainDir,"/out/cluster_reports/Clustering-report-", framename,"-" ,Sys.Date(), "-report.html"))
           ## Clean  memory
           gc()
-          
+
         } else if (output == "aspx") {
-          
+
           cat(paste( " - Render aspx output - for sharepoint hosting - report for ",reportcluster))
           mainDir <- kobo_getMainDirectory()
           rmarkdown::render(reportcluster, clean = TRUE, envir = new.env() )
           ## Put the report in the out folder
           mainDir <- kobo_getMainDirectory()
-          file.rename(paste(mainDir,"/code/clustering-report-",framename,".html", sep = ""), paste0(mainDir,"/out/cluster_reports/Clustering-report-", framename,"-" ,Sys.Date(), "-report.aspx"))
+          file.rename(paste(mainDir,"/vignettes/clustering-report-",framename,".html", sep = ""), paste0(mainDir,"/out/cluster_reports/Clustering-report-", framename,"-" ,Sys.Date(), "-report.aspx"))
           ## Clean  memory
           gc()
-          
+
         } else if (output == "pptx") {
-          
+
           cat(paste(" - Render PowerPoint output report for ",reportcluster))
           mainDir <- kobo_getMainDirectory()
           rmarkdown::render(reportcluster, clean = TRUE, envir = new.env() )
           ## Put the report in the out folder
           mainDir <- kobo_getMainDirectory()
-          file.rename(paste(mainDir,"/code/clustering-report-",framename,".pptx", sep = ""), paste0(mainDir,"/out/cluster_reports/Clustering-report-", framename,"-" ,Sys.Date(), "-report.pptx"))
+          file.rename(paste(mainDir,"/vignettes/clustering-report-",framename,".pptx", sep = ""), paste0(mainDir,"/out/cluster_reports/Clustering-report-", framename,"-" ,Sys.Date(), "-report.pptx"))
           ## Clean  memory
           gc()
         }
-        
+
         cat(" Done!! Reports are in the folder OUT - Review the report- furter review your clustering assumptions and regenerate as needed...\n")
 
     }

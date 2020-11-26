@@ -10,7 +10,9 @@ kobo_crunching_report(
   output = "html",
   render = "TRUE",
   lang = "eng",
-  unhcRstyle = "TRUE"
+  unhcRstyle = "TRUE",
+  use_pct = "TRUE",
+  add_error_bar = "TRUE"
 )
 }
 \arguments{
@@ -24,9 +26,13 @@ It is assumed that the form is stored in the data-raw folder.}
 
 \item{render}{TRUE or FALSE - Tells whether to only produce Rmd or to also knit it in the required output format. Default is TRUE. Useful for testing as rending takes time.}
 
-\item{lang}{eng, fre or esp - Change the language of the intro to the report - default is english}
+\item{lang}{eng, fre or esp - Change the language of the intro to the report - default is "eng" for english}
 
-\item{unhcRstyle}{TRUE or FALSE tells wether to use UNHCR style fo rendering}
+\item{unhcRstyle}{TRUE or FALSE tells whether to use UNHCR style fo rendering}
+
+\item{use_pct}{TRUE or FALSE - Tells whether to add percent or absolute value in the chart - default is TRUE}
+
+\item{add_error_bar}{TRUE or FALSE - Tells whether to whiskers for error in the chart - default is TRUE}
 }
 \value{
 No return, All results will be saved on RMD files and Word files

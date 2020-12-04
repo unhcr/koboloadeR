@@ -16,17 +16,21 @@
 build_analysis_package <- function(form = "form.xlsx") {
   require(koboloadeR)
   ## Load & process Data - data in csv from the data-raw will be then save as .rda file in the data folder
-  kobo_load_data(form)
+  koboloadeR::kobo_load_data(form)
   #### Generate Exploration Reports
-  kobo_crunching_report(form, output = "html", lang = "eng")
+  koboloadeR::kobo_crunching_report(form,
+                        output = "html",  # add as many report generation format required: html, docx, pptx
+                        lang = "eng", # can be esp or fre
+                        use_pct = "TRUE",
+                        add_error_bar = "TRUE")
 
-  # add as many report generation format required: html, docx, pptx
+
   ## you can also use aspx (in case you want to upload to sharepoint folder set to serve aspx) but will need before to edit file header and add manually - <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 
   ## Generate Cluster Report  --> Discover
   ## Report will based on variable cluster == "TRUE" - you need to set one variable as "id"
   ## We use the root data frame -
-  # Assumption is that information from sub-hierachical frame was included through calculated indicators
+  # Assumption is that information from sub-hierarchical frame was included through calculated indicators
   # MainDataFrame <- load( "data/MainDataFrame_edited.rda")
   # kobo_cluster_report(frame = MainDataFrame, form)
 }
@@ -35,7 +39,9 @@ build_analysis_package <- function(form = "form.xlsx") {
 ## Change here the precise name of the form if required
 form <- "form.xlsx"
 ## Extend xlsform with required column if necessary - done only once!
-#kobo_prepare_form(form)
+# koboloadeR::kobo_prepare_form(form)
+## Potential Generate dummy data
+# koboloadeR::kobo_dummy(form)
 
 ## Now generate everything
 build_analysis_package(form)

@@ -17,6 +17,7 @@
 #' - adds InstandID column to link hierearchical data based on "`repeat_count`"
 #'
 #' @param  form file xlsform
+#' @param  samplesize nuber of records to generate in main sample frame
 #'
 #' @author Edouard Legoupil
 #'
@@ -29,9 +30,10 @@
 #' }
 #'
 
-kobo_dummy <- function(form = "form.xlsx") {
+kobo_dummy <- function(form = "form.xlsx",
+                       samplesize = 381) {
 
-  samplesize <- 381
+  #samplesize <- 381
 
   ### Write dummy dataset
   #kobodevtools::install_github("ropensci/charlatan")
@@ -127,7 +129,8 @@ kobo_dummy <- function(form = "form.xlsx") {
   }
 
 
-  rm(bound, detecthigh, detecthighzero, detectlow,  detectlowzero, detectrelevant1, detectrelevant2 , detectrelevant3, i, relevant, var1  )
+  rm(bound, detecthigh, detecthighzero, detectlow,  detectlowzero,
+     detectrelevant1, detectrelevant2 , detectrelevant3, i, relevant, var1  )
 
 
   ## Setting up pattern for UNHCR cases ####################
@@ -169,8 +172,16 @@ kobo_dummy <- function(form = "form.xlsx") {
   ## Create a polygon to sample GPS coordinate from ########
 
   # Make a set of coordinates that represent vertices with longitude and latitude
-  x_coords <- c(34.93,34.93,39.2,39.2,34.93)
-  y_coords <- c(29.2,33.4,33.4,29.2,29.2)
+  x_coords <- c(34.93,
+                34.93,
+                39.2,
+                39.2,
+                34.93)
+  y_coords <- c(29.2,
+                33.4,
+                33.4,
+                29.2,
+                29.2)
 
   box1 <- sp::Polygon(cbind(x_coords,y_coords))
   box2 <- sp::Polygons(list(box1), ID = "A")
@@ -299,7 +310,7 @@ kobo_dummy <- function(form = "form.xlsx") {
       }
     }
   }
-  utils::write.csv(dummydata, "data/MainDataFrame.csv", row.names = FALSE)
+  utils::write.csv(dummydata, "data-raw/MainDataFrame.csv", row.names = FALSE)
 
   rm(categ_level, fullname, i , l, listname, lowerbound, upperbound, value, datacheck, dico.household,
      relevantifvalue, relevantifvar, relevantifvar2, samplesize, typedata)
@@ -377,9 +388,9 @@ kobo_dummy <- function(form = "form.xlsx") {
       ## Loop around IDs for each case
       for (j in 1:nrow(dummydatamaxvariable) ) {
         # j <- 1
-        samplesize <- as.numeric(dummydatamaxvariable[ j, 1])
+        samplesize <- as.numeric(dummydatamaxvariable[ j, 2])
 
-        if (samplesize !=0 ) {
+        if (samplesize != 0 ) {
           this.id <- as.character(dummydatamaxvariable[ j, 1])
 
           dummydatarepeat <- as.data.frame(matrix(0, ncol = 1, nrow = samplesize))
@@ -492,7 +503,7 @@ kobo_dummy <- function(form = "form.xlsx") {
           }
         }
    # }
-    utils::write.csv(dummydatarepeatall, paste0("data/",repeat_table,".csv"), row.names = FALSE)
+    utils::write.csv(dummydatarepeatall, paste0("data-raw/",repeat_table,".csv"), row.names = FALSE)
     cat(paste0("\n\n\n Finished generation of nested table ", h, " - ", repeat_table, "\n"))
     rm(dummydatarepeatall)
 

@@ -3,13 +3,14 @@
 #' @title Check Analysis Plan
 #'
 #' @description Check if the user setup the analysis plan in the right way.
-#' @param form The full filename of the form to be accessed (xls or xlsx file).
-#' It is assumed that the form is stored in the data folder.
+#' @param form The full filename of the form to be accessed (xlsx file).
+#'     It is assumed that the form is stored in the data-raw folder.
 #'
 #'
-#' @return The return will be a list that contains a list that checks all elements of the analysis plan and message of confirmation
+#' @return The return will be a list that contains checks of all elements of the
+#'  analysis plan and message of confirmation
 #'
-#' @author Maher Daoud
+#' @author Maher Daoud, Edouard Legoupil
 #'
 #'
 #' @examples
@@ -28,54 +29,41 @@ kobo_check_analysis_plan <- function(form = "form.xlsx") {
     countE <- 0
 
     mainDir <- kobo_getMainDirectory()
-    form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
 
-    survey <- tryCatch({
-      as.data.frame(read_excel(form_tmp, sheet = "survey"),
-                    stringsAsFactors = FALSE) #read survey sheet from the form
-    }, error = function(err) {
-      data.frame( #if it doesn't exist, we need to create empty dataframe with those fields
-        type = character(),
-        name = character(),
-        label = character(),
-        labelReport = character(),
-        variable = character(),
-        disaggregation = character(),
-        chapter = character(),
-        structuralequation.risk = character(),
-        structuralequation.coping = character(),
-        structuralequation.resilience = character(),
-        anonymise = character(),
-        correlate = character(),
-        clean = character(),
-        cluster = character(),
-        predict = character(),
-        mappoint = character(),
-        mappoly = character(),
-        stringsAsFactors = FALSE
-      )
-    })
+    ## Load form
+    cat("\n\n Building dictionnary from the xlsform \n")
 
-    survey <- survey[!tolower(survey$name) %in% c("begin_repeat","begin repeat","begin-repeat",
-                                         "end_repeat", "end repeat", "end-repeat",
-                                         "begin_group","begin group","begin-group",
-                                         "end_group","end group","end-group"
-                                         ),]
+    #form <- "form.xls"
+    ## Generate dico to test here - in normal process - it has been done just before in kobo_load_data()
+    #
+    ## Load dictionary
+    dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
 
-    survey <- survey[!is.na(survey$chapter) & !is.na(survey$name),]
-    if(nrow(survey) == 0){
+    #if (nrow(dico))
+
+    ## check if one chapter and report defined in the xlsform ######
+    dico1 <- dico[!is.na(dico$chapter) & !is.na(dico$name),]
+    if(nrow(dico) == 0){
       result$flag <- F
       countE <- countE+1
-      result$chapterSur <- paste(countE,"-"," Please make sure that you have at least one chapter before loading data and generating reports (survey sheet)", sep = "")
+      result$chapterSur <- paste(countE,"-"," Please make sure that you have at
+                                 least one chapter before loading data and generating reports
+                                 (survey sheet)", sep = "")
       result$message <- paste(result$message, "\n", result$chapterSur,sep = "")
       return(result)
+
+      writeLines("Please make sure that you have at least one chapter before
+      loading data and generating reports (survey sheet. \n")
     }
 
 
+    ## check labelreport defined in the xlsform ######
     if(!"labelReport"%in%colnames(survey)){
       result$flag <- F
       countE <- countE+1
-      result$labelReportNotExisSur <- paste(countE,"-"," Survey sheet does not contain labelReport column, you must fist labelReport before Data Processing", sep = "")
+      result$labelReportNotExisSur <- paste(countE,"-"," Survey sheet does not contain
+                                            labelReport column, you must fist labelReport
+                                            before Data Processing", sep = "")
       result$message <- paste(result$message, "\n", result$labelReportNotExisSur,sep = "")
     } else {
       temp <- survey[is.na(survey$labelReport),]
@@ -96,23 +84,24 @@ kobo_check_analysis_plan <- function(form = "form.xlsx") {
       }
     }
 
-    choices <- tryCatch({
-      as.data.frame(read_excel(form_tmp, sheet = "choices"),
-                    stringsAsFactors = FALSE) #read survey sheet from the form
-    }, error = function(err) {
-      data.frame( #if it doesn't exist, we need to create empty dataframe with those fields
-        list_name = character(),
-        name = character(),
-        label = character(),
-        labelReport = character(),
-        order = character(),
-        stringsAsFactors = FALSE,
-        check.names = F
-      )
-    })
-    choices <- choices[!is.na(choices$name) & !is.na(choices$list_name),]
+    # choices <- tryCatch({
+    #   as.data.frame(read_excel(form_tmp, sheet = "choices"),
+    #                 stringsAsFactors = FALSE) #read survey sheet from the form
+    # }, error = function(err) {
+    #   data.frame( #if it doesn't exist, we need to create empty dataframe with those fields
+    #     list_name = character(),
+    #     name = character(),
+    #     label = character(),
+    #     labelReport = character(),
+    #     order = character(),
+    #     stringsAsFactors = FALSE,
+    #     check.names = F
+    #   )
+    # })
+    # choices <- choices[!is.na(choices$name) & !is.na(choices$list_name),]
 
 
+    ## check labelreport defined for choice in the xlsform ######
     if (!"labelReport" %in% colnames(choices)) {
       result$flag <- F
       countE <- countE + 1
@@ -148,96 +137,85 @@ kobo_check_analysis_plan <- function(form = "form.xlsx") {
       result$message <- paste(result$message, "\n", result$ordinalVariablesCho,sep = "")
     }
 
-    indicator <- tryCatch({
-      as.data.frame(read_excel(form_tmp, sheet = "indicator"),stringsAsFactors = FALSE)
-    }, error = function(err) {
-      data.frame(
-        type = character(),
-        fullname = character(),
-        labelReport = character(),
-        hintReport = character(),
-        chapter = character(),
-        disaggregation = character(),
-        correlate = character(),
-        sensitive = character(),
-        anonymise = character(),
-        cluster = character(),
-        predict = character(),
-        variable = character(),
-        mappoint = character(),
-        mappoly = character(),
-        structuralequation = character(),
-        frame = character(),
-        listname = character(),
-        calculation = character(),
-        stringsAsFactors = FALSE
-      )
-    })
 
-    indicator <- indicator[!is.na(indicator$fullname),]
 
-    if (nrow(indicator) > 0) {
-      if (!"labelReport" %in% colnames(indicator)) {
-        result$flag <- F
-        countE <- countE + 1
-        result$labelReportNotExisInd <- paste(countE,"-"," Indicator sheet does not contain labelReport column, you must fist labelReport before Data Processing", sep = "")
-        result$message <- paste(result$message, "\n", result$labelReportNotExisInd,sep = "")
-      } else {
-        if(mean(stringr::str_length(indicator$labelReport) <= 85, na.rm = TRUE) != 1) {
+    tried <- try(readxl::read_excel(form_tmp, sheet = "indicator"), silent = TRUE)
+    if (inherits(tried, "try-error")) {
+      writeLines("Note that you have not defined (or defined correctly) indicators within your xlsform file. \n")
+
+    } else {
+      rm(tried)
+
+      ## check labelreport defined in the xlsform ######
+      indicator <- as.data.frame(readxl::read_excel(form_tmp, sheet = "indicator"),stringsAsFactors = FALSE)
+
+
+      ## check indicator defined in the xlsform ######
+      indicator <- indicator[!is.na(indicator$fullname),]
+
+      if (nrow(indicator) > 0) {
+        if (!"labelReport" %in% colnames(indicator)) {
           result$flag <- F
-          countE <- countE+1
-          temp <- indicator[stringr::str_length(indicator$labelReport) > 85,"fullname"]
-          temp <- paste(temp, sep = " ", collapse = " ,")
-          result$labelReportLengthInd <- paste(countE,"-"," Please make sure that all labelReport length are less than 85 character in indicator sheet where fullname equal: ",temp , sep = "")
-          result$message <- paste(result$message, "\n", result$labelReportLengthInd,sep = "")
+          countE <- countE + 1
+          result$labelReportNotExisInd <- paste(countE,"-"," Indicator sheet does not contain labelReport column, you must fist labelReport before Data Processing", sep = "")
+          result$message <- paste(result$message, "\n", result$labelReportNotExisInd,sep = "")
+        } else {
+          if(mean(stringr::str_length(indicator$labelReport) <= 85, na.rm = TRUE) != 1) {
+            result$flag <- F
+            countE <- countE+1
+            temp <- indicator[stringr::str_length(indicator$labelReport) > 85,"fullname"]
+            temp <- paste(temp, sep = " ", collapse = " ,")
+            result$labelReportLengthInd <- paste(countE,"-"," Please make sure that all labelReport length are less than 85 character in indicator sheet where fullname equal: ",temp , sep = "")
+            result$message <- paste(result$message, "\n", result$labelReportLengthInd,sep = "")
+          }
+          temp <- indicator[is.na(indicator$labelReport),"labelReport"]
+          if(length(temp)>0){
+            result$flag <- F
+            countE <- countE+1
+            result$labelInd <- paste(countE,"-"," Please make sure that you fill all cells of labelReport column in the indicator sheet", sep = "")
+            result$message <- paste(result$message, "\n", result$labelInd,sep = "")
+          }
         }
-        temp <- indicator[is.na(indicator$labelReport),"labelReport"]
+        temp <- indicator[is.na(indicator$type) | !indicator$type %in% c("integer","numeric","select_one"),"type"]
         if(length(temp)>0){
           result$flag <- F
           countE <- countE+1
-          result$labelInd <- paste(countE,"-"," Please make sure that you fill all cells of labelReport column in the indicator sheet", sep = "")
-          result$message <- paste(result$message, "\n", result$labelInd,sep = "")
+          result$typeInd <- paste(countE,"-"," Please make sure that you fill all cells of type column in the indicator sheet", sep = "")
+          result$message <- paste(result$message, "\n", result$typeInd,sep = "")
         }
-      }
-      temp <- indicator[is.na(indicator$type) | !indicator$type %in% c("integer","numeric","select_one"),"type"]
-      if(length(temp)>0){
-        result$flag <- F
-        countE <- countE+1
-        result$typeInd <- paste(countE,"-"," Please make sure that you fill all cells of type column in the indicator sheet", sep = "")
-        result$message <- paste(result$message, "\n", result$typeInd,sep = "")
-      }
 
-      temp <- indicator[is.na(indicator$chapter),"chapter"]
-      if(length(temp)>0){
-        result$flag <- F
-        countE <- countE+1
-        result$chapterInd <- paste(countE,"-"," Please make sure that you fill all cells of chapter column in the indicator sheet", sep = "")
-        result$message <- paste(result$message, "\n", result$chapterInd,sep = "")
-      }
+        temp <- indicator[is.na(indicator$chapter),"chapter"]
+        if(length(temp)>0){
+          result$flag <- F
+          countE <- countE+1
+          result$chapterInd <- paste(countE,"-"," Please make sure that you fill all cells of chapter column in the indicator sheet", sep = "")
+          result$message <- paste(result$message, "\n", result$chapterInd,sep = "")
+        }
 
-      temp <- indicator[is.na(indicator$frame),"frame"]
-      if(length(temp)>0){
-        result$flag <- F
-        countE <- countE+1
-        result$frameInd <- paste(countE,"-"," Please make sure that you fill all cells of frame column in the indicator sheet", sep = "")
-        result$message <- paste(result$message, "\n", result$frameInd,sep = "")
-      }
+        temp <- indicator[is.na(indicator$frame),"frame"]
+        if(length(temp)>0){
+          result$flag <- F
+          countE <- countE+1
+          result$frameInd <- paste(countE,"-"," Please make sure that you fill all cells of frame column in the indicator sheet", sep = "")
+          result$message <- paste(result$message, "\n", result$frameInd,sep = "")
+        }
 
-      temp <- indicator[is.na(indicator$calculation),"calculation"]
-      if(length(temp)>0){
-        result$flag <- F
-        countE <- countE+1
-        result$calculationInd <- paste(countE,"-"," Please make sure that you fill all cells of calculation column in the indicator sheet", sep = "")
-        result$message <- paste(result$message, "\n", result$calculationInd,sep = "")
-      }
+        temp <- indicator[is.na(indicator$calculation),"calculation"]
+        if(length(temp)>0){
+          result$flag <- F
+          countE <- countE+1
+          result$calculationInd <- paste(countE,"-"," Please make sure that you fill all cells of calculation column in the indicator sheet", sep = "")
+          result$message <- paste(result$message, "\n", result$calculationInd,sep = "")
+        }
 
-      temp <- indicator[indicator$type=="select_one","listname"]
-      temp <- temp[is.na(temp)]
-      if(length(temp)>0){
-        result$flag <- F
-        countE <- countE+1
-        result$listnameInd <- paste(countE,"-"," Please make sure that you fill all cells of listname column where type is 'select_one' in the indicator sheet", sep = "")
-        result$message <- paste(result$message, "\n", result$listnameInd,sep = "")
+        temp <- indicator[indicator$type=="select_one","listname"]
+        temp <- temp[is.na(temp)]
+        if(length(temp)>0){
+          result$flag <- F
+          countE <- countE+1
+          result$listnameInd <- paste(countE,"-"," Please make sure that you fill all cells of listname column where type is 'select_one' in the indicator sheet", sep = "")
+          result$message <- paste(result$message, "\n", result$listnameInd,sep = "")
+        }
       }
     }
     return(result)

@@ -4,7 +4,7 @@
 \alias{kobo_clean}
 \title{Add cleaned variables to the frame based on a reference table}
 \usage{
-kobo_clean(frame, form = "form.xls", app = "console")
+kobo_clean(frame, form = "form.xlsx", app = "console")
 }
 \arguments{
 \item{frame}{dataframe to use}
@@ -21,7 +21,7 @@ The new cleaned variable will be inserted in the dictionnary. with a suffix '.cl
 }
 \examples{
 \dontrun{
-kobo_clean(frame, form = "form.xls")
+kobo_clean(frame, form = "form.xlsx")
 }
 
 

@@ -19,12 +19,12 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_cluster_report(frame =  MainDataFrame , form = "form.xls")
+#' kobo_cluster_report(frame =  MainDataFrame , form = "form.xlsx")
 #' }
 #'
 
 kobo_cluster_report <- function(frame =  MainDataFrame , 
-                                form = "form.xls", 
+                                form = "form.xlsx", 
                                 output ="html", 
                                 app = "console") {
   tryCatch({

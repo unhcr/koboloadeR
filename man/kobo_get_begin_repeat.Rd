@@ -4,7 +4,7 @@
 \alias{kobo_get_begin_repeat}
 \title{Get all begin repeat from xlsform}
 \usage{
-kobo_get_begin_repeat(form = "form.xls")
+kobo_get_begin_repeat(form = "form.xlsx")
 }
 \arguments{
 \item{form}{The full filename of the form to be accessed (xls or xlsx file).
@@ -18,7 +18,7 @@ Get the 'name' column for all rows that have 'begin repeat' value in 'type' colu
 }
 \examples{
 \dontrun{
-kobo_get_begin_repeat("myform.xls")
+kobo_get_begin_repeat("myform.xlsx")
 }
 
 }

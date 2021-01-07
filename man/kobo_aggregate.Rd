@@ -4,7 +4,7 @@
 \alias{kobo_aggregate}
 \title{Generate an aggregaation of the variable of a dataset for instance by admin level}
 \usage{
-kobo_aggregate(form = "form.xls", aggregVar = "admin1")
+kobo_aggregate(form = "form.xlsx", aggregVar = "admin1")
 }
 \arguments{
 \item{form}{The full filename of the form to be accessed (xls or xlsx file).

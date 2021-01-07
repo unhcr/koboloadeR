@@ -4,7 +4,7 @@
 \alias{kobo_dico}
 \title{Create Data dictionnary an the xlsform}
 \usage{
-kobo_dico(form = "form.xls")
+kobo_dico(form = "form.xlsx")
 }
 \arguments{
 \item{form}{The full filename of the form to be accessed (xls or xlsx file).
@@ -18,7 +18,7 @@ Produce a data dictionnary based on the xlsform for the project
 }
 \examples{
 \dontrun{
-kobo_dico(form = "form.xls")
+kobo_dico(form = "form.xlsx")
 }
 
 }

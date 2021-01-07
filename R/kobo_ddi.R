@@ -15,13 +15,13 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_ddi("myform.xls")
+#' kobo_ddi("myform.xlsx")
 #' }
 #'
 #' @export kobo_ddi
 #'
 
-kobo_ddi <- function(form = "form.xls", app="console") {
+kobo_ddi <- function(form = "form.xlsx", app="console") {
   tryCatch({
      if (app == "shiny") {
       progress <- shiny::Progress$new()

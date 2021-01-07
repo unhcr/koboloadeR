@@ -4,7 +4,7 @@
 \alias{kobo_consolidateone}
 \title{Merge disagregated select_one variable}
 \usage{
-kobo_consolidateone(frame, form = "form.xls")
+kobo_consolidateone(frame, form = "form.xlsx")
 }
 \arguments{
 \item{frame}{kobo or odk exported dataset to use}
@@ -19,7 +19,7 @@ Merge disagregated select_one variable
 }
 \examples{
 \dontrun{
-kobo_consolidateone(frame , form = "form.xls")
+kobo_consolidateone(frame , form = "form.xlsx")
 }
 
 

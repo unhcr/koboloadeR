@@ -14,13 +14,13 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_consolidateone(frame , form = "form.xls")
+#' kobo_consolidateone(frame , form = "form.xlsx")
 #' }
 #'
 #'
 #' @return data
 
-kobo_consolidateone <- function(frame , form = "form.xls") {
+kobo_consolidateone <- function(frame , form = "form.xlsx") {
 
   configInfo <- kobo_get_config()
   mainDir <- kobo_getMainDirectory()

@@ -4,7 +4,7 @@
 \alias{kobo_ddi}
 \title{DDI generation}
 \usage{
-kobo_ddi(form = "form.xls", app = "console")
+kobo_ddi(form = "form.xlsx", app = "console")
 }
 \arguments{
 \item{form}{The full filename of the form to be accessed (xls or xlsx file).
@@ -20,7 +20,7 @@ This function creates a DDI version 2.5, XML file structure for microdata librar
 }
 \examples{
 \dontrun{
-kobo_ddi("myform.xls")
+kobo_ddi("myform.xlsx")
 }
 
 }

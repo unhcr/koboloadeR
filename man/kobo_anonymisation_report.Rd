@@ -4,7 +4,7 @@
 \alias{kobo_anonymisation_report}
 \title{Generate a report displaying disclosure risk for Statistical Disclosure Control}
 \usage{
-kobo_anonymisation_report(frame, form = "form.xls", app = "console")
+kobo_anonymisation_report(frame, form = "form.xlsx", app = "console")
 }
 \arguments{
 \item{frame}{kobo or odk dataset to use}
@@ -21,7 +21,7 @@ Automatically produce a disclosure risk measurement report.
 }
 \examples{
 \dontrun{
-kobo_anonymisation_report(frame, form = "form.xls")
+kobo_anonymisation_report(frame, form = "form.xlsx")
 }
 
 }

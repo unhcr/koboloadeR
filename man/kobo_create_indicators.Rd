@@ -4,11 +4,11 @@
 \alias{kobo_create_indicators}
 \title{Create Indicators}
 \usage{
-kobo_create_indicators(form = "form.xls")
+kobo_create_indicators(form = "form.xlsx")
 }
 \arguments{
 \item{form}{The full filename of the form to be accessed (xls or xlsx file).
-It is assumed that the form is stored in the data folder.}
+It is assumed that the form is stored in the data-raw folder.}
 }
 \value{
 No return, all results will be saved inside new CSV files
@@ -18,7 +18,7 @@ Function to compute indicators from indicator sheet
 }
 \examples{
 \dontrun{
-kobo_create_indicators("myform.xls")
+kobo_create_indicators("myform.xlsx")
 }
 
 }

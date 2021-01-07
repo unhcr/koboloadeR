@@ -4,7 +4,7 @@
 \alias{kobo_dummy}
 \title{Create a dummy dataset}
 \usage{
-kobo_dummy(form = "form.xls")
+kobo_dummy(form = "form.xlsx")
 }
 \arguments{
 \item{form}{file xlsform}

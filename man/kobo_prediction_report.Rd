@@ -31,7 +31,7 @@ The user needs to have previously loaded the registry, survey and form files
 }
 \examples{
 \dontrun{
-kobo_prediction_report("myform.xls")
+kobo_prediction_report("myform.xlsx")
 }
 
 }

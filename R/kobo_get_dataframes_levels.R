@@ -15,16 +15,17 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_get_dataframes_levels("myform.xls")
+#' kobo_get_dataframes_levels("myform.xlsx")
 #' }
 #'
 #' @export kobo_get_dataframes_levels
 #'
 
-kobo_get_dataframes_levels <- function(form="form.xls") {
+kobo_get_dataframes_levels <- function(form="form.xlsx") {
   tryCatch({
     mainDir <- kobo_getMainDirectory()
-    form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
+    #form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
+    form_tmp <- paste(mainDir, "data-raw", form, sep = "/", collapse = "/")
     survey <- tryCatch({
       as.data.frame(readxl::read_excel(form_tmp, sheet = "survey"),
                     stringsAsFactors = FALSE) #read survey sheet from the form
@@ -109,7 +110,7 @@ kobo_get_dataframes_levels <- function(form="form.xls") {
     result <- result[order(result$level, result$parent),]
     return(result)
   }, error = function(err) {
-    print("kkobo_get_dataframes_levels_ERROR")
+    print("kobo_get_dataframes_levels_ERROR")
     return(structure(err, class = "try-error"))
   })
 }

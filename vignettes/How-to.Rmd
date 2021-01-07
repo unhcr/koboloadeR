@@ -1,0 +1,318 @@
+---
+title: "Steps to build fully reproducible analysis"
+date: '`r Sys.Date()`'
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Steps to build fully reproducible analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Below is a step by step guidance on how to generate quickly a fully reproducible analysis
+
+#### Presentation of features 
+
+  *  [Getting data from server](articles/Getting_data.html) - How to retrieve data from the server within R?
+    
+  *  [Data Analysis Plan within your `xlsfrom`](articles/xlsform.html) - How to extend the xlsform to include your analysis plan?
+    
+  *  [Using console script](articles/Console.html) - How to use the package without using the GUI in Shiny?
+    
+  *  [Sampling](articles/Sampling.html): how to generate a sample from a registry or to post-stratify data when having a low response rate? 
+  
+  *  [Data Anonymisation and disclosure risk measurement](articles/Anonymisation.html): how to create anonymised data?
+  
+  *  [Data Cleaning](articles/Cleaning.html): how to use the package for reproducible and documented data cleaning? 
+    
+  *  [Predicting and scoring](articles/Predicting_Scoring.html): how to use survey in conjunction wiht registration data to build risk prediction and vulnerability scoring?
+    
+  *  [Dissiminating](articles/Dissiminating.html): how to dissiminate both survey microdata using DDI and variable crosstabulation on CKAN? 
+
+
+
+
+
+## Step 1: Set up your Rstudio project
+
+From Rstudio, create a new project - then make sure to install the necessary packages:
+
+[hcrdata](https://unhcr-web.github.io/hcrdata/docs/) to connect to both Kobo & RIDL API
+
+```r
+## API to connect to internal data sources
+remotes::install_github('unhcr-web/hcrdata’)
+```
+```r
+## Use UNHCR graphical template- https://unhcr-web.github.io/unhcRstyle/docs/
+remotes::install_github('unhcr-web/unhcRstyle')
+```
+```r
+## Perform High Frequency Check https://unhcr.github.io/HighFrequencyChecks/docs/
+remotes::install_github('unhcr/HighFrequencyChecks’)
+```
+```r
+## Process data crunching for survey dataset - https://unhcr.github.io/koboloadeR/docs/
+remotes::install_github('unhcr/koboloadeR’)
+
+```
+You can now prepare your project
+
+
+```r
+library (koboloadeR) # This loads koboloadeR package
+
+kobo_projectinit() # Creates folders necessary and transfer files needed
+```
+
+This last function creates a structure of folders that is consistent  with R regular package structure
+
+- `R` where processing scripts are stored
+- `data-raw` where raw data are stored
+- `data` where processed data are kept
+- `vignettes` where generated Rmarkdown 
+- `out` where generated report (knitted markdown) in word/powerpoint or html are pushed 
+
+## Step 2: get data and form from your Kobo Project
+
+
+The initial step to start your project is to get your data.
+
+The package is using only `csv` files. this is to avoid the limitations linked the number of columns that some version of excel can handle.
+
+One important point to note is related to the limitation in terms of variable names in R: A syntactically valid name consists of letters, numbers and the dot or underline characters and __starts with a letter or the dot not followed by a number__. Names such as ".2way" or "2.way" are not valid, and neither are the reserved words.
+
+In case your original variable names within your xlsform were starting with a number, you will __need to rename manually__ all variable names both in your xlsform and in the data you downloaded.
+
+Below is a step by step guidance on how to generate quickly a fully reproducible analysis
+
+In order to complete this step, you can either:
+
+ * Use the web interface and put the files into the `data-raw` folder
+
+ * pull from API with HCRdata 
+
+Open a new R script within a new RStudio project.
+
+You should then be able to launch the "data browser" within [Rstudio addins](https://rstudio.github.io/rstudio-extensions/rstudio_addins.html) menu or with the following command in your console:
+```r
+hcrdata:::hcrbrowse()
+```
+
+From there you will need to:
+ 1. select the source
+ 2. go to the dataset tab and select the project you want to pull data from
+ 3. go to the files tab and select the specific file you want to retrieve from the project.
+ 4. press the load data button and the R statement to pull this file from your project will be automatically inserted in your blank R script tab
+
+
+![preview](https://i.imgur.com/1hEUFkd.png) 
+
+alternatively, if you have the uniqueID of your koboproject: `dataset` and the name of your form file in your project, you could use directly the code below - note that 
+
+```r
+
+## pulling data from Kobo
+dataset <-  "dataset-title-in-kobo"
+form <- "name-of-the-form.xlsx"
+
+if(!dir_exists("data-raw")) {
+  dir_create(path("data-raw"))
+  
+  
+  hcrdata::hcrfetch(src = "kobo", 
+                    dataset = dataset, 
+                    file = form)
+                    
+data <-
+  hcrdata::hcrfetch(
+    src = "kobo",
+    dataset = "My kobo project",
+    file = "data.json") %>%
+  jsonlite::fromJSON() %>%
+  purrr::pluck("results") %>%
+  tibble::as_tibble() %>%
+  purrr::set_names(~stringr::str_replace_all(., "(\\/)", "."))
+  
+write.csv(data, "data-raw/MainDataFrame.csv", row.names = FALSE)  
+
+}
+
+file.copy(from = paste0("data-raw/",dataset,"/form.xlsx"),
+          to   = "data-raw/form.xlsx")
+
+
+```
+
+__Note__ that for the rest of the process, it is convenient to name your form `form.xlsx` and your downloaded data frame `MainDataFrame.csv`
+
+## Step 3: Prepare your report configuration in xlsform
+
+You need first to make sure that the form is in the xlsx format so that it can be used by the package - if not, open your xls file in LibreOffice or Excel and save it within the right format.
+
+Next step is to extend your xlsform:
+
+```r
+## Change here the precise name of the form if required
+form <- "form.xlsx" 
+
+## Extend xlsform with required column if necessary - done only once!
+#kobo_prepare_form(form)
+```
+
+Once the xlsform as been extended, re-open it in your favorite spreadsheet processing software 
+
+### in survey Worksheet
+
+ *  Relabel by adjusting the field `labelReport` for both the questions in `survey` and the question modalities in `choice` worksheet. Note that label for questions should be less than 80 characters long and modalities should be less than 40 characters.
+
+#### Fill `report` and  `chapter`
+ 
+#### Document `disaggregation`,	`correlate` and `variable`
+
+ * `disaggregation`: used to flag variables used to  `facet` dataset 
+ * `correlate`: used to flag variables used for  statistical test of independence (for categorical variable) or correlation for numeric variable
+ * `variable`: used to flag `ordinal` variables so that graphs are not ordered per frequency.
+
+#### Document `clean`
+ 
+
+A well-designed and tested survey should allow to minimise data cleaning issues. Specifically unconsistent answers can be anticipated and avoided through a series of well set-up constraints. You can learn more on [questionnaire design here](https://unhcr.github.io/Integrated-framework-household-survey/Configure-forms.html) 
+
+However even with the best designed questionnaires, there will still be some issues to fix
+
+Survey data cleaning may involves different steps:
+
+##### Remove Records
+
+ identifying and removing responses from individuals who either don’t match the target audience criteria or did not answer your questions thoughtfully. In case of self-administered questionnaire online, there might be also issues called “speeders” and “flat-liners” (respondents expediting the questionnaire), in such situation, date/time stamp on questions or group of questions can help identifying the records to be removed 
+
+##### Adjust closed question from open-end answers
+
+Often some people will tend to use this last _other_ options to enter information. The result is an open ended question that is very difficult to analyse. 
+Re-encoding certains __select_one__ _list_name_ __or_other__ variables is therefore quite often a necessary step. 
+
+Koboloader has some functions to handle this situation
+
+  *  `kobo_cleanlog(form) `
+
+  *  `kobo_clean(frame, dico)` 
+
+Insert a column named clean and reference the csv file to use for cleaning. 
+ 
+ 
+#### Document `cluster`
+
+ 
+#### Document `anonymise`	
+ 
+ 
+ 
+### in Choice Worksheet
+
+
+### in analysisSetting Worksheet
+
+
+
+
+
+## Step 4: Prepare your analysis post 
+
+### Document the data and push it from kobo to RIDL
+
+You have now done the biggest part of the work. You can already push some of those document to the data repository. The standard for this is [UNHCR Raw Internal Data Library - RIDL](https://gridl.unhcr.org), which is based [CKAN servers](https://ckan.org/), the same software being used for [HDX - The Humanitarian Data Exchange](https://data.humdata.org/). More
+
+### Prepare material for Joint Data Interpretation 
+
+Once you have generated all potential markdown files, you will end with a lot of visuals. Therefore it is key to carefully select the most relevant visual that will be presented for interpretation. In order to keep participant focused, a typical __joint data interpretation session__ shall not last more than 2 hours and include not more than 60 visuals/slide.
+
+You can create an empty markdown using the `unhcRstyle::unhcr_templ_ppt` powerpoint template and copy/paste within this new file the most relevant charts.
+ 
+In order to guide this selection phase, the data crunching expert and report designer, in collaboration with the data analysis group, can use the following elements:
+ 
+  *  For numeric value, check the frequency distributions of each variable to average, deviation, including outliers and oddities
+ 
+  *  For categorical variables, check for unexpected values: any weird results based on common sense expectations
+ 
+  *  Use correlation analysis to check for potential contradictions in respondents answers to different questions for identified associations (chi-square)
+ 
+  *  Always, Check for missing data (NA) or "%of respondent who answered" that you cannot confidently explain
+ 
+  *  Check unanswered questions, that corresponds to unused skip logic in the questionnaire: For instance, did a person who was never displaced answer displacement-related questions? Were employment-related answers provided for a toddler?
+ 
+### Take notes during the joint data interpretation session 
+
+Before the session, you need to agree in advance on the __note-taker role__. That person may potential write the notes directly within the markdown file. 
+ 
+When analyzing those representations in a collective setting during data interpretation sessions, you may:  
+ 
+  *  __Reflect__: question data quality and/or make suggestions to adjust questions, identify additional cleaning steps;   
+
+  *  __Interpret__: develop qualitative interpretations of data patterns;     
+
+  *  __Recommend__: suggest recommendations in terms of programmatic adjustment;    
+
+  *  __Classify__: define level of sensitivity for certain topics if required.
+
+ 
+
+### Write the final markdown
+
+
+
+
+## Step 5: Peer review your analysis post through the Internal Analysis Repository
+
+Peer Review is essential to produce good analysis. Such peer review is performed through the submission of your Rmd files to your data analysis focal point in the Regional Bureau.
+
+Before submitting your markdown files, plug them directly to the correct RIDl container with the following code chunk
+
+```r
+
+## pulling data from RIDL
+dataset <-  "dataset-title-in-rild"
+
+if(!dir_exists("data-raw")) {
+  dir_create(path("data-raw"))
+  
+  
+  hcrdata::hcrfetch(src = "ridl", 
+                    dataset = dataset, 
+                    file = "form.xls",
+                    #path= here::here("data-raw",  file),
+                    cache = TRUE)
+hcrdata::hcrfetch(src = "ridl", 
+                  dataset = dataset, 
+                  file = "maindataframe.csv",
+                    #path= here::here("data-raw",  file),
+                    cache = TRUE)
+
+}
+
+file.copy(from = paste0("data-raw/",dataset,"/form.xls"),
+          to   = "data-raw/form.xls")
+
+file.copy(from = paste0("data-raw/",dataset,"/maindataframe.csv"),
+          to   = "data-raw/MainDataFrame.csv")
+
+
+if(!dir_exists("data")) {
+  dir_create(path("data"))
+  
+    if(!dir_exists("R")) {
+      dir_create(path("R"))
+      
+      form <- "form.xls"
+      koboloadeR::kobo_load_data()
+    
+    }
+}
+```
+

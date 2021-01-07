@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Generate Data Crunching Report — kobo_crunching_report" />
-<meta property="og:description" content="Generate crunching Report that contains all descriptive statistics, correlation analysis, tabulation and data visualization for variables and indicators." />
+<meta property="og:description" content="Generate crunching Report that contains all descriptive statistics, correlation analysis, tabulation and data visualization for variables and indicators.
+ For disaggregation of variable indicate &quot;facet&quot;,&quot;stak&quot;, &quot;fill&quot; or &quot;dodge&quot;. for test of correlation on select_one variable use correlation = TRUE" />
 
 
 
@@ -82,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">koboloadeR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.8</span>
       </span>
     </div>
 
@@ -99,25 +100,10 @@
       <a href="../articles/Crunching.html">Data Crunching</a>
     </li>
     <li>
+      <a href="../articles/How-to.html">Steps to build fully reproducible analysis</a>
+    </li>
+    <li>
       <a href="../articles/Getting_data.html">Getting data from server</a>
-    </li>
-    <li>
-      <a href="../articles/xlsform.html">Data Analysis Plan within your `xlsfrom`</a>
-    </li>
-    <li>
-      <a href="../articles/Console.html">Using console script</a>
-    </li>
-    <li>
-      <a href="../articles/Sampling.html">Sampling</a>
-    </li>
-    <li>
-      <a href="../articles/Anonymisation.html">Data Anonymisation and disclosure risk measurement</a>
-    </li>
-    <li>
-      <a href="../articles/Cleaning.html">Data Cleaning</a>
-    </li>
-    <li>
-      <a href="../articles/Predicting_Scoring.html">Predicting and scoring</a>
     </li>
     <li>
       <a href="../articles/Troubleshooting.html">Common Troubleshooting</a>
@@ -157,24 +143,26 @@
     </div>
 
     <div class="ref-description">
-    <p>Generate crunching Report that contains all descriptive statistics, correlation analysis, tabulation and data visualization for variables and indicators.</p>
+    <p>Generate crunching Report that contains all descriptive statistics, correlation analysis, tabulation and data visualization for variables and indicators.
+ For disaggregation of variable indicate "facet","stak", "fill" or "dodge". for test of correlation on select_one variable use correlation = TRUE</p>
     </div>
 
-    <pre class="usage"><span class='fu'>kobo_crunching_report</span>(
-  <span class='kw'>form</span> <span class='kw'>=</span> <span class='st'>"form.xls"</span>,
-  <span class='kw'>app</span> <span class='kw'>=</span> <span class='st'>"console"</span>,
-  <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"html"</span>,
-  <span class='kw'>render</span> <span class='kw'>=</span> <span class='st'>"TRUE"</span>,
-  <span class='kw'>lang</span> <span class='kw'>=</span> <span class='st'>"eng"</span>
-)</pre>
+    <pre class="usage"><span class='fu'>kobo_crunching_report</span><span class='op'>(</span>
+  form <span class='op'>=</span> <span class='st'>"form.xlsx"</span>,
+  app <span class='op'>=</span> <span class='st'>"console"</span>,
+  output <span class='op'>=</span> <span class='st'>"html"</span>,
+  render <span class='op'>=</span> <span class='st'>"TRUE"</span>,
+  lang <span class='op'>=</span> <span class='st'>"eng"</span>,
+  unhcRstyle <span class='op'>=</span> <span class='st'>"TRUE"</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>form</th>
-      <td><p>The full filename of the form to be accessed (xls or xlsx file).
-It is assumed that the form is stored in the data folder.</p></td>
+      <td><p>The full filename of the form to be accessed (xls or xlsx file).</p>
+<p>It is assumed that the form is stored in the data-raw folder.</p></td>
     </tr>
     <tr>
       <th>app</th>
@@ -186,22 +174,31 @@ It is assumed that the form is stored in the data folder.</p></td>
     </tr>
     <tr>
       <th>render</th>
-      <td><p>TRUE or FALSE - Tells wheter to only produce Rmd or to also knit it in the required output format. Default is TRUE. Usefull for testing as rending takes time.</p></td>
+      <td><p>TRUE or FALSE - Tells whether to only produce Rmd or to also knit it in the required output format. Default is TRUE. Useful for testing as rending takes time.</p></td>
     </tr>
     <tr>
       <th>lang</th>
-      <td><p>eng, fre or esp - Change the langauge of the intro to the report - default is english</p></td>
+      <td><p>eng, fre or esp - Change the language of the intro to the report - default is english</p></td>
+    </tr>
+    <tr>
+      <th>unhcRstyle</th>
+      <td><p>TRUE or FALSE tells wether to use UNHCR style fo rendering</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>No return, All results will be saved on RMD files and Word files</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Edouard Legoupil, Maher Daoud</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'>kobo_crunching_report</span>(<span class='st'>"myform.xls"</span>)
-}</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='fu'>kobo_crunching_report</span><span class='op'>(</span><span class='st'>"myform.xlsx"</span><span class='op'>)</span>
+<span class='op'>}</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -213,11 +210,11 @@ It is assumed that the form is stored in the data folder.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Edouard Legoupil, Maher Daoud.</p>
+  <p>Developed by Edouard Legoupil, Maher Daoud, Hisham Galal.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

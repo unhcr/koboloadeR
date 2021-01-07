@@ -18,5 +18,5 @@ kobo_projectinit()
 }
 }
 \author{
-Edouard Legoupil, Elliott MEesseiller
+Edouard Legoupil, Elliott Messeiller
 }

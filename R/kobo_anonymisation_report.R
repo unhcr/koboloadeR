@@ -16,14 +16,14 @@
 #'
 #' @examples
 #' \dontrun{
-#' kobo_anonymisation_report(frame, form = "form.xls")
+#' kobo_anonymisation_report(frame, form = "form.xlsx")
 #' }
 #'
 #' @export kobo_anonymisation_report
 #'
 #'
 
-kobo_anonymisation_report <- function(frame, form = "form.xls", app = "console") {
+kobo_anonymisation_report <- function(frame, form = "form.xlsx", app = "console") {
   tryCatch({
     if (app == "shiny") {
       progress <- shiny::Progress$new()

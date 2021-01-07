@@ -4,7 +4,7 @@
 \alias{kobo_check_project_configuration}
 \title{Check kobo_check_project_configuration}
 \usage{
-kobo_check_project_configuration(form = "form.xls")
+kobo_check_project_configuration(form = "form.xlsx")
 }
 \arguments{
 \item{form}{The full filename of the form to be accessed (xls or xlsx file).
@@ -18,7 +18,7 @@ Check if the project configurations exist and all required files are in the righ
 }
 \examples{
 \dontrun{
-kobo_check_project_configuration("myform.xls")
+kobo_check_project_configuration("myform.xlsx")
 }
 
 }

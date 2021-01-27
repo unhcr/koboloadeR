@@ -62,10 +62,17 @@ kobo_crunching_report <- function(form = "form.xlsx",
     #form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
     #library(koboloadeR)
     
+    cat <- function(x, file = "", ...) {
+      if (file == "")
+        base::cat(x, ...)
+      else
+        readr::write_lines(x, file = file, ...)
+    }
+    
     ### Load the data
     cat("\n\n Loading data. It is assumed that the cleaning, weighting & re-encoding has been done previously \n")
     
-    MainDataFrame <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_encoded.csv",sep = ""), encoding = "UTF-8", na.strings = "")
+    MainDataFrame <- readr::read_csv(paste(mainDir,"/data/MainDataFrame_encoded.csv",sep = ""))
     #load(paste(mainDir,"/data/MainDataFrame_encoded.rda",sep = ""))
     
     
@@ -78,7 +85,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
     #kobo_dico(form)
     
     ## Load dictionary
-    dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+    dico <- readr::read_csv(paste0(mainDir,"/data/dico_",form,".csv"))
     #load(paste0(mainDir,"/data/dico_",form,".rda"))
     #rm(form)
     
@@ -100,7 +107,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
     ## Check if there's a repeat - aka hierarchical structure in the dataset
     if  (length(dataBeginRepeat) > 0) {
       for (dbr in dataBeginRepeat) {
-        dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_encoded.csv",sep = ""),stringsAsFactors = F)
+        dataFrame <- readr::read_csv(paste(mainDir,"/data/",dbr,"_encoded.csv",sep = ""),stringsAsFactors = F)
         #load(paste(mainDir,"/data/",dbr,"_encoded.rda",sep = ""))
         assign(dbr, kobo_label(dataFrame, dico))
         if (app == "shiny") {
@@ -152,7 +159,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
     
     names(reports)[1] <- "Report"
     
-    utils::write.csv(reports, paste(mainDir,"/data/reports.csv",sep = ""), row.names = FALSE, na = "")
+    readr::write_csv(reports, paste(mainDir,"/data/reports.csv",sep = ""))
     #save(reports, file =   paste(mainDir,"/data/reports.rda",sep = ""))
     
     future::plan(future::multisession)
@@ -312,21 +319,21 @@ kobo_crunching_report <- function(form = "form.xlsx",
       
       cat("## Provide below the name of the form in xsl form - format should be xls not xlsx", file = report.name , sep = "\n", append = TRUE)
       cat(paste0("form <- \"",form,"\""), file = report.name , sep = "\n", append = TRUE)
-      cat("dico <- utils::read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = report.name , sep = "\n", append = TRUE)
+      cat("dico <- readr::read_csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"))", file = report.name , sep = "\n", append = TRUE)
       #cat("load(paste0(mainDirroot,\"/data/dico_\",form,\".rda\"))", file = report.name , sep = "\n", append = TRUE)
       
       
       ## TO DO: Use config file to load the different frame
       
       
-      cat("MainDataFrame <- utils::read.csv(paste0(mainDirroot,\"/data/MainDataFrame_encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = report.name , sep = "\n", append = TRUE)
+      cat("MainDataFrame <- readr::read_csv(paste0(mainDirroot,\"/data/MainDataFrame_encoded.csv\"))", file = report.name , sep = "\n", append = TRUE)
       #cat("load(paste0(mainDirroot,\"/data/MainDataFrame_encoded.rda\"))", file = report.name , sep = "\n", append = TRUE)
       
       
       ## Check if there's a repeat - aka hierarchical structure in the dataset
       if  (length(dataBeginRepeat) > 0) {
         for (dbr in dataBeginRepeat) {
-          cat(paste(dbr, " <- utils::read.csv(paste0(mainDirroot,\"/data/",dbr,"_encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", sep = ""), file = report.name , sep = "\n", append = TRUE)
+          cat(paste(dbr, " <- readr::read_csv(paste0(mainDirroot,\"/data/",dbr,"_encoded.csv\"))", sep = ""), file = report.name , sep = "\n", append = TRUE)
           
           #cat(paste("load(paste0(mainDirroot,\"/data/",dbr,"_encoded.rda\"))", sep = ""), file = report.name , sep = "\n", append = TRUE)
         }
@@ -358,7 +365,8 @@ kobo_crunching_report <- function(form = "form.xlsx",
           ordinal.name <- as.character(ordinal[ o, c("fullname")])
           ordinal.frame <- as.character(ordinal[ o, c("qrepeatlabel")])
           if ( exists(paste0(ordinal.frame)) == TRUE) {
-            cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", ordinal.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name ,sep = "\n", append = TRUE)
+            # cat(paste0("list.ordinal <- unique(dico[ dico$listname == \"", ordinal.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])$labelchoice"),file = report.name ,sep = "\n", append = TRUE)
+            cat(paste0("list.ordinal <- unique(dico[ dico$listname == \"", ordinal.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])$labelchoice"),file = report.name ,sep = "\n", append = TRUE)
             cat(paste0(ordinal.frame,"$",ordinal.name," <- factor(",ordinal.frame,"$",ordinal.name,", levels = list.ordinal)"),file = report.name ,sep = "\n", append = TRUE)
           } else {}
         }
@@ -901,7 +909,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
               ## - if not ordinal order according to frequency - if ordinal order according to order in the dico
               if (questions.ordinal == "ordinal" ) {
                 ### get the list of options in the right order
-                cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", questions.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("list.ordinal <- unique(dico[ dico$listname == \"", questions.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])$labelchoice"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                 cat(paste0("levels(frequ$Var1) <- list.ordinal"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               } else {
                 cat(paste0("frequ[ ,1] = factor(frequ[ ,1],levels(frequ[ ,1])[order(frequ$Freq, decreasing = FALSE)])"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
@@ -930,7 +938,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
               
               
               if (questions.ordinal == "ordinal" ) {
-                cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", questions.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("list.ordinal <- unique(dico[ dico$listname == \"", questions.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])$labelchoice"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                 cat(paste0("levels(frequ3$Var1) <- list.ordinal"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
               } else {
                 cat(paste0("frequ3[ ,1] = factor(frequ3[ ,1],levels(frequ3[ ,1])[order(frequ3$mean, decreasing = FALSE)])"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
@@ -1076,7 +1084,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
                       #if( stats::quantile(questions.frame$disag.name, probs=c(.25, .75), na.rm = T))
                       
                       if (disag.ordinal == "ordinal" ) {
-                        cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("list.ordinal <- unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])$labelchoice"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         cat(paste0("levels(",questions.frame,"$",disag.name,") <- list.ordinal"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       } else {}
                       
@@ -1209,9 +1217,9 @@ kobo_crunching_report <- function(form = "form.xlsx",
                         cat(paste0("names(crosssfrequ.weight)[1] <- \"quest\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         cat(paste0("names(crosssfrequ.weight)[2] <- \"disag\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         cat(paste0("crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),\"%\")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
-                        cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("list.ordinal <- unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])$labelchoice"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         cat(paste0("levels(crosssfrequ.weight$disag) <- list.ordinal"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
-                        cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", questions.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("list.ordinal <- unique(dico[ dico$listname == \"", questions.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])$labelchoice"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         cat(paste0("levels(crosssfrequ.weight$quest) <- list.ordinal"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         
                       } else if (disag.ordinal == "ordinal" ) {
@@ -1220,7 +1228,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
                         cat(paste0("names(crosssfrequ.weight)[1] <- \"quest\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         cat(paste0("names(crosssfrequ.weight)[2] <- \"disag\""),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         cat(paste0("crosssfrequ.weight$Freq2 <- paste0(round(crosssfrequ.weight$Freq*100,digits = 1),\"%\")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
-                        cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                        cat(paste0("list.ordinal <- unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])$labelchoice"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         cat(paste0("levels(crosssfrequ.weight$disag) <- list.ordinal"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                         
                       } else {
@@ -1644,7 +1652,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
                     
                     ## account of Ordinal variable
                     if (disag.ordinal == "ordinal") {
-                      cat(paste0("list.ordinal <- as.character(unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ]))"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                      cat(paste0("list.ordinal <- unique(dico[ dico$listname == \"", disag.listname,"\" & dico$type == \"select_one_d\", c(\"labelchoice\") ])$labelchoice"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       cat(paste0(questions.frame,"$",disag.name," <- as.factor(",questions.frame,"$",disag.name,")"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       cat(paste0("levels(",questions.frame,"$",disag.name,") <- list.ordinal"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                       cat(paste0("\n"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
@@ -2257,7 +2265,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
       #rm(list = ls())
       kobo_load_packages()
       mainDir <- kobo_getMainDirectory()
-      reports <- utils::read.csv(paste(mainDir,"/data/reports.csv",sep = ""), encoding = "UTF-8", na.strings = "")
+      reports <- readr::read_csv(paste(mainDir,"/data/reports.csv",sep = ""))
       #load(paste(mainDir,"/data/reports.rda",sep = ""))
       ### Render now all reports
       cat(" Render now reports... \n")

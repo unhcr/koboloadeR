@@ -27,12 +27,13 @@ kobo_split_multiple <- function(data, dico) {
   #rm(datalabel)
   # data <- household
   # data <- data.or
+  data <- data %>% dplyr::select(-dplyr::starts_with(paste0(selectdf$fullname, ".")))
   datalabeldf <- as.data.frame( names(data))
   data <- as.data.frame(data)
   names(datalabeldf )[1] <- "fullname"
   datalabeldf$fullname <- as.character(datalabeldf$fullname)
   datalabeldf$id <- row.names(datalabeldf)
-  datalabeldf <- join(x = datalabeldf,y = selectdf,by = "fullname",type = "right")
+  datalabeldf <- plyr::join(x = datalabeldf,y = selectdf,by = "fullname",type = "right")
   ## Eliminate record from the wrong frame -i.e. id is NULL -
   datalabeldf <- datalabeldf[ !(is.na(datalabeldf$id)), ]
 
@@ -63,12 +64,12 @@ kobo_split_multiple <- function(data, dico) {
 
    # nrow(data[data[ , id]=='', id])
 
-    data[is.na(data[ , id]), id] <- "zNotAnswered"
-    data[data[ , id] =='', id] <- "zNotAnswered"
+    data[is.na(data[[id]]), id] <- "zNotAnswered"
+    data[data[[id]] =='', id] <- "zNotAnswered"
 
     #levels(as.factor(data[ , id]))
     #levels(data[ , id])
-    list <- as.data.frame(data[ , id])
+    list <- as.data.frame(data[[id]])
 
     ## thanks to: https://stackoverflow.com/questions/44232180/list-to-dataframe
     tosplitlist <- strsplit(as.character(data[ , id]), " ")

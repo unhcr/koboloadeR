@@ -42,9 +42,9 @@ kobo_anonymisation_report <- function(frame, form = "form.xlsx", app = "console"
     mainDir <- kobo_getMainDirectory()
     form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
 
-    dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+    dico <- readr::read_csv(paste0(mainDir,"/data/dico_",form,".csv"))
     framename <- deparse(substitute(frame))
-    utils::write.csv(frame, paste0(mainDir,"/data/anomreport-",framename,".csv"), row.names = FALSE, na = "")
+    readr::write_csv(frame, paste0(mainDir,"/data/anomreport-",framename,".csv"))
 
     ## Check that all those selectedVars are in the frame ####
     check <- as.data.frame(names(frame))
@@ -115,13 +115,12 @@ kobo_anonymisation_report <- function(frame, form = "form.xlsx", app = "console"
           cat("## Provide below the name of the form in xsl form - format should be xls not xlsx", file = reportanom , sep = "\n", append = TRUE)
           cat("form <- \"form.xls\"", file = reportanom , sep = "\n", append = TRUE)
           #cat("kobo_dico(form)", file = reportanom , sep = "\n", append = TRUE)
-          cat("dico <- utils::read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = reportanom , sep = "\n", append = TRUE)
+          cat("dico <- readr::read_csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"))", file = reportanom , sep = "\n", append = TRUE)
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
 
-          cat(paste0("dataanom <- utils::read.csv(paste0(mainDirroot,\"/data/anomreport-",framename,".csv\"), sep = \",\", encoding = \"UTF-8\", na.strings = \"\")"), file = reportanom , sep = "\n", append = TRUE)
+          cat(paste0("dataanom <- readr::read_csv(paste0(mainDirroot,\"/data/anomreport-",framename,".csv\"))"), file = reportanom , sep = "\n", append = TRUE)
 
 
-        #  cat(paste0("dataanom <- read.csv(paste0(mainDirroot,\"/data/anomreport-",framename,".csv\")    , sep = \";\", encoding = \"UTF-8\", na.strings = \"\")", file = reportanom , sep = "\n", append = TRUE))
           cat("\n", file = reportanom , sep = "\n", append = TRUE)
           cat("numrow <- nrow(dataanom) ", file = reportanom , sep = "\n", append = TRUE)
           cat("numvar <- ncol(dataanom)", file = reportanom , sep = "\n", append = TRUE)

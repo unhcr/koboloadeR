@@ -56,7 +56,7 @@ kobo_atlas_report <- function(form = "form.xlsx",
     ### Load the data
     cat("\n\n Loading data. It is assumed that the cleaning, weighting & re-encoding has been done previously \n")
     
-    MainDataFrame <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_encoded.csv",sep = ""), encoding = "UTF-8", na.strings = "")
+    MainDataFrame <- readr::read_csv(paste(mainDir,"/data/MainDataFrame_encoded.csv",sep = ""))
     
     
     # Form ##########################################
@@ -68,7 +68,7 @@ kobo_atlas_report <- function(form = "form.xlsx",
     #kobo_dico(form)
     
     ## Load dictionnary
-    dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+    dico <- readr::read_csv(paste0(mainDir,"/data/dico_",form,".csv"))
     #rm(form)
     
     
@@ -86,7 +86,7 @@ kobo_atlas_report <- function(form = "form.xlsx",
     kobo_aggregate(form,
                    aggregVar = mapref)
     
-    MainDataFrameMap <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_edited_map.csv",sep = ""), encoding = "UTF-8", na.strings = "")
+    MainDataFrameMap <- readr::read_csv(paste(mainDir,"/data/MainDataFrame_edited_map.csv",sep = ""))
     
     ##get list of report
     reports <- as.data.frame(unique(dico$report))
@@ -104,7 +104,7 @@ kobo_atlas_report <- function(form = "form.xlsx",
     
     names(reports)[1] <- "Report"
     
-    utils::write.csv(reports, paste(mainDir,"/data/mapreports.csv",sep = ""), row.names = FALSE, na = "")
+    readr::write_csv(reports, paste(mainDir,"/data/mapreports.csv",sep = ""))
     
     
     ## For each Report: create a Rmd file -------
@@ -233,14 +233,14 @@ kobo_atlas_report <- function(form = "form.xlsx",
       
       cat("## Provide below the name of the form in xsl form - format should be xls not xlsx", file = report.name , sep = "\n", append = TRUE)
       cat(paste0("form <- \"",form,"\""), file = report.name , sep = "\n", append = TRUE)
-      cat("dico <- utils::read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = report.name , sep = "\n", append = TRUE)
+      cat("dico <- readr::read_csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"))", file = report.name , sep = "\n", append = TRUE)
       
       
       ## TO DO: Use config file to load the different frame
       
       
-      cat("MainDataFrameMap <- utils::read.csv(paste0(mainDirroot,\"/data/MainDataFrame_edited_map.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = report.name , sep = "\n", append = TRUE)
-      cat("MainDataFrame <- utils::read.csv(paste0(mainDirroot,\"/data/MainDataFrame_encoded.csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = report.name , sep = "\n", append = TRUE)
+      cat("MainDataFrameMap <- readr::read_csv(paste0(mainDirroot,\"/data/MainDataFrame_edited_map.csv\"))", file = report.name , sep = "\n", append = TRUE)
+      cat("MainDataFrame <- readr::read_csv(paste0(mainDirroot,\"/data/MainDataFrame_encoded.csv\"))", file = report.name , sep = "\n", append = TRUE)
       cat("\n", file = report.name , sep = "\n", append = TRUE)
       cat("## label Variables", file = report.name , sep = "\n", append = TRUE)
       cat("MainDataFrameMap <- kobo_label(MainDataFrameMap , dico)", file = report.name , sep = "\n", append = TRUE)
@@ -751,7 +751,7 @@ kobo_atlas_report <- function(form = "form.xlsx",
       #rm(list = ls())
       kobo_load_packages()
       mainDir <- kobo_getMainDirectory()
-      reports <- utils::read.csv(paste(mainDir,"/data/mapreports.csv",sep = ""), encoding = "UTF-8", na.strings = "")
+      reports <- readr::read_csv(paste(mainDir,"/data/mapreports.csv",sep = ""))
       ### Render now all reports
       cat(" Render now reports... \n")
       for (i in 1:nrow(reports)) {

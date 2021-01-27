@@ -39,7 +39,7 @@ kobo_ddi <- function(form = "form.xlsx", app="console") {
 
     mainDir <- kobo_getMainDirectory()
     form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
-    dico <- read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+    dico <- readr::read_csv(paste0(mainDir,"/data/dico_",form,".csv"))
 
     survey <- tryCatch({
       as.data.frame(read_excel(form_tmp, sheet = "survey"),
@@ -219,7 +219,7 @@ kobo_ddi <- function(form = "form.xlsx", app="console") {
         next
       }
       count  <- count + 1
-      dataFrame <- read.csv(paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""),stringsAsFactors = F)
+      dataFrame <- readr::read_csv(paste(mainDir,"/data/",dbr,"-edited.csv",sep = ""),stringsAsFactors = F)
       dataFrame <- kobo_split_multiple(dataFrame, dico)
       #dataFrame <- kobo_clean(dataFrame, dico)
       dataFrame <- kobo_label(dataFrame, dico)
@@ -232,7 +232,7 @@ kobo_ddi <- function(form = "form.xlsx", app="console") {
                                                                                   ifelse(parent == "household","MainDataFrame",parent))), "value"]
         instanceIDParent <- configInfo[tolower(configInfo$name) == tolower(paste0("instanceid_",
                                                                                   ifelse(parent == "household","MainDataFrame",parent),"_",child)), "value"]
-        parentDf <- read.csv(paste(mainDir,"/data/",parent,".csv",sep = ""),stringsAsFactors = F)
+        parentDf <- readr::read_csv(paste(mainDir,"/data/",parent,".csv",sep = ""),stringsAsFactors = F)
         unColChild <- dataFrame[,instanceIDChild]
         dataFrame <- dataFrame[,colnames(dataFrame) != instanceIDChild]
         unCN <- colnames(dataFrame)[!colnames(dataFrame) %in% colnames(parentDf)]
@@ -249,13 +249,13 @@ kobo_ddi <- function(form = "form.xlsx", app="console") {
         }
 
       }
-      write.csv(dataFrame,paste(mainDir,"/data/group",count,".csv",sep = ""), row.names = FALSE, na = "")
+      readr::write_csv(dataFrame,paste(mainDir,"/data/group",count,".csv",sep = ""))
     }
 
-    allframes <- read.csv(paste(mainDir,"/data/group",count,".csv",sep = ""), stringsAsFactors = F)
+    allframes <- readr::read_csv(paste(mainDir,"/data/group",count,".csv",sep = ""), stringsAsFactors = F)
     count <- count - 1
     while (count) {
-      temp <- read.csv(paste(mainDir,"/data/group",count,".csv",sep = ""), stringsAsFactors = F)
+      temp <- readr::read_csv(paste(mainDir,"/data/group",count,".csv",sep = ""), stringsAsFactors = F)
 
       unColChild <- temp[,"responseID"]
       temp <- temp[,colnames(temp) != instanceIDChild]

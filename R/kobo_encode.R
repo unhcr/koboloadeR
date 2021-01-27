@@ -24,8 +24,8 @@
 kobo_encode <- function(data, dico) {
   ### First we provide attribute label to variable name
   #data1 <- data
-  # MainDataFrame <- read.csv("data/MainDataFrame_edited.csv")
-  # dico <- read.csv("data/dico_form.xls.csv", comment.char="#")
+  # MainDataFrame <- read_csv("data/MainDataFrame_edited.csv")
+  # dico <- read_csv("data/dico_form.xls.csv", comment.char="#")
   # data <- MainDataFrame
   data.label <- as.data.frame(names(data))
   names(data.label)[1] <- "fullname"

@@ -32,7 +32,7 @@ kobo_correlation_analysis <- function(form = "form.xlsx", frame, target, app = "
     }
     mainDir <- kobo_getMainDirectory()
 
-    dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "", stringsAsFactors = F)
+    dico <- readr::read_csv(paste0(mainDir,"/data/dico_",form,".csv"))
 
     dico <- dico[c("type","fullname","variable","listname","labelchoice","order")]
     names(dico) <- c("type","name","variable","listname","labelchoice","order")

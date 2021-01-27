@@ -1032,9 +1032,9 @@ prop.table(table(progres.case$occupationcat, useNA = "ifany"))
 #str(progres.case$occupationcat)
 ##  International Standard Classification of Occupations (ISCO)
 # http://www.ilo.org/public/english/bureau/stat/isco/isco08/
-#ISCO.08 <- read.csv("data/ISCO-08.csv")
+#ISCO.08 <- read_csv("data/ISCO-08.csv")
 #names(ISCO.08)
-#corrtab88.08 <- read.csv("data/corrtab88-08.csv")
+#corrtab88.08 <- read_csv("data/corrtab88-08.csv")
 #names(corrtab88.08)
 #isco <- merge(x=ISCO.08, y=corrtab88.08, by.x="ISCO08Code", by.y="ISCO.08.Code")
 #utils::write.csv(isco, "out/isco.csv")
@@ -1211,6 +1211,6 @@ prop.table(table(progres.case.sp$Victim.of.Violence, useNA = "ifany"))
 prop.table(table(progres.case.sp$Woman.at.Risk, useNA = "ifany"))
 
 
-utils::write.csv(progres.case.sp, file = "data/progrescase-1.csv", na = "", row.names = FALSE)
+readr::write_csv(progres.case.sp, file = "data/progrescase-1.csv")
 
 }

@@ -54,9 +54,9 @@ kobo_dummy <- function(form = "form.xlsx") {
   #form <- "form.xls"
   #library(koboloadeR)
   kobo_dico(form)
-  # dico <- utils::read.csv("data/dico_form.xls.csv")
+  # dico <- readr::read_csv("data/dico_form.xls.csv")
   #dico <- paste(mainDir, "data", dico, sep = "/", collapse = "/")
-  dico <- utils::read.csv(paste0(mainDir, "/data/dico_", form, ".csv"))
+  dico <- readr::read_csv(paste0(mainDir, "/data/dico_", form, ".csv"))
 
   ## Extract constraint on data ###########
   ## From constraint  lower bounds &  upper bound
@@ -299,7 +299,7 @@ kobo_dummy <- function(form = "form.xlsx") {
       }
     }
   }
-  utils::write.csv(dummydata, "data/MainDataFrame.csv", row.names = FALSE)
+  readr::write_csv(dummydata, "data/MainDataFrame.csv")
 
   rm(categ_level, fullname, i , l, listname, lowerbound, upperbound, value, datacheck, dico.household,
      relevantifvalue, relevantifvar, relevantifvar2, samplesize, typedata)
@@ -492,7 +492,7 @@ kobo_dummy <- function(form = "form.xlsx") {
           }
         }
    # }
-    utils::write.csv(dummydatarepeatall, paste0("data/",repeat_table,".csv"), row.names = FALSE)
+    readr::write_csv(dummydatarepeatall, paste0("data/",repeat_table,".csv"))
     cat(paste0("\n\n\n Finished generation of nested table ", h, " - ", repeat_table, "\n"))
     rm(dummydatarepeatall)
 

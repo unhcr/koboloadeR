@@ -32,7 +32,7 @@ kobo_clean <- function(frame, form = "form.xlsx", app = "console") {
   #cat(paste0(form,"\n"))
   formpath <- as.character(paste0(mainDir,"/data/dico_",form,".csv"))
   #cat(paste0(formpath,"\n"))
-  dico <- utils::read.csv(formpath, encoding = "UTF-8", na.strings = "")
+  dico <- readr::read_csv(formpath)
   
   
   #formpath <- as.character(paste0(mainDir,"/data/dico_",form,".rda"))
@@ -64,7 +64,7 @@ kobo_clean <- function(frame, form = "form.xlsx", app = "console") {
             variable <- paste0(as.character(dico.clean[ i, c("fullname")]))
             cleanfile <- paste0(as.character(dico.clean[ i, c("clean")]))
             cleanframe <- paste0(substr(as.character(dico.clean[ i, c("clean")]), 1, nchar(cleanfile) - 4))
-            formula1 <-  paste0(cleanframe," <- utils::read.csv(\"data-raw/", cleanfile,"\", encoding = \"UTF-8\", na.strings = \"\")" )
+            formula1 <-  paste0(cleanframe," <- readr::read_csv(\"data-raw/", cleanfile)
             formula2 <- paste0("names(",cleanframe,")[1] <- \"",dico.clean[ i, c("fullname")],"\"" )
             formula3 <- paste0("names(",cleanframe,")[2] <- \"",dico.clean[ i, c("fullname")],".clean\"" )
             formula4 <- paste0("colname <- which(colnames(",framename,") == \"", variable,"\")")

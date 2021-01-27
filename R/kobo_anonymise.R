@@ -50,7 +50,7 @@ kobo_anonymise <- function(frame, form = "form.xlsx", app = "console") {
   mainDir <- kobo_getMainDirectory()
   form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
 
-  dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+  dico <- readr::read_csv(paste0(mainDir,"/data/dico_",form,".csv"))
 
   # frame <- household
   # framename <- "household"
@@ -171,7 +171,7 @@ kobo_anonymise <- function(frame, form = "form.xlsx", app = "console") {
           cat(paste0(formula2, "} else"), file = "code/temp-reference.R" , sep = "\n", append = TRUE)
           cat("{}", file = "code/temp-reference.R" , sep = "\n", append = TRUE)
         }
-        formula3 <- paste0( "write.csv(",framename,".anom.reference, \"data/anom_reference_",framename,".csv\", row.names = FALSE, na = \"\")")
+        formula3 <- paste0( "readr::write_csv(",framename,".anom.reference, \"data/anom_reference_",framename,".csv)")
         cat(formula3, file = "code/temp-reference.R" , sep = "\n", append = TRUE)
 
         #  mainDir <- getwd()

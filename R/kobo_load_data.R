@@ -67,19 +67,19 @@ kobo_load_data <- function(form = "form.xlsx", app = "console") {
     cat("\n\n\n Generate dictionnary from the xlsform \n\n\n\n")
     mainDir <- koboloadeR::kobo_getMainDirectory()
     koboloadeR::kobo_dico(form)
-    dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+    dico <- readr::read_csv(paste0(mainDir,"/data/dico_",form,".csv"))
     #load(paste0(mainDir,"/data/dico_",form,".rda"))
 
     ## Load data #######################################################################
     cat("\n\n\n Load original dataset \n\n\n\n")
 
     # originalData <- readr::read_csv(paste0(mainDir, "/data-raw/",configInfoOrigin[configInfoOrigin$name == "MainDataFrame", "path"]))
-    originalData <- utils::read.csv(paste0(mainDir, "/data-raw/",configInfoOrigin[configInfoOrigin$name == "MainDataFrame", "path"]), sep = ",", encoding = "UTF-8", na.strings = "")
+    originalData <- readr::read_csv(paste0(mainDir, "/data-raw/",configInfoOrigin[configInfoOrigin$name == "MainDataFrame", "path"]))
 
     if (ncol(originalData) == 1) {
       cat("seems like you file use  ; rather , variable separator.... \n")
       # originalData <- readr::read_csv(paste0(mainDir, "/data-raw/",configInfoOrigin[configInfoOrigin$name == "MainDataFrame", "path"]))
-      originalData <- utils::read.csv(paste0(mainDir, "/data-raw/",configInfoOrigin[configInfoOrigin$name == "MainDataFrame", "path"]), sep = ";", encoding = "UTF-8", na.strings = "")
+      originalData <- readr::read_csv2(paste0(mainDir, "/data-raw/",configInfoOrigin[configInfoOrigin$name == "MainDataFrame", "path"]))
     }
 
     ## Check to split select_multiple if data is extracted from ODK ###################
@@ -122,7 +122,7 @@ kobo_load_data <- function(form = "form.xlsx", app = "console") {
         }
 
         path <- configInfoOrigin[configInfoOrigin$name == "weights_info", "path"]
-        weight <- utils::read.csv(paste0(mainDir, "/data-raw/",path),stringsAsFactors = F)
+        weight <- readr::read_csv(paste0(mainDir, "/data-raw/",path),stringsAsFactors = F)
 
 
         variableName <- configInfoOrigin[configInfoOrigin$name == "variable_name", "value"]
@@ -150,7 +150,7 @@ kobo_load_data <- function(form = "form.xlsx", app = "console") {
 
 
     cat("\n\n Write backup before encoding or indicators calculation..\n")
-    utils::write.csv(MainDataFrame,paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), row.names = FALSE, na = "")
+    readr::write_csv(MainDataFrame,paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""))
     #save(MainDataFrame, file =  paste(mainDir,"/data/MainDataFrame_edited.rda",sep = ""))
 
 
@@ -187,7 +187,7 @@ kobo_load_data <- function(form = "form.xlsx", app = "console") {
         # dbr <- levelsOfDF$name[1]
         cat("\n\nloading",dbr,"file ..\n")
         # dataFrame <- readr::read_csv(paste0(mainDir, "/data-raw/",configInfoOrigin[configInfoOrigin$name == dbr,"path"]))
-       dataFrame <- utils::read.csv(paste0(mainDir, "/data-raw/",configInfoOrigin[configInfoOrigin$name == dbr,"path"]), stringsAsFactors = F)
+       dataFrame <- readr::read_csv(paste0(mainDir, "/data-raw/",configInfoOrigin[configInfoOrigin$name == dbr,"path"]), stringsAsFactors = F)
 
         if (app == "shiny") {
           progress$set(message = paste("Splitting",dbr,"file in progress..."))
@@ -224,7 +224,7 @@ kobo_load_data <- function(form = "form.xlsx", app = "console") {
 
 
         cat("\n\n Saving ",dbr,"file as _edited..\n")
-        utils::write.csv(dataFrame,paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""), row.names = FALSE, na = "")
+        readr::write_csv(dataFrame,paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""))
         #save(dataFrame, file =  paste(mainDir,"/data/",dbr,"_edited.rda",sep = ""))
 
       # }
@@ -238,7 +238,7 @@ kobo_load_data <- function(form = "form.xlsx", app = "console") {
         #   updateProgress()
         # }
         #
-        # dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
+        # dataFrame <- readr::read_csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
         child <- levelsOfDF[levelsOfDF$name == dbr, "name"]
         parent <- levelsOfDF[levelsOfDF$name == dbr, "parent"]
 
@@ -250,11 +250,11 @@ kobo_load_data <- function(form = "form.xlsx", app = "console") {
 
           ## Case MainDataFrame called household
           if (parent %in% c("household", "MainDataFrame")) {
-            parentDf <- utils::read.csv(paste(mainDir,"/data/",parent,"_edited.csv",sep = ""),stringsAsFactors = F)
+            parentDf <- readr::read_csv(paste(mainDir,"/data/",parent,"_edited.csv",sep = ""),stringsAsFactors = F)
            # load(paste(mainDir,"/data/",parent,"_edited.rda",sep = ""))
 
           }else{
-            parentDf <- utils::read.csv(paste(mainDir,"/data/",parent,"_edited.csv",sep = ""),stringsAsFactors = F)
+            parentDf <- readr::read_csv(paste(mainDir,"/data/",parent,"_edited.csv",sep = ""),stringsAsFactors = F)
             #load(paste(mainDir,"/data/",parent,"_edited.rda",sep = ""))
           }
 
@@ -297,7 +297,7 @@ kobo_load_data <- function(form = "form.xlsx", app = "console") {
         }
 
         cat("\n\n Saving edited version of  ", dbr, " ...\n")
-        utils::write.csv(dataFrame,paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""), row.names = FALSE, na = "")
+        readr::write_csv(dataFrame,paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""))
         #save(dataFrame, file =  paste(mainDir,"/data/",dbr,"_edited.rda",sep = ""))
 
       }
@@ -320,11 +320,11 @@ kobo_load_data <- function(form = "form.xlsx", app = "console") {
     }
 
 
-    dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+    dico <- readr::read_csv(paste0(mainDir,"/data/dico_",form,".csv"))
     #load(paste(mainDir,"/data/dico_",form,".rda",sep = ""))
 
 
-    MainDataFrame <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), encoding = "UTF-8", na.strings = "NA")
+    MainDataFrame <- readr::read_csv(paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""))
     #load(paste(mainDir,"/data/MainDataFrame_edited.rda",sep = ""))
 
 
@@ -342,12 +342,12 @@ kobo_load_data <- function(form = "form.xlsx", app = "console") {
     ## loading nested frame
     for (dbr in levelsOfDF$name) {
 
-      dataFrame <- utils::read.csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
+      dataFrame <- readr::read_csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
       #load(paste(mainDir,"/data/",dbr,"_edited.rda",sep = ""))
 
       dataFrame <- koboloadeR::kobo_encode(dataFrame, dico)
 
-      utils::write.csv(dataFrame,paste(mainDir,"/data/",dbr,"_encoded.csv",sep = ""), row.names = FALSE, na = "")
+      readr::write_csv(dataFrame,paste(mainDir,"/data/",dbr,"_encoded.csv",sep = ""))
       #save(dataFrame, file =  paste(mainDir,"/data/",dbr,"_encoded.rda",sep = ""))
 
       cat("\n\nRe-encode",dbr,"..\n")
@@ -356,7 +356,7 @@ kobo_load_data <- function(form = "form.xlsx", app = "console") {
       updateProgress()
     }
 
-    utils::write.csv(MainDataFrame,paste(mainDir,"/data/MainDataFrame_encoded.csv",sep = ""), row.names = FALSE, na = "")
+    readr::write_csv(MainDataFrame,paste(mainDir,"/data/MainDataFrame_encoded.csv",sep = ""))
     #save(MainDataFrame, file =  paste(mainDir,"/data/MainDataFrame_encoded.rda",sep = ""))
 
     return(TRUE)

@@ -58,7 +58,7 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
     names(check)[1] <- "fullname"
     check$id <- row.names(check)
 
-    dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+    dico <- readr::read_csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
 
     #### Check presence of variable for anom plan...
     if (app == "shiny") {
@@ -96,7 +96,7 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
     framecluster <- paste0(mainDir,"/data/clustering-report-",framename,".csv")
     if (file.exists(framecluster)) file.remove(framecluster)
     
-    utils::write.csv(frame, framecluster,  row.names = FALSE)
+    readr::write_csv(frame, framecluster)
 
     if (nrow(selected.cluster) == 0) {
       cat("You have not selected variables to cluster for your dataset! \n")
@@ -232,10 +232,10 @@ kobo_cluster_report <- function(frame =  MainDataFrame ,
           cat("## Provide below the name of the form in xsl form - format should be xls not xlsx", file = reportcluster , sep = "\n", append = TRUE)
           cat("form <- \"form.xls\"", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
-          cat("dico <- utils::read.csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"), encoding = \"UTF-8\", na.strings = \"\")", file = reportcluster , sep = "\n", append = TRUE)
+          cat("dico <- readr::read_csv(paste0(mainDirroot,\"/data/dico_\",form,\".csv\"))", file = reportcluster , sep = "\n", append = TRUE)
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
 
-          cat(paste0("datacluster <-  utils::read.csv(paste0(mainDirroot,\"/data/clustering-report-",framename,".csv\"), sep = \",\", encoding = \"UTF-8\", na.strings = \"\")"), file = reportcluster , sep = "\n", append = TRUE)
+          cat(paste0("datacluster <-  readr::read_csv(paste0(mainDirroot,\"/data/clustering-report-",framename,".csv\"))"), file = reportcluster , sep = "\n", append = TRUE)
          
           cat("\n", file = reportcluster , sep = "\n", append = TRUE)
           cat("```", file = reportcluster , sep = "\n", append = TRUE)

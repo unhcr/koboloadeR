@@ -1903,7 +1903,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
               if (nrow(frequ) %in% c("0","1") |  nrow(meltdata) == 0) {
                 
                 if (lang == "eng") {
-                  cat(paste0("No responses or the same answer was given (only one modality) recorded for this question.\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
+                  cat(paste0("No response or the same answer was given (only one modality) recorded for this question.\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
                 } else if (lang == "esp") {
                   cat(paste0("No se registraron respuestas o se da la misma respuesta (sólo una modalidad) para esta pregunta.\n"),file = report.name.i.v.j , sep = "\n", append = TRUE)
                 } else if (lang == "fr") {
@@ -1975,7 +1975,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
                 cat(paste0("xlab(\"\") +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                 cat(paste0("coord_flip() +"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                 cat(paste0("labs(title = \"",questions.label,"\","),file = report.name.i.v.j ,sep = "\n", append = TRUE)
-                cat(paste0("subtitle = paste0(\"Number of response for this question: \",nrow(data.selectmultilist),\", i.e. response rate: \",percentreponse,\" .\"),"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
+                cat(paste0("subtitle = paste0(\"Number of responses for this question: \",nrow(data.selectmultilist),\", i.e. response rate: \",percentreponse,\" .\"),"),file = report.name.i.v.j ,sep = "\n", append = TRUE)
                 cat(paste0("caption = paste0(\"", configInfo[configInfo$name == "titl", c("value")], "- \",
                             nrow(MainDataFrame), \" total records collected between \",
                             min(as.Date(MainDataFrame$today, format = \"%Y-%m-%d\")), \" and \",

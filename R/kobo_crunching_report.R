@@ -1424,6 +1424,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
                     } else {
                       cat(paste0("\n```{r ", questions.name,"ccc",m, ".rel, echo=FALSE, warning=FALSE, cache=FALSE, tidy = TRUE, message=FALSE, comment = \"\", fig.height=6, size=\"small\"}\n"), file = report.name.i.v.j, append = TRUE)
                     }
+                    
                     cat(paste0("corrplot(stats::chisq.test(",formula.target1,",", formula.tested1,")$residuals,"), file = report.name.i.v.j , sep = "\n", append = TRUE)
                     cat(paste0("is.cor = FALSE, # use for general matrix to convert to Sq form"), file = report.name.i.v.j , sep = "\n", append = TRUE)
                     cat(paste0("cl.pos = \"n\", ## Do not display the color legend"), file = report.name.i.v.j , sep = "\n", append = TRUE)
@@ -1431,10 +1432,11 @@ kobo_crunching_report <- function(form = "form.xlsx",
                     cat(paste0("tl.cex = 0.7, # Size of axis label"), file = report.name.i.v.j , sep = "\n", append = TRUE)
                     cat(paste0("tl.srt = 45, # string rotation in degrees"), file = report.name.i.v.j , sep = "\n", append = TRUE)
                     cat(paste0("tl.col = \"black\", # color of text label."), file = report.name.i.v.j , sep = "\n", append = TRUE)
-                    cat(paste0("addCoef.col = \"grey\", # add coeff in the chart"), file = report.name.i.v.j , sep = "\n", append = TRUE)
-                    cat(paste0("number.cex = 3/ncol(stats::chisq.test(",formula.target1,",", formula.tested1,")), # size of coeff"), file = report.name.i.v.j , sep = "\n", append = TRUE)
+                    #cat(paste0("addCoef.col = \"grey\", # add coeff in the chart"), file = report.name.i.v.j , sep = "\n", append = TRUE)
+                    #cat(paste0("number.cex = 3/ncol(stats::chisq.test(",formula.target1,",", formula.tested1,")), # size of coeff"), file = report.name.i.v.j , sep = "\n", append = TRUE)
+                    cat(paste0("col = brewer.pal(n = 2, name = \"RdBu\"), ## Change color"), file = report.name.i.v.j , sep = "\n", append = TRUE)
                     cat(paste0("mar = c(0.5,0.5,4, 0.5), ## margin of plots"), file = report.name.i.v.j , sep = "\n", append = TRUE)
-                    cat(paste0("title = paste0(\"Correlation between", "\n",target.label," (row)\n", " & ",tested.label," (col)\")) "), file = report.name.i.v.j , sep = "\n", append = TRUE)
+                    cat(paste0("title = paste0(\"Statistical Association (positive=blue, negative= red) between", "\n",target.label," (row)\n", " & ",tested.label," (col)\")) "), file = report.name.i.v.j , sep = "\n", append = TRUE)
                     ## Close chunk
                     cat(paste0("\n```\n", sep = '\n'), file = report.name.i.v.j, append = TRUE)
                   }

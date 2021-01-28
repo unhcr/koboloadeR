@@ -131,12 +131,7 @@ kobo_indicator <- function(mainDir = '') {
       }
     }
     # Rewritting dico file
-    write.csv(
-      dico,
-      paste0(mainDir, "/data/dico_", form, ".csv"),
-      row.names = FALSE,
-      na = ""
-    )
+    readr::write_csv(dico, paste0(mainDir, "/data/dico_", form, ".csv"))
 
     # Rewritting data file
     # Coherce data to a clean dataframe

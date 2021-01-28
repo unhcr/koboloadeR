@@ -150,7 +150,7 @@ kobo_weight <- function(mainDir = '') {
         data <- data.frame(data)
 
         #Write data with weights
-        write.csv(data, file = paste0(mainDir,"/data/data.csv"))
+        readr::write_csv(data, file = paste0(mainDir,"/data/data.csv"))
 
         path.to.data <- paste0(mainDir, "/data/data.csv")
 
@@ -161,7 +161,7 @@ kobo_weight <- function(mainDir = '') {
         sink(configfile, append = TRUE)
 
         cat("\n")
-        cat(paste0('data <- read.csv("',path.to.data,'")'))
+        cat(paste0('data <- readr::read_csv("',path.to.data,'")'))
 
         cat("\n")
         cat(paste('strata1 <- "', fullname_strata, '"', sep = ""))

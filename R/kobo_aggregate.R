@@ -37,11 +37,11 @@ kobo_aggregate <- function( form = "form.xlsx",
   ### Load the data ####
   cat("\n\n Loading data. It is assumed that the cleaning, weighting & re-encoding has been done previously \n")
   
-  MainDataFrame <- utils::read.csv(paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""), encoding = "UTF-8", na.strings = "")
+  MainDataFrame <- readr::read_csv(paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""))
   
   ## Load form ###########
   cat("\n\n Loading dictionnary from the xlsform \n")
-  dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+  dico <- readr::read_csv(paste0(mainDir,"/data/dico_",form,".csv"))
   #rm(form)
   
   ## Check that all those selectedVars are in the frame
@@ -169,7 +169,7 @@ kobo_aggregate <- function( form = "form.xlsx",
   datamappoly1L <- kobo_label(datamappoly1, dico)
   
   ## We now save a back up in the data folder to be used for the Rmd
-  write.csv(datamappoly1L,"data/MainDataFrame_edited_map.csv", row.names = FALSE, na = "")
+  readr::write_csv(datamappoly1L,"data/MainDataFrame_edited_map.csv")
   #rm(datamappoly1.cat, datamappoly1.cat2, datamappoly1.n, datamappoly1.num, datamappoly1.num2, datamappoly1)
   
   

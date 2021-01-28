@@ -24,7 +24,7 @@ kobo_consolidateone <- function(frame , form = "form.xlsx") {
 
   configInfo <- kobo_get_config()
   mainDir <- kobo_getMainDirectory()
-  dico <- utils::read.csv(paste0(mainDir,"/data/dico_",form,".csv"), encoding = "UTF-8", na.strings = "")
+  dico <- readr::read_csv(paste0(mainDir,"/data/dico_",form,".csv"))
 
 
   ### List of select_one questions

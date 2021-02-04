@@ -56,7 +56,7 @@ kobo_encode <- function(data, dico) {
     
       cat(paste0("There's ",nrow(selectdf3)," select_multiple modalities to encode \n"))
       for (i in 1:nrow(selectdf3)) {
-        # i <- 98
+        # i <- 89
         fullname <- as.character(selectdf3[ i,1])
         variablename <- as.character(selectdf3[ i,2])
         variablelistname <- as.character(selectdf3[ i,3])
@@ -69,12 +69,20 @@ kobo_encode <- function(data, dico) {
         labelchoice <- as.character(dico[dico$fullname == fullname, c("labelchoice")])
         if (nrow(variablelevel) > 0) {
           if (nrow(variablelevel) > 1) {
-
+          
+          ## make sure in case that the variable is character - this will happen
+          data[ , fullname] <- as.character(data[[fullname]])
+            
+          ## Re-encoding when not replied  
           data[ , fullname][is.na(data[ , fullname])] <- "Not replied"
           data[ , fullname][data[ , fullname] == "Not replied"] <- "Not replied"
+          
+          ## Re-encoding when replied but not selected 
           data[ , fullname][data[ , fullname] == "0"] <- "Not selected"
           data[ , fullname][data[ , fullname] == "FALSE"] <- "Not selected"
           data[ , fullname][data[ , fullname] == "False"] <- "Not selected"
+          
+          ## Re-encoding when replied but not selected 
           data[ , fullname][data[ , fullname] == "1"] <- labelchoice
           data[ , fullname][data[ , fullname] == "TRUE"] <- labelchoice
           data[ , fullname][data[ , fullname] == "True"] <- labelchoice
@@ -168,7 +176,7 @@ kobo_encode <- function(data, dico) {
       cat(paste0("There's ",nrow(selectdf3)," select_one variables to encode \n"))
 
      for (i in 1:nrow(selectdf3)) {
-      # i <- 50
+      # i <- 88
       fullname <- as.character(selectdf3[ i,1])
       variablename <- as.character(selectdf3[ i,2])
       variablelistname <- as.character(selectdf3[ i,3])

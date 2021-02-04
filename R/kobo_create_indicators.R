@@ -61,8 +61,10 @@ kobo_create_indicators <- function(form = "form.xlsx") {
         ## Load data & dico #############################################################################
         #form <- "form.xls"
         ## Run this only after data cleaning
-         dico <- readr::read_csv(paste0(mainDir,"/data/dico_",form,".csv"))
+        dico <- readr::read_csv(paste0(mainDir,"/data/dico_",form,".csv"))
         #load(paste(mainDir,"/data/dico_",form,".rda",sep = ""))
+        
+        
         ## Create the dicotemp #############################################################################
         #names(dico)
         dicotemp <- data.frame(c("trigger"))
@@ -112,7 +114,7 @@ kobo_create_indicators <- function(form = "form.xlsx") {
         ## Need to check that all column are presents...
 
 
-        ## Load indicator info #############################################################################
+        ## Load indicator definition into a script  #############################################################################
 
         if (file.exists(paste0(mainDir,"/R/build_indicator.R") )) file.remove(paste0(mainDir,"/R/build_indicator.R"))
         
@@ -120,7 +122,7 @@ kobo_create_indicators <- function(form = "form.xlsx") {
         cat(paste('### Script to generate indicator: ',sep = ""), file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
         cat(paste('form <- "',form,'"',sep = ""), file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
         cat("mainDir <- koboloadeR::kobo_getMainDirectory()", file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
-        cat('form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+        cat('form_tmp <- paste(mainDir, "data-raw", form, sep = "/", collapse = "/")', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
         
         
         cat('dataBeginRepeat <- koboloadeR::kobo_get_begin_repeat(form)', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
@@ -241,15 +243,36 @@ kobo_create_indicators <- function(form = "form.xlsx") {
           dicotemp <- rbind(dicotemp,dicotemp1)
 
         }
-         cat('readr::write_csv(MainDataFrame, paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""))', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+         
+        cat('readr::write_csv(MainDataFrame, paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""))', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
         #cat('save(MainDataFrame, file =   paste(mainDir,"/data/MainDataFrame_edited.rda",sep = ""))', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
         
+        ## Run indicator building script #############
         source(paste0(mainDir,"/R/build_indicator.R"))
         
+        
+        # ### Saving back up of results  
+        #  
+        # readr::write_csv(MainDataFrame, paste(mainDir,"/data/MainDataFrame_edited.csv",sep = "")) 
+        # #save(MainDataFrame, file =   paste(mainDir,"/data/MainDataFrame_edited.rda",sep = ""))
+        #  
+        #  # ## Check if there's a repeat - aka hierarchical structure in the dataset
+        #  if  (length(dataBeginRepeat) > 0) {
+        #    for (dbr in dataBeginRepeat) {
+        #      dataFrame <- readr::read_csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
+        #      #load(paste(mainDir,"/data/",dbr,"_edited.rda",sep = ""))
+        # 
+        #      dataFrame <- koboloadeR::kobo_label(dataFrame, dico)
+        #      readr::write_csv(dataFrame,paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""))
+        #      #save(dataFrame , file =  paste(mainDir,"/data/",dbr,"_edited.rda",sep = ""))
+        #    }
+        #  # }
+        
+        
+        
         ## Append indicators in the dico  #############################################################################
-
         ## removing first line
-          dicotemp <- dicotemp[ 2:nrow(dicotemp), ]
+        dicotemp <- dicotemp[ 2:nrow(dicotemp), ]
 
        
         
@@ -393,7 +416,7 @@ kobo_create_indicators <- function(form = "form.xlsx") {
         #names(dico)
         #names(dicotemp)
         dico <- dico[ , c( "type", "name", "fullname", "label", "labelReport","hintReport",
-                           "report","chapter",  "disaggregation","correlate", "anonymise",
+                           "report","chapter",  "disaggregation","correlate",
                            #"structuralequation.risk","structuralequation.coping","structuralequation.resilience",
                            "anonymise", "clean", "cluster", "predict", "variable", "mappoint", "mappoly",
 
@@ -405,7 +428,7 @@ kobo_create_indicators <- function(form = "form.xlsx") {
 
 
         dicotemp <- dicotemp[ , c("type", "name", "fullname", "label", "labelReport","hintReport",
-                                  "report", "chapter",  "disaggregation","correlate", "anonymise",
+                                  "report", "chapter",  "disaggregation","correlate", 
                                  # "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
                                   "anonymise", "clean", "cluster", "predict", "variable", "mappoint", "mappoly",
 
@@ -421,31 +444,18 @@ kobo_create_indicators <- function(form = "form.xlsx") {
         rm(dicotemp,dicotemp1, choices, choices2, choices3, dicotemp.choice)
 
 
-         MainDataFrame <- readr::read_csv(paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""))
-        #load(paste(mainDir,"/data/MainDataFrame_edited.rda",sep = ""))
+        #  MainDataFrame <- readr::read_csv(paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""))
+        # #load(paste(mainDir,"/data/MainDataFrame_edited.rda",sep = ""))
+        # 
+        # ## label Variables
+        # cat("\n\n quick check on labeling\n")
+        # MainDataFrame <- koboloadeR::kobo_label(MainDataFrame , dico)
         
-        ## label Variables
-        cat("\n\n quick check on labeling\n")
-        MainDataFrame <- koboloadeR::kobo_label(MainDataFrame , dico)
-        
-        ## Check if there's a repeat - aka hierarchical structure in the dataset
-        if  (length(dataBeginRepeat) > 0) {
-          for (dbr in dataBeginRepeat) {
-            dataFrame <- readr::read_csv(paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""),stringsAsFactors = F)
-            #load(paste(mainDir,"/data/",dbr,"_edited.rda",sep = ""))
-  
-            dataFrame <- koboloadeR::kobo_label(dataFrame, dico)
-            readr::write_csv(dataFrame,paste(mainDir,"/data/",dbr,"_edited.csv",sep = ""))
-            #save(dataFrame , file =  paste(mainDir,"/data/",dbr,"_edited.rda",sep = ""))
-          }
-        }
+
         cat("\n\nWrite dico\n")
         readr::write_csv(dico, paste0(mainDir,"/data/dico_",form,".csv"))
         # save(dico, file =   paste0(mainDir,"/data/dico_",form,".rda"))
 
-        readr::write_csv(MainDataFrame, paste(mainDir,"/data/MainDataFrame_edited.csv",sep = ""))    
-        
-        #save(MainDataFrame, file =   paste(mainDir,"/data/MainDataFrame_edited.rda",sep = ""))
 
 
       }

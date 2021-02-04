@@ -1,7 +1,7 @@
 Type: Package
 Package: koboloadeR
 Title: A Metapackage for Survey Data Crunching
-Version: 0.1.8
+Version: 0.1.9
 Authors@R: 
     c(person(given = "Edouard",
              family = "Legoupil",

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Label Variable — kobo_label • koboloadeR</title>
+<title>Generate an association chart — kobo_chart_mosaic • koboloadeR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Label Variable — kobo_label" />
-<meta property="og:description" content="Insert the full label in data frame based on dictionnary" />
+<meta property="og:title" content="Generate an association chart — kobo_chart_mosaic" />
+<meta property="og:description" content="Generate an association chart" />
 
 
 
@@ -136,40 +136,44 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Label Variable</h1>
-    <small class="dont-index">Source: <a href='https://github.com/unhcr/koboloadeR/blob/master/R/kobo_label.R'><code>R/kobo_label.R</code></a></small>
-    <div class="hidden name"><code>kobo_label.Rd</code></div>
+    <h1>Generate an association chart</h1>
+    <small class="dont-index">Source: <a href='https://github.com/unhcr/koboloadeR/blob/master/R/kobo_chart_mosaic.R'><code>R/kobo_chart_mosaic.R</code></a></small>
+    <div class="hidden name"><code>kobo_chart_mosaic.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Insert the full label in data frame based on dictionnary</p>
+    <p>Generate an association chart</p>
     </div>
 
-    <pre class="usage"><span class='fu'>kobo_label</span><span class='op'>(</span><span class='va'>datalabel</span>, <span class='va'>dico</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>kobo_chart_mosaic</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>.x</span>, <span class='va'>.y</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>datalabel</th>
-      <td><p>file to be labeled</p></td>
+      <th>data</th>
+      <td><p>dataframe</p></td>
     </tr>
     <tr>
-      <th>dico</th>
-      <td><p>generated from kobo_dico)</p></td>
+      <th>x</th>
+      <td><p>variable to use for association</p></td>
+    </tr>
+    <tr>
+      <th>y</th>
+      <td><p>variable to use for association</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A "data.table" with the full data.label. To be used for graphs generation.</p>
+    <p>ggplot2 object</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Edouard Legoupil</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>kobo_label</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>dico</span><span class='op'>)</span>
+<span class='fu'>kobo_chart_mosaic</span><span class='op'>(</span><span class='va'>form</span>, <span class='va'>mapref</span><span class='op'>)</span>
 <span class='op'>}</span>
 
 </div></pre>

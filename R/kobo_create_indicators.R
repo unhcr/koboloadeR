@@ -120,7 +120,7 @@ kobo_create_indicators <- function(form = "form.xlsx") {
         cat(paste('### Script to generate indicator: ',sep = ""), file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
         cat(paste('form <- "',form,'"',sep = ""), file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
         cat("mainDir <- koboloadeR::kobo_getMainDirectory()", file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
-        cat('form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
+        cat('form_tmp <- paste(mainDir, "data-raw", form, sep = "/", collapse = "/")', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
         
         
         cat('dataBeginRepeat <- koboloadeR::kobo_get_begin_repeat(form)', file = paste0(mainDir,"/R/build_indicator.R") , sep = "\n", append = TRUE)
@@ -395,7 +395,7 @@ kobo_create_indicators <- function(form = "form.xlsx") {
         dico <- dico[ , c( "type", "name", "fullname", "label", "labelReport","hintReport",
                            "report","chapter",  "disaggregation","correlate", "anonymise",
                            #"structuralequation.risk","structuralequation.coping","structuralequation.resilience",
-                           "anonymise", "clean", "cluster", "predict", "variable", "mappoint", "mappoly",
+                           "clean", "cluster", "predict", "variable", "mappoint", "mappoly",
 
                            "relevant",  "required", "constraint", "repeat_count",
 
@@ -407,7 +407,7 @@ kobo_create_indicators <- function(form = "form.xlsx") {
         dicotemp <- dicotemp[ , c("type", "name", "fullname", "label", "labelReport","hintReport",
                                   "report", "chapter",  "disaggregation","correlate", "anonymise",
                                  # "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
-                                  "anonymise", "clean", "cluster", "predict", "variable", "mappoint", "mappoly",
+                                  "clean", "cluster", "predict", "variable", "mappoint", "mappoly",
 
                                   "relevant",  "required", "constraint", "repeat_count",
 

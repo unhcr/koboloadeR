@@ -418,7 +418,7 @@ kobo_create_indicators <- function(form = "form.xlsx") {
         dico <- dico[ , c( "type", "name", "fullname", "label", "labelReport","hintReport",
                            "report","chapter",  "disaggregation","correlate",
                            #"structuralequation.risk","structuralequation.coping","structuralequation.resilience",
-                           "anonymise", "clean", "cluster", "predict", "variable", "mappoint", "mappoly",
+                           "clean", "cluster", "predict", "variable", "mappoint", "mappoly",
 
                            "relevant",  "required", "constraint", "repeat_count",
 
@@ -430,7 +430,7 @@ kobo_create_indicators <- function(form = "form.xlsx") {
         dicotemp <- dicotemp[ , c("type", "name", "fullname", "label", "labelReport","hintReport",
                                   "report", "chapter",  "disaggregation","correlate", 
                                  # "structuralequation.risk","structuralequation.coping","structuralequation.resilience",
-                                  "anonymise", "clean", "cluster", "predict", "variable", "mappoint", "mappoly",
+                                  "clean", "cluster", "predict", "variable", "mappoint", "mappoly",
 
                                   "relevant",  "required", "constraint", "repeat_count",
 

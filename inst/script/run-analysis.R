@@ -10,15 +10,15 @@
 #'
 #' @examples
 #' \dontrun{
-#' build_analysis_package("form.xlsx")
+#' build_analysis_package(form = "form.xlsx")
 #' }
 
 build_analysis_package <- function(form = "form.xlsx") {
-  require(koboloadeR)
+   
   ## Load & process Data - data in csv from the data-raw will be then save as .rda file in the data folder
-  kobo_load_data(form)
+  koboloadeR::kobo_load_data(form)
   #### Generate Exploration Reports
-  kobo_crunching_report(form,
+  koboloadeR::kobo_crunching_report(form,
                         output ="html", ## other options are  "docx", "pptx", "aspx"
                         render = "TRUE", ## can put to false in case you just need to refresh the Rmd based on your xlsform config
                         lang = "eng", ## other options is to have report language in Spanish "esp" or french "fre"
@@ -42,7 +42,7 @@ build_analysis_package <- function(form = "form.xlsx") {
 ## Change here the precise name of the form if required
 form <- "form.xlsx"
 ## Extend xlsform with required column if necessary - done only once!
-#kobo_prepare_form(form)
+# koboloadeR::kobo_prepare_form(form)
 
 ## Now generate everything
 build_analysis_package(form)

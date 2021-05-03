@@ -62,6 +62,8 @@ kobo_crunching_report <- function(form = "form.xlsx",
     #form_tmp <- paste(mainDir, "data", form, sep = "/", collapse = "/")
     #library(koboloadeR)
     
+    
+    ## hack on cat functions then merge back small Rmd portions with future::multisession...
     cat <- function(x, file = "", ...) {
       if (file == "")
         base::cat(x, ...)
@@ -143,22 +145,23 @@ kobo_crunching_report <- function(form = "form.xlsx",
       updateProgress()
     }
     
-    ##get list of report
+    ## Start Report ##########################################
     reports <- as.data.frame(unique(dico$report))
     names(reports)[1] <- "Report"
     
     ## Default behavior if no report was defined in xlsform
-    if ((nrow(reports) == 1) & is.na(reports$Report)) {
+    if ( nrow(reports) == 1   & checkmate::anyMissing(reports$Report)) {
       cat("Defaulting questions allocation to chapter")
       dico$report[ dico$type %in% c("select_one","select_multiple_d")] <- "report"
       reports <- as.data.frame(unique(dico$chapter))
       names(reports)[1] <- "Report"
-    } else {}
+    } else {
+    }
     
-    reports <- as.data.frame(reports[!is.na(reports$Report), ])
-    
+    ## Remove when report frame contains NA!!
+    reports <- as.data.frame(reports[ !(is.na(reports$Report)),])
     names(reports)[1] <- "Report"
-    
+
     readr::write_csv(reports, paste(mainDir,"/data/reports.csv",sep = ""))
     #save(reports, file =   paste(mainDir,"/data/reports.rda",sep = ""))
     
@@ -722,7 +725,7 @@ kobo_crunching_report <- function(form = "form.xlsx",
       names(chapters)[1] <- "Chapter"
       
       ## Default behavior if no chapter was defined in xlsform
-      if ((nrow(chapters) == 1) & is.na(chapters$Chapter)) {
+      if (nrow(chapters) == 1 & checkmate::anyMissing(chapters$Chapter))  {
         cat("Defaulting questions allocation to chapter")
         dico$chapter[ dico$type %in% c("select_one","select_multiple_d")] <- "report"
         chapters <- as.data.frame(unique(dico$chapter))
@@ -773,7 +776,9 @@ kobo_crunching_report <- function(form = "form.xlsx",
           updateProgress()
         }
         
-        # j <- 2
+        
+        ## Parallel  function to crunch questions ##########
+        # j <- 1
         crunch_question <- function(j)
         {
           report.name.i.v.j <-
@@ -833,18 +838,18 @@ kobo_crunching_report <- function(form = "form.xlsx",
             figheight <- as.integer(nrow(frequ))
             
             ## Getting the figure height for the charts in Rmd
-            if ( figheight == 0) { figheight <- "3"}
-            else if ( figheight == 1) {figheight <- "3"}
-            else if ( figheight == 2) {figheight <- "3"}
-            else if ( figheight == 3) {figheight <- "3"}
-            else if ( figheight == 4) {figheight <- "4"}
-            else if ( figheight == 5) {figheight <- "4"}
-            else if ( figheight == 6) {figheight <- "5"}
-            else if ( figheight == 7) {figheight <- "6"}
-            else if ( figheight == 8) {figheight <- "7"}
-            else if ( figheight == 9) {figheight <- "8"}
-            else if ( figheight == 10) {figheight <- "9"}
-            else if ( figheight >= 11) {figheight <- "10"}
+            if ( figheight == 0) { figheight <-  3 }
+            else if ( figheight == 1) {figheight <-  3 }
+            else if ( figheight == 2) {figheight <-  3 }
+            else if ( figheight == 3) {figheight <-  3 }
+            else if ( figheight == 4) {figheight <-  4}
+            else if ( figheight == 5) {figheight <-  4}
+            else if ( figheight == 6) {figheight <-  5}
+            else if ( figheight == 7) {figheight <-  6}
+            else if ( figheight == 8) {figheight <-  7}
+            else if ( figheight == 9) {figheight <-  7}
+            else if ( figheight == 10) {figheight <-  9}
+            else if ( figheight >= 11) {figheight <-  10}
             
             ## Check that there are responses to be displayed
             if (nrow(frequ) %in% c("0") ) {
@@ -1055,18 +1060,18 @@ kobo_crunching_report <- function(form = "form.xlsx",
                     if (disag.type == "integer") {
                       # Get number levels to set up chart height
                       figheight <- nlevels( as.factor(get(paste0(questions.frame))[[disag.name]]))
-                      if ( figheight == 0) { figheight <- "3"}
-                      else if ( figheight == 1) {figheight <- "3"}
-                      else if ( figheight == 2) {figheight <- "3"}
-                      else if ( figheight == 3) {figheight <- "3"}
-                      else if ( figheight == 4) {figheight <- "4"}
-                      else if ( figheight == 5) {figheight <- "4"}
-                      else if ( figheight == 6) {figheight <- "5"}
-                      else if ( figheight == 7) {figheight <- "6"}
-                      else if ( figheight == 8) {figheight <- "7"}
-                      else if ( figheight == 9) {figheight <- "8"}
-                      else if ( figheight == 10) {figheight <- "9"}
-                      else if ( figheight >= 11) {figheight <- "10"}
+                      if ( figheight == 0) { figheight <-  3 }
+                      else if ( figheight == 1) {figheight <-  3 }
+                      else if ( figheight == 2) {figheight <-  3 }
+                      else if ( figheight == 3) {figheight <-  3 }
+                      else if ( figheight == 4) {figheight <-  4}
+                      else if ( figheight == 5) {figheight <-  4}
+                      else if ( figheight == 6) {figheight <-  5}
+                      else if ( figheight == 7) {figheight <-  6}
+                      else if ( figheight == 8) {figheight <-  7}
+                      else if ( figheight == 9) {figheight <-  7}
+                      else if ( figheight == 10) {figheight <-  9}
+                      else if ( figheight >= 11) {figheight <-  10}
                       
                       ## Open chunk
                       if (output == "pptx") {
@@ -1189,18 +1194,18 @@ kobo_crunching_report <- function(form = "form.xlsx",
                       
                       # Get number levels to set up chart height
                       figheight <- nlevels(as.factor( get(paste0(questions.frame))[[disag.name]]))
-                      if ( figheight == 0) { figheight <- "3"}
-                      else if ( figheight == 1) {figheight <- "3"}
-                      else if ( figheight == 2) {figheight <- "3"}
-                      else if ( figheight == 3) {figheight <- "3"}
-                      else if ( figheight == 4) {figheight <- "4"}
-                      else if ( figheight == 5) {figheight <- "4"}
-                      else if ( figheight == 6) {figheight <- "5"}
-                      else if ( figheight == 7) {figheight <- "6"}
-                      else if ( figheight == 8) {figheight <- "7"}
-                      else if ( figheight == 9) {figheight <- "8"}
-                      else if ( figheight == 10) {figheight <- "9"}
-                      else if ( figheight >= 11) {figheight <- "10"}
+                      if ( figheight == 0) { figheight <-  3 }
+                      else if ( figheight == 1) {figheight <-  3 }
+                      else if ( figheight == 2) {figheight <-  3 }
+                      else if ( figheight == 3) {figheight <-  3 }
+                      else if ( figheight == 4) {figheight <-  4}
+                      else if ( figheight == 5) {figheight <-  4}
+                      else if ( figheight == 6) {figheight <-  5}
+                      else if ( figheight == 7) {figheight <-  6}
+                      else if ( figheight == 8) {figheight <-  7}
+                      else if ( figheight == 9) {figheight <-  7}
+                      else if ( figheight == 10) {figheight <-  9}
+                      else if ( figheight >= 11) {figheight <-  10}
                       
                       ## Open chunk
                       if (output == "pptx") {
@@ -1631,18 +1636,18 @@ kobo_crunching_report <- function(form = "form.xlsx",
                     
                     # Get number levels to set up chart height
                     figheight <- nlevels(as.factor( get(paste0(questions.frame))[[disag.name]]))
-                    if ( figheight == 0) { figheight <- "3"}
-                    else if ( figheight == 1) {figheight <- "3"}
-                    else if ( figheight == 2) {figheight <- "3"}
-                    else if ( figheight == 3) {figheight <- "3"}
-                    else if ( figheight == 4) {figheight <- "4"}
-                    else if ( figheight == 5) {figheight <- "4"}
-                    else if ( figheight == 6) {figheight <- "5"}
-                    else if ( figheight == 7) {figheight <- "6"}
-                    else if ( figheight == 8) {figheight <- "7"}
-                    else if ( figheight == 9) {figheight <- "8"}
-                    else if ( figheight == 10) {figheight <- "9"}
-                    else if ( figheight >= 11) {figheight <- "10"}
+                    if ( figheight == 0) { figheight <-  3 }
+                    else if ( figheight == 1) {figheight <-  3 }
+                    else if ( figheight == 2) {figheight <-  3 }
+                    else if ( figheight == 3) {figheight <-  3 }
+                    else if ( figheight == 4) {figheight <-  4}
+                    else if ( figheight == 5) {figheight <-  4}
+                    else if ( figheight == 6) {figheight <-  5}
+                    else if ( figheight == 7) {figheight <-  6}
+                    else if ( figheight == 8) {figheight <-  7}
+                    else if ( figheight == 9) {figheight <-  7}
+                    else if ( figheight == 10) {figheight <-  9}
+                    else if ( figheight >= 11) {figheight <-  10}
                     
                     ## Open chunk
                     if (output == "pptx") {
@@ -2236,7 +2241,9 @@ kobo_crunching_report <- function(form = "form.xlsx",
           ## End loop on questions
         }
         
-        furrr::future_walk(1:nrow(chapterquestions), crunch_question, .progress = FALSE)
+        #crunch_question(1)
+        furrr::future_walk(1:nrow(chapterquestions), crunch_question, .progress = TRUE)
+        
         
         if (output == "docx") {
           cat(paste("##### Page Break"),file = report.name.i.v ,sep = "\n", append = TRUE)

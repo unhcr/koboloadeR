@@ -35,6 +35,7 @@ Imports:
     caret,
     classInt,
     corrplot,
+    checkmate,
     data.table,
     DDIwR,
     dplyr,

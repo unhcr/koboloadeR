@@ -755,6 +755,10 @@ kobo_crunching_report <- function(form = "form.xlsx",
                                  c("chapter", "name", "label", "labelReport","hintReport", "type", "qrepeatlabel", "fullname","listname","variable") ]
         # levels(as.factor(as.character(dico[which(!(is.na(dico$chapter)) & dico$formpart=="questions"), c("type") ])))
         
+        
+        ## Reorder chapter 
+        chapterquestions <- chapterquestions[  order(chapterquestions$chapter), ]   
+        
         ## add better slides separator
         if (output == "pptx") {
           cat(paste("---"),file = report.name.i.v , sep = "\n", append = TRUE)

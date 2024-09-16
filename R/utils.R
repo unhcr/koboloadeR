@@ -14,10 +14,10 @@
 #'
 get_me <- function(user, URL) {
   if (is.null(user)) {
-    get(URL, progress())
+    httr::GET(URL, progress())
   } else {
     u <- pwd_parse(user)
-    get(URL, httr::authenticate(u$username, u$password), progress())
+    httr::GET(URL, httr::authenticate(u$username, u$password), httr::progress())
   }
 }
 NULL
